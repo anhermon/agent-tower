@@ -52,6 +52,13 @@ export const coverageExclude = [
   "packages/testing/**",
   "e2e/**",
   "test/shims/**",
+  // Next.js server-rendered entry points have no meaningful unit-test surface;
+  // they are integration-tested via Playwright.
+  "apps/web/app/**/page.tsx",
+  "apps/web/app/**/layout.tsx",
+  "apps/web/app/**/loading.tsx",
+  "apps/web/app/**/error.tsx",
+  "apps/web/app/**/not-found.tsx",
 ];
 
 export default defineConfig({
