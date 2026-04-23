@@ -93,7 +93,7 @@ type CodeProps = {
 
 function CodeRenderer({ className, children }: CodeProps) {
   const languageMatch = /language-(\w+)/.exec(className ?? "");
-  const raw = String(children ?? "");
+  const raw = stringifyChildren(children);
   const isBlock = !!languageMatch || raw.includes("\n");
   if (!isBlock) {
     return (
@@ -105,4 +105,18 @@ function CodeRenderer({ className, children }: CodeProps) {
   const language = languageMatch?.[1] ?? "text";
   const stripped = raw.replace(/\n$/, "");
   return <CodeBlock code={stripped} language={language} />;
+}
+
+function stringifyChildren(children: React.ReactNode): string {
+  if (children == null) return "";
+  if (typeof children === "string") return children;
+  if (typeof children === "number" || typeof children === "boolean") return String(children);
+  if (Array.isArray(children)) return children.map(stringifyChildren).join("");
+  // Objects / React elements: walk their `props.children` if present;
+  // otherwise stringify to an empty marker rather than `[object Object]`.
+  if (typeof children === "object" && "props" in children) {
+    const kids = (children as { props?: { children?: React.ReactNode } }).props?.children;
+    return kids == null ? "" : stringifyChildren(kids);
+  }
+  return "";
 }

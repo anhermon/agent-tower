@@ -90,6 +90,9 @@ function prettyJson(value: JsonValue): string {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
-    return String(value);
+    // Preserve prior behavior: stringify primitives directly; fall back to a
+    // marker for unserializable objects/arrays rather than `[object Object]`.
+    if (value === null || typeof value !== "object") return String(value);
+    return "[unserializable value]";
   }
 }
