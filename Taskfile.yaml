@@ -72,8 +72,20 @@ tasks:
 
   lint:
     desc: ESLint (deep semantic lint — React, hooks, a11y, imports, complexity)
+    deps: [build:packages]
     cmds:
       - pnpm eslint .
+
+  # Builds only the workspace packages (not apps/web) so downstream type-aware
+  # lint/typecheck can resolve `@control-plane/*` imports against real `dist/`
+  # declarations. Without this, ESLint's `projectService` sees the `exports`
+  # field pointing at a nonexistent `./dist/index.d.ts` and resolves every
+  # import as `error`, fabricating thousands of `@typescript-eslint/no-unsafe-*`
+  # findings. Run directly with `task build:packages` to pre-warm a fresh clone.
+  build:packages:
+    desc: Build workspace packages so downstream type-aware lint resolves imports
+    cmds:
+      - pnpm --filter "./packages/**" -r build
 
   # --- Security / quality helpers ------------------------------------------
   audit:
