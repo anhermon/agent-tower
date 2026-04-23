@@ -12,6 +12,12 @@ interface TodoItem {
   readonly activeForm?: string;
 }
 
+const TODO_STATUSES = ["pending", "in_progress", "completed"] as const;
+
+function isTodoStatus(value: string): value is TodoItem["status"] {
+  return (TODO_STATUSES as readonly string[]).includes(value);
+}
+
 interface Props {
   readonly input: JsonValue;
 }
@@ -28,7 +34,8 @@ function parseSingleTodo(raw: JsonValue): TodoItem | null {
   const r = raw as Record<string, JsonValue>;
   const content = r.content;
   const status = r.status;
-  if (typeof content !== "string" || typeof status !== "string") return null;
+  if (typeof content !== "string" || typeof status !== "string" || !isTodoStatus(status))
+    return null;
   return {
     content,
     status,

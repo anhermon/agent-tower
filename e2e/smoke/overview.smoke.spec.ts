@@ -14,7 +14,7 @@
 import { expect, test } from "@playwright/test";
 
 const SIDEBAR_MODULES = [
-  "Overview",
+  "Control Plane",
   "Sessions",
   "Webhooks",
   "Agents",

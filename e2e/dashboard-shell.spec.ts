@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 
 const MODULE_ROUTES = [
-  { path: "/sessions", emptyState: "No sessions records" },
+  { path: "/sessions", emptyState: "No session records" },
   { path: "/webhooks", emptyState: "Webhooks are not configured" },
   { path: "/agents", emptyState: "No agent runtimes" },
   { path: "/kanban", emptyState: "No ticket source configured" },
   { path: "/skills", emptyState: "No skills discovered" },
-  { path: "/mcps", emptyState: "No mcps records" },
-  { path: "/channels", emptyState: "No channels records" },
-  { path: "/replay", emptyState: "No replay records" },
+  { path: "/mcps", emptyState: "No MCP servers" },
+  { path: "/channels", emptyState: "No channels connected" },
+  { path: "/replay", emptyState: "No replay traces" },
 ];
 
 test("given_the_dashboard_is_running__when_opening_home__then_the_shell_is_visible", async ({

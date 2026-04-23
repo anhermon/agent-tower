@@ -45,16 +45,21 @@ export default defineConfig({
           env: {
             CLAUDE_CONTROL_PLANE_DATA_ROOT: SESSIONS_FIXTURE_ROOT,
             CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT,
+            // Override apps/web/.env.local so empty-state baselines stay deterministic.
+            CLAUDE_CONTROL_PLANE_WEBHOOKS_FILE: "",
+            CLAUDE_CONTROL_PLANE_GITHUB_WEBHOOK_DELIVERIES_FILE: "",
           },
         },
       }),
   projects: [
     {
       name: "chromium",
+      testIgnore: /\.perf\.spec\.ts$/,
       use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "mobile",
+      testIgnore: /\.perf\.spec\.ts$/,
       use: { ...devices["Pixel 7"] },
     },
     // Tier-based slices so `task` can run each independently. Each project
@@ -77,7 +82,13 @@ export default defineConfig({
     {
       name: "full",
       testMatch: /.*\.spec\.ts/,
-      testIgnore: [/\.smoke\./, /\.a11y\./, /\.visual\./],
+      testIgnore: [/\.smoke\./, /\.a11y\./, /\.visual\./, /\.perf\.spec\.ts$/],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "perf",
+      testMatch: /\.perf\.spec\.ts$/,
+      timeout: 60_000,
       use: { ...devices["Desktop Chrome"] },
     },
   ],

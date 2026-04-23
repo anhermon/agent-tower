@@ -44,6 +44,11 @@ tasks:
     cmds:
       - pnpm test:e2e
 
+  test:e2e:perf:
+    desc: Playwright perf coverage (scroll + lazy UI); set TEST_SERVER_PORT=3100 for task test-server:up
+    cmds:
+      - pnpm test:e2e:perf
+
   test:e2e:smoke:
     desc: Playwright smoke tier only
     cmds:
