@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { modules } from "@/lib/modules";
+import { MobileNav } from "./mobile-nav";
 
 export function Topbar() {
   return (
@@ -18,7 +17,13 @@ export function Topbar() {
           </div>
         </div>
 
-        <div className="relative flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-xs border border-line/80 bg-white/5 px-3 text-sm text-muted">
+        {/* Decorative placeholder for a future command palette. Hidden from
+            assistive tech so it doesn't mis-advertise a non-existent
+            search input. */}
+        <div
+          aria-hidden="true"
+          className="relative flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-xs border border-line/80 bg-white/5 px-3 text-sm text-muted"
+        >
           <Icon name="search" className="mr-2 h-4 w-4 shrink-0" />
           <span className="truncate">Search sessions, agents, events</span>
           <span className="ml-auto hidden rounded-full border border-line/80 px-2 py-0.5 font-mono text-[10px] tracking-wider text-muted sm:inline-flex">
@@ -37,21 +42,7 @@ export function Topbar() {
         </div>
       </div>
 
-      <nav
-        className="glass-panel mx-auto mt-3 flex max-w-[1480px] gap-1 overflow-x-auto rounded-lg px-2 py-2 lg:hidden"
-        aria-label="Primary"
-      >
-        {modules.map((module) => (
-          <Link
-            className="flex h-9 shrink-0 items-center gap-2 rounded-xs px-3 text-sm font-medium text-muted transition-colors hover:bg-white/5 hover:text-ink"
-            href={module.href}
-            key={module.key}
-          >
-            <Icon name={module.icon} className="h-4 w-4" />
-            {module.label}
-          </Link>
-        ))}
-      </nav>
+      <MobileNav />
     </header>
   );
 }

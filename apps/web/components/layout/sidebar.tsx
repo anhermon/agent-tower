@@ -25,7 +25,14 @@ export function Sidebar() {
         <p className="eyebrow px-2 pb-2 pt-1">Modules</p>
         <nav className="flex-1 space-y-1 overflow-y-auto pr-1" aria-label="Primary">
           {modules.map((module) => {
-            const active = pathname === module.href;
+            // For the root overview, only exact-match activates. For every
+            // other module, child routes (e.g. /skills/foo, /sessions/bar)
+            // should also mark the parent nav item active so users don't
+            // lose wayfinding on detail pages.
+            const active =
+              module.href === "/"
+                ? pathname === "/"
+                : pathname === module.href || pathname.startsWith(`${module.href}/`);
 
             return (
               <Link
