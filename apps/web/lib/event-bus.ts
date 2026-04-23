@@ -1,3 +1,5 @@
+import "server-only";
+
 import { InMemoryEventBus } from "@control-plane/events";
 import type { EventEnvelope } from "@control-plane/events";
 

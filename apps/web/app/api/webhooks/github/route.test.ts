@@ -111,6 +111,44 @@ describe("/api/webhooks/github POST", () => {
     });
   });
 
+  it("given_persist_succeeds_but_publish_fails__when_posted__then_returns_internal_server_error_with_publish_error_code", async () => {
+    const publishSpy = vi
+      .spyOn(eventBus, "publish")
+      .mockRejectedValue(new Error("Event bus unavailable"));
+    const deliveriesFile = await createDeliveriesFilePath("publish-failure");
+    const secret = "github-webhook-secret";
+    process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = deliveriesFile;
+    process.env[GITHUB_WEBHOOK_SECRET_ENV] = secret;
+
+    const body = JSON.stringify({
+      action: "opened",
+      repository: { full_name: "octo/hello-world" },
+      sender: { login: "octocat" },
+      client_payload: { sessionId: "session-123" },
+    });
+    const response = await POST(
+      new Request(ROUTE_URL, {
+        method: "POST",
+        headers: githubHeaders({
+          delivery: "delivery-publish-failure",
+          event: "issues",
+          signature: signGithubBody(body, secret),
+        }),
+        body,
+      })
+    );
+
+    expect(response.status).toBe(500);
+    const responseBody = (await response.json()) as Record<string, unknown>;
+    expect(responseBody.ok).toBe(false);
+    expect(responseBody.error).toBe("event_publish_failed");
+
+    // Delivery should still be persisted even if publish fails
+    const entries = await readDeliveryEntries(deliveriesFile);
+    expect(entries).toHaveLength(1);
+    expect(publishSpy).toHaveBeenCalledTimes(1);
+  });
+
   it("given_missing_required_github_headers__when_posted__then_returns_bad_request", async () => {
     const deliveriesFile = await createDeliveriesFilePath("missing-headers");
     process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = deliveriesFile;

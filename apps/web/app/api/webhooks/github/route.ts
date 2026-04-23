@@ -91,9 +91,17 @@ async function persistDelivery(
     );
   }
 
+  let entry: Awaited<ReturnType<typeof persistGithubWebhookDelivery>>;
   try {
-    const entry = await persistGithubWebhookDelivery({ headers, payload, signatureVerified });
+    entry = await persistGithubWebhookDelivery({ headers, payload, signatureVerified });
+  } catch (error) {
+    return Response.json(
+      { ok: false, error: "delivery_persist_failed", message: errorMessage(error) },
+      { status: 500 }
+    );
+  }
 
+  try {
     await eventBus.publish({
       id: randomUUID(),
       type: ControlPlaneEventType.WebhookReceived,
@@ -105,17 +113,17 @@ async function persistDelivery(
       },
       payload,
     });
-
-    return Response.json(
-      { ok: true, eventId: entry.id, deliveryId: entry.payload.id },
-      { status: 202 }
-    );
   } catch (error) {
     return Response.json(
-      { ok: false, error: "delivery_persist_failed", message: errorMessage(error) },
+      { ok: false, error: "event_publish_failed", message: errorMessage(error) },
       { status: 500 }
     );
   }
+
+  return Response.json(
+    { ok: true, eventId: entry.id, deliveryId: entry.payload.id },
+    { status: 202 }
+  );
 }
 
 export const POST = withAudit("api.webhooks.github", githubWebhookHandler);
