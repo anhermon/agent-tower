@@ -70,164 +70,223 @@ interface Pose {
   readonly overlay: AgentAnimationOverlay;
 }
 
+interface Accumulator {
+  pose: Pose;
+  firstActivityAtMs: number | null;
+  lastEventAtMs: number | null;
+  stopped: boolean;
+  sawRelevantRecord: boolean;
+  maxContextTokens: number;
+  compactionPreTokens: number;
+  readonly pendingTools: Map<string, PendingTool>;
+  readonly activeForegroundSubagents: Set<string>;
+}
+
+function createAccumulator(fileModifiedAt: Date | undefined): Accumulator {
+  return {
+    pose: {
+      baseState: AGENT_ANIMATION_BASE_STATES.Sleeping,
+      overlay: AGENT_ANIMATION_OVERLAYS.None,
+    },
+    firstActivityAtMs: null,
+    lastEventAtMs: fileModifiedAt?.getTime() ?? null,
+    stopped: false,
+    sawRelevantRecord: false,
+    maxContextTokens: 0,
+    compactionPreTokens: 0,
+    pendingTools: new Map(),
+    activeForegroundSubagents: new Set(),
+  };
+}
+
+function markActivity(acc: Accumulator, eventAtMs: number, pose: Pose): void {
+  acc.sawRelevantRecord = true;
+  acc.stopped = false;
+  acc.firstActivityAtMs ??= eventAtMs;
+  acc.pose = pose;
+}
+
 export function deriveAgentAnimationSnapshot(
   input: AgentAnimationDeriveInput
 ): AgentAnimationDerivation {
   const nowMs = input.now?.getTime() ?? Date.now();
-  if (input.startup && input.fileModifiedAt) {
-    const ageMs = nowMs - input.fileModifiedAt.getTime();
-    if (Number.isFinite(ageMs) && ageMs > AGENT_ANIMATION_STARTUP_PRUNE_MS) {
-      return { snapshot: null, nextPermissionCheckAtMs: null };
-    }
+  if (shouldPruneForStartup(input, nowMs)) {
+    return { snapshot: null, nextPermissionCheckAtMs: null };
   }
 
-  const pendingTools = new Map<string, PendingTool>();
-  const activeForegroundSubagents = new Set<string>();
   const backgroundSubagentCount = Math.max(0, input.backgroundSubagentCount ?? 0);
-
-  let pose: Pose = {
-    baseState: AGENT_ANIMATION_BASE_STATES.Sleeping,
-    overlay: AGENT_ANIMATION_OVERLAYS.None,
-  };
-  let firstActivityAtMs: number | null = null;
-  let lastEventAtMs: number | null = input.fileModifiedAt?.getTime() ?? null;
-  let stopped = false;
-  let sawRelevantRecord = false;
-  let maxContextTokens = 0;
-  let compactionPreTokens = 0;
+  const acc = createAccumulator(input.fileModifiedAt);
 
   for (const entry of input.entries) {
-    const eventAtMs = entryTimeMs(entry, lastEventAtMs ?? nowMs);
-    lastEventAtMs = eventAtMs;
+    const eventAtMs = entryTimeMs(entry, acc.lastEventAtMs ?? nowMs);
+    acc.lastEventAtMs = eventAtMs;
+    applyEntry(acc, entry, eventAtMs);
+  }
 
-    if (entry.type === "assistant") {
-      const assistant = entry as ClaudeAssistantEntry;
-      const content = arrayContent(assistant.message?.content);
-      if (!content) continue;
+  const nextPermissionCheckAtMs = resolvePendingPermissions(acc, nowMs);
 
-      const toolUses = content.filter(isToolUseBlock);
-      const hasText = content.some(
-        (block) => block.type === "text" && typeof block.text === "string" && block.text.trim()
-      );
-      const hasActivity = hasText || toolUses.length > 0;
+  const subagentCount = acc.activeForegroundSubagents.size + backgroundSubagentCount;
+  applySubagentOverlay(acc, subagentCount);
 
-      maxContextTokens = Math.max(maxContextTokens, usageContextTokens(assistant));
+  if (!acc.sawRelevantRecord && input.entries.length === 0) {
+    return { snapshot: null, nextPermissionCheckAtMs };
+  }
 
-      if (hasActivity) {
-        sawRelevantRecord = true;
-        stopped = false;
-        firstActivityAtMs ??= eventAtMs;
-        pose = {
-          baseState: AGENT_ANIMATION_BASE_STATES.Working,
-          overlay: AGENT_ANIMATION_OVERLAYS.None,
-        };
-      }
+  const snapshot = buildSnapshot(input, acc, nowMs, subagentCount);
+  return { snapshot, nextPermissionCheckAtMs };
+}
 
-      for (const tool of toolUses) {
-        if (!PERMISSION_EXEMPT_TOOLS.has(tool.name)) {
-          pendingTools.set(tool.id, { observedAtMs: eventAtMs });
-        }
-      }
-      continue;
+function shouldPruneForStartup(input: AgentAnimationDeriveInput, nowMs: number): boolean {
+  if (!input.startup || !input.fileModifiedAt) return false;
+  const ageMs = nowMs - input.fileModifiedAt.getTime();
+  return Number.isFinite(ageMs) && ageMs > AGENT_ANIMATION_STARTUP_PRUNE_MS;
+}
+
+function applyEntry(acc: Accumulator, entry: ClaudeTranscriptEntry, eventAtMs: number): void {
+  switch (entry.type) {
+    case "assistant":
+      applyAssistantEntry(acc, entry as ClaudeAssistantEntry, eventAtMs);
+      return;
+    case "user":
+      applyUserEntry(acc, entry as ClaudeUserEntry, eventAtMs);
+      return;
+    case "system":
+      applySystemEntry(acc, entry as ClaudeSystemEntry, eventAtMs);
+      return;
+    case "progress":
+      applyProgressEntry(acc, entry, eventAtMs);
+      return;
+    default:
+      return;
+  }
+}
+
+function applyAssistantEntry(
+  acc: Accumulator,
+  assistant: ClaudeAssistantEntry,
+  eventAtMs: number
+): void {
+  const content = arrayContent(assistant.message?.content);
+  if (!content) return;
+
+  const toolUses = content.filter(isToolUseBlock);
+  const hasActivity = hasTextActivity(content) || toolUses.length > 0;
+
+  acc.maxContextTokens = Math.max(acc.maxContextTokens, usageContextTokens(assistant));
+
+  if (hasActivity) {
+    markActivity(acc, eventAtMs, {
+      baseState: AGENT_ANIMATION_BASE_STATES.Working,
+      overlay: AGENT_ANIMATION_OVERLAYS.None,
+    });
+  }
+
+  for (const tool of toolUses) {
+    if (!PERMISSION_EXEMPT_TOOLS.has(tool.name)) {
+      acc.pendingTools.set(tool.id, { observedAtMs: eventAtMs });
     }
+  }
+}
 
-    if (entry.type === "user") {
-      const user = entry as ClaudeUserEntry;
-      const content = arrayContent(user.message?.content);
-      if (!content) continue;
+function hasTextActivity(content: readonly ClaudeContentBlock[]): boolean {
+  return content.some(
+    (block) => block.type === "text" && typeof block.text === "string" && block.text.trim() !== ""
+  );
+}
 
-      let hadFailure = false;
-      for (const block of content) {
-        if (block.type !== "tool_result") continue;
-        if (typeof block.tool_use_id === "string") {
-          pendingTools.delete(block.tool_use_id);
-        }
-        if (block.is_error === true) {
-          hadFailure = true;
-        }
-      }
+function applyUserEntry(acc: Accumulator, user: ClaudeUserEntry, eventAtMs: number): void {
+  const content = arrayContent(user.message?.content);
+  if (!content) return;
 
-      if (hadFailure) {
-        sawRelevantRecord = true;
-        stopped = false;
-        firstActivityAtMs ??= eventAtMs;
-        pose = {
-          baseState: AGENT_ANIMATION_BASE_STATES.Failed,
-          overlay: AGENT_ANIMATION_OVERLAYS.Failure,
-        };
-      }
-      continue;
+  let hadFailure = false;
+  for (const block of content) {
+    if (block.type !== "tool_result") continue;
+    if (typeof block.tool_use_id === "string") {
+      acc.pendingTools.delete(block.tool_use_id);
     }
-
-    if (entry.type === "system") {
-      const system = entry as ClaudeSystemEntry & {
-        readonly subtype?: string;
-        readonly compactMetadata?: { readonly preTokens?: number };
-      };
-      const subtype = typeof system.subtype === "string" ? system.subtype : "";
-
-      if (subtype === "turn_duration") {
-        pendingTools.clear();
-        activeForegroundSubagents.clear();
-        sawRelevantRecord = true;
-        stopped = true;
-        pose = {
-          baseState: AGENT_ANIMATION_BASE_STATES.Done,
-          overlay: AGENT_ANIMATION_OVERLAYS.Success,
-        };
-        continue;
-      }
-
-      if (isCompactionSubtype(subtype)) {
-        const preTokens = system.compactMetadata?.preTokens;
-        if (typeof preTokens === "number" && Number.isFinite(preTokens)) {
-          compactionPreTokens = Math.max(compactionPreTokens, preTokens);
-        }
-        sawRelevantRecord = true;
-        stopped = false;
-        firstActivityAtMs ??= eventAtMs;
-        pose = {
-          baseState: AGENT_ANIMATION_BASE_STATES.Attention,
-          overlay: AGENT_ANIMATION_OVERLAYS.Compacting,
-        };
-      }
-      continue;
-    }
-
-    if (entry.type === "progress") {
-      const progress = progressRecord(entry);
-      if (progress?.kind === "agent_progress") {
-        const parentToolId = progress.parentToolUseID ?? progress.toolUseID;
-        if (parentToolId) {
-          activeForegroundSubagents.add(parentToolId);
-          sawRelevantRecord = true;
-          stopped = false;
-          firstActivityAtMs ??= eventAtMs;
-          pose = {
-            baseState: AGENT_ANIMATION_BASE_STATES.Working,
-            overlay: AGENT_ANIMATION_OVERLAYS.Subagent,
-          };
-        }
-      } else if (progress?.kind === "skill_loaded") {
-        sawRelevantRecord = true;
-        stopped = false;
-        firstActivityAtMs ??= eventAtMs;
-        pose = {
-          baseState: AGENT_ANIMATION_BASE_STATES.Working,
-          overlay: AGENT_ANIMATION_OVERLAYS.SkillLoaded,
-        };
-      }
+    if (block.is_error === true) {
+      hadFailure = true;
     }
   }
 
+  if (hadFailure) {
+    markActivity(acc, eventAtMs, {
+      baseState: AGENT_ANIMATION_BASE_STATES.Failed,
+      overlay: AGENT_ANIMATION_OVERLAYS.Failure,
+    });
+  }
+}
+
+type SystemEntryWithSubtype = ClaudeSystemEntry & {
+  readonly subtype?: string;
+  readonly compactMetadata?: { readonly preTokens?: number };
+};
+
+function applySystemEntry(acc: Accumulator, rawSystem: ClaudeSystemEntry, eventAtMs: number): void {
+  const system = rawSystem as SystemEntryWithSubtype;
+  const subtype = typeof system.subtype === "string" ? system.subtype : "";
+
+  if (subtype === "turn_duration") {
+    acc.pendingTools.clear();
+    acc.activeForegroundSubagents.clear();
+    acc.sawRelevantRecord = true;
+    acc.stopped = true;
+    acc.pose = {
+      baseState: AGENT_ANIMATION_BASE_STATES.Done,
+      overlay: AGENT_ANIMATION_OVERLAYS.Success,
+    };
+    return;
+  }
+
+  if (isCompactionSubtype(subtype)) {
+    const preTokens = system.compactMetadata?.preTokens;
+    if (typeof preTokens === "number" && Number.isFinite(preTokens)) {
+      acc.compactionPreTokens = Math.max(acc.compactionPreTokens, preTokens);
+    }
+    markActivity(acc, eventAtMs, {
+      baseState: AGENT_ANIMATION_BASE_STATES.Attention,
+      overlay: AGENT_ANIMATION_OVERLAYS.Compacting,
+    });
+  }
+}
+
+function applyProgressEntry(
+  acc: Accumulator,
+  entry: ClaudeTranscriptEntry,
+  eventAtMs: number
+): void {
+  const progress = progressRecord(entry);
+  if (!progress) return;
+
+  if (progress.kind === "agent_progress") {
+    const parentToolId = progress.parentToolUseID ?? progress.toolUseID;
+    if (parentToolId) {
+      acc.activeForegroundSubagents.add(parentToolId);
+      markActivity(acc, eventAtMs, {
+        baseState: AGENT_ANIMATION_BASE_STATES.Working,
+        overlay: AGENT_ANIMATION_OVERLAYS.Subagent,
+      });
+    }
+    return;
+  }
+
+  if (progress.kind === "skill_loaded") {
+    markActivity(acc, eventAtMs, {
+      baseState: AGENT_ANIMATION_BASE_STATES.Working,
+      overlay: AGENT_ANIMATION_OVERLAYS.SkillLoaded,
+    });
+  }
+}
+
+function resolvePendingPermissions(acc: Accumulator, nowMs: number): number | null {
   let nextPermissionCheckAtMs: number | null = null;
-  for (const pending of pendingTools.values()) {
+  for (const pending of acc.pendingTools.values()) {
     const dueAtMs = pending.observedAtMs + AGENT_ANIMATION_PERMISSION_TIMEOUT_MS;
     if (nowMs >= dueAtMs) {
-      sawRelevantRecord = true;
-      stopped = false;
-      lastEventAtMs = Math.max(lastEventAtMs ?? dueAtMs, dueAtMs);
-      pose = {
+      acc.sawRelevantRecord = true;
+      acc.stopped = false;
+      acc.lastEventAtMs = Math.max(acc.lastEventAtMs ?? dueAtMs, dueAtMs);
+      acc.pose = {
         baseState: AGENT_ANIMATION_BASE_STATES.Attention,
         overlay: AGENT_ANIMATION_OVERLAYS.Permission,
       };
@@ -236,47 +295,60 @@ export function deriveAgentAnimationSnapshot(
         nextPermissionCheckAtMs === null ? dueAtMs : Math.min(nextPermissionCheckAtMs, dueAtMs);
     }
   }
+  return nextPermissionCheckAtMs;
+}
 
-  const subagentCount = activeForegroundSubagents.size + backgroundSubagentCount;
-  if (
-    subagentCount > 0 &&
-    OVERLAY_PRIORITY[pose.overlay] <= OVERLAY_PRIORITY[AGENT_ANIMATION_OVERLAYS.Subagent]
-  ) {
-    sawRelevantRecord = true;
-    stopped = false;
-    pose = {
-      baseState: AGENT_ANIMATION_BASE_STATES.Working,
-      overlay: AGENT_ANIMATION_OVERLAYS.Subagent,
-    };
+function applySubagentOverlay(acc: Accumulator, subagentCount: number): void {
+  if (subagentCount === 0) return;
+  if (OVERLAY_PRIORITY[acc.pose.overlay] > OVERLAY_PRIORITY[AGENT_ANIMATION_OVERLAYS.Subagent]) {
+    return;
   }
+  acc.sawRelevantRecord = true;
+  acc.stopped = false;
+  acc.pose = {
+    baseState: AGENT_ANIMATION_BASE_STATES.Working,
+    overlay: AGENT_ANIMATION_OVERLAYS.Subagent,
+  };
+}
 
-  if (!sawRelevantRecord && input.entries.length === 0) {
-    return { snapshot: null, nextPermissionCheckAtMs };
-  }
-
+function buildSnapshot(
+  input: AgentAnimationDeriveInput,
+  acc: Accumulator,
+  nowMs: number,
+  subagentCount: number
+): AgentAnimationSnapshot {
   const activeAgeMs =
-    firstActivityAtMs === null ? 0 : Math.max(0, nowMs - Math.min(firstActivityAtMs, nowMs));
-  const fatigueLevel = deriveFatigueLevel(maxContextTokens, compactionPreTokens, activeAgeMs);
-  const isActive =
-    !stopped &&
-    (pendingTools.size > 0 ||
-      subagentCount > 0 ||
-      pose.baseState === AGENT_ANIMATION_BASE_STATES.Working ||
-      pose.baseState === AGENT_ANIMATION_BASE_STATES.Attention ||
-      pose.baseState === AGENT_ANIMATION_BASE_STATES.Failed);
+    acc.firstActivityAtMs === null
+      ? 0
+      : Math.max(0, nowMs - Math.min(acc.firstActivityAtMs, nowMs));
+  const fatigueLevel = deriveFatigueLevel(
+    acc.maxContextTokens,
+    acc.compactionPreTokens,
+    activeAgeMs
+  );
+  const isActive = computeIsActive(acc, subagentCount);
 
-  const snapshot: AgentAnimationSnapshot = {
+  return {
     agentId: input.agentId,
     projectId: input.projectId,
-    baseState: pose.baseState,
-    overlay: pose.overlay,
+    baseState: acc.pose.baseState,
+    overlay: acc.pose.overlay,
     fatigueLevel,
     activeSessionIds: isActive ? [input.sessionId] : [],
     subagentCount,
-    lastEventAt: new Date(lastEventAtMs ?? nowMs).toISOString(),
+    lastEventAt: new Date(acc.lastEventAtMs ?? nowMs).toISOString(),
   };
+}
 
-  return { snapshot, nextPermissionCheckAtMs };
+function computeIsActive(acc: Accumulator, subagentCount: number): boolean {
+  if (acc.stopped) return false;
+  if (acc.pendingTools.size > 0 || subagentCount > 0) return true;
+  const state = acc.pose.baseState;
+  return (
+    state === AGENT_ANIMATION_BASE_STATES.Working ||
+    state === AGENT_ANIMATION_BASE_STATES.Attention ||
+    state === AGENT_ANIMATION_BASE_STATES.Failed
+  );
 }
 
 export function mergeAgentAnimationSnapshots(
@@ -284,13 +356,36 @@ export function mergeAgentAnimationSnapshots(
 ): AgentAnimationSnapshot | null {
   if (snapshots.length === 0) return null;
 
+  const latest = latestSnapshot(snapshots);
+  const aggregate = aggregateSnapshots(snapshots);
+
+  return {
+    ...latest,
+    baseState: promoteBaseState(latest.baseState, aggregate.subagentCount),
+    overlay: promoteOverlay(latest.overlay, aggregate.subagentCount),
+    fatigueLevel: aggregate.fatigueLevel,
+    activeSessionIds: [...aggregate.activeSessionIds].sort(),
+    subagentCount: aggregate.subagentCount,
+  };
+}
+
+function latestSnapshot(snapshots: readonly AgentAnimationSnapshot[]): AgentAnimationSnapshot {
   let latest = snapshots[0]!;
   for (const snapshot of snapshots.slice(1)) {
     if (snapshot.lastEventAt > latest.lastEventAt) {
       latest = snapshot;
     }
   }
+  return latest;
+}
 
+interface SnapshotAggregate {
+  readonly activeSessionIds: ReadonlySet<string>;
+  readonly subagentCount: number;
+  readonly fatigueLevel: AgentFatigueLevel;
+}
+
+function aggregateSnapshots(snapshots: readonly AgentAnimationSnapshot[]): SnapshotAggregate {
   const activeSessionIds = new Set<string>();
   let subagentCount = 0;
   let fatigueLevel: AgentFatigueLevel = AGENT_FATIGUE_LEVELS.Fresh;
@@ -302,28 +397,36 @@ export function mergeAgentAnimationSnapshots(
       fatigueLevel = snapshot.fatigueLevel;
     }
   }
-
-  const overlay =
-    subagentCount > 0 && latest.overlay === AGENT_ANIMATION_OVERLAYS.None
-      ? AGENT_ANIMATION_OVERLAYS.Subagent
-      : latest.overlay;
-  const baseState =
-    subagentCount > 0 && latest.baseState === AGENT_ANIMATION_BASE_STATES.Sleeping
-      ? AGENT_ANIMATION_BASE_STATES.Working
-      : latest.baseState;
-
-  return {
-    ...latest,
-    baseState,
-    overlay,
-    fatigueLevel,
-    activeSessionIds: [...activeSessionIds].sort(),
-    subagentCount,
-  };
+  return { activeSessionIds, subagentCount, fatigueLevel };
 }
 
-function arrayContent(content: ClaudeAssistantEntry["message"]["content"] | undefined) {
-  return Array.isArray(content) ? content : null;
+function promoteOverlay(
+  overlay: AgentAnimationOverlay,
+  subagentCount: number
+): AgentAnimationOverlay {
+  if (subagentCount > 0 && overlay === AGENT_ANIMATION_OVERLAYS.None) {
+    return AGENT_ANIMATION_OVERLAYS.Subagent;
+  }
+  return overlay;
+}
+
+function promoteBaseState(
+  baseState: AgentAnimationBaseState,
+  subagentCount: number
+): AgentAnimationBaseState {
+  if (subagentCount > 0 && baseState === AGENT_ANIMATION_BASE_STATES.Sleeping) {
+    return AGENT_ANIMATION_BASE_STATES.Working;
+  }
+  return baseState;
+}
+
+function arrayContent(
+  content: ClaudeAssistantEntry["message"]["content"] | undefined
+): readonly ClaudeContentBlock[] | null {
+  // `Array.isArray`'s built-in guard widens `readonly ClaudeContentBlock[]`
+  // to `any[]`, which defeats type-aware lint rules downstream. Preserve the
+  // element type explicitly.
+  return Array.isArray(content) ? (content as readonly ClaudeContentBlock[]) : null;
 }
 
 function isToolUseBlock(
