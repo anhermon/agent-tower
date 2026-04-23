@@ -127,68 +127,7 @@ export const skillsHousekeepTool = {
   },
 };
 
-export async function runSkillsHousekeep(argv: readonly string[]): Promise<number> {
-  const { values } = parseFlags<{
-    json?: boolean;
-    pretty?: boolean;
-    apply?: boolean;
-  }>(argv, {
-    json: { type: "boolean" },
-    pretty: { type: "boolean" },
-    apply: { type: "boolean" },
-  });
-
-  const mode = resolveOutputMode(values);
-  const apply = values.apply === true;
-
-  let result = await skillsHousekeepTool.handler({});
-  if (!result.ok) {
-    if (mode.json) {
-      writeJson({ ok: false, reason: result.reason, message: result.message });
-      return 1;
-    }
-    if (result.reason === "unconfigured") {
-      writeLine(
-        "Skills root not configured. Set CONTROL_PLANE_SKILLS_ROOTS or place skills under ~/.claude/skills."
-      );
-    } else {
-      writeLine(
-        `Failed to compute skills hygiene: ${result.reason}${result.message ? ` — ${result.message}` : ""}`
-      );
-    }
-    return 1;
-  }
-
-  if (apply && result.deadWeight.length > 0) {
-    try {
-      await applyArchive(result.deadWeight);
-      result = { ...result, applied: true };
-    } catch (error) {
-      if (mode.json) {
-        writeJson({
-          ok: false,
-          reason: "error",
-          message: error instanceof Error ? error.message : String(error),
-        });
-        return 1;
-      }
-      writeLine(`Archive failed: ${error instanceof Error ? error.message : String(error)}`);
-      return 1;
-    }
-  }
-
-  if (mode.json) {
-    writeJson({
-      ok: true,
-      applied: result.applied,
-      deadWeight: result.deadWeight,
-      coldGiants: result.coldGiants,
-      negativeEfficacy: result.negativeEfficacy,
-      totals: result.totals,
-    });
-    return 0;
-  }
-
+function renderPrettyHousekeep(result: Extract<HousekeepResult, { ok: true }>): void {
   const { deadWeight, coldGiants, negativeEfficacy, totals } = result;
 
   writeLine(
@@ -203,7 +142,7 @@ export async function runSkillsHousekeep(argv: readonly string[]): Promise<numbe
 
   if (deadWeight.length === 0 && coldGiants.length === 0 && negativeEfficacy.length === 0) {
     writeLine("No hygiene issues found.");
-    return 0;
+    return;
   }
 
   if (deadWeight.length > 0) {
@@ -239,6 +178,81 @@ export async function runSkillsHousekeep(argv: readonly string[]): Promise<numbe
     writeLine(renderTable(["skill", "sessions", "delta", "reason"], rows));
     writeLine("");
   }
+}
 
+type SuccessResult = Extract<HousekeepResult, { ok: true }>;
+
+function reportHygieneError(result: Extract<HousekeepResult, { ok: false }>, json: boolean): void {
+  if (json) {
+    writeJson({ ok: false, reason: result.reason, message: result.message });
+    return;
+  }
+  if (result.reason === "unconfigured") {
+    writeLine(
+      "Skills root not configured. Set CONTROL_PLANE_SKILLS_ROOTS or place skills under ~/.claude/skills."
+    );
+  } else {
+    writeLine(
+      `Failed to compute skills hygiene: ${result.reason}${result.message ? ` — ${result.message}` : ""}`
+    );
+  }
+}
+
+async function tryApplyArchive(result: SuccessResult, json: boolean): Promise<SuccessResult | 1> {
+  if (result.deadWeight.length === 0) return result;
+  try {
+    await applyArchive(result.deadWeight);
+    return { ...result, applied: true };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    if (json) {
+      writeJson({ ok: false, reason: "error", message: msg });
+    } else {
+      writeLine(`Archive failed: ${msg}`);
+    }
+    return 1;
+  }
+}
+
+export async function runSkillsHousekeep(argv: readonly string[]): Promise<number> {
+  const { values } = parseFlags<{
+    json?: boolean;
+    pretty?: boolean;
+    apply?: boolean;
+  }>(argv, {
+    json: { type: "boolean" },
+    pretty: { type: "boolean" },
+    apply: { type: "boolean" },
+  });
+
+  const mode = resolveOutputMode(values);
+  const apply = values.apply === true;
+
+  const raw = await skillsHousekeepTool.handler({});
+  if (!raw.ok) {
+    reportHygieneError(raw, mode.json);
+    return 1;
+  }
+
+  let result: SuccessResult = raw;
+  if (apply) {
+    const archiveResult = await tryApplyArchive(result, mode.json);
+    if (archiveResult === 1) return 1;
+    result = archiveResult;
+  }
+
+  if (mode.json) {
+    writeJson({
+      ok: true,
+      applied: result.applied,
+      deadWeight: result.deadWeight,
+      coldGiants: result.coldGiants,
+      negativeEfficacy: result.negativeEfficacy,
+      totals: result.totals,
+    });
+    return 0;
+  }
+
+  renderPrettyHousekeep(result);
   return 0;
 }

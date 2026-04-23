@@ -78,22 +78,25 @@ export const COLD_GIANT_MAX_INVOCATIONS = 5;
 export const NEGATIVE_EFFICACY_DELTA_THRESHOLD = -0.05;
 export const NEGATIVE_EFFICACY_MIN_SESSIONS = 5;
 
-export function computeSkillsHygiene(input: SkillsHygieneInput): SkillsHygieneReport {
-  const usageById = new Map<string, SkillUsageStats>();
-  for (const row of input.usage) {
-    usageById.set(row.skillId, row);
-  }
+interface SkillBuckets {
+  deadWeight: DeadWeightSkill[];
+  coldGiants: ColdGiantSkill[];
+  deadWeightBytes: number;
+}
 
+function classifySkills(
+  skills: readonly SkillManifest[],
+  usageById: Map<string, SkillUsageStats>
+): SkillBuckets {
   const deadWeight: DeadWeightSkill[] = [];
   const coldGiants: ColdGiantSkill[] = [];
   let deadWeightBytes = 0;
 
-  for (const skill of input.skills) {
+  for (const skill of skills) {
     const usage = usageById.get(skill.id);
     const invocationCount = usage?.invocationCount ?? 0;
 
     if (invocationCount === 0) {
-      const reason = `Dead weight: 0 invocations across scanned sessions (${skill.sizeBytes} bytes on disk).`;
       deadWeight.push({
         skillId: skill.id,
         displayName: skill.name,
@@ -101,7 +104,7 @@ export function computeSkillsHygiene(input: SkillsHygieneInput): SkillsHygieneRe
         filePath: skill.filePath,
         sizeBytes: skill.sizeBytes,
         rootDirectory: skill.rootDirectory,
-        reason,
+        reason: `Dead weight: 0 invocations across scanned sessions (${skill.sizeBytes} bytes on disk).`,
       });
       deadWeightBytes += skill.sizeBytes;
       continue;
@@ -109,10 +112,8 @@ export function computeSkillsHygiene(input: SkillsHygieneInput): SkillsHygieneRe
 
     if (
       skill.sizeBytes > COLD_GIANT_SIZE_THRESHOLD_BYTES &&
-      invocationCount > 0 &&
       invocationCount < COLD_GIANT_MAX_INVOCATIONS
     ) {
-      const reason = `Cold giant: ${skill.sizeBytes} bytes on disk, only ${invocationCount} invocation${invocationCount === 1 ? "" : "s"}.`;
       coldGiants.push({
         skillId: skill.id,
         displayName: skill.name,
@@ -121,27 +122,41 @@ export function computeSkillsHygiene(input: SkillsHygieneInput): SkillsHygieneRe
         sizeBytes: skill.sizeBytes,
         invocationCount,
         rootDirectory: skill.rootDirectory,
-        reason,
+        reason: `Cold giant: ${skill.sizeBytes} bytes on disk, only ${invocationCount} invocation${invocationCount === 1 ? "" : "s"}.`,
       });
     }
   }
 
-  const negativeEfficacy: NegativeEfficacySkill[] = [];
-  for (const row of input.efficacy) {
+  return { deadWeight, coldGiants, deadWeightBytes };
+}
+
+function classifyNegativeEfficacy(efficacy: readonly SkillEfficacyRow[]): NegativeEfficacySkill[] {
+  const result: NegativeEfficacySkill[] = [];
+  for (const row of efficacy) {
     if (
       row.delta < NEGATIVE_EFFICACY_DELTA_THRESHOLD &&
       row.sessionsCount >= NEGATIVE_EFFICACY_MIN_SESSIONS
     ) {
-      const reason = `Negative efficacy: delta ${row.delta.toFixed(3)} over ${row.sessionsCount} sessions (threshold Δ < ${NEGATIVE_EFFICACY_DELTA_THRESHOLD}, n >= ${NEGATIVE_EFFICACY_MIN_SESSIONS}).`;
-      negativeEfficacy.push({
+      result.push({
         skillId: row.skillId,
         displayName: row.displayName,
         sessionsCount: row.sessionsCount,
         delta: row.delta,
-        reason,
+        reason: `Negative efficacy: delta ${row.delta.toFixed(3)} over ${row.sessionsCount} sessions (threshold Δ < ${NEGATIVE_EFFICACY_DELTA_THRESHOLD}, n >= ${NEGATIVE_EFFICACY_MIN_SESSIONS}).`,
       });
     }
   }
+  return result;
+}
+
+export function computeSkillsHygiene(input: SkillsHygieneInput): SkillsHygieneReport {
+  const usageById = new Map<string, SkillUsageStats>();
+  for (const row of input.usage) {
+    usageById.set(row.skillId, row);
+  }
+
+  const { deadWeight, coldGiants, deadWeightBytes } = classifySkills(input.skills, usageById);
+  const negativeEfficacy = classifyNegativeEfficacy(input.efficacy);
 
   deadWeight.sort(
     (a, b) => b.sizeBytes - a.sizeBytes || a.displayName.localeCompare(b.displayName)

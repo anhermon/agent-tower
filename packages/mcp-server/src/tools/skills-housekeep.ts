@@ -18,6 +18,41 @@ import { errorResult, type ToolDefinition, type ToolResult } from "./types.js";
  * user at `cp skills housekeep --apply` for the destructive half.
  */
 
+function adaptError(result: { reason: string; message?: string }): ToolResult {
+  if (result.reason === "unconfigured") return { ok: false, reason: "unconfigured" };
+  return {
+    ok: false,
+    reason: "error",
+    ...(result.message ? { message: result.message } : {}),
+  };
+}
+
+async function runHygieneAudit(): Promise<ToolResult> {
+  const skillsList = await listSkillsOrEmpty();
+  if (!skillsList.ok) return adaptError(skillsList);
+
+  const usage = await computeSkillsUsage({ skills: skillsList.skills });
+  if (!usage.ok) return adaptError(usage);
+
+  const efficacy = await computeSkillsEfficacy({ skills: skillsList.skills });
+  if (!efficacy.ok) return adaptError(efficacy);
+
+  const report = computeSkillsHygiene({
+    skills: skillsList.skills,
+    usage: usage.report.perSkill,
+    efficacy: [...efficacy.report.qualifying, ...efficacy.report.insufficientData],
+  });
+
+  return {
+    ok: true,
+    applied: false,
+    deadWeight: report.deadWeight,
+    coldGiants: report.coldGiants,
+    negativeEfficacy: report.negativeEfficacy,
+    totals: report.totals,
+  };
+}
+
 export const skillsHousekeepTool: ToolDefinition = {
   name: "skills_housekeep",
   description:
@@ -29,56 +64,7 @@ export const skillsHousekeepTool: ToolDefinition = {
   },
   handler: async (): Promise<ToolResult> => {
     try {
-      const skillsList = await listSkillsOrEmpty();
-      if (!skillsList.ok) {
-        if (skillsList.reason === "unconfigured") {
-          return { ok: false, reason: "unconfigured" };
-        }
-        return {
-          ok: false,
-          reason: "error",
-          ...(skillsList.message ? { message: skillsList.message } : {}),
-        };
-      }
-
-      const usage = await computeSkillsUsage({ skills: skillsList.skills });
-      if (!usage.ok) {
-        if (usage.reason === "unconfigured") {
-          return { ok: false, reason: "unconfigured" };
-        }
-        return {
-          ok: false,
-          reason: "error",
-          ...(usage.message ? { message: usage.message } : {}),
-        };
-      }
-
-      const efficacy = await computeSkillsEfficacy({ skills: skillsList.skills });
-      if (!efficacy.ok) {
-        if (efficacy.reason === "unconfigured") {
-          return { ok: false, reason: "unconfigured" };
-        }
-        return {
-          ok: false,
-          reason: "error",
-          ...(efficacy.message ? { message: efficacy.message } : {}),
-        };
-      }
-
-      const report = computeSkillsHygiene({
-        skills: skillsList.skills,
-        usage: usage.report.perSkill,
-        efficacy: [...efficacy.report.qualifying, ...efficacy.report.insufficientData],
-      });
-
-      return {
-        ok: true,
-        applied: false,
-        deadWeight: report.deadWeight,
-        coldGiants: report.coldGiants,
-        negativeEfficacy: report.negativeEfficacy,
-        totals: report.totals,
-      };
+      return await runHygieneAudit();
     } catch (error) {
       return errorResult(error);
     }
