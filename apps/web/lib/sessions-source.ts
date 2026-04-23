@@ -114,7 +114,11 @@ async function enrichWithPreviews(
   files: readonly ClaudeSessionFile[]
 ): Promise<readonly SessionListing[]> {
   const concurrency = 24;
-  const results: SessionListing[] = new Array(files.length);
+  // Allocate a sparse slot per input file. `new Array(n)` types as `any[]`,
+  // which defeats type-aware lint rules — construct the slot array as
+  // `SessionListing[]` directly.
+  const results: SessionListing[] = [];
+  results.length = files.length;
   let cursor = 0;
 
   const worker = async (): Promise<void> => {
