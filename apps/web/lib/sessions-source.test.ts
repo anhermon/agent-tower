@@ -98,6 +98,9 @@ describe("sessions-source", () => {
     expect(result.sessions).toHaveLength(1);
     expect(result.sessions[0]!.sessionId).toBe(sessionId);
     expect(result.sessions[0]!.projectId).toBe("sample-project");
+    expect(result.sessions[0]!.messageCount).toBe(2);
+    expect(result.sessions[0]!.durationMs).toBe(1000);
+    expect(result.sessions[0]!.estimatedCostUsd).toBeGreaterThan(0);
   });
 
   it("given_env_var_with_a_valid_jsonl__when_loading_session__then_returns_normalized_transcript", async () => {
@@ -133,13 +136,17 @@ describe("sessions-source", () => {
     expect(result.value[0]!.sessionCount).toBe(1);
   });
 
-  it("given_configured_data_root__when_loading_a_session_usage__then_returns_the_summary_with_cost_zero_for_no_model_pricing", async () => {
+  it("given_configured_data_root__when_loading_a_session_usage__then_returns_the_summary_with_real_metrics", async () => {
     const { root, sessionId } = await writeSampleTranscript();
     process.env[CLAUDE_DATA_ROOT_ENV] = root;
     const result = await loadSessionUsageOrEmpty(sessionId);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.value?.sessionId).toBe(sessionId);
+    expect(result.value?.userMessageCount).toBe(1);
+    expect(result.value?.assistantMessageCount).toBe(1);
+    expect(result.value?.durationMs).toBe(1000);
+    expect(result.value?.estimatedCostUsd).toBeGreaterThan(0);
   });
 
   async function writeSampleTranscript() {
@@ -168,8 +175,14 @@ describe("sessions-source", () => {
         version: "1.0.0",
         message: {
           role: "assistant",
-          model: "claude-test",
+          model: "claude-sonnet-4-6",
           content: [{ type: "text", text: "hello from claude" }],
+          usage: {
+            input_tokens: 10,
+            output_tokens: 5,
+            cache_creation_input_tokens: 0,
+            cache_read_input_tokens: 0,
+          },
         },
       },
     ];

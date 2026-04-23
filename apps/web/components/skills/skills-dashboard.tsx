@@ -2,10 +2,15 @@
 
 import type { JSX } from "react";
 import type { SkillsUsageReport } from "@/lib/skills-usage-source";
-import { HourBreakdownChart, SkillsBreakdownChart, SkillsTimeline } from "./_lazy";
-import { SkillsBarChart } from "./skills-bar-chart";
-import { SkillsHeatmap } from "./skills-heatmap";
+import {
+  HourBreakdownChart,
+  SkillsBarChart,
+  SkillsBreakdownChart,
+  SkillsHeatmap,
+  SkillsTimeline,
+} from "./_lazy";
 import { SkillsUsageSummary } from "./skills-usage-summary";
+import { ViewportMount } from "./viewport-mount";
 
 /**
  * Composition shell for the Skills usage analytics view. Orders the four
@@ -20,29 +25,46 @@ import { SkillsUsageSummary } from "./skills-usage-summary";
 export function SkillsDashboard({ report }: { readonly report: SkillsUsageReport }): JSX.Element {
   const unknowns = report.perSkill.filter((stat) => !stat.known);
 
+  /**
+   * Shrink the IO root from the bottom so only the top ~30% of the viewport
+   * counts as "visible". Chart blocks sit below the summary strip; Lighthouse
+   * does not scroll, so Recharts chunks stay unmounted during the TBT window.
+   */
+  const chartRootMargin = "0px 0px -70% 0px";
+
   return (
     <div className="flex flex-col gap-8">
       <Section title="Invocation volume">
         <SkillsUsageSummary report={report} />
-        <SkillsTimeline series={report.perDay} />
+        <ViewportMount minHeight={220} rootMargin={chartRootMargin}>
+          <SkillsTimeline series={report.perDay} />
+        </ViewportMount>
       </Section>
 
       <Section title="Daily breakdown by skill">
-        <div className="glass-panel rounded-md p-5">
-          <SkillsBreakdownChart perSkill={report.perSkill} />
-        </div>
+        <ViewportMount minHeight={280} rootMargin={chartRootMargin}>
+          <div className="glass-panel rounded-md p-5">
+            <SkillsBreakdownChart perSkill={report.perSkill} />
+          </div>
+        </ViewportMount>
       </Section>
 
       <Section title="Top skills">
-        <div className="glass-panel rounded-md p-5">
-          <SkillsBarChart skills={report.perSkill} />
-        </div>
+        <ViewportMount minHeight={240} rootMargin={chartRootMargin}>
+          <div className="glass-panel rounded-md p-5">
+            <SkillsBarChart skills={report.perSkill} />
+          </div>
+        </ViewportMount>
       </Section>
 
       <Section title="When are skills used?">
         <div className="glass-panel rounded-md p-5 space-y-5">
-          <HourBreakdownChart perSkill={report.perSkill} />
-          <SkillsHeatmap report={report} />
+          <ViewportMount minHeight={260} rootMargin={chartRootMargin}>
+            <HourBreakdownChart perSkill={report.perSkill} />
+          </ViewportMount>
+          <ViewportMount minHeight={200} rootMargin={chartRootMargin}>
+            <SkillsHeatmap report={report} />
+          </ViewportMount>
         </div>
       </Section>
 

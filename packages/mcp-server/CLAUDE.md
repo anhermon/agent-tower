@@ -13,7 +13,11 @@
 - `src/tools/types.ts` — shared result envelope + JSON-schema helpers.
 
 ## Tools exposed
-`control_plane_health`, `sessions_top`, `sessions_show`, `skills_top`, `skills_usage`, `skills_efficacy`, `agents_list`. Each has a `*.ts` + `*.test.ts` pair.
+`control_plane_health`, `control_plane_audit`, `sessions_top`, `sessions_show`, `sessions_waste`, `skills_top`, `skills_usage`, `skills_efficacy`, `agents_list`. Each has a `*.ts` + `*.test.ts` pair.
+
+**`control_plane_audit`** is the holistic one-shot tool — use it for open-ended "is this session/project wasteful" questions. Returns top-by-cost, top-by-waste, corpus aggregates, cold-giant skills, negative-efficacy skills, and per-project rollup in a single call.
+
+**`sessions_waste`** returns `WasteVerdict[]` (6 sub-scores + overall + verbatim `flags`). Scoring heuristic lives in `@control-plane/adapter-claude-code`'s `analytics/waste.ts`.
 
 ## Entry Points / Flow
 stdio → `@modelcontextprotocol/sdk` server in `server.ts` → dispatches to `tools/<name>.handler` → tool handler imports adapter functions → returns `{ok, value | reason, message?}` → SDK serializes to the MCP response.

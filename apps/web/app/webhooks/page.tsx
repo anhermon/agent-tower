@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { WebhookTable } from "@/components/webhooks/webhook-table";
 import { getModuleByKey } from "@/lib/modules";
@@ -36,8 +36,9 @@ export default async function WebhooksPage() {
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
             Webhook subscriptions configured for this control plane instance. Read-only for Phase 2
-            v1: no CRUD, no inbound receiver, no signature verification — deliveries light up when
-            the inbound pipeline lands.
+            v1: no CRUD yet. An inbound GitHub receiver at <code>/api/webhooks/github</code>
+            validates signatures and appends accepted deliveries to the local event log; delivery
+            history will surface here once the store is wired in.
           </p>
           {configuredFile ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={configuredFile}>
@@ -46,7 +47,7 @@ export default async function WebhooksPage() {
           ) : null}
         </div>
         <div className="flex h-10 shrink-0 items-center gap-2">
-          <Button>Refresh</Button>
+          <RefreshButton />
         </div>
       </div>
 

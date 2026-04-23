@@ -8,14 +8,19 @@
 ## Read First
 - `app/layout.tsx` — root layout, theme script, shell.
 - `app/page.tsx` — overview route.
+- `instrumentation.ts` — Next.js `register()` hook; bootstraps `@control-plane/logger` on server boot. First and only place the root logger is initialized.
+- `lib/with-audit.ts` — request-audit wrapper applied to every API route. Emits `request.start/.done/.error` via `getLogger("request")` and sets `x-request-id` on the response.
 - `lib/modules.ts` — central module registry. Single source of truth for each module's `label`, `href`, `icon`, `status`, `phase` (`skeleton` | `active` | `deferred`), `owner`, and `docs` pointer. Every sidebar entry, placeholder route, and module-level status signal flows from this list.
 - `types/control-plane.ts` — UI-side types (status enums, `ModuleDefinition`, `ModulePhase`, etc.).
 - `app/agents/AGENTS.md` — authoritative local contract for the agents module; mirror its pattern for new module slices.
 
 ## Local Structure
 - `app/<module>/page.tsx` — one route per module. Currently most are placeholder/empty-state renderings.
-- `app/api/events/route.ts` — SSE stream (no-op placeholder, do not fabricate events here).
+- `app/api/events/route.ts` — SSE stream backed by real `fs.watch` on the configured data root. Emits `session-created` / `session-appended` events with 100ms debounce. Clients reconnect via the `retry: 3000` hint.
+- `app/api/sessions/search/route.ts` — full-text JSONL search with bounded concurrency pool and mtime-keyed cache.
+- `app/api/sessions/export/route.ts` — canonical JSON bundle export with scope/ids/project/range filtering.
 - `app/api/health/route.ts` — health probe.
+- `logs/` — dev-server output (`stdout.log` / `stderr.log` / `requests.log`). Gitignored. Deleted on every `pnpm dev` if stale.
 - `components/layout/` — `AppShell`, `Sidebar`, `Topbar`, `PageHeader`, `ModulePage` — reuse these for any new module page.
 - `components/ui/` — primitives: `Button`, `Badge`, `DataTable`, `Icon`, `MetricCard`, `State` (empty/error/loading).
 - `components/<module>/` — module-specific presentational components. Keep these client-safe; data lives in `lib/`.
@@ -29,7 +34,7 @@
 - `/agents/[id]` and `/sessions/[id]` expect `encodeURIComponent`'d ids in URLs and decode on the server.
 
 ## Dependencies
-- Consumes: `@control-plane/core` (types + contracts), `@control-plane/adapter-claude-code` (read-only JSONL source), `yaml`.
+- Consumes: `@control-plane/core` (types + contracts), `@control-plane/adapter-claude-code` (read-only JSONL source), `@control-plane/logger` (structured logging), `yaml`.
 - Not yet wired: `@control-plane/events`, `@control-plane/storage` — available but not imported by UI modules in Phase 1.
 
 ## New Module Checklist
@@ -48,10 +53,12 @@ When adding a module slice, all five must land together or the sidebar/e2e drift
 - **Styling.** Tailwind-first. Tailwind config is per-app (`tailwind.config.ts`). Theme tokens go through `components/theme/`.
 - **Tests.** Co-locate Vitest specs next to the module (`lib/*.test.ts`). E2E specs live in the repo-level `e2e/`, not here.
 - **Dev server.** Must stay bound to `127.0.0.1:3000` — Playwright `global-setup` depends on it.
+- **Logging.** Never `console.log` in server code. Use `getLogger("<component>")` from `@control-plane/logger`; use structured bindings (`log.info({ sessionId }, "loaded")`), not interpolated strings.
+- **New API routes must be wrapped.** `export const GET = withAudit("api.<route-key>", handler)` — the unwrapped handler stays a plain `async function`. Pick a stable dotted route key; it becomes a log field and grouping dimension.
 
 ## Sharp Edges
 - `predev`/`prebuild` scripts rm `.next/` to avoid stale route manifest issues after module registry edits. Don't remove them lightly.
-- The SSE endpoint (`app/api/events/route.ts`) is inert: it emits only a `retry:` hint and an empty-stream comment, then closes. Do not fabricate `data:` frames here — if you need visual data for rendering work, do it in a test fixture, not in the shipped route.
+- The SSE endpoint (`app/api/events/route.ts`) uses real `fs.watch` watchers. It opens one watcher per project directory plus one root-level watcher. All watchers are cleaned up on `request.signal.abort`. Do not fabricate synthetic events — the endpoint reflects actual disk changes only.
 - Changing `lib/modules.ts` changes every route placeholder simultaneously. New modules must add a matching `app/<key>/page.tsx`, or the sidebar link 404s. When adding a module, set `phase` honestly (`skeleton` for placeholder, `active` for real data, `deferred` for not-yet-started) and point `docs` at the module's spec in `docs/modules/`.
 - The `app/agents/` subtree has its own binding contract in `AGENTS.md` that narrows this guidance further — follow it for anything under `/agents`.
 - The `app/skills/` subtree has its own `CLAUDE.md` covering the usage + efficacy data layers, the `SkillGridItem` prop-stripping requirement, and the session-outcome heuristic — follow it for anything under `/skills`.

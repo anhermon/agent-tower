@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { createInterface } from "node:readline";
 import type { DateRange } from "@control-plane/core";
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
@@ -143,51 +144,64 @@ async function scanWithCache(files: readonly ClaudeSessionFile[]): Promise<ScanR
 }
 
 async function readInvocationsFromFile(filePath: string): Promise<readonly RawInvocation[]> {
-  let raw: string;
+  // Stream line-by-line instead of materializing the whole transcript as a
+  // single `await readFile()` promise. This has two benefits:
+  //
+  //  1. Next.js 15 dev-mode React Flight debug tracing captures the resolved
+  //     value of every `await` inside a Server Component tree. An awaited
+  //     multi-MB transcript string gets embedded into the RSC flight payload
+  //     verbatim; awaiting only line-sized reads keeps captured values small.
+  //  2. Peak heap use drops from O(largest file) to O(longest single line).
+  const results: RawInvocation[] = [];
+  let stream: ReturnType<typeof createReadStream>;
   try {
-    raw = await readFile(filePath, "utf8");
+    stream = createReadStream(filePath, { encoding: "utf8" });
   } catch {
     return [];
   }
+  try {
+    const rl = createInterface({ input: stream, crlfDelay: Infinity });
+    for await (const line of rl) {
+      const trimmed = line.trim();
+      if (trimmed.length === 0) continue;
 
-  const results: RawInvocation[] = [];
-  const lines = raw.split("\n");
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.length === 0) continue;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        continue;
+      }
+      if (!parsed || typeof parsed !== "object") continue;
 
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(trimmed);
-    } catch {
-      continue;
+      const entry = parsed as Record<string, unknown>;
+      if (entry.type !== "assistant") continue;
+
+      const message = entry.message;
+      if (!message || typeof message !== "object") continue;
+      const content = (message as Record<string, unknown>).content;
+      if (!Array.isArray(content)) continue;
+
+      const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
+      const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
+      const cwd = typeof entry.cwd === "string" ? entry.cwd : null;
+
+      for (const block of content) {
+        if (!block || typeof block !== "object") continue;
+        const blk = block as Record<string, unknown>;
+        if (blk.type !== "tool_use" || blk.name !== "Skill") continue;
+        const input = blk.input;
+        if (!input || typeof input !== "object") continue;
+        const skill = (input as Record<string, unknown>).skill;
+        if (typeof skill !== "string") continue;
+        const trimmedSkill = skill.trim();
+        if (trimmedSkill.length === 0) continue;
+        results.push({ skillKey: trimmedSkill, timestamp, sessionId, cwd });
+      }
     }
-    if (!parsed || typeof parsed !== "object") continue;
-
-    const entry = parsed as Record<string, unknown>;
-    if (entry.type !== "assistant") continue;
-
-    const message = entry.message;
-    if (!message || typeof message !== "object") continue;
-    const content = (message as Record<string, unknown>).content;
-    if (!Array.isArray(content)) continue;
-
-    const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
-    const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
-    const cwd = typeof entry.cwd === "string" ? entry.cwd : null;
-
-    for (const block of content) {
-      if (!block || typeof block !== "object") continue;
-      const blk = block as Record<string, unknown>;
-      if (blk.type !== "tool_use" || blk.name !== "Skill") continue;
-      const input = blk.input;
-      if (!input || typeof input !== "object") continue;
-      const skill = (input as Record<string, unknown>).skill;
-      if (typeof skill !== "string") continue;
-      const trimmedSkill = skill.trim();
-      if (trimmedSkill.length === 0) continue;
-      results.push({ skillKey: trimmedSkill, timestamp, sessionId, cwd });
-    }
+  } catch {
+    // Swallow read errors — a partial/corrupt JSONL shouldn't kill the whole
+    // report. Matches the pre-streaming behaviour of `readFile` catch.
+    return results;
   }
   return results;
 }

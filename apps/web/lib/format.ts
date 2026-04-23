@@ -8,9 +8,10 @@ export function formatBytes(bytes: number): string {
 
 export function formatRelative(iso: string, now: Date = new Date()): string {
   const then = new Date(iso);
-  if (Number.isNaN(then.getTime())) return "—";
+  if (!Number.isFinite(then.getTime())) return "—";
   const deltaSeconds = Math.round((now.getTime() - then.getTime()) / 1000);
   const abs = Math.abs(deltaSeconds);
+  if (abs < 1) return "just now";
   const past = deltaSeconds >= 0;
   const buckets: Array<{ limit: number; divisor: number; unit: string }> = [
     { limit: 60, divisor: 1, unit: "s" },

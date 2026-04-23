@@ -1,6 +1,8 @@
+import { withAudit } from "@/lib/with-audit";
+
 export const dynamic = "force-dynamic";
 
-export function GET() {
+function healthHandler(): Response {
   return Response.json({
     ok: true,
     service: "@control-plane/web",
@@ -8,3 +10,5 @@ export function GET() {
     timestamp: new Date().toISOString(),
   });
 }
+
+export const GET = withAudit("api.health", healthHandler);

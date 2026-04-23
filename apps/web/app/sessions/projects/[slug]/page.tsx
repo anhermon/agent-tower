@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ExportButton } from "@/components/sessions/export-button";
 import { ProjectDetail } from "@/components/sessions/project-detail";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -43,6 +44,7 @@ export default async function SessionsProjectDetailPage({ params }: PageProps) {
             <Badge state={status} />
           </div>
         </div>
+        <ExportButton scope="project" projectId={decoded} />
       </div>
 
       <Body

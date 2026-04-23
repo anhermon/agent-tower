@@ -79,7 +79,24 @@ export function foldTimeseries(
   const peakHours: HourBin[] = hourCounts.map((messageCount, hour) => ({ hour, messageCount }));
   const dayOfWeek: DayOfWeekBin[] = dowCounts;
 
-  const streaks = computeStreaks(activeDates, options.now);
+  const baseStreaks = computeStreaks(activeDates, options.now);
+
+  // Enrich streaks with the most-active-day message count by scanning daily
+  // buckets. `computeStreaks` alone has no access to per-day counts, so it
+  // leaves `mostActiveDayMessageCount` at 0; here we have the data.
+  let mostActiveDate: string | null = baseStreaks.mostActiveDate;
+  let mostActiveDayMessageCount = 0;
+  for (const point of dailyArr) {
+    if (point.messageCount > mostActiveDayMessageCount) {
+      mostActiveDayMessageCount = point.messageCount;
+      mostActiveDate = point.date;
+    }
+  }
+  const streaks: StreakStats = {
+    ...baseStreaks,
+    mostActiveDate,
+    mostActiveDayMessageCount,
+  };
 
   const range: DateRange = options.range ?? {
     from: minDate ?? "1970-01-01",

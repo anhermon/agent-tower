@@ -24,7 +24,7 @@ export async function runSkillsEfficacy(argv: readonly string[]): Promise<number
   const negativeOnly = values["negative-only"] === true;
 
   const resolved = resolveOrExplain(mode);
-  if (!resolved) return 0;
+  if (!resolved) return 1;
 
   const result = await computeSkillsEfficacy({ minSessionsForQualifying: minSessions });
   if (!result.ok) {
@@ -45,7 +45,7 @@ export async function runSkillsEfficacy(argv: readonly string[]): Promise<number
   } else {
     rows = [...qualifying].sort((a, b) => b.delta - a.delta);
   }
-  const sliced = rows.slice(0, limit);
+  const sliced = rows.slice(0, Math.max(1, limit));
 
   if (mode.json) {
     writeJson({

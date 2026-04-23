@@ -7,8 +7,11 @@ import { bold, dim, writeJson, writeLine } from "./output.js";
 
 /**
  * Shared "resolve data root or print guidance" helper. On failure the caller
- * should propagate the returned `null` and exit with code 1 — the function
- * has already written the structured/pretty explanation to stdout.
+ * MUST propagate the returned `null` and exit with code 1 — the function has
+ * already written the structured/pretty explanation to stdout. Exit code 1
+ * keeps shell automation honest about operational failures and matches the
+ * `control_plane_health` MCP tool's `{ok:false, reason:"unconfigured"}`
+ * envelope.
  */
 export function resolveOrExplain(options: {
   readonly json: boolean;

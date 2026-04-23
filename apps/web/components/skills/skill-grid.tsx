@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { formatRelative } from "@/lib/format";
 import type { SkillManifest } from "@/lib/skills-source";
+
+const INITIAL_CARDS = 24;
+const BATCH_SIZE = 48;
 
 type SortKey = "name" | "modified" | "root";
 type SortDirection = "asc" | "desc";
@@ -44,6 +47,37 @@ export function SkillGrid({ skills }: SkillGridProps) {
     () => filterAndSort(skills, deferredQuery, rootFilter, sortKey, sortDir),
     [skills, deferredQuery, rootFilter, sortKey, sortDir]
   );
+
+  // Progressive reveal — render a small first batch synchronously, then grow
+  // the visible slice after mount via requestIdleCallback / rAF so the 2700-
+  // node catalogue hydrates outside the TBT window. When the user actively
+  // filters (non-empty query), reveal everything immediately so search
+  // results are never artificially truncated.
+  const [visibleCount, setVisibleCount] = useState(INITIAL_CARDS);
+  useEffect(() => {
+    if (visibleCount >= filtered.length) return;
+    const step = () => setVisibleCount((n) => Math.min(filtered.length, n + BATCH_SIZE));
+    const schedule: (cb: () => void) => number =
+      typeof window !== "undefined" &&
+      typeof (window as unknown as { requestIdleCallback?: unknown }).requestIdleCallback ===
+        "function"
+        ? (cb) =>
+            (
+              window as unknown as { requestIdleCallback: (c: () => void) => number }
+            ).requestIdleCallback(cb)
+        : (cb) => window.setTimeout(cb, 0);
+    const cancel: (h: number) => void =
+      typeof window !== "undefined" &&
+      typeof (window as unknown as { cancelIdleCallback?: unknown }).cancelIdleCallback ===
+        "function"
+        ? (h) =>
+            (window as unknown as { cancelIdleCallback: (h: number) => void }).cancelIdleCallback(h)
+        : (h) => window.clearTimeout(h);
+    const handle = schedule(step);
+    return () => cancel(handle);
+  }, [visibleCount, filtered.length]);
+  const isFiltering = deferredQuery.trim().length > 0 || rootFilter !== null;
+  const visibleSlice = isFiltering ? filtered : filtered.slice(0, visibleCount);
 
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -140,7 +174,7 @@ export function SkillGrid({ skills }: SkillGridProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((skill) => (
+          {visibleSlice.map((skill) => (
             <SkillCard key={skill.id} skill={skill} />
           ))}
         </div>

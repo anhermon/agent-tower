@@ -8,7 +8,7 @@ export default function ReplayPage() {
     <ModulePlaceholder
       module={module}
       description="Event replay controls and deterministic trace inspection. Once wired, this module will reconstruct reasoning-visible timelines from normalized session turns, tool calls, outputs, and adapter-specific metadata — and let operators scrub, branch, and re-run frames."
-      emptyTitle="No replay records"
+      emptyTitle="No replay traces"
       emptyDescription="Trace reconstruction and deterministic replay are deferred beyond Phase 1. This module is awaiting an append-only event log source — see the spec for the full scope."
       capabilities={[
         { label: "Traces", detail: "Awaiting adapter" },

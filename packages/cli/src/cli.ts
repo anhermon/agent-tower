@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import { runAgentsList } from "./commands/agents-list.js";
+import { runAudit } from "./commands/audit.js";
 import { runHealth } from "./commands/health.js";
 import { runHelp } from "./commands/help.js";
 import { runMcpStub } from "./commands/mcp-stub.js";
 import { runSessionsShow } from "./commands/sessions-show.js";
 import { runSessionsTop } from "./commands/sessions-top.js";
+import { runSessionsWaste } from "./commands/sessions-waste.js";
 import { runSkillsEfficacy } from "./commands/skills-efficacy.js";
 import { runSkillsTop } from "./commands/skills-top.js";
 import { runSkillsUsage } from "./commands/skills-usage.js";
@@ -59,6 +61,8 @@ export async function runCli(argv: readonly string[]): Promise<number> {
         return await runSkills(subOrFirst, restWithGlobals);
       case "agents":
         return await runAgents(subOrFirst, restWithGlobals);
+      case "audit":
+        return await runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
       default:
         throw new UsageError(`Unknown command: ${command}`);
     }
@@ -80,9 +84,11 @@ async function runSessions(sub: string | undefined, rest: readonly string[]): Pr
       return runSessionsTop(rest);
     case "show":
       return runSessionsShow(rest);
+    case "waste":
+      return runSessionsWaste(rest);
     default:
       throw new UsageError(
-        `Unknown sessions subcommand: ${sub ?? "(none)"}. Try \`top\` or \`show\`.`
+        `Unknown sessions subcommand: ${sub ?? "(none)"}. Try \`top\`, \`show\`, or \`waste\`.`
       );
   }
 }

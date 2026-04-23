@@ -63,3 +63,53 @@ export interface AgentLoad {
   readonly queuedSessions?: number;
   readonly usage?: JsonObject;
 }
+
+export const AGENT_ANIMATION_BASE_STATES = {
+  Sleeping: "sleeping",
+  Working: "working",
+  Attention: "attention",
+  Done: "done",
+  Failed: "failed",
+} as const;
+
+export type AgentAnimationBaseState =
+  (typeof AGENT_ANIMATION_BASE_STATES)[keyof typeof AGENT_ANIMATION_BASE_STATES];
+
+export const AGENT_ANIMATION_OVERLAYS = {
+  None: "none",
+  Success: "success",
+  Failure: "failure",
+  Permission: "permission",
+  Compacting: "compacting",
+  SkillLoaded: "skillLoaded",
+  Subagent: "subagent",
+} as const;
+
+export type AgentAnimationOverlay =
+  (typeof AGENT_ANIMATION_OVERLAYS)[keyof typeof AGENT_ANIMATION_OVERLAYS];
+
+export const AGENT_FATIGUE_LEVELS = {
+  Fresh: "fresh",
+  SlightlyTired: "slightly_tired",
+  Tired: "tired",
+  Exhausted: "exhausted",
+} as const;
+
+export type AgentFatigueLevel = (typeof AGENT_FATIGUE_LEVELS)[keyof typeof AGENT_FATIGUE_LEVELS];
+
+/**
+ * Canonical live animation state for a rendered agent mascot. This is
+ * intentionally separate from durable `AgentState.status`: it describes the
+ * current browser animation pose derived from transcript activity, not a
+ * persisted runtime health state.
+ */
+export interface AgentAnimationSnapshot {
+  readonly agentId: string;
+  readonly projectId: string;
+  readonly baseState: AgentAnimationBaseState;
+  readonly overlay: AgentAnimationOverlay;
+  readonly fatigueLevel: AgentFatigueLevel;
+  readonly activeSessionIds: readonly string[];
+  readonly subagentCount: number;
+  readonly lastEventAt: string;
+}

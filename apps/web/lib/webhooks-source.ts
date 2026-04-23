@@ -10,6 +10,10 @@ import {
   type WebhookRecord,
   WebhookStatus,
 } from "@control-plane/storage";
+import {
+  getGithubWebhookDeliveriesFileCacheKey,
+  readGithubWebhookDeliveriesFromFile,
+} from "./github-webhooks";
 
 /**
  * Server-only data derivation for the Webhooks module.
@@ -27,13 +31,10 @@ import {
  * is used as the read-through cache; each request rebuilds it from the file
  * on disk (keyed by `path:mtime`) so edits are picked up between requests.
  *
- * NOTE (Phase 2 v1): Live delivery tracking requires a real inbound webhook
- * pipeline which is deferred to Phase 3 per
- * `docs/architecture/overview.md` and `docs/modules/webhooks.md`. Until that
- * pipeline exists, `deliveries` is always an empty array — the UI must
- * render a truthful empty state for the deliveries list, never fabricate
- * rows. Signature verification is likewise deferred — no HMAC code path
- * lives here.
+ * GitHub inbound webhook deliveries are read from the local JSONL log owned by
+ * `github-webhooks.ts`. If that file has not been created yet, `deliveries`
+ * remains an empty array — the UI must render a truthful empty state and never
+ * fabricate rows.
  */
 
 export const WEBHOOKS_FILE_ENV = "CLAUDE_CONTROL_PLANE_WEBHOOKS_FILE";
@@ -121,7 +122,8 @@ export async function loadWebhookOrUndefined(id: string): Promise<LoadWebhookRes
 
 async function buildSnapshot(file: string): Promise<WebhooksSnapshot> {
   const info = await stat(file);
-  const cacheKey = `${file}:${info.mtime.toISOString()}:${info.size}`;
+  const deliveriesCacheKey = await getGithubWebhookDeliveriesFileCacheKey();
+  const cacheKey = `${file}:${info.mtime.toISOString()}:${info.size}:${deliveriesCacheKey}`;
   const cached = snapshotCache.get(file);
   if (cached && cached.key === cacheKey) {
     return cached.snapshot;
@@ -140,9 +142,7 @@ async function buildSnapshot(file: string): Promise<WebhooksSnapshot> {
   }
   const records = await repo.list();
 
-  // Live delivery ingestion is deferred — see file header. Keep the array
-  // empty rather than fabricating rows.
-  const deliveries: readonly WebhookDelivery[] = [];
+  const deliveries = await readGithubWebhookDeliveriesFromFile();
 
   const listings = records.map((record) => toListing(record, deliveries));
 

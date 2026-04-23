@@ -2,7 +2,7 @@
 
 ## Responsibility
 - Playwright smoke suite for the dashboard. Lives at the repo root, not under `apps/web/`, because it drives the app as an external black box.
-- Covers the shell (`dashboard-shell.spec.ts`) and the data-backed modules that read real on-disk fixtures (`agents-data.spec.ts`, `sessions-data.spec.ts`, `skills-data.spec.ts`).
+- Covers the shell (`dashboard-shell.spec.ts`), data-backed modules (`agents-data.spec.ts`, `sessions-data.spec.ts`, `skills-data.spec.ts`), and sessions features (`sessions.spec.ts`, `sessions-analytics.spec.ts`, `sessions-search.spec.ts`, `sessions-live.spec.ts`).
 - Rationale: [ADR-0001](../docs/architecture/decisions/0001-phase-1-skeleton.md) (smoke-level coverage for the skeleton phase).
 
 ## Read First

@@ -20,7 +20,7 @@ export async function runAgentsList(argv: readonly string[]): Promise<number> {
 
   const mode = resolveOutputMode(values);
   const resolved = resolveOrExplain(mode);
-  if (!resolved) return 0;
+  if (!resolved) return 1;
 
   const files = await listSessionFiles({ directory: resolved.directory });
   const agents = groupByProject(files);

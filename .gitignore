@@ -13,6 +13,13 @@ test-results/
 .coverage-reports/
 .lighthouseci/
 
+# Dev-server structured logs (stdout.log, stderr.log, requests.log)
+logs/
+**/logs/
+
+# Local IDE/tooling scratch
+.cursor/
+
 .env
 .env.*
 !.env.example

@@ -1,6 +1,7 @@
 import type { ReplayCompactionEvent, ReplayData, SessionDerivedFlags } from "@control-plane/core";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ExportButton } from "@/components/sessions/export-button";
 import { AgentTree } from "@/components/sessions/replay/agent-tree";
 import { ExplorerPanel } from "@/components/sessions/replay/explorer-panel";
 import { FindInSession } from "@/components/sessions/replay/find-in-session";
@@ -52,6 +53,7 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
           ← Back to sessions
         </Link>
         <div className="flex items-center gap-3">
+          <ExportButton scope="session" sessionId={replay.sessionId} label="Export JSON" />
           <a
             href={`/sessions/${encodeURIComponent(replay.sessionId)}/export`}
             className="rounded-xs border border-line/60 px-2 py-1 font-mono text-xs text-muted hover:border-cyan hover:text-cyan"

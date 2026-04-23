@@ -29,7 +29,7 @@ function makeQuantileScale(counts: readonly number[]): (count: number) => number
 }
 
 // Paired shades: 0 = empty, 1..4 = ramp. Tuned to read against the panel
-// background in both themes. The light theme swap is driven by the `.light`
+// background in both themes. Light = default `:root`; dark = `html.dark`.
 // class via CSS variables, but since our chart fills are plain strings we
 // pick mid-contrast swatches that work on both.
 const SHADES = ["rgba(148, 163, 184, 0.18)", "#86efac", "#4ade80", "#16a34a", "#14532d"];

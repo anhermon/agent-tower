@@ -15,7 +15,7 @@
 - `src/reader.ts` — low-level JSONL enumeration + line parsing.
 - `src/normalizer.ts` — pure raw→canonical mapping.
 - `src/data-root.ts` — `CLAUDE_CONTROL_PLANE_DATA_ROOT` env var + `~/.claude/projects` fallback. Shared by every consumer.
-- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary.
+- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary, **waste** (`scoreSessionWaste` → 6 sub-scores + overall + verbatim flags). Every `SessionUsageSummary` carries `.waste: SessionWasteSignals` populated during `foldSessionSummary`.
 - `src/skills/manifests.ts` — `SKILL.md` discovery from `CONTROL_PLANE_SKILLS_ROOTS` → `~/.claude/skills`.
 - `src/skills/usage.ts` — `Skill` tool_use invocation counts + size-weighted injection totals.
 - `src/skills/efficacy.ts` — session-outcome heuristic + per-skill delta vs baseline.
@@ -23,7 +23,7 @@
 
 ## Entry Points / Flow
 - Session path: `ClaudeCodeSessionSource({ directory })` → `listSessions()`/`loadSession(id)` → `readTranscriptFile` → `normalizeTranscript` → canonical `SessionDescriptor` + `SessionTurn[]`.
-- Analytics path: `ClaudeCodeAnalyticsSource` → `listSessionSummaries`/`loadSessionUsage`/`loadCostBreakdown`/etc. → pure folds in `analytics/`.
+- Analytics path: `ClaudeCodeAnalyticsSource` → `listSessionSummaries`/`loadSessionUsage`/`loadCostBreakdown`/etc. → pure folds in `analytics/`. Waste scoring is a post-hoc fold: `scoreSessionWaste(summary)` / `scoreSessionsWaste(summaries)` takes an already-folded summary (where `.waste` is populated) and returns a `WasteVerdict` — it never reads JSONL itself.
 - Skills path: `listSkillsOrEmpty()` (manifests) → `computeSkillsUsage({skills})` and `computeSkillsEfficacy({skills, minSessionsForQualifying})`. Both scan the JSONL root resolved by `resolveDataRoot()` and join against the manifest catalogue.
 
 ## Local Conventions

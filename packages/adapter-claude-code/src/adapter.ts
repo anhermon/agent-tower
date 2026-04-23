@@ -140,12 +140,15 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   }
 
   async loadActivityTimeseries(range?: DateRange): Promise<Timeseries> {
-    const sessions = await this.collectAllSummaries();
+    // Re-use the same filter pipeline as listSessionSummaries so range-scoped
+    // metrics (timeseries, cost, etc.) stay consistent with the session list
+    // the UI is showing.
+    const sessions = await this.listSessionSummaries(range ? { range } : undefined);
     return foldTimeseries(sessions, { ...(range ? { range } : {}) });
   }
 
   async loadCostBreakdown(range?: DateRange): Promise<CostBreakdown> {
-    const sessions = await this.collectAllSummaries();
+    const sessions = await this.listSessionSummaries(range ? { range } : undefined);
     return foldCostBreakdown(sessions, { ...(range ? { range } : {}) });
   }
 

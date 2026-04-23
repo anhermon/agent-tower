@@ -9,6 +9,8 @@ export const COMMANDS: readonly CommandDescriptor[] = [
   { name: "health", summary: "Report data-root resolution, session count, skill count" },
   { name: "sessions top", summary: "Top sessions by tokens, cost, or turns" },
   { name: "sessions show <id>", summary: "Show a single session's usage summary" },
+  { name: "sessions waste", summary: "Sessions ranked by waste score with top flag" },
+  { name: "audit", summary: "Holistic audit: cost, waste, skills, per-project" },
   { name: "skills top", summary: "Top skills by invocations, size, bytes/tokens injected" },
   { name: "skills usage", summary: "Full skills usage report with totals" },
   { name: "skills efficacy", summary: "Skill efficacy vs all-sessions baseline" },

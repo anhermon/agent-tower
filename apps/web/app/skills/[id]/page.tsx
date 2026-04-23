@@ -223,7 +223,10 @@ function UsageBlock({ stats }: { readonly stats: SkillUsageStats | null }) {
           <p className="eyebrow">By project</p>
           <ul className="mt-3 space-y-1.5">
             {stats.perProject.slice(0, 8).map((row) => {
-              const pct = Math.max(2, Math.round((row.count / stats.invocationCount) * 100));
+              // True share of invocations. The previous `Math.max(2, …)` floor
+              // visually inflated tiny shares (anything <2% became 2%),
+              // misrepresenting long-tail projects.
+              const pct = stats.invocationCount > 0 ? (row.count / stats.invocationCount) * 100 : 0;
               return (
                 <li key={row.cwd} className="flex items-center gap-3 text-xs text-muted">
                   <span className="w-10 shrink-0 text-right font-mono text-muted-strong">

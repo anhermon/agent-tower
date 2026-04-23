@@ -48,7 +48,7 @@ function rank(summary: SessionUsageSummary, by: SessionsTopBy): number {
 export const sessionsTopTool: ToolDefinition = {
   name: "sessions_top",
   description:
-    "Read-only. Returns the top sessions by tokens, cost, or turn count. Filters by optional project id and ISO-8601 date range (since/until).",
+    "Read-only. Returns the top sessions by tokens, cost, or turn count. Filters by optional project id and an inclusive YYYY-MM-DD date range via since/until (either bound alone resolves to a single-day window).",
   inputSchema: {
     type: "object",
     properties: {

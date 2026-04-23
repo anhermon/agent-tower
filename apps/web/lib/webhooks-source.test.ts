@@ -3,6 +3,7 @@ import * as os from "node:os";
 import path from "node:path";
 import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { GITHUB_WEBHOOK_DELIVERIES_FILE_ENV } from "./github-webhooks";
 import {
   __clearWebhooksCacheForTests,
   getConfiguredWebhooksFile,
@@ -38,10 +39,12 @@ const SAMPLE_SUBSCRIPTIONS = [
 
 describe("webhooks-source", () => {
   const originalEnv = process.env[WEBHOOKS_FILE_ENV];
+  const originalDeliveriesEnv = process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV];
   const tempDirs: string[] = [];
 
   beforeEach(() => {
     delete process.env[WEBHOOKS_FILE_ENV];
+    process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = missingDeliveriesFilePath();
     __clearWebhooksCacheForTests();
   });
 
@@ -50,6 +53,11 @@ describe("webhooks-source", () => {
       delete process.env[WEBHOOKS_FILE_ENV];
     } else {
       process.env[WEBHOOKS_FILE_ENV] = originalEnv;
+    }
+    if (originalDeliveriesEnv === undefined) {
+      delete process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV];
+    } else {
+      process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = originalDeliveriesEnv;
     }
     while (tempDirs.length > 0) {
       const dir = tempDirs.pop();
@@ -159,8 +167,55 @@ describe("webhooks-source", () => {
     expect(byCost!.subscription.secretRef).toBeUndefined();
     expect(byCost!.subscription.enabled).toBe(false);
 
-    // Deliveries are always empty in Phase 2 v1 — see webhooks-source.ts.
+    // No delivery log is configured for this scenario, so the source keeps
+    // the delivery collection empty rather than fabricating rows.
     expect(result.snapshot.deliveries).toEqual([]);
+  });
+
+  it("given_valid_subscriptions_and_github_delivery_log__when_listing__then_returns_delivery_counts", async () => {
+    const subscriptions = [
+      ...SAMPLE_SUBSCRIPTIONS,
+      {
+        id: "github",
+        displayName: "GitHub inbound",
+        url: "http://127.0.0.1/api/webhooks/github",
+        eventTypes: [WEBHOOK_EVENT_TYPES.TicketChanged],
+        enabled: true,
+        createdAt: "2026-04-23T10:00:00.000Z",
+      },
+    ];
+    const subscriptionsFile = await writeFixture(JSON.stringify(subscriptions), "with-delivery");
+    const deliveriesFile = await writeFixture(
+      `${JSON.stringify(githubDeliveryLogEntry())}\n`,
+      "deliveries"
+    );
+    process.env[WEBHOOKS_FILE_ENV] = subscriptionsFile;
+    process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = deliveriesFile;
+
+    const result = await listWebhooksOrEmpty();
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.snapshot.deliveries).toHaveLength(1);
+    expect(result.snapshot.deliveries[0]).toMatchObject({
+      id: "github:delivery-1",
+      subscriptionId: "github",
+      eventType: WEBHOOK_EVENT_TYPES.TicketChanged,
+      status: "delivered",
+    });
+
+    const githubListing = result.snapshot.subscriptions.find(
+      (listing) => listing.subscription.id === "github"
+    );
+    expect(githubListing).toBeDefined();
+    expect(githubListing!.deliveryCount).toBe(1);
+    expect(githubListing!.lastDeliveryAt).toBe("2026-04-23T12:00:00.000Z");
+
+    const loaded = await loadWebhookOrUndefined("github");
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+    expect(loaded.deliveries).toHaveLength(1);
+    expect(loaded.deliveries[0]!.id).toBe("github:delivery-1");
   });
 
   it("given_a_valid_file__when_loading_by_id__then_returns_the_listing", async () => {
@@ -196,3 +251,45 @@ describe("webhooks-source", () => {
     return filePath;
   }
 });
+
+function githubDeliveryLogEntry(): Record<string, unknown> {
+  return {
+    id: "webhook.delivery_changed:event-1",
+    type: "webhook.delivery_changed",
+    occurredAt: "2026-04-23T12:00:00.000Z",
+    source: {
+      kind: "github.webhook",
+      id: "github",
+    },
+    payload: {
+      id: "github:delivery-1",
+      subscriptionId: "github",
+      eventType: WEBHOOK_EVENT_TYPES.TicketChanged,
+      attemptedAt: "2026-04-23T12:00:00.000Z",
+      status: "delivered",
+      responseStatus: 202,
+      responseBody: "accepted",
+      requestHeaders: {
+        "x-github-delivery": "delivery-1",
+        "x-github-event": "issues",
+      },
+      metadata: {
+        provider: "github",
+        githubEvent: "issues",
+        githubDelivery: "delivery-1",
+      },
+    },
+    metadata: {
+      provider: "github",
+      githubEvent: "issues",
+      githubDelivery: "delivery-1",
+    },
+  };
+}
+
+function missingDeliveriesFilePath(): string {
+  return path.join(
+    os.tmpdir(),
+    `control-plane-webhook-deliveries-missing-${process.pid}-${Date.now()}-${Math.random()}.jsonl`
+  );
+}

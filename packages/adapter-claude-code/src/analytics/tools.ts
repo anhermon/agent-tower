@@ -13,11 +13,14 @@ import {
 
 /**
  * Aggregated tools + features analytics computed from per-session summaries.
- * Pure: no I/O. Errors are not counted yet because error-by-tool attribution
- * requires per-turn traversal (handled in the replay fold) — the field is
- * reserved as 0 here and populated later by the adapter where appropriate.
+ * Pure: no I/O. Callers who want real per-tool error counts pass a pre-built
+ * `toolErrorCounts` map (produced by `foldSessionSummary` via its
+ * `toolErrorSink` option) — omitting it keeps backward-compat: `errorCount: 0`.
  */
-export function foldToolAnalytics(sessions: readonly SessionUsageSummary[]): ToolAnalytics {
+export function foldToolAnalytics(
+  sessions: readonly SessionUsageSummary[],
+  toolErrorCounts: ReadonlyMap<string, number> = new Map()
+): ToolAnalytics {
   const totalSessions = sessions.length;
   const toolRows = new Map<string, Mutable<ToolSummary>>();
   const mcpServers = new Map<string, { tools: Map<string, number>; sessions: Set<string> }>();
@@ -50,6 +53,9 @@ export function foldToolAnalytics(sessions: readonly SessionUsageSummary[]): Too
       };
       existing.totalCalls += count;
       existing.sessionCount += 1;
+      // errorCount comes from the pre-built attribution map; set once per
+      // tool (value doesn't depend on session iteration order).
+      existing.errorCount = toolErrorCounts.get(tool) ?? 0;
       toolRows.set(tool, existing);
 
       const mcp = parseMcpTool(tool);
@@ -121,6 +127,9 @@ export function foldToolAnalytics(sessions: readonly SessionUsageSummary[]): Too
     };
   }
 
+  let totalErrors = 0;
+  for (const count of toolErrorCounts.values()) totalErrors += count;
+
   return {
     tools,
     mcpServers: mcpSummaries,
@@ -128,7 +137,7 @@ export function foldToolAnalytics(sessions: readonly SessionUsageSummary[]): Too
     versions,
     branches: branchRows,
     totalToolCalls,
-    totalErrors: 0,
+    totalErrors,
   };
 }
 

@@ -100,11 +100,16 @@ export function SessionList({
     [filtered, pageStart, pageSize]
   );
 
-  // Reset to page 0 when filters/search/sort change.
+  // Reset to page 0 when filters/search/sort change. `deferredQuery` is the
+  // debounced-for-render copy of `query`; tracking it (not `query`) avoids an
+  // extra reset on every keystroke. The dep array intentionally lists inputs
+  // that gate this effect even though the setters don't consume them — we
+  // want the effect to fire on any of those inputs changing.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset-on-change intent
   useEffect(() => {
     setPage(0);
     setFocusIndex(null);
-  }, []);
+  }, [deferredQuery, activeFilters, sortKey, sortDir]);
 
   // Keep row refs array sized to the visible page.
   useEffect(() => {
@@ -374,7 +379,7 @@ export function SessionList({
                           : "—"}
                       </td>
                       <td className="px-4 py-3 text-right font-mono tabular-nums text-muted">
-                        {typeof session.durationMs === "number" && session.durationMs > 0
+                        {typeof session.durationMs === "number"
                           ? formatDuration(session.durationMs)
                           : "—"}
                       </td>
@@ -490,7 +495,10 @@ function SortableTh({
   align = "left",
 }: SortableThProps): ReactNode {
   return (
-    <th className={`px-4 py-3 font-semibold ${className ?? ""}`}>
+    <th
+      className={`px-4 py-3 font-semibold ${className ?? ""}`}
+      aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
+    >
       <button
         type="button"
         onClick={onClick}
@@ -500,7 +508,6 @@ function SortableTh({
           active ? "text-ink" : "text-muted hover:text-ink",
           align === "right" ? "ml-auto" : ""
         )}
-        aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
       >
         {label}
         <span aria-hidden="true" className="text-[10px]">

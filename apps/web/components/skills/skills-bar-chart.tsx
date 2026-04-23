@@ -91,8 +91,11 @@ export function SkillsBarChart({
         </div>
       ) : (
         <ul className="flex flex-col gap-2">
-          {rows.map(({ skill, value }) => {
-            const pct = max > 0 ? Math.max(1.5, (value / max) * 100) : 0;
+          {rows.map(({ skill, value }, idx) => {
+            // True relative share. The previous 1.5% floor visually inflated
+            // near-zero values; use exact percentages here so the chart is
+            // honest. Zero-value rows render a zero-width bar.
+            const pct = max > 0 ? (value / max) * 100 : 0;
             return (
               <li
                 key={skill.skillId}

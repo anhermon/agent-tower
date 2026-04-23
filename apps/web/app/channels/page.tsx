@@ -8,7 +8,7 @@ export default function ChannelsPage() {
     <ModulePlaceholder
       module={module}
       description="External message routes — Slack, Discord, WhatsApp, Telegram, GitHub, Bitbucket, and Jira listeners. Once wired, this module will define fan-out rules, map incoming events to sessions and replay traces, and surface delivery health per channel."
-      emptyTitle="No channels records"
+      emptyTitle="No channels connected"
       emptyDescription="Listener registration, fan-out rules, and credential management are deferred beyond Phase 1. This module is awaiting per-channel adapters — see the spec for the full scope."
       capabilities={[
         { label: "Connected", detail: "Awaiting adapter" },

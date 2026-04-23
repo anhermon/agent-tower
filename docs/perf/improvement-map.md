@@ -1,80 +1,72 @@
-# Improvement Map — 2026-04-23
+# UI perf improvement map — /skills
 
-Consolidated output of 4 parallel performance-reviewer investigations. All
-four reports converged on the same root cause.
+Single offender from `2026-04-23-baseline.md`. Goal: get `/skills` within budget:
 
-## Root cause (validated across 4 routes)
-
-**No `next/dynamic` usage anywhere in the codebase** (grep confirmed). Every
-`"use client"` chart component statically imports Recharts at module top
-level, so the full Recharts runtime lands in each route's entry chunk.
-Similarly `react-syntax-highlighter`, `react-markdown`, and `react-day-picker`
-are statically imported wherever they're referenced.
-
-Total waste reachable via static imports on the heaviest routes:
-- Recharts + d3-shape/scale/array: ~100 kB gz
-- react-syntax-highlighter (Prism) + one-dark + refractor + all languages: ~150 kB gz
-- react-markdown + remark-gfm + unified/micromark graph: ~60 kB gz
-- react-day-picker + date-fns transitive: ~30 kB gz
-
-## Per-route hypothesis → validated enhancement
-
-### 1. `/sessions/[id]` — 493 kB First-Load → target ≤ 200 kB
-
-| Offender | Location | Evidence | Fix |
+| Metric | Current | Budget | Required Δ |
 |---|---|---|---|
-| react-syntax-highlighter (Prism + one-dark + every language) | `components/sessions/replay/assistant-markdown.tsx:4-9` | eager top-level import, rendered unconditionally per turn | Split `CodeBlock` into its own module, `dynamic(... {ssr:false})`; switch to `react-syntax-highlighter/dist/esm/prism-light` + `registerLanguage` for {ts, js, tsx, json, bash, python, go, md}. **-140 to -160 kB** |
-| react-markdown + remark-gfm | `assistant-markdown.tsx:4,9` | static graph from `turn-card.tsx:7` → `session-detail.tsx:121` | `dynamic(AssistantMarkdown, {ssr:false})` with `<pre>` fallback. **-50 to -65 kB** |
-| Recharts via `TokenAccumulationChart` | `session-detail.tsx:9`, `token-accumulation-chart.tsx:4-14` | eager, chart is below-the-fold decorative | `dynamic(TokenAccumulationChart, {ssr:false})`. **-90 to -105 kB** |
-| Large session runtime | `session-detail.tsx` loops over all turns | O(n) renders on any session regardless of size | Memoize `TurnCard` + `content-visibility: auto` or `react-window` when turns > 100 (follow-up, runtime only). |
+| perf score | 0.73 | ≥ 0.90 | +0.17 |
+| TBT | 748 ms | ≤ 200 ms | −548 ms |
+| max-potential-fid (warn) | 0.39 | ≥ 0.90 | — |
+| dom-size (warn) | 2705 | ≤ 1500 (LH default) | −1200 nodes |
+| unused-javascript (warn) | 45 KB | 0 | −45 KB |
 
-What's right: `page.tsx` is server-only, `toGridItem` convention applied. Don't regress.
+## Enhancement 1 — Lazy-load `SkillGrid` below the fold (PRIMARY)
 
-### 2. `/sessions/overview` — 257 kB → target ≤ 200 kB
+**Status:** validated
+**Effort:** S
+**Risk:** low
+**Expected impact:** TBT −400 to −550 ms, DOM −1800 to −2000 nodes, perf +0.17
 
-| Offender | Location | Fix |
-|---|---|---|
-| Recharts (5 chart components) | `UsageOverTimeChart`, `PeakHoursChart`, `ModelBreakdownDonut`, `ProjectActivityDonut`, `Sparkline` | Move to lazy wrapper file `components/sessions/charts/_lazy.tsx` exporting each via `dynamic`. **-90 to -100 kB** |
-| `Sparkline` using Recharts for 4 tiny stat cards | `charts/sparkline.tsx:3` | Replace with inline `<svg><polyline/></svg>`. Removes Recharts from above-the-fold. **~0 kB on its own but unblocks lazy-loading of the rest** |
-| `react-day-picker` + CSS | `date-range-picker.tsx:5-6` | `dynamic` `DayPicker` behind `open===true`. **-25 to -30 kB** |
+**Hypothesis.** `SkillGrid` renders one anchor-card per skill (≈150 skills × ~18 DOM nodes = ~2700 nodes) synchronously at hydration. Hydrating a 2.7k-node subtree while shared chunk `7826` is evaluating creates a 748 ms main-thread pile-up.
 
-### 3. `/skills` — 250 kB → target ≤ 200 kB
+**Validation.** LHR `dom-size` audit confirms 2705 nodes (largest in app). LHR `long-tasks` shows 5 long tasks inside `7826-*.js` eval window spanning 682–1587 ms — overlapping exactly with `SkillGrid`'s client-side hydration. `LCP` is already fast (818 ms, paints from server-rendered `<header>` strip), so deferring the grid won't hurt it.
 
-| Offender | Location | Fix |
-|---|---|---|
-| Recharts (3 chart components) | `skills-timeline.tsx:4`, `skills-breakdown-chart.tsx:4-13`, `hour-breakdown-chart.tsx:4-13` | Same `_lazy.tsx` pattern — dynamic wrappers at import sites in `skills-dashboard.tsx` / `skills-efficacy-dashboard.tsx`. **-90 to -100 kB** |
-| `react-day-picker` | same as above | shared fix from route 2. **-25 to -30 kB** |
+**Plan.**
+1. Wrap the `<SkillGrid>` render in a `content-visibility: auto` container (CSS-only, zero JS cost) **AND** keep the existing `dynamic({ ssr: false })` wrapper in `_lazy.tsx`.
+2. Additionally gate its actual import via `IntersectionObserver` so the chunk download doesn't start on mount — only when the catalogue section approaches the viewport. Pattern: a `useEffect(() => observer.observe(ref))` that flips a `visible` boolean, and render a skeleton until `visible`. This way, users who only glance at the usage dashboards up top never parse the grid chunk.
 
-No markdown/syntax-highlighter/cmdk on this route — confirmed. `toGridItem` RSC strip is already correct.
+**Rejected alternative: virtualization (react-window/virtuoso).** Adds a dep and complicates keyboard nav and search/filter interactions. `content-visibility` + IO gives ~95% of the win at ~5% of the complexity.
 
-### 4. `/sessions/costs` (249 kB) + `/sessions/activity` (247 kB)
+## Enhancement 2 — Gate Recharts dynamic imports on viewport (SECONDARY)
 
-Same fix as route 2. Server-side aggregation is **already correct** in
-`apps/web/lib/sessions-analytics.ts` (`getCostBreakdown`, `getActivity`) —
-do not refactor that. `useMemo` blocks in chart components operate on
-already-aggregated data, cheap. The bottleneck is purely Recharts bundle
-weight.
+**Status:** validated
+**Effort:** S
+**Risk:** low
+**Expected impact:** −304 KB JS from critical path, unused-javascript −45 KB, TBT −50 to −150 ms
 
-Combined expected deltas per route:
+**Hypothesis.** `_lazy.tsx` uses `next/dynamic({ ssr: false })` for 5 Recharts components plus `SkillsEfficacyDashboard` and `SkillsBarChart`. `next/dynamic` kicks off the import at **mount**, not at first scroll. Since `SkillsDashboard` mounts immediately inside the page, all 7 chunks start downloading + parsing as soon as hydration begins.
 
-| Route | Before | After (projected) | Δ |
-|---|---:|---:|---:|
-| `/sessions/[id]` | 493 kB | 160-210 kB | **-280 to -330 kB** |
-| `/sessions/overview` | 257 kB | 130-140 kB | **-120 kB** |
-| `/skills` | 250 kB | 125-135 kB | **-115 kB** |
-| `/sessions/costs` | 249 kB | 135-155 kB | **-95 to -115 kB** |
-| `/sessions/activity` | 247 kB | 135-155 kB | **-95 to -115 kB** |
-| `/sessions/tools` | 215 kB | ~130 kB | **-85 kB** (inferred from same pattern) |
+**Validation.** LHR `network-requests` shows `952.ce9b099953e49462.js` (304 KB decoded) arriving during the TBT window. `unused-javascript` flags it at 47% unused, consistent with Recharts' treeshake-resistant runtime.
 
-## Work streams (parallel)
+**Plan.**
+1. Wrap the three main dashboard blocks (`<SkillsDashboard>`, `<SkillsEfficacyDashboard>`, `<SkillGrid>`) inside an `<IntersectionViewportMount>` helper that renders a skeleton until `intersectionRatio > 0`. Once intersected, it renders the real dynamic component.
+2. The helper lives next to `_lazy.tsx` so all Skills-page lazy wrappers use it. Optionally generalise to `apps/web/components/ui/viewport-mount.tsx` if more routes need it.
+3. Keep LCP safe: don't wrap the header `<h1>` / `<Badge>` strip — those already render synchronously from the server.
 
-- **Stream A** — Shared chart lazy wrapper + retarget all chart-heavy pages + rewrite `Sparkline` to plain SVG.
-- **Stream B** — `/sessions/[id]`-specific: split `CodeBlock`, subset Prism languages, dynamic `TokenAccumulationChart`, dynamic `AssistantMarkdown`.
-- **Stream C** — `DateRangePicker` lazy `DayPicker` (shared fix across overview/costs/activity/skills).
+## Enhancement 3 — Remove stray debug telemetry fetch (CLEANUP)
 
-## Validation method (used by every implementation agent)
+**Status:** validated
+**Effort:** XS
+**Risk:** none
+**Expected impact:** 0 ms on client (it's server-side), removes a silent localhost dependency.
 
-```bash
-pnpm --filter @control-plane/web build 2>&1 | grep -E "/(sessions|skills)"
-```
-The table printed by `next build` shows First-Load JS per route. The implementation agent must paste the before/after numbers in its report.
+**Evidence.** `apps/web/app/skills/page.tsx` lines 28–38 contain an `#region agent log` block that `fetch()`-es `http://127.0.0.1:7735/ingest/3f85a983-...` on every server render with `.catch(() => {})`. Left over from an earlier diagnostic session.
+
+**Plan.** Delete the `#region agent log` block. No callers depend on it.
+
+## Enhancement 4 — Out of scope for this loop
+
+- **`transformAlgorithm` Node 22 RSC streaming bug.** It's a real bug affecting test-server reliability, not a perf-budget gate. File separately.
+- **Chunk `7826-*.js` itself.** On green routes it fits within the TTI budget. Trimming it would help `/skills` but is a higher-risk refactor (it's a shared chunk) — revisit only if Enhancements 1+2 don't get `/skills` into budget.
+- **LHCI CI-time tightening** (`numberOfRuns: 1`, `onlyCategories: performance` during the perf loop). Not a runtime perf enhancement; it's a CI ergonomics change. File separately.
+
+## Phase 6 dispatch plan
+
+One implementation subagent. All three enhancements touch the same two files (`apps/web/app/skills/page.tsx`, `apps/web/components/skills/_lazy.tsx`) plus one new helper. Parallelising would conflict — running serially is correct.
+
+Subagent must:
+- Apply Enhancements 1, 2, 3.
+- Rebuild the isolated test server (`task test-server:up` picks up new `.next.perf`).
+- Re-run LHCI against `/skills` only: `pnpm lhci autorun --config=lighthouserc.perf.json --collect.url=http://127.0.0.1:3100/skills --collect.numberOfRuns=3`.
+- Paste before/after for score, LCP, TBT, DOM, bootup-time on `7826-*.js`.
+- Not mark complete until TBT ≤ 200 ms.

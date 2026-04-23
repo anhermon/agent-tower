@@ -32,7 +32,7 @@ describe("runSessionsShow", () => {
     expect(exitCode).toBe(1);
     const parsed = JSON.parse(stdout) as { ok: boolean; reason?: string };
     expect(parsed.ok).toBe(false);
-    expect(parsed.reason).toBe("not-found");
+    expect(parsed.reason).toBe("not_found");
   });
 
   it("given_seeded_session__when_showing_json__then_payload_excludes_turns", async () => {

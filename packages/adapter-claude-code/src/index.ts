@@ -14,6 +14,7 @@ export { foldSessionSummary } from "./analytics/session-summary.js";
 export type { TimeseriesFoldOptions } from "./analytics/timeseries.js";
 export { computeStreaks, foldTimeseries } from "./analytics/timeseries.js";
 export { foldToolAnalytics } from "./analytics/tools.js";
+export { scoreSessionsWaste, scoreSessionWaste } from "./analytics/waste.js";
 export type { DataRootOrigin, ResolvedDataRoot } from "./data-root.js";
 // Phase 1 Wave 1: data-root resolution + skill catalogue/analytics (shared by
 // the web dashboard, the `cp` CLI, and the MCP server).

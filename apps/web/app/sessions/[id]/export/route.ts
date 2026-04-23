@@ -110,7 +110,7 @@ function renderExport(replay: ReplayData): string {
   <h1>${escapeHtml(replay.slug ?? replay.sessionId)}</h1>
   <p class="meta">${escapeHtml(replay.sessionId)}</p>
   <dl class="stats">
-    <div><dt>Turns</dt><dd>${assistantTurns}</dd></div>
+    <div><dt>Assistant turns</dt><dd>${assistantTurns}</dd></div>
     <div><dt>Tokens</dt><dd>${formatTokens(totalTokens)}</dd></div>
     <div><dt>Cost</dt><dd>${formatCost(replay.totalCostUsd)}</dd></div>
     <div><dt>Compactions</dt><dd>${replay.compactions.length}</dd></div>

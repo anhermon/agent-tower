@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-
-const THEME_STORAGE_KEY = "control-plane:theme";
-const DARK_THEME_CLASS = "dark";
+import { applyUserThemeChoice, CONTROL_PLANE_DARK_CLASS } from "@/lib/theme-document";
 
 type Theme = "light" | "dark";
 
@@ -14,22 +12,14 @@ function getResolvedTheme(): Theme {
     return "light";
   }
 
-  return document.documentElement.classList.contains(DARK_THEME_CLASS) ? "dark" : "light";
-}
-
-function applyTheme(theme: Theme): void {
-  document.documentElement.classList.toggle(DARK_THEME_CLASS, theme === "dark");
-  try {
-    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
-  } catch {
-    // Theme class still updates even when storage is unavailable.
-  }
+  return document.documentElement.classList.contains(CONTROL_PLANE_DARK_CLASS) ? "dark" : "light";
 }
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("light");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // ThemeInitializer already re-synced <html> after hydration; read icon state.
     setTheme(getResolvedTheme());
   }, []);
 
@@ -43,7 +33,7 @@ export function ThemeToggle() {
       className="w-10 px-0"
       icon={<Icon name={theme === "dark" ? "sun" : "moon"} className="h-4 w-4" />}
       onClick={() => {
-        applyTheme(nextTheme);
+        applyUserThemeChoice(nextTheme);
         setTheme(nextTheme);
       }}
     />

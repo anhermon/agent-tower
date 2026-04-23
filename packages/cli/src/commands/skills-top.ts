@@ -24,7 +24,7 @@ export async function runSkillsTop(argv: readonly string[]): Promise<number> {
   const limit = readIntFlag(values.limit, 10, "limit");
 
   const resolved = resolveOrExplain(mode);
-  if (!resolved) return 0;
+  if (!resolved) return 1;
 
   const result = await computeSkillsUsage();
   if (!result.ok) {
@@ -39,7 +39,7 @@ export async function runSkillsTop(argv: readonly string[]): Promise<number> {
   }
 
   const sorted = [...result.report.perSkill].sort((a, b) => compareSkills(a, b, sortBy));
-  const sliced = sorted.slice(0, limit);
+  const sliced = sorted.slice(0, Math.max(1, limit));
 
   if (mode.json) {
     writeJson({ ok: true, skills: sliced });

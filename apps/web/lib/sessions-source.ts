@@ -17,6 +17,7 @@ import type {
   DateRange,
   ProjectSummary,
   ReplayData,
+  SessionDerivedFlags,
   SessionUsageSummary,
   Timeseries,
   ToolAnalytics,
@@ -72,6 +73,10 @@ export interface SessionListing extends ClaudeSessionFile {
   readonly firstUserText: string | null;
   readonly model: string | null;
   readonly turnCountLowerBound: number;
+  readonly flags?: SessionDerivedFlags;
+  readonly estimatedCostUsd?: number;
+  readonly durationMs?: number;
+  readonly messageCount?: number;
 }
 
 export type ListSessionsResult =
@@ -89,7 +94,8 @@ export async function listSessionsOrEmpty(): Promise<ListSessionsResult> {
   }
   try {
     const files = await source.listSessions();
-    const enriched = await enrichWithPreviews(files);
+    const previews = await enrichWithPreviews(files);
+    const enriched = await enrichWithUsageSummaries(previews);
     return { ok: true, sessions: enriched };
   } catch (error) {
     return {
@@ -146,6 +152,40 @@ async function enrichWithPreviews(
 
   await Promise.all(Array.from({ length: Math.min(concurrency, files.length) }, worker));
   return results;
+}
+
+async function enrichWithUsageSummaries(
+  listings: readonly SessionListing[]
+): Promise<readonly SessionListing[]> {
+  if (listings.length === 0) {
+    return listings;
+  }
+
+  const source = getConfiguredAnalyticsSource();
+  if (!source) {
+    return listings;
+  }
+
+  try {
+    const summaries = await source.listSessionSummaries();
+    const bySessionId = new Map(summaries.map((summary) => [summary.sessionId, summary]));
+    return listings.map((listing) => {
+      const summary = bySessionId.get(listing.sessionId);
+      if (!summary) {
+        return listing;
+      }
+      return {
+        ...listing,
+        model: listing.model ?? summary.model ?? null,
+        flags: summary.flags,
+        estimatedCostUsd: summary.estimatedCostUsd,
+        durationMs: summary.durationMs,
+        messageCount: summary.userMessageCount + summary.assistantMessageCount,
+      };
+    });
+  } catch {
+    return listings;
+  }
 }
 
 export type LoadSessionResult =

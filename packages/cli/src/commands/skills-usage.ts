@@ -18,7 +18,7 @@ export async function runSkillsUsage(argv: readonly string[]): Promise<number> {
   const limit = readIntFlag(values.limit, 20, "limit");
 
   const resolved = resolveOrExplain(mode);
-  if (!resolved) return 0;
+  if (!resolved) return 1;
 
   const result = await computeSkillsUsage();
   if (!result.ok) {
@@ -32,7 +32,9 @@ export async function runSkillsUsage(argv: readonly string[]): Promise<number> {
     return 1;
   }
 
-  const trimmedPerSkill = result.report.perSkill.slice(0, limit).map(stripPerSkillSeries);
+  const trimmedPerSkill = result.report.perSkill
+    .slice(0, Math.max(1, limit))
+    .map(stripPerSkillSeries);
 
   if (mode.json) {
     writeJson({

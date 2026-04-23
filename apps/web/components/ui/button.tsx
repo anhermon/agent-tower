@@ -21,9 +21,9 @@ export function Button({
         variant === "primary" &&
           "border-transparent accent-gradient text-[rgb(7_11_20)] shadow-glow hover:brightness-110 hover:-translate-y-px",
         variant === "secondary" &&
-          "border-line/80 bg-white/[0.04] text-ink hover:-translate-y-px hover:border-info/50 hover:bg-info/10",
+          "border-line/80 bg-ink/[0.04] text-ink hover:-translate-y-px hover:border-info/50 hover:bg-info/10",
         variant === "ghost" &&
-          "border-transparent bg-transparent text-muted hover:bg-white/5 hover:text-ink",
+          "border-transparent bg-transparent text-muted hover:bg-ink/5 hover:text-ink",
         className
       )}
       type="button"

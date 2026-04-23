@@ -1,10 +1,11 @@
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
-import { SkillGrid, type SkillGridItem } from "@/components/skills/skill-grid";
+import { SkillGrid, SkillsEfficacyDashboard } from "@/components/skills/_lazy";
+import type { SkillGridItem } from "@/components/skills/skill-grid";
 import { SkillsDashboard } from "@/components/skills/skills-dashboard";
-import { SkillsEfficacyDashboard } from "@/components/skills/skills-efficacy-dashboard";
+import { ViewportMount } from "@/components/skills/viewport-mount";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getModuleByKey } from "@/lib/modules";
 import { computeSkillsEfficacy, type ListSkillsEfficacyResult } from "@/lib/skills-efficacy-source";
@@ -52,7 +53,7 @@ export default async function SkillsPage({ searchParams }: { searchParams: Searc
         </div>
         <div className="flex h-10 shrink-0 items-center gap-2">
           <DateRangePicker />
-          <Button>Refresh</Button>
+          <RefreshButton />
         </div>
       </div>
 
@@ -141,7 +142,9 @@ function EfficacySection({
             description="No Claude Code session transcripts were found under the configured data root."
           />
         ) : (
-          <SkillsEfficacyDashboard report={efficacy.report} />
+          <ViewportMount minHeight={480}>
+            <SkillsEfficacyDashboard report={efficacy.report} />
+          </ViewportMount>
         )
       ) : efficacy.reason === "unconfigured" ? (
         <EmptyState
@@ -160,7 +163,10 @@ function EfficacySection({
 
 function CatalogueSection({ result }: { readonly result: ListSkillsResult }) {
   return (
-    <div className="mt-10 border-t border-line/60 pt-8">
+    <div
+      className="mt-10 border-t border-line/60 pt-8"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "1200px" }}
+    >
       <div className="mb-6">
         <p className="eyebrow">Catalogue</p>
         <h2 className="mt-1 text-2xl font-semibold tracking-tight text-ink">Discovered skills</h2>
@@ -207,7 +213,9 @@ function SkillsBody({ result }: { result: ListSkillsResult }) {
   return (
     <div className="flex flex-col gap-5">
       <SummaryStrip skills={result.skills} roots={result.roots} />
-      <SkillGrid skills={result.skills.map(toGridItem)} />
+      <ViewportMount minHeight={800}>
+        <SkillGrid skills={result.skills.map(toGridItem)} />
+      </ViewportMount>
     </div>
   );
 }

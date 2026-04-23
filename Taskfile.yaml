@@ -274,3 +274,14 @@ tasks:
     desc: Aggregate all .ci/reports/*.json into latest.json and print a health board
     cmds:
       - node scripts/ci-health.mjs
+
+  # --- GitHub repository operations -----------------------------------------
+  github:webhook:create:
+    desc: Create or update the GitHub repo webhook for inbound control-plane events
+    cmds:
+      - node scripts/github/setup-webhook.mjs
+
+  github:branch-protect:
+    desc: Configure GitHub branch protection for main
+    cmds:
+      - node scripts/github/configure-branch-protection.mjs

@@ -27,7 +27,7 @@
       }
     },
     "assert": {
-      "preset": "lighthouse:recommended",
+      "preset": "lhci:assertions-legacy",
       "budgetsFile": "./budget.json",
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.9 }],

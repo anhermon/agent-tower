@@ -11,6 +11,7 @@ const sharedAlias = {
   "@control-plane/events": fromRoot("./packages/events/src/index.ts"),
   "@control-plane/storage": fromRoot("./packages/storage/src/index.ts"),
   "@control-plane/adapter-claude-code": fromRoot("./packages/adapter-claude-code/src/index.ts"),
+  "@control-plane/logger": fromRoot("./packages/logger/src/index.ts"),
   "@control-plane/mcp-server": fromRoot("./packages/mcp-server/src/index.ts"),
   "@control-plane/cli": fromRoot("./packages/cli/src/index.ts"),
   "@control-plane/testing/fixtures/claude-code": fromRoot(
@@ -103,6 +104,15 @@ export default defineConfig({
         extends: true,
         resolve: { alias: sharedAlias },
         test: {
+          name: "logger",
+          include: ["packages/logger/src/**/*.test.ts"],
+          passWithNoTests: true,
+        },
+      },
+      {
+        extends: true,
+        resolve: { alias: sharedAlias },
+        test: {
           name: "mcp-server",
           include: ["packages/mcp-server/src/**/*.test.ts"],
           passWithNoTests: true,
@@ -131,7 +141,12 @@ export default defineConfig({
         resolve: { alias: sharedAlias },
         test: {
           name: "web",
-          include: ["apps/web/lib/**/*.test.ts", "apps/web/app/**/*.test.ts"],
+          include: [
+            "apps/web/lib/**/*.test.ts",
+            "apps/web/app/**/*.test.ts",
+            "apps/web/app/**/*.test.tsx",
+            "apps/web/components/**/*.test.tsx",
+          ],
           passWithNoTests: true,
         },
       },

@@ -12,6 +12,45 @@ const nextConfig = {
   // test-server:up) can build into `.next.perf/` without clobbering the
   // dev server's `.next/` and vice-versa.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  // Keep Node-only logging deps out of the webpack bundle graph.
+  // `@control-plane/logger` (imported from instrumentation.ts) pulls in
+  // `pino` + `pino-pretty` whose transitive deps (pino-abstract-transport,
+  // thread-stream, etc.) use Node built-ins like `stream` and
+  // `worker_threads`. Bundling them breaks the instrumentation compile,
+  // which cascades to a missing routes-manifest.json and 500s on every
+  // request. Marking them external is the supported Next.js 15 path.
+  serverExternalPackages: [
+    "pino",
+    "pino-pretty",
+    "pino-abstract-transport",
+    "thread-stream",
+    "sonic-boom",
+    "split2",
+    "@control-plane/logger",
+  ],
+  // `serverExternalPackages` covers route handlers and pages, but the
+  // dedicated `instrumentation` webpack entry doesn't honor it. Mark the
+  // Node-only logging deps as externals for every server-side bundle so
+  // pino, pino-pretty and their transitive Node built-ins stay out of
+  // webpack's graph. Node 22+ supports `require()` of ESM packages,
+  // which is why `@control-plane/logger` (ESM-only) can also be
+  // externalized — see its package.json `exports.require` condition.
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      const externals = Array.isArray(config.externals) ? config.externals : [];
+      config.externals = [
+        ...externals,
+        "@control-plane/logger",
+        "pino",
+        "pino-pretty",
+        "pino-abstract-transport",
+        "thread-stream",
+        "sonic-boom",
+        "split2",
+      ];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

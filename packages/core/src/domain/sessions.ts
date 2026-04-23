@@ -144,4 +144,69 @@ export interface SessionUsageSummary {
   readonly version?: string;
   readonly cwd?: string;
   readonly turns?: readonly SessionTurnUsage[];
+  readonly waste?: SessionWasteSignals;
+}
+
+// ─── Waste signals ────────────────────────────────────────────────────────────
+// Per-session derived metrics that quantify common inefficiency patterns. All
+// optional on SessionUsageSummary so existing fixtures remain valid; populated
+// by the analytics layer on a full fold.
+
+export interface RepeatReadEntry {
+  readonly filePath: string;
+  readonly count: number;
+}
+
+/**
+ * Raw, dimensional metrics. Kept unbounded (not pre-normalized to 0..1) so
+ * scorers can combine them with tunable thresholds. Interpret zeros as
+ * "no evidence" — e.g. a session with zero assistant turns that used tools
+ * has `sequentialToolTurnPct === 0` by construction.
+ */
+export interface SessionWasteSignals {
+  /** cacheCreation / (cacheCreation + cacheRead). High = thrashing prefix. */
+  readonly cacheThrashRatio: number;
+  /** Number of distinct tool names used in the session. */
+  readonly distinctToolCount: number;
+  /** MCP tool calls / total tool calls. */
+  readonly mcpToolCallPct: number;
+  /** Assistant turns with exactly 1 tool_use / assistant turns with ≥1 tool_use. */
+  readonly sequentialToolTurnPct: number;
+  /** tool_result blocks with is_error=true / total tool_result blocks. */
+  readonly toolFailurePct: number;
+  /** Peak running input-token count observed between compaction boundaries. */
+  readonly peakInputTokensBetweenCompactions: number;
+  /** True when peak input exceeded 150k and no compaction event was observed. */
+  readonly bloatWithoutCompaction: boolean;
+  /** Files read ≥3 times, sorted desc by count. Bounded to top 10. */
+  readonly repeatReads: readonly RepeatReadEntry[];
+  /** Total assistant tool_use blocks counted. */
+  readonly totalToolUseBlocks: number;
+  /** Total tool_result blocks counted. */
+  readonly totalToolResults: number;
+}
+
+/**
+ * Normalized 0..1 waste sub-scores. Each dimension is mapped from the raw
+ * signals using a documented threshold set (see `scoreSessionWaste`).
+ */
+export interface WasteScores {
+  readonly cacheThrash: number;
+  readonly toolPollution: number;
+  readonly sequentialTools: number;
+  readonly toolHammering: number;
+  readonly contextBloat: number;
+  readonly compactionAbsence: number;
+}
+
+/**
+ * Per-session verdict: scores + human-readable flags quoting the evidence
+ * (verbatim file paths, tool names, ratios). Flags are intentionally short
+ * strings so a report can list them without further parsing.
+ */
+export interface WasteVerdict {
+  readonly sessionId: string;
+  readonly scores: WasteScores;
+  readonly overall: number;
+  readonly flags: readonly string[];
 }

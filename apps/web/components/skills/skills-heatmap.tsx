@@ -46,17 +46,17 @@ export function SkillsHeatmap({
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="glass-panel-soft rounded-sm p-4">
-          <p className="eyebrow mb-3">Hour of day</p>
+          <p className="eyebrow mb-3">Hour of day (UTC)</p>
           <HourStrip values={report.perHourOfDay} max={hourMax} />
         </div>
         <div className="glass-panel-soft rounded-sm p-4">
-          <p className="eyebrow mb-3">Day of week</p>
+          <p className="eyebrow mb-3">Day of week (UTC)</p>
           <DayStrip values={report.perDayOfWeek} max={dayMax} />
         </div>
       </div>
 
       <div className="glass-panel-soft rounded-sm p-4">
-        <p className="eyebrow mb-3">Per skill · hour of day</p>
+        <p className="eyebrow mb-3">Per skill · hour of day (UTC)</p>
         {topSkills.length === 0 ? (
           <div className="py-6 text-center text-sm text-muted">No skill invocations to plot.</div>
         ) : (

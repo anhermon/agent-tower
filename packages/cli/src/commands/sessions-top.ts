@@ -33,7 +33,7 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
   const until = readDateFlag(values.until, "until");
 
   const resolved = resolveOrExplain(mode);
-  if (!resolved) return 0;
+  if (!resolved) return 1;
 
   const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
   // `listSessionSummaries` accepts a filter; we only build the range when both
@@ -50,7 +50,8 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
 
   const summaries = await source.listSessionSummaries(filter);
   const sorted = [...summaries].sort((a, b) => compareSummaries(a, b, sortBy));
-  const sliced = sorted.slice(0, limit);
+  const effectiveLimit = Math.max(1, limit);
+  const sliced = sorted.slice(0, effectiveLimit);
 
   if (mode.json) {
     writeJson({

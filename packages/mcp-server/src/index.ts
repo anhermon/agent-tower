@@ -1,9 +1,11 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 import { agentsListTool } from "./tools/agents-list.js";
+import { controlPlaneAuditTool } from "./tools/audit.js";
 import { healthTool } from "./tools/health.js";
 import { sessionsShowTool } from "./tools/sessions-show.js";
 import { sessionsTopTool } from "./tools/sessions-top.js";
+import { sessionsWasteTool } from "./tools/sessions-waste.js";
 import { skillsEfficacyTool } from "./tools/skills-efficacy.js";
 import { skillsTopTool } from "./tools/skills-top.js";
 import { skillsUsageTool } from "./tools/skills-usage.js";
@@ -13,10 +15,12 @@ export const REGISTERED_TOOLS: readonly ToolDefinition[] = [
   healthTool,
   sessionsTopTool,
   sessionsShowTool,
+  sessionsWasteTool,
   skillsTopTool,
   skillsUsageTool,
   skillsEfficacyTool,
   agentsListTool,
+  controlPlaneAuditTool,
 ];
 
 export interface CreateServerOptions {
@@ -91,9 +95,11 @@ export function createServer(options: CreateServerOptions = {}): Server {
 }
 
 export { agentsListTool } from "./tools/agents-list.js";
+export { controlPlaneAuditTool } from "./tools/audit.js";
 export { healthTool } from "./tools/health.js";
 export { sessionsShowTool } from "./tools/sessions-show.js";
 export { sessionsTopTool } from "./tools/sessions-top.js";
+export { sessionsWasteTool } from "./tools/sessions-waste.js";
 export { skillsEfficacyTool } from "./tools/skills-efficacy.js";
 export { skillsTopTool } from "./tools/skills-top.js";
 export { skillsUsageTool } from "./tools/skills-usage.js";

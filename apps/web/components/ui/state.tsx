@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
 
 type StateBlockProps = {
   title: string;
@@ -35,15 +34,16 @@ export function EmptyState({ title, description, action }: StateBlockProps) {
   );
 }
 
-export function ErrorState({ title, description }: StateBlockProps) {
+export function ErrorState({ title, description, action }: StateBlockProps) {
   return (
-    <div className="flex min-h-48 items-center justify-center rounded-md border border-danger/40 bg-danger/[0.08] p-6 text-center">
+    <div
+      role="alert"
+      className="flex min-h-48 items-center justify-center rounded-md border border-danger/40 bg-danger/[0.08] p-6 text-center"
+    >
       <div className="max-w-sm">
         <p className="text-sm font-semibold text-danger">{title}</p>
         <p className="mt-2 text-sm leading-6 text-danger/90">{description}</p>
-        <Button className="mt-4 border-danger/40 bg-transparent text-danger hover:bg-danger/10">
-          Retry
-        </Button>
+        {action ? <div className="mt-4">{action}</div> : null}
       </div>
     </div>
   );

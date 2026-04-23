@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { createInterface } from "node:readline";
 import type { DateRange } from "@control-plane/core";
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
@@ -178,34 +179,43 @@ interface RawEntry {
 }
 
 async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary | null> {
-  let raw: string;
+  // Stream line-by-line. See `readInvocationsFromFile` in usage.ts for the
+  // full rationale — awaiting multi-MB transcript strings inside a Server
+  // Component tree leaks the resolved values into the RSC flight payload in
+  // Next.js 15 + React 19 dev mode.
+  const entries: RawEntry[] = [];
+  let explicitSessionId: string | null = null;
+  let lineIndex = -1;
+
+  let stream: ReturnType<typeof createReadStream>;
   try {
-    raw = await readFile(file.filePath, "utf8");
+    stream = createReadStream(file.filePath, { encoding: "utf8" });
   } catch {
     return null;
   }
-
-  const entries: RawEntry[] = [];
-  const lines = raw.split("\n");
-  let explicitSessionId: string | null = null;
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const trimmed = lines[i]?.trim();
-    if (!trimmed || trimmed.length === 0) continue;
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(trimmed);
-    } catch {
-      continue;
+  try {
+    const rl = createInterface({ input: stream, crlfDelay: Infinity });
+    for await (const line of rl) {
+      lineIndex += 1;
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.length === 0) continue;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        continue;
+      }
+      if (!parsed || typeof parsed !== "object") continue;
+      const entry = parsed as Record<string, unknown>;
+      const type = typeof entry.type === "string" ? entry.type : null;
+      if (!type) continue;
+      const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
+      const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
+      if (!explicitSessionId && sessionId) explicitSessionId = sessionId;
+      entries.push({ lineIndex, type, timestamp, sessionId, raw: entry });
     }
-    if (!parsed || typeof parsed !== "object") continue;
-    const entry = parsed as Record<string, unknown>;
-    const type = typeof entry.type === "string" ? entry.type : null;
-    if (!type) continue;
-    const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
-    const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
-    if (!explicitSessionId && sessionId) explicitSessionId = sessionId;
-    entries.push({ lineIndex: i, type, timestamp, sessionId, raw: entry });
+  } catch {
+    if (entries.length === 0) return null;
   }
 
   const sessionId = explicitSessionId ?? file.sessionId;

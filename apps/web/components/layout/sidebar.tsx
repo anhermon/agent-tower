@@ -41,7 +41,7 @@ export function Sidebar() {
                   "group relative flex h-10 items-center gap-3 rounded-xs px-3 text-sm font-medium transition-all",
                   active
                     ? "bg-accent/15 text-ink shadow-glow"
-                    : "text-muted hover:-translate-y-px hover:bg-white/5 hover:text-ink"
+                    : "text-muted hover:-translate-y-px hover:bg-ink/5 hover:text-ink"
                 )}
                 href={module.href}
                 key={module.key}

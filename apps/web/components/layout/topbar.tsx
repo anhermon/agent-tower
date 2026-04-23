@@ -22,7 +22,7 @@ export function Topbar() {
             search input. */}
         <div
           aria-hidden="true"
-          className="relative flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-xs border border-line/80 bg-white/5 px-3 text-sm text-muted"
+          className="relative flex h-10 min-w-0 flex-1 items-center overflow-hidden rounded-xs border border-line/80 bg-ink/5 px-3 text-sm text-muted"
         >
           <Icon name="search" className="mr-2 h-4 w-4 shrink-0" />
           <span className="truncate">Search sessions, agents, events</span>

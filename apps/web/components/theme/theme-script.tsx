@@ -1,6 +1,9 @@
 const THEME_STORAGE_KEY = "control-plane:theme";
 const DARK_THEME_CLASS = "dark";
 
+// MUST stay aligned with `applyControlPlaneThemeFromStorage` in
+// `lib/theme-document.ts` (this runs before the module graph loads).
+
 const themeScript = `
 (() => {
   try {
@@ -8,10 +11,14 @@ const themeScript = `
     const darkClass = "${DARK_THEME_CLASS}";
     const storedTheme = window.localStorage.getItem(storageKey);
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const shouldUseDark = storedTheme === "dark" || (!storedTheme && prefersDark);
-    document.documentElement.classList.toggle(darkClass, shouldUseDark);
+    const shouldUseDark = storedTheme === "dark" || (storedTheme == null && prefersDark);
+    const root = document.documentElement;
+    root.classList.toggle(darkClass, shouldUseDark);
+    root.dataset.controlPlaneTheme = shouldUseDark ? "dark" : "light";
   } catch {
-    document.documentElement.classList.remove("${DARK_THEME_CLASS}");
+    const root = document.documentElement;
+    root.classList.remove("${DARK_THEME_CLASS}");
+    root.dataset.controlPlaneTheme = "light";
   }
 })();
 `;

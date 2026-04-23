@@ -43,20 +43,6 @@ export function ModulePlaceholder({
   capabilities,
   children,
 }: ModulePlaceholderProps) {
-  // #region debug log H-E
-  fetch("http://127.0.0.1:7735/ingest/3f85a983-40b3-4a81-90a2-c1548bdaf42b", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b38cee" },
-    body: JSON.stringify({
-      sessionId: "b38cee",
-      hypothesisId: "H-E",
-      location: "apps/web/components/layout/module-placeholder.tsx",
-      message: "deferred module spec renders as inert code",
-      data: { module: module.key, docs: module.docs, phase: module.phase },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
   return (
     <section>
       <header className="mb-6 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -104,9 +90,6 @@ export function ModulePlaceholder({
         <code
           className="rounded bg-soft px-1.5 py-0.5 font-mono text-[11px] text-muted-strong"
           title="Relative to the repository root"
-          data-debug-b38cee-module={module.key}
-          data-debug-b38cee-docs={module.docs}
-          data-debug-b38cee-kind="inert-spec-label"
         >
           {module.docs}
         </code>

@@ -28,7 +28,7 @@ export function MobileNav() {
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex h-9 shrink-0 items-center gap-2 rounded-xs px-3 text-sm font-medium transition-colors",
-              active ? "bg-accent/15 text-ink" : "text-muted hover:bg-white/5 hover:text-ink"
+              active ? "bg-accent/15 text-ink" : "text-muted hover:bg-ink/5 hover:text-ink"
             )}
             href={module.href}
             key={module.key}

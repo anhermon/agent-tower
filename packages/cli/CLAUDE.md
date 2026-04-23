@@ -13,7 +13,11 @@
 - `src/data-root.ts` — resolves `CLAUDE_CONTROL_PLANE_DATA_ROOT` → `~/.claude/projects` fallback.
 
 ## Subcommands
-`cp health | sessions top|show | skills top|usage|efficacy | agents list | mcp <stub>`. One `*.ts` + `*.test.ts` pair per command under `src/commands/`. Every command returns a plain object — `output.ts` handles stringification.
+`cp health | audit | sessions top|show|waste | skills top|usage|efficacy | agents list | mcp <stub>`. One `*.ts` + `*.test.ts` pair per command under `src/commands/`. Every command returns a plain object — `output.ts` handles stringification.
+
+**`cp audit`** is the holistic one-shot audit. Bundles top-by-cost, top-by-waste-score, corpus-wide waste aggregates, cold-giant skills, negative-efficacy skills, and per-project breakdown. The rest of the subcommands are single-question tools — prefer `audit` for open-ended efficiency questions, the others for targeted follow-ups.
+
+**`cp sessions waste`** emits a `WasteVerdict` per session (6 sub-scores + overall 0..1 + verbatim flags). Scoring lives in `@control-plane/adapter-claude-code`'s `analytics/waste.ts`; per-session `SessionWasteSignals` are folded during `foldSessionSummary`.
 
 ## Entry Points / Flow
 argv → `cli.ts` parses flags → dispatches to `commands/<name>.ts` → command imports from `@control-plane/adapter-claude-code` (same functions the web app uses) → returns `{ ok, value | reason }` → `output.ts` formats.

@@ -4,11 +4,14 @@ import {
   categorizeTool,
   EMPTY_CACHE_EFFICIENCY,
   estimateCostFromUsage,
+  isMcpTool,
   type ModelUsage,
+  type RepeatReadEntry,
   type SessionCompactionEvent,
   type SessionDerivedFlags,
   type SessionTurnUsage,
   type SessionUsageSummary,
+  type SessionWasteSignals,
   type TurnUsage,
 } from "@control-plane/core";
 import type {
@@ -29,7 +32,21 @@ export interface FoldSessionOptions {
   readonly sessionId?: string;
   readonly cwd?: string;
   readonly includeTurns?: boolean;
+  /**
+   * Optional sink: the fold will populate this map with `toolName -> errorCount`
+   * (attributed via tool_use_id → tool_result.is_error). Callers that aggregate
+   * across sessions merge these into `ToolSummary.errorCount`. Omit to skip
+   * the attribution cost entirely (a no-op `Map` allocation).
+   */
+  readonly toolErrorSink?: Map<string, number>;
 }
+
+/** Threshold for flagging sessions that grew past normal context without compacting. */
+export const BLOAT_WITHOUT_COMPACTION_THRESHOLD = 150_000;
+/** Minimum repetition count before a file_path is surfaced in `waste.repeatReads`. */
+export const REPEAT_READ_MIN_COUNT = 3;
+/** Upper bound on how many repeat-read entries we surface (top-N by count). */
+export const REPEAT_READ_TOP_N = 10;
 
 /**
  * Derive a canonical `SessionUsageSummary` from raw Claude Code JSONL entries.
@@ -73,6 +90,22 @@ export function foldSessionSummary(
   let cwd: string | undefined = options.cwd;
   let turnIndex = 0;
 
+  // Waste-signal accumulators. All updated in the same pass as the base fold.
+  let totalToolUseBlocks = 0;
+  let totalToolResults = 0;
+  let toolFailures = 0;
+  let mcpToolCalls = 0;
+  let singleToolTurns = 0;
+  let turnsWithTools = 0;
+  let peakInputTokensBetweenCompactions = 0;
+  let runningInputPeak = 0;
+  const distinctToolNames = new Set<string>();
+  const readFileCounts = new Map<string, number>();
+  const toolErrorSink = options.toolErrorSink;
+  // Track tool_use_id -> tool name so we can attribute tool_result errors back
+  // to the originating tool even when the result arrives in a later user turn.
+  const toolUseIdToName = new Map<string, string>();
+
   // Pass 1: collect turn_duration system events (keyed by parentUuid) so we
   // can attach them to their assistant turn in pass 2.
   for (const entry of entries) {
@@ -99,6 +132,27 @@ export function foldSessionSummary(
     if (entry.type === "user") {
       userMessageCount += 1;
       turnIndex += 1;
+      // Walk user content for tool_result blocks — this is where Claude Code
+      // emits tool outcomes (not on the assistant turn). `is_error === true`
+      // signals a tool failure we attribute to the originating tool name.
+      const userBlocks = (entry as ClaudeUserEntry).message?.content;
+      if (Array.isArray(userBlocks)) {
+        for (const block of userBlocks) {
+          if (block.type === "tool_result") {
+            totalToolResults += 1;
+            if (block.is_error === true) {
+              toolFailures += 1;
+              if (toolErrorSink) {
+                const id = typeof block.tool_use_id === "string" ? block.tool_use_id : undefined;
+                const toolName = id ? toolUseIdToName.get(id) : undefined;
+                if (toolName) {
+                  toolErrorSink.set(toolName, (toolErrorSink.get(toolName) ?? 0) + 1);
+                }
+              }
+            }
+          }
+        }
+      }
       if (options.includeTurns) {
         const uuid = entry.uuid;
         if (uuid) {
@@ -123,6 +177,17 @@ export function foldSessionSummary(
         usage.outputTokens += turnUsage.outputTokens;
         usage.cacheReadInputTokens += turnUsage.cacheReadInputTokens;
         usage.cacheCreationInputTokens += turnUsage.cacheCreationInputTokens;
+        // Running input-token peak reflects how large the prompt grew at this
+        // assistant turn; reset on compact_boundary below. Peak across the
+        // session is the max observed in any single inter-compaction window.
+        const windowInput =
+          turnUsage.inputTokens +
+          turnUsage.cacheReadInputTokens +
+          turnUsage.cacheCreationInputTokens;
+        if (windowInput > runningInputPeak) runningInputPeak = windowInput;
+        if (runningInputPeak > peakInputTokensBetweenCompactions) {
+          peakInputTokensBetweenCompactions = runningInputPeak;
+        }
       }
 
       const turnCost = model && turnUsage ? estimateCostFromUsage(model, turnUsage) : 0;
@@ -141,10 +206,34 @@ export function foldSessionSummary(
       }
 
       const blocks = assistant.message?.content;
+      let toolUsesThisTurn = 0;
       if (Array.isArray(blocks)) {
         for (const block of blocks) {
           classifyBlock(block, toolCounts, flags);
+          if (block.type === "tool_use") {
+            const name = typeof block.name === "string" ? block.name : "";
+            if (!name) continue;
+            toolUsesThisTurn += 1;
+            totalToolUseBlocks += 1;
+            distinctToolNames.add(name);
+            if (isMcpTool(name)) mcpToolCalls += 1;
+            // Remember the tool_use id so a later tool_result with is_error
+            // can be attributed back to this tool name.
+            const id = typeof block.id === "string" ? block.id : undefined;
+            if (id) toolUseIdToName.set(id, name);
+            if (name === "Read") {
+              const input = block.input as { readonly file_path?: unknown } | undefined;
+              const filePath = typeof input?.file_path === "string" ? input.file_path : undefined;
+              if (filePath) {
+                readFileCounts.set(filePath, (readFileCounts.get(filePath) ?? 0) + 1);
+              }
+            }
+          }
         }
+      }
+      if (toolUsesThisTurn >= 1) {
+        turnsWithTools += 1;
+        if (toolUsesThisTurn === 1) singleToolTurns += 1;
       }
       turnIndex += 1;
       continue;
@@ -171,6 +260,9 @@ export function foldSessionSummary(
           preTokens: meta.preTokens ?? 0,
           turnIndex,
         });
+        // New inter-compaction window begins here; reset running peak but
+        // keep `peakInputTokensBetweenCompactions` (max across windows).
+        runningInputPeak = 0;
       }
     }
   }
@@ -181,6 +273,34 @@ export function foldSessionSummary(
     : EMPTY_CACHE_EFFICIENCY;
 
   const durationMs = startTime && endTime ? Math.max(0, isoDelta(startTime, endTime)) : undefined;
+
+  const cacheDenominator = usage.cacheCreationInputTokens + usage.cacheReadInputTokens;
+  const cacheThrashRatio =
+    cacheDenominator > 0 ? usage.cacheCreationInputTokens / cacheDenominator : 0;
+  const mcpToolCallPct = totalToolUseBlocks > 0 ? mcpToolCalls / totalToolUseBlocks : 0;
+  const sequentialToolTurnPct = turnsWithTools > 0 ? singleToolTurns / turnsWithTools : 0;
+  const toolFailurePct = totalToolResults > 0 ? toolFailures / totalToolResults : 0;
+
+  const repeatReads: RepeatReadEntry[] = [...readFileCounts.entries()]
+    .filter(([, count]) => count >= REPEAT_READ_MIN_COUNT)
+    .map(([filePath, count]) => ({ filePath, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, REPEAT_READ_TOP_N);
+
+  const waste: SessionWasteSignals = {
+    cacheThrashRatio,
+    distinctToolCount: distinctToolNames.size,
+    mcpToolCallPct,
+    sequentialToolTurnPct,
+    toolFailurePct,
+    peakInputTokensBetweenCompactions,
+    bloatWithoutCompaction:
+      peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
+      compactions.length === 0,
+    repeatReads,
+    totalToolUseBlocks,
+    totalToolResults,
+  };
 
   return {
     sessionId,
@@ -200,6 +320,7 @@ export function foldSessionSummary(
     ...(version ? { version } : {}),
     ...(cwd ? { cwd } : {}),
     ...(options.includeTurns ? { turns: turnsOut } : {}),
+    waste,
   };
 }
 
