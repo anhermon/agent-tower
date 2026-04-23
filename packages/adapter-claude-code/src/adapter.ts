@@ -15,8 +15,13 @@ import { foldCostBreakdown } from "./analytics/cost.js";
 import { foldProjectSummaries } from "./analytics/project-summary.js";
 import { foldReplay } from "./analytics/replay.js";
 import { foldSessionSummary } from "./analytics/session-summary.js";
+import {
+  computeSkillTurnAttribution,
+  type SkillTurnAttribution,
+} from "./analytics/skill-turn-attribution.js";
 import { foldTimeseries } from "./analytics/timeseries.js";
 import { foldToolAnalytics } from "./analytics/tools.js";
+import { computeTurnTimeline, type TurnTimeline } from "./analytics/turn-timeline.js";
 import {
   type NormalizedTranscript,
   type NormalizeOptions,
@@ -132,6 +137,26 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
     const file = await this.findSessionFile(sessionId);
     if (!file) return undefined;
     return this.summaryFor(file);
+  }
+
+  /**
+   * Load the per-turn timeline + per-turn skill attribution for a single
+   * session. Returns `undefined` when the session id is unknown. Reuses the
+   * `parseCache` so a `loadSessionUsage` + `loadSessionTimeline` pair on the
+   * same session only reads the JSONL once.
+   */
+  async loadSessionTimeline(
+    sessionId: string
+  ): Promise<
+    undefined | { readonly timeline: TurnTimeline; readonly skillAttribution: SkillTurnAttribution }
+  > {
+    const file = await this.findSessionFile(sessionId);
+    if (!file) return undefined;
+    const parsed = await this.parseFile(file);
+    if (parsed.entries.length === 0) return undefined;
+    const timeline = computeTurnTimeline(parsed.entries, { sessionId });
+    const skillAttribution = computeSkillTurnAttribution(parsed.entries, { sessionId });
+    return { timeline, skillAttribution };
   }
 
   async loadSessionReplay(sessionId: string): Promise<ReplayData | undefined> {

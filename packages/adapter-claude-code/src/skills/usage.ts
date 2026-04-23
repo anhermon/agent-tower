@@ -6,7 +6,10 @@ import type { DateRange } from "@control-plane/core";
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
 
+import { detectSkillFromBlock } from "./detect.js";
 import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
+
+import type { ClaudeContentBlock } from "../types.js";
 
 /**
  * Extracts Skill-tool invocation telemetry from locally stored Claude Code
@@ -177,22 +180,6 @@ function getAssistantContent(entry: Record<string, unknown>): readonly unknown[]
 }
 
 /**
- * Extract the `skill` key from a single assistant content block, or `null` if
- * the block is not a `Skill` tool_use with a non-empty skill string.
- */
-function extractSkillKey(block: unknown): string | null {
-  if (!block || typeof block !== "object") return null;
-  const blk = block as Record<string, unknown>;
-  if (blk.type !== "tool_use" || blk.name !== "Skill") return null;
-  const input = blk.input;
-  if (!input || typeof input !== "object") return null;
-  const skill = (input as Record<string, unknown>).skill;
-  if (typeof skill !== "string") return null;
-  const trimmedSkill = skill.trim();
-  return trimmedSkill.length === 0 ? null : trimmedSkill;
-}
-
-/**
  * Map a parsed assistant entry into zero-or-more `RawInvocation` records.
  * Non-Skill tool_use blocks are ignored.
  */
@@ -206,7 +193,9 @@ function invocationsFromEntry(entry: Record<string, unknown>): RawInvocation[] {
 
   const out: RawInvocation[] = [];
   for (const block of content) {
-    const skillKey = extractSkillKey(block);
+    // Skill-invocation detection is shared with `analytics/skill-turn-attribution.ts`
+    // via `detectSkillFromBlock` — never fork the regex/shape check here.
+    const skillKey = detectSkillFromBlock(block as ClaudeContentBlock);
     if (skillKey !== null) {
       out.push({ skillKey, timestamp, sessionId, cwd });
     }

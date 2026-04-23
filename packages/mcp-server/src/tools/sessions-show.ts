@@ -5,6 +5,7 @@ import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./t
 interface ParsedSessionsShowInput {
   readonly sessionId: string;
   readonly includeTurns: boolean;
+  readonly includeTimeline: boolean;
 }
 
 function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: string } {
@@ -14,16 +15,18 @@ function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: s
     return { error: "sessionId is required and must be a non-empty string" };
   }
   const includeTurns = r.includeTurns;
+  const includeTimeline = r.includeTimeline;
   return {
     sessionId,
     includeTurns: typeof includeTurns === "boolean" ? includeTurns : false,
+    includeTimeline: typeof includeTimeline === "boolean" ? includeTimeline : false,
   };
 }
 
 export const sessionsShowTool: ToolDefinition = {
   name: "sessions_show",
   description:
-    "Read-only. Loads a single session usage summary by session id. Turn-by-turn detail is omitted unless includeTurns=true.",
+    "Read-only. Loads a single session usage summary by session id. Turn-by-turn detail is omitted unless includeTurns=true. Pass includeTimeline=true to attach per-turn timeline + skill-to-turn attribution.",
   inputSchema: {
     type: "object",
     properties: {
@@ -34,6 +37,11 @@ export const sessionsShowTool: ToolDefinition = {
       includeTurns: {
         type: "boolean",
         description: "When true, include the per-turn usage breakdown. Defaults to false.",
+      },
+      includeTimeline: {
+        type: "boolean",
+        description:
+          "When true, include `timeline` (per-turn tool/token rollup with wastedTurn flag) and `skillAttribution` (per-turn skills activated + cumulative active set). Defaults to false.",
       },
     },
     required: ["sessionId"],
@@ -58,17 +66,29 @@ export const sessionsShowTool: ToolDefinition = {
           message: `No session with id ${parsed.sessionId}`,
         };
       }
-      const projected = parsed.includeTurns
+      const projectedBase = parsed.includeTurns
         ? summary
         : (() => {
             const { turns: _turns, ...rest } = summary;
             void _turns;
             return rest;
           })();
+      let projected: unknown = projectedBase;
+      if (parsed.includeTimeline) {
+        const bundle = await source.loadSessionTimeline(parsed.sessionId);
+        if (bundle) {
+          projected = {
+            ...(projectedBase as object),
+            timeline: bundle.timeline,
+            skillAttribution: bundle.skillAttribution,
+          };
+        }
+      }
       return {
         ok: true,
         sessionId: parsed.sessionId,
         includeTurns: parsed.includeTurns,
+        includeTimeline: parsed.includeTimeline,
         session: projected,
       };
     } catch (error) {
