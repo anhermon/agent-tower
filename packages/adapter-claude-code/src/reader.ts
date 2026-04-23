@@ -1,11 +1,12 @@
 import { createReadStream } from "node:fs";
-import { readdir, stat } from "node:fs/promises";
+import { open, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { createInterface } from "node:readline";
 
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
+  ClaudeMessageContent,
   ClaudeSummaryEntry,
   ClaudeTranscriptEntry,
   ClaudeUserEntry,
@@ -232,6 +233,119 @@ export async function readTranscriptPreview(
     firstTimestamp: state.firstTimestamp,
     turnCountLowerBound: state.turnCountLowerBound,
   };
+}
+
+export interface TranscriptTail {
+  readonly role: "user" | "assistant";
+  readonly text: string;
+}
+
+/**
+ * Reads the last ~`windowBytes` of a JSONL transcript and returns the most
+ * recent user or assistant text block. Skips tool_use / tool_result blocks
+ * so the excerpt reflects actual conversation turns.
+ *
+ * Intended for live event enrichment: cheap (single pread + parse of a bounded
+ * tail window) and tolerant (returns null on any error or missing text).
+ */
+export async function readTranscriptTail(
+  filePath: string,
+  options: { readonly windowBytes?: number; readonly maxChars?: number } = {}
+): Promise<TranscriptTail | null> {
+  const windowBytes = Math.max(1024, options.windowBytes ?? 32_768);
+  const maxChars = Math.max(20, options.maxChars ?? 200);
+
+  let handle: Awaited<ReturnType<typeof open>> | null = null;
+  try {
+    handle = await open(filePath, "r");
+    const st = await handle.stat();
+    if (st.size === 0) return null;
+    const lines = await readTailLines(handle, st.size, windowBytes);
+    return scanLinesForTail(lines, maxChars);
+  } catch {
+    return null;
+  } finally {
+    if (handle) {
+      try {
+        await handle.close();
+      } catch {
+        // swallow
+      }
+    }
+  }
+}
+
+async function readTailLines(
+  handle: Awaited<ReturnType<typeof open>>,
+  size: number,
+  windowBytes: number
+): Promise<string[]> {
+  const readLen = Math.min(size, windowBytes);
+  const start = size - readLen;
+  const buf = Buffer.alloc(readLen);
+  await handle.read(buf, 0, readLen, start);
+  const text = buf.toString("utf8");
+  return (start === 0 ? text : text.slice(text.indexOf("\n") + 1)).split("\n");
+}
+
+function scanLinesForTail(lines: string[], maxChars: number): TranscriptTail | null {
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    const trimmed = lines[i]!.trim();
+    if (trimmed.length === 0) continue;
+    let parsed: ClaudeTranscriptEntry;
+    try {
+      parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
+    } catch {
+      continue;
+    }
+    const tail = pickTailFromEntry(parsed, maxChars);
+    if (tail) return tail;
+  }
+  return null;
+}
+
+function pickTailFromEntry(entry: ClaudeTranscriptEntry, maxChars: number): TranscriptTail | null {
+  if (entry.type === "user") {
+    const content = (entry as ClaudeUserEntry).message?.content;
+    const text = extractLastTextFromContent(content);
+    if (text) return { role: "user", text: truncateTail(text, maxChars) };
+    return null;
+  }
+  if (entry.type === "assistant") {
+    const content = (entry as ClaudeAssistantEntry).message?.content;
+    const text = extractLastTextFromContent(content);
+    if (text) return { role: "assistant", text: truncateTail(text, maxChars) };
+    return null;
+  }
+  return null;
+}
+
+function extractLastTextFromContent(content: ClaudeMessageContent | undefined): string | null {
+  if (typeof content === "string") return sanitizeTailText(content);
+  if (!Array.isArray(content)) return null;
+  const blocks = content as ClaudeContentBlock[];
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    const block = blocks[i]!;
+    const text = pickText(block);
+    if (text) {
+      const cleaned = sanitizeTailText(text);
+      if (cleaned) return cleaned;
+    }
+  }
+  return null;
+}
+
+function sanitizeTailText(text: string): string | null {
+  let stripped = text.replace(NOISE_TAG_BLOCK, " ");
+  stripped = stripped.replace(NOISE_SELF_CLOSING, " ");
+  stripped = stripped.replace(STRAY_TAG, " ");
+  const collapsed = stripped.replace(/\s+/g, " ").trim();
+  return collapsed.length === 0 ? null : collapsed;
+}
+
+function truncateTail(text: string, max: number): string {
+  if (text.length <= max) return text;
+  return `${text.slice(0, max - 1).trimEnd()}…`;
 }
 
 function extractFirstUserText(

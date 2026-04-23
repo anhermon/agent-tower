@@ -8,6 +8,7 @@ import { Sparkline } from "@/components/sessions/charts/sparkline";
 import { TokenBreakdownBars } from "@/components/sessions/charts/token-breakdown-bars";
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
+import { LiveActivityPanel } from "@/components/sessions/live-activity-panel";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { formatCost, formatTokens } from "@/lib/format";
 import { getCostBreakdown, getOverview, listProjects, type Result } from "@/lib/sessions-analytics";
@@ -101,6 +102,8 @@ export default async function SessionsOverviewPage({
           ariaLabel="Cost sparkline"
         />
       </div>
+
+      <LiveActivityPanel />
 
       {/* Usage over time + Model distribution */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">

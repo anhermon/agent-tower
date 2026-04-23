@@ -3,9 +3,9 @@ import { type FSWatcher, watch } from "node:fs";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
-import type { SessionLiveEvent } from "@control-plane/core";
+import type { SessionLiveEvent, SessionLiveSnapshot } from "@control-plane/core";
 
-import { getConfiguredDataRoot } from "@/lib/sessions-source";
+import { buildLiveSnapshot, getConfiguredDataRoot } from "@/lib/sessions-source";
 import { withAudit } from "@/lib/with-audit";
 
 /**
@@ -112,7 +112,7 @@ async function startWatchers(
   // whose filename is the new directory. Re-attach a per-project watcher
   // when that happens.
   try {
-    const rootWatcher = watch(dataRoot, { persistent: false }, (eventType, filename) => {
+    const rootWatcher = watch(dataRoot, { persistent: false }, (_eventType, filename) => {
       if (closed || !filename) return;
       const name = filename.toString();
       // Only non-dotfile entries; the adapter ignores them anyway.
@@ -183,11 +183,13 @@ async function startWatchers(
     const type: SessionLiveEvent["type"] = isNewSessionFile
       ? "session-created"
       : "session-appended";
+    const snapshot = (await safeBuildSnapshot(sessionId, filePath)) ?? undefined;
     const envelope = buildEnvelope({
       type,
       sessionId,
       projectSlug,
       occurredAt,
+      snapshot,
     });
     try {
       controller.enqueue(encode(`data: ${JSON.stringify(envelope)}\n\n`));
@@ -210,8 +212,29 @@ function sessionFileKey(projectSlug: string, sessionId: string): string {
   return `${projectSlug}:${sessionId}`;
 }
 
-function buildEnvelope(event: SessionLiveEvent): { readonly event: SessionLiveEvent } {
+function buildEnvelope(event: SessionLiveEvent & { readonly snapshot?: SessionLiveSnapshot }): {
+  readonly event: SessionLiveEvent;
+} {
+  if (!event.snapshot) {
+    const { snapshot: _discarded, ...rest } = event;
+    return { event: rest };
+  }
   return { event };
+}
+
+const SNAPSHOT_TIMEOUT_MS = 1_500;
+async function safeBuildSnapshot(
+  sessionId: string,
+  filePath: string
+): Promise<SessionLiveSnapshot | null> {
+  try {
+    return await Promise.race([
+      buildLiveSnapshot(sessionId, filePath),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), SNAPSHOT_TIMEOUT_MS)),
+    ]);
+  } catch {
+    return null;
+  }
 }
 
 async function safeListDir(dir: string): Promise<readonly string[]> {

@@ -9,6 +9,7 @@ import {
   type NormalizedTranscript,
   type ResolvedDataRoot,
   readTranscriptPreview,
+  readTranscriptTail,
   resolveDataRoot,
   type TranscriptPreview,
 } from "@control-plane/adapter-claude-code";
@@ -18,6 +19,7 @@ import type {
   ProjectSummary,
   ReplayData,
   SessionDerivedFlags,
+  SessionLiveSnapshot,
   SessionUsageSummary,
   Timeseries,
   ToolAnalytics,
@@ -326,4 +328,114 @@ export async function loadToolAnalyticsOrEmpty(): Promise<Result<ToolAnalytics>>
   } catch (error) {
     return errResult(error);
   }
+}
+
+// Rough default context-window cap (tokens) for percent display. All current
+// Claude models expose a 200k context by default; the 1M-context Opus variant
+// is opt-in. Keeping a single constant avoids leaking a model-window table
+// into the UI layer.
+const DEFAULT_CONTEXT_WINDOW_TOKENS = 200_000;
+
+/**
+ * Build a lightweight `SessionLiveSnapshot` for the given session file. Used
+ * by `/api/events` to decorate live fs-watch emissions with top-level metrics
+ * and a short conversation tail so the Live Activity panel can render a full
+ * row without a second fetch. Best-effort: every branch is tolerant and
+ * returns `null` on any failure instead of throwing.
+ */
+export async function buildLiveSnapshot(
+  sessionId: string,
+  filePath: string
+): Promise<SessionLiveSnapshot | null> {
+  const analytics = getConfiguredAnalyticsSource();
+  if (!analytics) return null;
+
+  const [summary, tail, preview] = await Promise.all([
+    analytics.loadSessionUsage(sessionId).catch(() => undefined),
+    readTranscriptTail(filePath).catch(() => null),
+    readTranscriptPreview(filePath, { maxLines: 20 }).catch(() => null),
+  ]);
+
+  if (!summary && !tail && !preview) return null;
+  return assembleSnapshot(summary, tail, preview);
+}
+
+function assembleSnapshotTokens(
+  summary: SessionUsageSummary | undefined
+): Pick<
+  SessionLiveSnapshot,
+  "inputTokens" | "outputTokens" | "cacheReadTokens" | "cacheCreationTokens"
+> {
+  return {
+    inputTokens: summary?.usage.inputTokens,
+    outputTokens: summary?.usage.outputTokens,
+    cacheReadTokens: summary?.usage.cacheReadInputTokens,
+    cacheCreationTokens: summary?.usage.cacheCreationInputTokens,
+  };
+}
+
+function assembleSnapshotCounts(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): Pick<SessionLiveSnapshot, "turns" | "toolCallCount" | "subagentCount" | "peakInputTokens"> {
+  return {
+    turns: summary
+      ? summary.userMessageCount + summary.assistantMessageCount
+      : preview?.turnCountLowerBound,
+    toolCallCount: summary
+      ? Object.values(summary.toolCounts).reduce((acc, n) => acc + n, 0)
+      : undefined,
+    subagentCount: summary?.toolCounts.Task,
+    peakInputTokens: summary?.waste?.peakInputTokensBetweenCompactions,
+  };
+}
+
+function resolveModel(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): string | null {
+  if (summary?.model) return summary.model;
+  return preview?.model ?? null;
+}
+
+function resolveTitle(preview: TranscriptPreview | null): string | null {
+  if (preview?.title) return preview.title;
+  return preview?.firstUserText ?? null;
+}
+
+function assembleSnapshotMeta(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): Pick<
+  SessionLiveSnapshot,
+  "model" | "contextPercent" | "estimatedCostUsd" | "durationMs" | "flags" | "title"
+> {
+  return {
+    model: resolveModel(summary, preview),
+    contextPercent: computeContextPercent(summary),
+    estimatedCostUsd: summary?.estimatedCostUsd,
+    durationMs: summary?.durationMs,
+    flags: summary?.flags,
+    title: resolveTitle(preview),
+  };
+}
+
+function assembleSnapshot(
+  summary: SessionUsageSummary | undefined,
+  tail: Awaited<ReturnType<typeof readTranscriptTail>>,
+  preview: TranscriptPreview | null
+): SessionLiveSnapshot {
+  return {
+    ...assembleSnapshotMeta(summary, preview),
+    ...assembleSnapshotTokens(summary),
+    ...assembleSnapshotCounts(summary, preview),
+    tail: tail ?? null,
+  };
+}
+
+function computeContextPercent(summary: SessionUsageSummary | undefined): number | undefined {
+  if (!summary) return undefined;
+  const peak = summary.waste?.peakInputTokensBetweenCompactions;
+  if (typeof peak !== "number" || peak <= 0) return undefined;
+  return Math.min(1, peak / DEFAULT_CONTEXT_WINDOW_TOKENS);
 }
