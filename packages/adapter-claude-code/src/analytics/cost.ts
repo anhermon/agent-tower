@@ -23,8 +23,15 @@ export interface CostFoldOptions {
 }
 
 type ModelUsageMutable = Mutable<ModelUsage>;
-type DailyBucket = { total: number; models: Record<string, number> };
-type ProjectBucket = { displayName: string; cost: number; usage: ModelUsageMutable };
+interface DailyBucket {
+  total: number;
+  models: Record<string, number>;
+}
+interface ProjectBucket {
+  displayName: string;
+  cost: number;
+  usage: ModelUsageMutable;
+}
 
 /**
  * Pure cost breakdown fold. Returns per-model, per-day, per-project cost
@@ -56,40 +63,24 @@ export function foldCostBreakdown(
   let dominantHits = 0;
 
   for (const s of sessions) {
-    if (s.model) {
-      const hits = (byModelUsage.get(s.model)?.inputTokens ?? 0) + s.usage.inputTokens;
-      if (hits > dominantHits) {
-        dominantHits = hits;
-        dominantModel = s.model;
-      }
-      accumulateModelUsage(byModelUsage, byModelCost, s.model, s);
-    }
-    accumulateOverallUsage(overallUsage, s);
+    const result = processSession(
+      s,
+      { byModelUsage, byModelCost, overallUsage, daily, byProject, dominantModel, dominantHits },
+      options
+    );
+    dominantModel = result.dominantModel;
+    dominantHits = result.dominantHits;
     totalUsd += s.estimatedCostUsd;
-
-    if (s.startTime) {
-      const date = s.startTime.slice(0, 10);
-      if (!minDate || date < minDate) minDate = date;
-      if (!maxDate || date > maxDate) maxDate = date;
-      accumulateDaily(daily, date, s);
-    }
-
-    const projectKey = options.projectKey ? options.projectKey(s) : defaultProjectKey(s);
-    accumulateProject(byProject, projectKey, s);
+    const dateUpdate = updateDateRange(s.startTime, minDate, maxDate);
+    minDate = dateUpdate.minDate;
+    maxDate = dateUpdate.maxDate;
   }
 
   const models = buildModelRows(byModelUsage, byModelCost);
   const dailyArr = buildDailySeries(daily);
   const projectArr = buildProjectRows(byProject);
-
-  const overall: CacheEfficiency = dominantModel
-    ? cacheEfficiency(dominantModel, overallUsage)
-    : EMPTY_CACHE_EFFICIENCY;
-
-  const range: DateRange = options.range ?? {
-    from: minDate ?? "1970-01-01",
-    to: maxDate ?? "1970-01-01",
-  };
+  const overall = buildCacheEfficiency(dominantModel, overallUsage);
+  const range: DateRange = options.range ?? buildDateRange(minDate, maxDate);
 
   return {
     range,
@@ -99,6 +90,63 @@ export function foldCostBreakdown(
     byProject: projectArr,
     overallCacheEfficiency: overall,
   };
+}
+
+function updateDateRange(
+  startTime: string | null | undefined,
+  minDate: string | undefined,
+  maxDate: string | undefined
+): { minDate: string | undefined; maxDate: string | undefined } {
+  if (!startTime) return { minDate, maxDate };
+  const date = startTime.slice(0, 10);
+  return {
+    minDate: !minDate || date < minDate ? date : minDate,
+    maxDate: !maxDate || date > maxDate ? date : maxDate,
+  };
+}
+
+function buildCacheEfficiency(
+  dominantModel: string | null,
+  overallUsage: ModelUsageMutable
+): CacheEfficiency {
+  return dominantModel ? cacheEfficiency(dominantModel, overallUsage) : EMPTY_CACHE_EFFICIENCY;
+}
+
+function buildDateRange(minDate: string | undefined, maxDate: string | undefined): DateRange {
+  return { from: minDate ?? "1970-01-01", to: maxDate ?? "1970-01-01" };
+}
+
+interface SessionAccumulators {
+  byModelUsage: Map<string, ModelUsageMutable>;
+  byModelCost: Map<string, number>;
+  overallUsage: ModelUsageMutable;
+  daily: Map<string, DailyBucket>;
+  byProject: Map<string, ProjectBucket>;
+  dominantModel: string | null;
+  dominantHits: number;
+}
+
+function processSession(
+  s: SessionUsageSummary,
+  acc: SessionAccumulators,
+  options: CostFoldOptions
+): { dominantModel: string | null; dominantHits: number } {
+  let { dominantModel, dominantHits } = acc;
+  if (s.model) {
+    const hits = (acc.byModelUsage.get(s.model)?.inputTokens ?? 0) + s.usage.inputTokens;
+    if (hits > dominantHits) {
+      dominantHits = hits;
+      dominantModel = s.model;
+    }
+    accumulateModelUsage(acc.byModelUsage, acc.byModelCost, s.model, s);
+  }
+  accumulateOverallUsage(acc.overallUsage, s);
+  if (s.startTime) {
+    accumulateDaily(acc.daily, s.startTime.slice(0, 10), s);
+  }
+  const projectKey = options.projectKey ? options.projectKey(s) : defaultProjectKey(s);
+  accumulateProject(acc.byProject, projectKey, s);
+  return { dominantModel, dominantHits };
 }
 
 function accumulateModelUsage(
@@ -209,6 +257,6 @@ function defaultProjectKey(s: SessionUsageSummary): {
   const parts = cwd.split("/").filter(Boolean);
   return {
     id: cwd,
-    displayName: parts.length > 0 ? parts[parts.length - 1]! : cwd,
+    displayName: parts.at(-1) ?? cwd,
   };
 }

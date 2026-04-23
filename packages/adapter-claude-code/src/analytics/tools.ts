@@ -11,8 +11,15 @@ import {
   type VersionRecord,
 } from "@control-plane/core";
 
-type McpBucket = { tools: Map<string, number>; sessions: Set<string> };
-type VersionBucket = { sessionCount: number; firstSeen?: string; lastSeen?: string };
+interface McpBucket {
+  tools: Map<string, number>;
+  sessions: Set<string>;
+}
+interface VersionBucket {
+  sessionCount: number;
+  firstSeen?: string;
+  lastSeen?: string;
+}
 
 /**
  * Aggregated tools + features analytics computed from per-session summaries.

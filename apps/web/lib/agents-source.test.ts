@@ -1,5 +1,4 @@
 import { mkdir, mkdtemp, rm, utimes, writeFile } from "node:fs/promises";
-import type * as Os from "node:os";
 import * as os from "node:os";
 import path from "node:path";
 
@@ -10,7 +9,7 @@ import { AGENT_STATUSES } from "@control-plane/core";
 let mockedHome: string | null = null;
 
 vi.mock("node:os", async () => {
-  const actual = await vi.importActual<typeof Os>("node:os");
+  const actual = await vi.importActual<typeof os>("node:os");
   return {
     ...actual,
     homedir: () => mockedHome ?? actual.homedir(),
