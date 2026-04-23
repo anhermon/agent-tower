@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 import {
   AGENT_ANIMATION_BASE_STATES,
   AGENT_ANIMATION_OVERLAYS,

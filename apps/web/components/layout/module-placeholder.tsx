@@ -68,7 +68,7 @@ export function ModulePlaceholder({
             <li
               key={capability.label}
               className="glass-panel-soft rounded-sm p-4 opacity-70"
-              aria-disabled="true"
+              data-disabled="true"
             >
               <p className="eyebrow">{capability.label}</p>
               <p className="mt-2 text-2xl font-semibold text-muted-strong">—</p>

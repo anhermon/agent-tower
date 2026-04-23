@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation";
 
 import { Icon } from "@/components/ui/icon";
 import { modules } from "@/lib/modules";
-import type { ModuleDefinition } from "@/types/control-plane";
 import { cn } from "@/lib/utils";
+
+import type { ModuleDefinition } from "@/types/control-plane";
 
 function isModuleActive(module: ModuleDefinition, pathname: string): boolean {
   if (module.href === "/") return pathname === "/";

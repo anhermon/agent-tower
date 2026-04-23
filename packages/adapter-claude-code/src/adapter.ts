@@ -163,7 +163,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async collectAllSummaries(): Promise<readonly SessionUsageSummary[]> {
     const files = await listSessionFiles(this.root);
     const concurrency = 16;
-    const results: SessionUsageSummary[] = new Array(files.length);
+    const results: SessionUsageSummary[] = new Array<SessionUsageSummary>(files.length);
     let cursor = 0;
     const worker = async (): Promise<void> => {
       while (true) {

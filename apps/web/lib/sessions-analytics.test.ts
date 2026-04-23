@@ -342,7 +342,7 @@ describe("sessions-analytics", () => {
           // Promise is tagged with the correct element type so the non-Error
           // rejection flows back through the source's declared signature.
           const rejection: Promise<readonly ProjectSummary[]> =
-            Promise.reject("plain-string-rejection");
+            Promise.reject("plain-string-rejection"); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
           return rejection;
         },
         listSessionSummaries: () => Promise.resolve([]),

@@ -27,9 +27,14 @@ import { withAudit } from "@/lib/with-audit";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-async function exportHandler(request: Request): Promise<Response> {
-  const url = new URL(request.url);
+interface ExportParams {
+  ids: string[] | undefined;
+  projectId: string | undefined;
+  range: { from: string; to: string } | undefined;
+  scope: SessionExportScope;
+}
 
+function parseExportParams(url: URL): ExportParams {
   const idsRaw = url.searchParams.get("ids");
   const projectId = url.searchParams.get("projectId") ?? undefined;
   const from = url.searchParams.get("from") ?? undefined;
@@ -44,18 +49,42 @@ async function exportHandler(request: Request): Promise<Response> {
     : undefined;
 
   const range = from && to ? { from, to } : undefined;
+  const scope = resolveScope(rawScope, ids, projectId, range);
 
-  const scope: SessionExportScope = resolveScope(rawScope, ids, projectId, range);
+  return { ids, projectId, range, scope };
+}
+
+function buildSummariesQuery(
+  projectId: string | undefined,
+  range: { from: string; to: string } | undefined
+) {
+  if (projectId || range) {
+    return {
+      ...(projectId ? { projectId } : {}),
+      ...(range ? { range } : {}),
+    };
+  }
+  return undefined;
+}
+
+function buildExportRows(
+  summaries: readonly SessionExportRow["summary"][],
+  ids: string[] | undefined
+): SessionExportRow[] {
+  const idSet = ids && ids.length > 0 ? new Set(ids) : null;
+  const filtered = idSet ? summaries.filter((s) => idSet.has(s.sessionId)) : summaries;
+  return filtered.map((summary) => ({
+    summary,
+    flags: summary.flags,
+    compactions: summary.compactions,
+  }));
+}
+
+async function exportHandler(request: Request): Promise<Response> {
+  const { ids, projectId, range, scope } = parseExportParams(new URL(request.url));
 
   const [summariesResult, costsResult, projectsResult] = await Promise.all([
-    listSessionSummariesOrEmpty(
-      projectId || range
-        ? {
-            ...(projectId ? { projectId } : {}),
-            ...(range ? { range } : {}),
-          }
-        : undefined
-    ),
+    listSessionSummariesOrEmpty(buildSummariesQuery(projectId, range)),
     getCostBreakdown(range),
     listProjects(),
   ]);
@@ -70,16 +99,7 @@ async function exportHandler(request: Request): Promise<Response> {
     return errorResponse(projectsResult);
   }
 
-  const idSet = ids && ids.length > 0 ? new Set(ids) : null;
-  const filtered = idSet
-    ? summariesResult.value.filter((s) => idSet.has(s.sessionId))
-    : summariesResult.value;
-
-  const rows: SessionExportRow[] = filtered.map((summary) => ({
-    summary,
-    flags: summary.flags,
-    compactions: summary.compactions,
-  }));
+  const rows = buildExportRows(summariesResult.value, ids);
 
   const bundle: SessionExportBundle = {
     version: 1,
