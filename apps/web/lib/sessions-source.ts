@@ -1,0 +1,278 @@
+import "server-only";
+import {
+  CLAUDE_DATA_ROOT_ENV,
+  ClaudeCodeAnalyticsSource,
+  ClaudeCodeSessionSource,
+  getConfiguredDataRoot,
+  readTranscriptPreview,
+  resolveDataRoot,
+  type ClaudeSessionFile,
+  type DataRootOrigin,
+  type NormalizedTranscript,
+  type ResolvedDataRoot,
+  type TranscriptPreview
+} from "@control-plane/adapter-claude-code";
+import type {
+  CostBreakdown,
+  DateRange,
+  ProjectSummary,
+  ReplayData,
+  SessionUsageSummary,
+  Timeseries,
+  ToolAnalytics
+} from "@control-plane/core";
+
+/**
+ * Thin Next.js wrapper around the shared data-root resolution + analytics
+ * source. The canonical implementation lives in
+ * `@control-plane/adapter-claude-code` so the `cp` CLI and MCP server can
+ * reuse it.
+ *
+ * Resolution order (inherited):
+ *   1. `CLAUDE_CONTROL_PLANE_DATA_ROOT` environment variable.
+ *   2. `~/.claude/projects` if it exists.
+ *   3. `null` → UI renders an empty state with configuration guidance.
+ */
+
+export {
+  CLAUDE_DATA_ROOT_ENV,
+  getConfiguredDataRoot,
+  resolveDataRoot
+};
+export type { DataRootOrigin, ResolvedDataRoot };
+
+export function getConfiguredSessionSource(): ClaudeCodeSessionSource | null {
+  const resolved = resolveDataRoot();
+  if (!resolved) {
+    return null;
+  }
+  return new ClaudeCodeSessionSource({ directory: resolved.directory });
+}
+
+// Wave 0 addition — single shared analytics adapter instance per process, so
+// the in-memory mtime cache is reused across renders. Created lazily on the
+// first read; destroyed on module reload during dev via Next's HMR.
+let analyticsCache: {
+  readonly directory: string;
+  readonly source: ClaudeCodeAnalyticsSource;
+} | null = null;
+
+export function getConfiguredAnalyticsSource(): ClaudeCodeAnalyticsSource | null {
+  const resolved = resolveDataRoot();
+  if (!resolved) {
+    analyticsCache = null;
+    return null;
+  }
+  if (analyticsCache && analyticsCache.directory === resolved.directory) {
+    return analyticsCache.source;
+  }
+  const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
+  analyticsCache = { directory: resolved.directory, source };
+  return source;
+}
+
+export interface SessionListing extends ClaudeSessionFile {
+  readonly title: string | null;
+  readonly firstUserText: string | null;
+  readonly model: string | null;
+  readonly turnCountLowerBound: number;
+}
+
+export type ListSessionsResult =
+  | { readonly ok: true; readonly sessions: readonly SessionListing[] }
+  | {
+      readonly ok: false;
+      readonly reason: "unconfigured" | "error";
+      readonly message?: string;
+    };
+
+export async function listSessionsOrEmpty(): Promise<ListSessionsResult> {
+  const source = getConfiguredSessionSource();
+  if (!source) {
+    return { ok: false, reason: "unconfigured" };
+  }
+  try {
+    const files = await source.listSessions();
+    const enriched = await enrichWithPreviews(files);
+    return { ok: true, sessions: enriched };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: "error",
+      message: errorMessage(error)
+    };
+  }
+}
+
+// Cache previews across requests in the same Node process. Keyed by file path +
+// mtime so edits to a transcript invalidate the entry automatically.
+const previewCache = new Map<string, TranscriptPreview>();
+
+async function enrichWithPreviews(
+  files: readonly ClaudeSessionFile[]
+): Promise<readonly SessionListing[]> {
+  const concurrency = 24;
+  const results: SessionListing[] = new Array(files.length);
+  let cursor = 0;
+
+  const worker = async (): Promise<void> => {
+    while (true) {
+      const index = cursor;
+      cursor += 1;
+      if (index >= files.length) return;
+      const file = files[index]!;
+      const cacheKey = `${file.filePath}:${file.modifiedAt}`;
+      let preview = previewCache.get(cacheKey);
+      if (!preview) {
+        try {
+          preview = await readTranscriptPreview(file.filePath, { maxLines: 30 });
+          previewCache.set(cacheKey, preview);
+        } catch {
+          preview = {
+            title: null,
+            firstUserText: null,
+            summary: null,
+            model: null,
+            firstTimestamp: null,
+            turnCountLowerBound: 0
+          };
+        }
+      }
+      results[index] = {
+        ...file,
+        title: preview.title,
+        firstUserText: preview.firstUserText,
+        model: preview.model,
+        turnCountLowerBound: preview.turnCountLowerBound
+      };
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, files.length) }, worker));
+  return results;
+}
+
+export type LoadSessionResult =
+  | { readonly ok: true; readonly transcript: NormalizedTranscript }
+  | { readonly ok: false; readonly reason: "unconfigured" | "not_found" | "error"; readonly message?: string };
+
+export async function loadSessionOrUndefined(id: string): Promise<LoadSessionResult> {
+  const source = getConfiguredSessionSource();
+  if (!source) {
+    return { ok: false, reason: "unconfigured" };
+  }
+  try {
+    const transcript = await source.loadSession(id);
+    if (!transcript) {
+      return { ok: false, reason: "not_found" };
+    }
+    return { ok: true, transcript };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: "error",
+      message: errorMessage(error)
+    };
+  }
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
+// ─── Wave 0 — canonical analytics surfaces ────────────────────────────────────
+// Thin `{ ok, value } | { ok: false, reason }` wrappers that the UI can use
+// without importing the adapter directly. No UI file changes in Wave 0 —
+// these exist for Wave 1 to call.
+
+type Unconfigured = { readonly ok: false; readonly reason: "unconfigured" };
+type ErrResult = { readonly ok: false; readonly reason: "error"; readonly message: string };
+type Ok<T> = { readonly ok: true; readonly value: T };
+type Result<T> = Ok<T> | Unconfigured | ErrResult;
+
+function errResult(error: unknown): ErrResult {
+  return { ok: false, reason: "error", message: errorMessage(error) };
+}
+
+export async function listProjectSummariesOrEmpty(): Promise<
+  Result<readonly ProjectSummary[]>
+> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.listProjectSummaries() };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function listSessionSummariesOrEmpty(
+  filter?: { projectId?: string; range?: DateRange }
+): Promise<Result<readonly SessionUsageSummary[]>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.listSessionSummaries(filter) };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function loadSessionUsageOrEmpty(
+  id: string
+): Promise<Result<SessionUsageSummary | undefined>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.loadSessionUsage(id) };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function loadSessionReplayOrEmpty(
+  id: string
+): Promise<Result<ReplayData | undefined>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.loadSessionReplay(id) };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function loadActivityTimeseriesOrEmpty(
+  range?: DateRange
+): Promise<Result<Timeseries>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.loadActivityTimeseries(range) };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function loadCostBreakdownOrEmpty(
+  range?: DateRange
+): Promise<Result<CostBreakdown>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.loadCostBreakdown(range) };
+  } catch (error) {
+    return errResult(error);
+  }
+}
+
+export async function loadToolAnalyticsOrEmpty(): Promise<Result<ToolAnalytics>> {
+  const src = getConfiguredAnalyticsSource();
+  if (!src) return { ok: false, reason: "unconfigured" };
+  try {
+    return { ok: true, value: await src.loadToolAnalytics() };
+  } catch (error) {
+    return errResult(error);
+  }
+}
