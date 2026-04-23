@@ -7,10 +7,7 @@ export interface ReplayAdapter extends AdapterLifecycle {
     request: ReplayRequest,
     context?: AdapterContext
   ) => Promise<readonly DomainEventEnvelope[]>;
-  readonly replay: (
-    request: ReplayRequest,
-    context?: AdapterContext
-  ) => Promise<ReplayResult>;
+  readonly replay: (request: ReplayRequest, context?: AdapterContext) => Promise<ReplayResult>;
   readonly subscribeFrames?: (
     requestId: string,
     onFrame: (frame: ReplayFrame) => Promise<void>,

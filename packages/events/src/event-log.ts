@@ -1,5 +1,5 @@
-import type { AsyncEventStream, EventEnvelope, EventSubscriptionFilter } from "./types.js";
 import { eventMatchesFilter } from "./bus.js";
+import type { AsyncEventStream, EventEnvelope, EventSubscriptionFilter } from "./types.js";
 
 export const EVENT_LOG_START_CURSOR = "0" as const;
 
@@ -61,7 +61,9 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
     return results;
   }
 
-  async read(options: EventLogReadOptions<TEvent> = {}): Promise<readonly EventLogRecord<TEvent>[]> {
+  async read(
+    options: EventLogReadOptions<TEvent> = {}
+  ): Promise<readonly EventLogRecord<TEvent>[]> {
     const afterSequence = cursorToSequence(options.afterCursor);
     const hasCursor = Boolean(options.afterCursor);
     const direction = options.direction ?? EventLogReadDirection.Forward;
@@ -71,11 +73,19 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
         : Array.from(this.records).reverse();
 
     const filtered = orderedRecords.filter((record) => {
-      if (hasCursor && direction === EventLogReadDirection.Forward && record.sequence <= afterSequence) {
+      if (
+        hasCursor &&
+        direction === EventLogReadDirection.Forward &&
+        record.sequence <= afterSequence
+      ) {
         return false;
       }
 
-      if (hasCursor && direction === EventLogReadDirection.Backward && record.sequence >= afterSequence) {
+      if (
+        hasCursor &&
+        direction === EventLogReadDirection.Backward &&
+        record.sequence >= afterSequence
+      ) {
         return false;
       }
 
@@ -85,7 +95,9 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
     return typeof options.limit === "number" ? filtered.slice(0, options.limit) : filtered;
   }
 
-  async *stream(options: EventLogReadOptions<TEvent> = {}): AsyncEventStream<EventLogRecord<TEvent>> {
+  async *stream(
+    options: EventLogReadOptions<TEvent> = {}
+  ): AsyncEventStream<EventLogRecord<TEvent>> {
     for (const record of await this.read(options)) {
       yield record;
     }

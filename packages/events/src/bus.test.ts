@@ -14,7 +14,7 @@ describe("InMemoryEventBus", () => {
       },
       {
         types: [ControlPlaneEventType.WebhookReceived],
-        sourceKinds: [EventSourceKind.Webhook]
+        sourceKinds: [EventSourceKind.Webhook],
       }
     );
 
@@ -22,14 +22,14 @@ describe("InMemoryEventBus", () => {
       createMockEventEnvelope({
         id: "event-webhook",
         type: ControlPlaneEventType.WebhookReceived,
-        sourceKind: EventSourceKind.Webhook
+        sourceKind: EventSourceKind.Webhook,
       })
     );
     await bus.publish(
       createMockEventEnvelope({
         id: "event-session",
         type: ControlPlaneEventType.SessionStarted,
-        sourceKind: EventSourceKind.Session
+        sourceKind: EventSourceKind.Session,
       })
     );
 

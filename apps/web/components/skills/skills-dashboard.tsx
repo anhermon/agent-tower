@@ -2,7 +2,9 @@
 
 import type { JSX } from "react";
 import type { SkillsUsageReport } from "@/lib/skills-usage-source";
+import { HourBreakdownChart } from "./hour-breakdown-chart";
 import { SkillsBarChart } from "./skills-bar-chart";
+import { SkillsBreakdownChart } from "./skills-breakdown-chart";
 import { SkillsHeatmap } from "./skills-heatmap";
 import { SkillsTimeline } from "./skills-timeline";
 import { SkillsUsageSummary } from "./skills-usage-summary";
@@ -17,11 +19,7 @@ import { SkillsUsageSummary } from "./skills-usage-summary";
  *   3. When are skills used? (heatmap)
  *   4. Unknown invocations (only when present)
  */
-export function SkillsDashboard({
-  report
-}: {
-  readonly report: SkillsUsageReport;
-}): JSX.Element {
+export function SkillsDashboard({ report }: { readonly report: SkillsUsageReport }): JSX.Element {
   const unknowns = report.perSkill.filter((stat) => !stat.known);
 
   return (
@@ -31,6 +29,12 @@ export function SkillsDashboard({
         <SkillsTimeline series={report.perDay} />
       </Section>
 
+      <Section title="Daily breakdown by skill">
+        <div className="glass-panel rounded-md p-5">
+          <SkillsBreakdownChart perSkill={report.perSkill} />
+        </div>
+      </Section>
+
       <Section title="Top skills">
         <div className="glass-panel rounded-md p-5">
           <SkillsBarChart skills={report.perSkill} />
@@ -38,7 +42,8 @@ export function SkillsDashboard({
       </Section>
 
       <Section title="When are skills used?">
-        <div className="glass-panel rounded-md p-5">
+        <div className="glass-panel rounded-md p-5 space-y-5">
+          <HourBreakdownChart perSkill={report.perSkill} />
           <SkillsHeatmap report={report} />
         </div>
       </Section>
@@ -54,7 +59,7 @@ export function SkillsDashboard({
 
 function Section({
   title,
-  children
+  children,
 }: {
   readonly title: string;
   readonly children: React.ReactNode;
@@ -68,15 +73,15 @@ function Section({
 }
 
 function UnknownNotice({
-  unknowns
+  unknowns,
 }: {
   readonly unknowns: readonly { readonly skillId: string; readonly invocationCount: number }[];
 }): JSX.Element {
   return (
     <div className="glass-panel rounded-md p-5">
       <p className="text-sm text-muted">
-        These skill ids were invoked but are not present in the local catalogue. They may
-        have been renamed, removed, or live under a root that is not configured.
+        These skill ids were invoked but are not present in the local catalogue. They may have been
+        renamed, removed, or live under a root that is not configured.
       </p>
       <ul className="mt-3 flex flex-wrap gap-2">
         {unknowns.map((u) => (

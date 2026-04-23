@@ -6,7 +6,7 @@ const ROLE_TONE: Record<SessionActorRole, string> = {
   user: "text-info",
   agent: "text-ok",
   tool: "text-warn",
-  system: "text-muted"
+  system: "text-muted",
 };
 
 const PREVIEW_CHARS = 800;
@@ -20,9 +20,7 @@ export function TurnBlock({ turn }: TurnBlockProps) {
     <article className="glass-panel rounded-md p-5">
       <header className="flex flex-wrap items-center gap-3 text-xs text-muted">
         <span className="font-mono text-muted">#{turn.sequence}</span>
-        <span className={cn("pill capitalize", ROLE_TONE[turn.actor.role])}>
-          {turn.actor.role}
-        </span>
+        <span className={cn("pill capitalize", ROLE_TONE[turn.actor.role])}>{turn.actor.role}</span>
         <span className="font-mono text-muted/80">{turn.createdAt}</span>
       </header>
       <div className="mt-3">
@@ -37,9 +35,7 @@ function TurnContent({ turn }: { turn: SessionTurn }) {
 
   if (content.kind === "text") {
     return (
-      <p className="whitespace-pre-wrap break-words text-sm leading-6 text-ink">
-        {content.text}
-      </p>
+      <p className="whitespace-pre-wrap break-words text-sm leading-6 text-ink">{content.text}</p>
     );
   }
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { modules } from "@/lib/modules";
 
 export function Topbar() {

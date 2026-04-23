@@ -9,7 +9,7 @@ vi.mock("node:os", async () => {
   const actual = await vi.importActual<typeof import("node:os")>("node:os");
   return {
     ...actual,
-    homedir: () => mockedHome ?? actual.homedir()
+    homedir: () => mockedHome ?? actual.homedir(),
   };
 });
 
@@ -23,7 +23,7 @@ const {
   listSessionsOrEmpty,
   loadSessionOrUndefined,
   loadSessionUsageOrEmpty,
-  resolveDataRoot
+  resolveDataRoot,
 } = await import("./sessions-source");
 
 describe("sessions-source", () => {
@@ -157,7 +157,7 @@ describe("sessions-source", () => {
         timestamp: "2026-01-01T00:00:00.000Z",
         cwd: "/tmp/sample",
         version: "1.0.0",
-        message: { role: "user", content: "hello control plane" }
+        message: { role: "user", content: "hello control plane" },
       },
       {
         type: "assistant",
@@ -169,9 +169,9 @@ describe("sessions-source", () => {
         message: {
           role: "assistant",
           model: "claude-test",
-          content: [{ type: "text", text: "hello from claude" }]
-        }
-      }
+          content: [{ type: "text", text: "hello from claude" }],
+        },
+      },
     ];
     const jsonl = entries.map((entry) => JSON.stringify(entry)).join("\n");
     await writeFile(path.join(project, `${sessionId}.jsonl`), jsonl, "utf8");

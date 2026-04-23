@@ -18,7 +18,8 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@control-plane/core": "workspace:*"
+    "@control-plane/core": "workspace:*",
+    "yaml": "^2.8.3"
   },
   "devDependencies": {
     "@control-plane/testing": "workspace:*",

@@ -7,9 +7,7 @@ type BadgeProps = {
 };
 
 export function Badge({ state, className }: BadgeProps) {
-  return (
-    <span className={cn("pill", stateTone(state), className)}>{stateLabel(state)}</span>
-  );
+  return <span className={cn("pill", stateTone(state), className)}>{stateLabel(state)}</span>;
 }
 
 type PhaseBadgeProps = {
@@ -20,7 +18,7 @@ type PhaseBadgeProps = {
 const PHASE_LABELS: Record<ModulePhase, string> = {
   active: "Active",
   skeleton: "Skeleton",
-  deferred: "Deferred"
+  deferred: "Deferred",
 };
 
 // Phase uses its own tone mapping separate from HealthState so "deferred"
@@ -28,11 +26,9 @@ const PHASE_LABELS: Record<ModulePhase, string> = {
 const PHASE_TONES: Record<ModulePhase, string> = {
   active: "text-ok",
   skeleton: "text-info",
-  deferred: "text-muted"
+  deferred: "text-muted",
 };
 
 export function PhaseBadge({ phase, className }: PhaseBadgeProps) {
-  return (
-    <span className={cn("pill", PHASE_TONES[phase], className)}>{PHASE_LABELS[phase]}</span>
-  );
+  return <span className={cn("pill", PHASE_TONES[phase], className)}>{PHASE_LABELS[phase]}</span>;
 }

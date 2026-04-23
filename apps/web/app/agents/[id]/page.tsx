@@ -2,9 +2,9 @@ import Link from "next/link";
 import { AgentSessionList } from "@/components/agents/agent-session-list";
 import { AgentStatusBadge } from "@/components/agents/agent-status-badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import { loadAgentOrUndefined } from "@/lib/agents-source";
 import { formatBytes, formatRelative } from "@/lib/format";
 import { CLAUDE_DATA_ROOT_ENV } from "@/lib/sessions-source";
-import { loadAgentOrUndefined } from "@/lib/agents-source";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +36,9 @@ export default async function AgentDetailPage({ params }: PageProps) {
         ) : (
           <ErrorState
             title="Could not load agent"
-            description={result.message ?? "An unknown error occurred reading the configured data root."}
+            description={
+              result.message ?? "An unknown error occurred reading the configured data root."
+            }
           />
         )}
       </section>
@@ -132,7 +134,7 @@ function Stat({
   value,
   hint,
   mono,
-  wide
+  wide,
 }: {
   readonly label: string;
   readonly value: string;
@@ -141,11 +143,7 @@ function Stat({
   readonly wide?: boolean;
 }) {
   return (
-    <div
-      className={`glass-panel-soft rounded-xs p-3 ${
-        wide ? "col-span-2 md:col-span-4" : ""
-      }`}
-    >
+    <div className={`glass-panel-soft rounded-xs p-3 ${wide ? "col-span-2 md:col-span-4" : ""}`}>
       <dt className="eyebrow">{label}</dt>
       <dd className={`mt-1 text-sm text-ink ${mono ? "break-all font-mono text-xs" : ""}`}>
         {value}

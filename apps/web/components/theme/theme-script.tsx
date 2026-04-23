@@ -17,5 +17,6 @@ const themeScript = `
 `;
 
 export function ThemeScript() {
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: controlled template string, required for flash-free theme hydration
   return <script dangerouslySetInnerHTML={{ __html: themeScript }} />;
 }

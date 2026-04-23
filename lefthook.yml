@@ -1,0 +1,26 @@
+# Lefthook — git hooks wiring. Install once with `pnpm lefthook install`.
+# Tiers follow docs/superpowers/specs/2026-04-23-ci-quality-gates-design.md.
+
+# T1 — pre-commit: staged-file checks. Budget <10s.
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc}"
+      run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+    gitleaks:
+      run: gitleaks protect --staged --config .gitleaks.toml --no-banner --redact
+
+# T2 — pre-push: full fast gate. Budget <2min.
+pre-push:
+  commands:
+    ci-fast:
+      run: task ci:fast
+
+# Conventional Commits validator via commit-msg regex (no extra deps).
+commit-msg:
+  commands:
+    conventional:
+      run: |
+        head -n1 {1} | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?!?: .+' \
+          || { echo "commit message must follow Conventional Commits"; exit 1; }

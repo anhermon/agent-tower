@@ -10,7 +10,7 @@ import type { SkillEfficacyRow } from "@/lib/skills-efficacy-source";
  */
 export function SkillsEfficacyInsufficient({
   rows,
-  minSessions
+  minSessions,
 }: {
   readonly rows: readonly SkillEfficacyRow[];
   readonly minSessions: number;
@@ -21,8 +21,7 @@ export function SkillsEfficacyInsufficient({
     <div className="glass-panel rounded-md p-5">
       <p className="eyebrow">Below scoring threshold</p>
       <p className="mt-2 text-sm text-muted">
-        Fewer than {minSessions} sessions — excluded from scoring to avoid
-        noise.
+        Fewer than {minSessions} sessions — excluded from scoring to avoid noise.
       </p>
       <ul className="mt-3 flex flex-wrap gap-2">
         {rows.map((row) => (
@@ -31,9 +30,7 @@ export function SkillsEfficacyInsufficient({
             className="inline-flex items-center gap-2 rounded-full border border-line/70 bg-white/[0.03] px-3 py-1 font-mono text-[11px] text-muted"
             title={`${row.skillId} · ${row.sessionsCount} sessions`}
           >
-            <span className="text-muted-strong">
-              {row.displayName || row.skillId}
-            </span>
+            <span className="text-muted-strong">{row.displayName || row.skillId}</span>
             <span className="text-muted/70">× {row.sessionsCount}</span>
           </li>
         ))}

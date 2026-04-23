@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, type CSSProperties, type JSX } from "react";
-import type { SkillUsageStats, SkillsUsageReport } from "@/lib/skills-usage-source";
+import { type CSSProperties, type JSX, useMemo } from "react";
+import type { SkillsUsageReport, SkillUsageStats } from "@/lib/skills-usage-source";
 import { maxCount } from "./format-usage";
 
 const HOUR_LABELS = Array.from({ length: 24 }, (_, i) => i);
@@ -20,7 +20,7 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
  */
 export function SkillsHeatmap({
   report,
-  topN = 12
+  topN = 12,
 }: {
   readonly report: SkillsUsageReport;
   readonly topN?: number;
@@ -58,9 +58,7 @@ export function SkillsHeatmap({
       <div className="glass-panel-soft rounded-sm p-4">
         <p className="eyebrow mb-3">Per skill · hour of day</p>
         {topSkills.length === 0 ? (
-          <div className="py-6 text-center text-sm text-muted">
-            No skill invocations to plot.
-          </div>
+          <div className="py-6 text-center text-sm text-muted">No skill invocations to plot.</div>
         ) : (
           <PerSkillGrid skills={topSkills} max={perSkillMax} />
         )}
@@ -91,7 +89,7 @@ function Legend(): JSX.Element {
 
 function HourStrip({
   values,
-  max
+  max,
 }: {
   readonly values: readonly number[];
   readonly max: number;
@@ -125,7 +123,7 @@ function HourStrip({
 
 function DayStrip({
   values,
-  max
+  max,
 }: {
   readonly values: readonly number[];
   readonly max: number;
@@ -148,10 +146,7 @@ function DayStrip({
       </div>
       <div className="flex gap-1">
         {DAY_LABELS.map((label) => (
-          <span
-            key={label}
-            className="inline-block w-[42px] text-center text-[10px] text-muted/70"
-          >
+          <span key={label} className="inline-block w-[42px] text-center text-[10px] text-muted/70">
             {label}
           </span>
         ))}
@@ -162,7 +157,7 @@ function DayStrip({
 
 function PerSkillGrid({
   skills,
-  max
+  max,
 }: {
   readonly skills: readonly SkillUsageStats[];
   readonly max: number;
@@ -170,10 +165,7 @@ function PerSkillGrid({
   return (
     <div className="flex flex-col gap-1">
       {skills.map((skill) => (
-        <div
-          key={skill.skillId}
-          className="grid grid-cols-[10rem_1fr] items-center gap-3"
-        >
+        <div key={skill.skillId} className="grid grid-cols-[10rem_1fr] items-center gap-3">
           <SkillLabel skill={skill} />
           <div className="flex gap-[2px]">
             {HOUR_LABELS.map((hour) => {
@@ -232,7 +224,7 @@ function HeatCell({
   value,
   max,
   label,
-  size
+  size,
 }: {
   readonly value: number;
   readonly max: number;
@@ -242,9 +234,7 @@ function HeatCell({
   const ratio = max > 0 ? Math.max(0, Math.min(1, value / max)) : 0;
   const dim = size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4" : "h-5 w-[42px]";
   const style: CSSProperties =
-    value === 0
-      ? { backgroundColor: "transparent" }
-      : { backgroundColor: intensityColour(ratio) };
+    value === 0 ? { backgroundColor: "transparent" } : { backgroundColor: intensityColour(ratio) };
 
   return (
     <span

@@ -25,6 +25,8 @@ them into canonical `@control-plane/core` types.
 
 ## Mapping rules
 
+### Transcript normalization (JSONL → canonical session types)
+
 | Raw entry              | Canonical output                                |
 | ---------------------- | ----------------------------------------------- |
 | `type: user` (string)  | `SessionTurn` with `text` content, actor=user   |
@@ -34,6 +36,39 @@ them into canonical `@control-plane/core` types.
 | `tool_result` block    | `ToolResult` with `succeeded`/`failed`          |
 | `type: system`         | `SessionTurn` with `system` actor               |
 | any other `type`       | Skipped, counted in `skipped` on the result     |
+
+### Analytics fold (JSONL → `SessionUsageSummary` / `ReplayData`)
+
+Added in Wave 0 of the sessions-superset plan. All mappings are pure folds
+(no I/O, no wall-clock reads); I/O stays in `reader.ts` + `adapter.ts`.
+
+| Raw entry / field                                    | Canonical output                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| `assistant.message.usage.input_tokens`               | `TurnUsage.inputTokens` + summed into `ModelUsage`           |
+| `assistant.message.usage.output_tokens`              | `TurnUsage.outputTokens` + summed into `ModelUsage`          |
+| `assistant.message.usage.cache_creation_input_tokens`| `TurnUsage.cacheCreationInputTokens` + `ModelUsage`          |
+| `assistant.message.usage.cache_read_input_tokens`    | `TurnUsage.cacheReadInputTokens` + `ModelUsage`              |
+| `assistant.message.usage.cache_creation.ephemeral_5m_input_tokens` | `TurnUsage.ephemeral5mInputTokens` (optional)  |
+| `assistant.message.usage.cache_creation.ephemeral_1h_input_tokens` | `TurnUsage.ephemeral1hInputTokens` (optional)  |
+| `assistant.message.usage.service_tier`               | `TurnUsage.serviceTier` (optional)                           |
+| `assistant.message.usage.inference_geo`              | `TurnUsage.inferenceGeo` (optional)                          |
+| `assistant.message.model`                            | `SessionUsageSummary.model` (first/dominant, by count)       |
+| `assistant.message.content[].type = "thinking"`      | `ReplayTurn.hasThinking = true`, `thinkingText` populated    |
+| `assistant.message.content[].type = "tool_use"`      | `ReplayTurn.toolCalls[]` + increments `toolCounts[name]`     |
+| `user.message.content[].type = "tool_result"`        | `ReplayTurn.toolResults[]` (content capped, default 2000 ch) |
+| `system.subtype = "compact_boundary"`                | `SessionCompactionEvent` / `ReplayCompactionEvent`           |
+| `system.compactMetadata.trigger`                     | → `"auto" \| "manual" \| "unknown"` (fallback)               |
+| `system.compactMetadata.preTokens`                   | → `preTokens`                                                |
+| `system.subtype = "turn_duration"`, `.durationMs`    | Attached to matching assistant turn via `parentUuid`         |
+| `summary.summary`                                    | `ReplaySummaryEvent.summary`                                 |
+| `gitBranch` (per line, excl. "HEAD")                 | First non-HEAD value → `SessionUsageSummary.gitBranch`       |
+| `cwd` (per line)                                     | First non-null → `SessionUsageSummary.cwd` and project slug  |
+| `version` (per line)                                 | First non-null → `SessionUsageSummary.version`               |
+
+The pricing table + `estimateCostFromUsage` are ported verbatim (MIT) from
+cc-lens (`Arindam200/cc-lens`) into `@control-plane/core`'s
+`src/lib/pricing.ts`; per-turn `estimatedCostUsd` in `SessionTurnUsage` and
+`ReplayTurn` uses that function.
 
 ## Extension points
 

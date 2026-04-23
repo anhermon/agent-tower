@@ -20,9 +20,7 @@
       "@control-plane/core": ["packages/core/src/index.ts"],
       "@control-plane/events": ["packages/events/src/index.ts"],
       "@control-plane/storage": ["packages/storage/src/index.ts"],
-      "@control-plane/adapter-claude-code": [
-        "packages/adapter-claude-code/src/index.ts"
-      ]
+      "@control-plane/adapter-claude-code": ["packages/adapter-claude-code/src/index.ts"]
     }
   }
 }

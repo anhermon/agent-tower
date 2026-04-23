@@ -7,7 +7,8 @@ type MetricCardProps = {
 };
 
 export function MetricCard({ metric, hero = false }: MetricCardProps) {
-  const trendIcon = metric.trend === "up" ? "trend-up" : metric.trend === "down" ? "trend-down" : "minus";
+  const trendIcon =
+    metric.trend === "up" ? "trend-up" : metric.trend === "down" ? "trend-down" : "minus";
   const trendTone =
     metric.trend === "up" ? "text-ok" : metric.trend === "down" ? "text-danger" : "text-muted";
 

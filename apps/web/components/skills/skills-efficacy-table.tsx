@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type JSX } from "react";
+import { type JSX, useMemo, useState } from "react";
 import type {
   EfficacyBaseline,
   SessionOutcome,
-  SkillEfficacyRow
+  SkillEfficacyRow,
 } from "@/lib/skills-efficacy-source";
 import { formatDelta, formatPercent, outcomeColor } from "./format-efficacy";
 
@@ -21,18 +21,18 @@ const SORTS: ReadonlyArray<SortConfig> = [
   {
     key: "delta",
     label: "Δ vs baseline",
-    compare: (a, b) => b.delta - a.delta
+    compare: (a, b) => b.delta - a.delta,
   },
   {
     key: "sessions",
     label: "Sessions",
-    compare: (a, b) => b.sessionsCount - a.sessionsCount
+    compare: (a, b) => b.sessionsCount - a.sessionsCount,
   },
   {
     key: "effective",
     label: "Effective",
-    compare: (a, b) => b.avgEffectiveScore - a.avgEffectiveScore
-  }
+    compare: (a, b) => b.avgEffectiveScore - a.avgEffectiveScore,
+  },
 ];
 
 /**
@@ -44,7 +44,7 @@ const SORTS: ReadonlyArray<SortConfig> = [
  */
 export function SkillsEfficacyTable({
   rows,
-  baseline
+  baseline,
 }: {
   readonly rows: readonly SkillEfficacyRow[];
   readonly baseline: EfficacyBaseline;
@@ -119,7 +119,7 @@ export function SkillsEfficacyTable({
 
 function Th({
   children,
-  align = "left"
+  align = "left",
 }: {
   readonly children: React.ReactNode;
   readonly align?: "left" | "right";
@@ -138,11 +138,7 @@ function Th({
 
 function Row({ row }: { readonly row: SkillEfficacyRow }): JSX.Element {
   const deltaClass =
-    row.delta > 0
-      ? "text-ok"
-      : row.delta < 0
-        ? "text-danger"
-        : "text-muted-strong";
+    row.delta > 0 ? "text-ok" : row.delta < 0 ? "text-danger" : "text-muted-strong";
 
   return (
     <tr className="border-b border-line/30 last:border-b-0 hover:bg-white/[0.02]">
@@ -191,10 +187,7 @@ function SkillLabel({ row }: { readonly row: SkillEfficacyRow }): JSX.Element {
     );
   }
   return (
-    <span
-      className={`${className} text-muted`}
-      title={`${row.skillId} (unknown)`}
-    >
+    <span className={`${className} text-muted`} title={`${row.skillId} (unknown)`}>
       {display}
     </span>
   );
@@ -214,12 +207,10 @@ function OutcomeMix({ row }: { readonly row: SkillEfficacyRow }): JSX.Element {
     { outcome: "completed", count: row.outcomeBreakdown.completed },
     { outcome: "partial", count: row.outcomeBreakdown.partial },
     { outcome: "abandoned", count: row.outcomeBreakdown.abandoned },
-    { outcome: "unknown", count: row.outcomeBreakdown.unknown }
+    { outcome: "unknown", count: row.outcomeBreakdown.unknown },
   ];
 
-  const title = segments
-    .map((s) => `${s.outcome}: ${s.count}`)
-    .join(" · ");
+  const title = segments.map((s) => `${s.outcome}: ${s.count}`).join(" · ");
 
   if (total === 0) {
     return (

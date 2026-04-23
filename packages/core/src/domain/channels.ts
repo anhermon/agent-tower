@@ -6,14 +6,14 @@ export const CHANNEL_KINDS = {
   Email: "email",
   Api: "api",
   Cli: "cli",
-  Internal: "internal"
+  Internal: "internal",
 } as const;
 
 export type ChannelKind = (typeof CHANNEL_KINDS)[keyof typeof CHANNEL_KINDS];
 
 export const CHANNEL_MESSAGE_DIRECTIONS = {
   Inbound: "inbound",
-  Outbound: "outbound"
+  Outbound: "outbound",
 } as const;
 
 export type ChannelMessageDirection =

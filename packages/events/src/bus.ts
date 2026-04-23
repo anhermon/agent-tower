@@ -12,7 +12,7 @@ export interface EventBus<TEvent extends EventEnvelope = EventEnvelope> {
   publishMany(events: readonly TEvent[], options?: EventPublishOptions): Promise<void>;
   subscribe(
     handler: EventHandler<TEvent>,
-    filter?: EventSubscriptionFilter<TEvent["type"]>,
+    filter?: EventSubscriptionFilter<TEvent["type"]>
   ): EventSubscription;
 }
 
@@ -32,7 +32,7 @@ export class InMemoryEventBus<TEvent extends EventEnvelope = EventEnvelope>
     throwIfAborted(options);
 
     const handlers = Array.from(this.subscriptions.values()).filter((entry) =>
-      eventMatchesFilter(event, entry.filter),
+      eventMatchesFilter(event, entry.filter)
     );
 
     for (const entry of handlers) {
@@ -49,7 +49,7 @@ export class InMemoryEventBus<TEvent extends EventEnvelope = EventEnvelope>
 
   subscribe(
     handler: EventHandler<TEvent>,
-    filter?: EventSubscriptionFilter<TEvent["type"]>,
+    filter?: EventSubscriptionFilter<TEvent["type"]>
   ): EventSubscription {
     const id = String(this.nextSubscriptionId++);
     const subscription: EventSubscription = {
@@ -78,7 +78,7 @@ export class InMemoryEventBus<TEvent extends EventEnvelope = EventEnvelope>
 
 export function eventMatchesFilter<TEvent extends EventEnvelope>(
   event: TEvent,
-  filter?: EventSubscriptionFilter<EventType>,
+  filter?: EventSubscriptionFilter<EventType>
 ): boolean {
   if (!filter) {
     return true;

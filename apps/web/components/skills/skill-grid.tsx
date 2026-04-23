@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import type { SkillManifest } from "@/lib/skills-source";
 import { formatRelative } from "@/lib/format";
+import type { SkillManifest } from "@/lib/skills-source";
 
 type SortKey = "name" | "modified" | "root";
 type SortDirection = "asc" | "desc";
@@ -58,7 +58,9 @@ export function SkillGrid({ skills }: SkillGridProps) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <label className="glass-panel flex h-10 w-full max-w-md items-center gap-2 rounded-xs px-3">
-          <span aria-hidden="true" className="text-muted">⌕</span>
+          <span aria-hidden="true" className="text-muted">
+            ⌕
+          </span>
           <input
             type="search"
             value={query}
@@ -101,9 +103,7 @@ export function SkillGrid({ skills }: SkillGridProps) {
               onClick={() =>
                 setRootFilter((prev) => (prev === root.directory ? null : root.directory))
               }
-              className={`control-chip${
-                rootFilter === root.directory ? " is-active" : ""
-              }`}
+              className={`control-chip${rootFilter === root.directory ? " is-active" : ""}`}
               title={root.directory}
             >
               {root.label} · {root.count}
@@ -244,7 +244,7 @@ function uniqueRoots(skills: readonly SkillGridItem[]): readonly RootBucket[] {
       counts.set(skill.rootDirectory, {
         directory: skill.rootDirectory,
         label: skill.rootLabel,
-        count: 1
+        count: 1,
       });
     }
   }
@@ -275,10 +275,10 @@ function matchesQuery(skill: SkillGridItem, needle: string): boolean {
     skill.relativePath,
     skill.description ?? "",
     skill.summary ?? "",
-    skill.triggers.join(" ")
+    skill.triggers.join(" "),
   ];
   for (const haystack of haystacks) {
-    if (haystack && haystack.toLowerCase().includes(needle)) return true;
+    if (haystack?.toLowerCase().includes(needle)) return true;
   }
   return false;
 }

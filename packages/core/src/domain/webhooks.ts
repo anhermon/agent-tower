@@ -7,7 +7,7 @@ export const WEBHOOK_EVENT_TYPES = {
   ToolCallChanged: "tool_call.changed",
   CostRecorded: "cost.recorded",
   TicketChanged: "ticket.changed",
-  ReplayCompleted: "replay.completed"
+  ReplayCompleted: "replay.completed",
 } as const;
 
 export type WebhookEventType = (typeof WEBHOOK_EVENT_TYPES)[keyof typeof WEBHOOK_EVENT_TYPES];

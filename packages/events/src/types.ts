@@ -79,7 +79,7 @@ export interface EventSubscription {
 }
 
 export type EventHandler<TEvent extends EventEnvelope = EventEnvelope> = (
-  event: TEvent,
+  event: TEvent
 ) => void | Promise<void>;
 
 export type AsyncEventStream<TValue> = AsyncIterable<TValue>;

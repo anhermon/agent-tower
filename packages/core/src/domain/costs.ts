@@ -7,7 +7,7 @@ export const PRICING_UNITS = {
   OutputToken: "output_token",
   ToolCall: "tool_call",
   SessionMinute: "session_minute",
-  Request: "request"
+  Request: "request",
 } as const;
 
 export type PricingUnit = (typeof PRICING_UNITS)[keyof typeof PRICING_UNITS];

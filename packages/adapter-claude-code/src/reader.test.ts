@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { listSessionFiles, readTranscriptFile } from "./reader.js";
 import { ClaudeCodeSessionSource } from "./adapter.js";
+import { listSessionFiles, readTranscriptFile } from "./reader.js";
 
 let workdir: string;
 
@@ -49,7 +49,11 @@ describe("reader.readTranscriptFile", () => {
       JSON.stringify({ type: "user", sessionId: "s1", message: { role: "user", content: "hi" } }),
       "", // blank
       "{not json}",
-      JSON.stringify({ type: "assistant", sessionId: "s1", message: { role: "assistant", content: "hello" } })
+      JSON.stringify({
+        type: "assistant",
+        sessionId: "s1",
+        message: { role: "assistant", content: "hello" },
+      }),
     ];
     await writeFile(filePath, lines.join("\n"), "utf8");
 
@@ -76,7 +80,7 @@ describe("ClaudeCodeSessionSource", () => {
         timestamp: "2026-01-01T00:00:00.000Z",
         cwd: "/tmp/project",
         version: "2.1.97",
-        message: { role: "user", content: "Explain this" }
+        message: { role: "user", content: "Explain this" },
       },
       {
         type: "assistant",
@@ -87,9 +91,9 @@ describe("ClaudeCodeSessionSource", () => {
         message: {
           role: "assistant",
           model: "claude-sonnet-4-6",
-          content: [{ type: "text", text: "Sure." }]
-        }
-      }
+          content: [{ type: "text", text: "Sure." }],
+        },
+      },
     ];
     await writeFile(filePath, entries.map((e) => JSON.stringify(e)).join("\n"), "utf8");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type JSX } from "react";
+import { type JSX, useMemo } from "react";
 import type { SkillEfficacyRow } from "@/lib/skills-efficacy-source";
 import { formatDelta } from "./format-efficacy";
 
@@ -14,7 +14,7 @@ const MAX_CARDS = 8;
  * qualifying rows by |delta| so the highest-signal skills lead the section.
  */
 export function SkillsEfficacyNarratives({
-  rows
+  rows,
 }: {
   readonly rows: readonly SkillEfficacyRow[];
 }): JSX.Element {
@@ -43,37 +43,23 @@ export function SkillsEfficacyNarratives({
   );
 }
 
-function NarrativeCard({
-  row
-}: {
-  readonly row: SkillEfficacyRow;
-}): JSX.Element {
+function NarrativeCard({ row }: { readonly row: SkillEfficacyRow }): JSX.Element {
   const clauses = composeClauses(row);
   const display = row.displayName || row.skillId;
 
   const deltaClass =
-    row.delta > 0
-      ? "text-ok"
-      : row.delta < 0
-        ? "text-danger"
-        : "text-muted-strong";
+    row.delta > 0 ? "text-ok" : row.delta < 0 ? "text-danger" : "text-muted-strong";
 
   return (
     <article className="glass-panel rounded-md p-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="eyebrow">Skill</p>
-          <h4
-            className="mt-1 truncate text-base font-semibold text-ink"
-            title={row.skillId}
-          >
+          <h4 className="mt-1 truncate text-base font-semibold text-ink" title={row.skillId}>
             {display}
           </h4>
         </div>
-        <span
-          className={`pill ${deltaClass}`}
-          title={`Δ vs baseline: ${formatDelta(row.delta)}`}
-        >
+        <span className={`pill ${deltaClass}`} title={`Δ vs baseline: ${formatDelta(row.delta)}`}>
           Δ {formatDelta(row.delta)}
         </span>
       </header>
@@ -87,9 +73,7 @@ function NarrativeCard({
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-muted">
-          No notable patterns for this skill.
-        </p>
+        <p className="mt-3 text-sm text-muted">No notable patterns for this skill.</p>
       )}
     </article>
   );
@@ -115,24 +99,16 @@ function composeClauses(row: SkillEfficacyRow): readonly string[] {
   }
 
   if (abandonedRatio > 0.25) {
-    clauses.push(
-      "Frequently abandoned (>25% of sessions) — reconsider invocation trigger."
-    );
+    clauses.push("Frequently abandoned (>25% of sessions) — reconsider invocation trigger.");
   }
   if (partialRatio > 0.3) {
-    clauses.push(
-      "High rate of partial outcomes — skill may be leaving work unfinished."
-    );
+    clauses.push("High rate of partial outcomes — skill may be leaving work unfinished.");
   }
   if (invocationsPerSession > 3) {
-    clauses.push(
-      "Invoked multiple times per session — possibly redundant or chatty."
-    );
+    clauses.push("Invoked multiple times per session — possibly redundant or chatty.");
   }
   if (!row.known) {
-    clauses.push(
-      "Skill id not present in local catalogue — may be renamed or removed."
-    );
+    clauses.push("Skill id not present in local catalogue — may be renamed or removed.");
   }
 
   return clauses;

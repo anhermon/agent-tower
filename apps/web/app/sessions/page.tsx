@@ -1,12 +1,12 @@
-import { Badge } from "@/components/ui/badge";
 import { SessionList } from "@/components/sessions/session-list";
-import { EmptyState, ErrorState } from "@/components/ui/state";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getModuleByKey } from "@/lib/modules";
 import {
   CLAUDE_DATA_ROOT_ENV,
   getConfiguredDataRoot,
-  listSessionsOrEmpty
+  listSessionsOrEmpty,
 } from "@/lib/sessions-source";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,9 @@ function SessionsBody({ result }: { result: ListResult }) {
     return (
       <ErrorState
         title="Could not list sessions"
-        description={result.message ?? "An unknown error occurred reading the configured data root."}
+        description={
+          result.message ?? "An unknown error occurred reading the configured data root."
+        }
       />
     );
   }

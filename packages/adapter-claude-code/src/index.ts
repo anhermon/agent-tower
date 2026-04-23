@@ -1,13 +1,79 @@
 export * from "./adapter.js";
-export { listSessionFiles, readTranscriptFile, readTranscriptPreview } from "./reader.js";
+export type { CostFoldOptions } from "./analytics/cost.js";
+export { foldCostBreakdown } from "./analytics/cost.js";
+export type { ProjectGrouping } from "./analytics/project-summary.js";
+export {
+  foldProjectSummaries,
+  foldProjectSummary,
+} from "./analytics/project-summary.js";
+export type { ReplayFoldOptions } from "./analytics/replay.js";
+export { foldReplay } from "./analytics/replay.js";
+export type { FoldSessionOptions } from "./analytics/session-summary.js";
+// Phase 1 Wave 0: analytics folds + optional enrichment sources.
+export { foldSessionSummary } from "./analytics/session-summary.js";
+export type { TimeseriesFoldOptions } from "./analytics/timeseries.js";
+export { computeStreaks, foldTimeseries } from "./analytics/timeseries.js";
+export { foldToolAnalytics } from "./analytics/tools.js";
+export type { DataRootOrigin, ResolvedDataRoot } from "./data-root.js";
+// Phase 1 Wave 1: data-root resolution + skill catalogue/analytics (shared by
+// the web dashboard, the `cp` CLI, and the MCP server).
+export {
+  CLAUDE_DATA_ROOT_ENV,
+  getConfiguredDataRoot,
+  resolveDataRoot,
+} from "./data-root.js";
+export type { ClaudeSessionFacet } from "./facets.js";
+export { facetPathForSession, readSessionFacet } from "./facets.js";
+export type { NormalizedTranscript, NormalizeOptions } from "./normalizer.js";
+export { normalizeTranscript } from "./normalizer.js";
 export type {
   ClaudeCodeDataRoot,
   ClaudeSessionFile,
   ReadTranscriptResult,
-  TranscriptPreview
+  TranscriptPreview,
 } from "./reader.js";
-export { normalizeTranscript } from "./normalizer.js";
-export type { NormalizedTranscript, NormalizeOptions } from "./normalizer.js";
+export { listSessionFiles, readTranscriptFile, readTranscriptPreview } from "./reader.js";
+export type {
+  EfficacyBaseline,
+  ListSkillsEfficacyResult,
+  SessionOutcome,
+  SessionSummary as SkillEfficacySessionSummary,
+  SkillEfficacyRow,
+  SkillsEfficacyReport,
+} from "./skills/efficacy.js";
+export {
+  __clearSkillsEfficacyCacheForTests,
+  computeSkillsEfficacy,
+} from "./skills/efficacy.js";
+export type {
+  ListSkillsResult,
+  LoadSkillResult,
+  ResolvedSkillsRoot,
+  SkillManifest,
+  SkillsRootOrigin,
+} from "./skills/manifests.js";
+
+export {
+  __clearSkillsCacheForTests,
+  getConfiguredSkillsRoots,
+  listSkillsOrEmpty,
+  loadSkillOrUndefined,
+  resolveSkillsRoots,
+  SKILL_FILENAME,
+  SKILLS_ROOTS_ENV,
+} from "./skills/manifests.js";
+export type {
+  ListSkillsUsageResult,
+  SkillsUsageReport,
+  SkillUsageStats,
+} from "./skills/usage.js";
+
+export {
+  __clearSkillsUsageCacheForTests,
+  computeSkillsUsage,
+} from "./skills/usage.js";
+export type { ClaudeStatsCache } from "./stats-cache.js";
+export { readStatsCache, statsCachePath } from "./stats-cache.js";
 export type {
   ClaudeAssistantEntry,
   ClaudeAttachmentEntry,
@@ -18,25 +84,5 @@ export type {
   ClaudeSystemEntry,
   ClaudeTranscriptEntry,
   ClaudeUnknownEntry,
-  ClaudeUserEntry
+  ClaudeUserEntry,
 } from "./types.js";
-
-// Phase 1 Wave 0: analytics folds + optional enrichment sources.
-export { foldSessionSummary } from "./analytics/session-summary.js";
-export type { FoldSessionOptions } from "./analytics/session-summary.js";
-export {
-  foldProjectSummaries,
-  foldProjectSummary
-} from "./analytics/project-summary.js";
-export type { ProjectGrouping } from "./analytics/project-summary.js";
-export { computeStreaks, foldTimeseries } from "./analytics/timeseries.js";
-export type { TimeseriesFoldOptions } from "./analytics/timeseries.js";
-export { foldCostBreakdown } from "./analytics/cost.js";
-export type { CostFoldOptions } from "./analytics/cost.js";
-export { foldToolAnalytics } from "./analytics/tools.js";
-export { foldReplay } from "./analytics/replay.js";
-export type { ReplayFoldOptions } from "./analytics/replay.js";
-export { readStatsCache, statsCachePath } from "./stats-cache.js";
-export type { ClaudeStatsCache } from "./stats-cache.js";
-export { facetPathForSession, readSessionFacet } from "./facets.js";
-export type { ClaudeSessionFacet } from "./facets.js";

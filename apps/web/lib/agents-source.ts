@@ -1,13 +1,13 @@
+import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
 import {
   AGENT_KINDS,
   AGENT_RUNTIMES,
   AGENT_STATUSES,
-  CLAUDE_FIRST_CAPABILITIES,
   type AgentDescriptor,
   type AgentState,
-  type AgentStatus
+  type AgentStatus,
+  CLAUDE_FIRST_CAPABILITIES,
 } from "@control-plane/core";
-import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
 import { getConfiguredSessionSource, resolveDataRoot } from "./sessions-source";
 
 /**
@@ -55,9 +55,7 @@ interface AgentsCacheEntry {
 
 const inventoryCache = new Map<string, AgentsCacheEntry>();
 
-export async function listAgentsOrEmpty(
-  now: Date = new Date()
-): Promise<ListAgentsResult> {
+export async function listAgentsOrEmpty(now: Date = new Date()): Promise<ListAgentsResult> {
   const source = getConfiguredSessionSource();
   const resolved = resolveDataRoot();
   if (!source || !resolved) {
@@ -116,7 +114,7 @@ function buildInventory(
     const next: AgentsCacheEntry = {
       signature,
       agents: refreshed,
-      sessionsByAgent: cached.sessionsByAgent
+      sessionsByAgent: cached.sessionsByAgent,
     };
     inventoryCache.set(cacheKey, next);
     return next;
@@ -175,7 +173,7 @@ function deriveAgent(
     kind: AGENT_KINDS.Interactive,
     displayName: humanizeProjectId(projectId),
     capabilities: CLAUDE_FIRST_CAPABILITIES,
-    metadata: { projectId }
+    metadata: { projectId },
   };
 
   const state = deriveState(agentId, sorted, now, lastActiveAt);
@@ -187,7 +185,7 @@ function deriveAgent(
     lastActiveAt,
     firstSeenAt,
     totalBytes,
-    projectId
+    projectId,
   };
 }
 
@@ -198,7 +196,7 @@ function withRefreshedState(
 ): AgentInventoryItem {
   return {
     ...agent,
-    state: deriveState(agent.descriptor.id, sorted, now, agent.lastActiveAt)
+    state: deriveState(agent.descriptor.id, sorted, now, agent.lastActiveAt),
   };
 }
 
@@ -221,7 +219,7 @@ function deriveState(
   } = {
     agentId,
     status,
-    activeSessionIds
+    activeSessionIds,
   };
 
   return lastActiveAt ? { ...base, lastSeenAt: lastActiveAt } : base;

@@ -2,7 +2,7 @@ import type {
   ChannelBinding,
   ChannelKind,
   ChannelMessage,
-  ChannelRef
+  ChannelRef,
 } from "../domain/channels.js";
 import type { AdapterContext, AdapterLifecycle, Subscription } from "./common.js";
 
@@ -19,10 +19,7 @@ export interface ChannelSendResult {
 
 export interface ChannelAdapter extends AdapterLifecycle {
   readonly kind: ChannelKind;
-  readonly bind: (
-    channel: ChannelRef,
-    context?: AdapterContext
-  ) => Promise<ChannelBinding>;
+  readonly bind: (channel: ChannelRef, context?: AdapterContext) => Promise<ChannelBinding>;
   readonly send: (
     request: ChannelSendRequest,
     context?: AdapterContext

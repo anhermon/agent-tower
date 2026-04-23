@@ -15,13 +15,13 @@ describe("InMemoryControlPlaneRepositories", () => {
       status: AgentStatus.Running,
       capabilities: ["session.streaming"],
       createdAt: CREATED_AT,
-      updatedAt: UPDATED_AT
+      updatedAt: UPDATED_AT,
     });
     await repositories.sessions.create({
       id: "session-1",
       agentId: "agent-1",
       status: SessionStatus.Active,
-      startedAt: CREATED_AT
+      startedAt: CREATED_AT,
     });
 
     await expect(repositories.agents.listByStatus(AgentStatus.Running)).resolves.toHaveLength(1);

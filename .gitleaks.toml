@@ -1,0 +1,18 @@
+title = "control-plane gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Paths excluded from secret scanning for the control-plane monorepo"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)\.next/''',
+  '''(^|/)dist/''',
+  '''(^|/)coverage/''',
+  '''(^|/)playwright-report/''',
+  '''(^|/)test-results/''',
+  '''(^|/)packages/testing/fixtures/''',
+  '''(^|/)pnpm-lock\.yaml$''',
+  '''(^|/)\.ci/''',
+]

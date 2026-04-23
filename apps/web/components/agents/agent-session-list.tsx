@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
+import Link from "next/link";
 import { formatBytes, formatRelative, truncateMiddle } from "@/lib/format";
 
 type AgentSessionListProps = {

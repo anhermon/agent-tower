@@ -19,7 +19,7 @@ export const RUNTIME_ACTIONS = {
   Pause: "pause",
   Resume: "resume",
   Stop: "stop",
-  Restart: "restart"
+  Restart: "restart",
 } as const;
 
 export type RuntimeAction = (typeof RUNTIME_ACTIONS)[keyof typeof RUNTIME_ACTIONS];

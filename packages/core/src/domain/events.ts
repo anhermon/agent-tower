@@ -1,6 +1,6 @@
 import type { AgentState } from "./agents.js";
-import type { CostEstimate, CostLineItem } from "./costs.js";
 import type { JsonObject, JsonValue, MetadataCarrier } from "./common.js";
+import type { CostEstimate, CostLineItem } from "./costs.js";
 import type { McpServerDescriptor } from "./mcps.js";
 import type { ReplayResult } from "./replay.js";
 import type { SessionDescriptor, SessionStateTransition, SessionTurn } from "./sessions.js";
@@ -21,14 +21,14 @@ export const DOMAIN_EVENT_TYPES = {
   TicketChanged: "ticket.changed",
   McpServerChanged: "mcp.server_changed",
   WebhookDeliveryChanged: "webhook.delivery_changed",
-  ReplayCompleted: "replay.completed"
+  ReplayCompleted: "replay.completed",
 } as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[keyof typeof DOMAIN_EVENT_TYPES];
 
 export interface DomainEventEnvelope<
   TType extends DomainEventType = DomainEventType,
-  TPayload extends JsonValue | object = JsonObject
+  TPayload extends JsonValue | object = JsonObject,
 > extends MetadataCarrier {
   readonly id: string;
   readonly type: TType;

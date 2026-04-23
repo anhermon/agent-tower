@@ -5,4 +5,5 @@ export * from "./mcp-adapter.js";
 export * from "./pricing-adapter.js";
 export * from "./replay-adapter.js";
 export * from "./runtime-control-adapter.js";
+export * from "./session-analytics-adapter.js";
 export * from "./session-ingest-adapter.js";

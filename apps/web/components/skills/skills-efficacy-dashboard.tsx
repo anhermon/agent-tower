@@ -14,7 +14,7 @@ import { SkillsEfficacyTable } from "./skills-efficacy-table";
  * are expected to render an empty state at the route level.
  */
 export function SkillsEfficacyDashboard({
-  report
+  report,
 }: {
   readonly report: SkillsEfficacyReport;
 }): JSX.Element | null {
@@ -27,10 +27,7 @@ export function SkillsEfficacyDashboard({
       </Section>
 
       <Section title="Qualifying skills">
-        <SkillsEfficacyTable
-          rows={report.qualifying}
-          baseline={report.baseline}
-        />
+        <SkillsEfficacyTable rows={report.qualifying} baseline={report.baseline} />
       </Section>
 
       <Section title="Signals">
@@ -51,7 +48,7 @@ export function SkillsEfficacyDashboard({
 
 function Section({
   title,
-  children
+  children,
 }: {
   readonly title: string;
   readonly children: React.ReactNode;

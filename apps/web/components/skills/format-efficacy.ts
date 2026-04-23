@@ -51,7 +51,6 @@ export function outcomeColor(outcome: SessionOutcome): string {
       return "bg-warn/70";
     case "abandoned":
       return "bg-danger/70";
-    case "unknown":
     default:
       return "bg-muted/40";
   }

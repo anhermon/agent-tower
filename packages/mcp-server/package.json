@@ -1,0 +1,32 @@
+{
+  "name": "@control-plane/mcp-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "control-plane-mcp": "./dist/server.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "chmod +x dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "pnpm typecheck",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@control-plane/adapter-claude-code": "workspace:*",
+    "@control-plane/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.29.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}

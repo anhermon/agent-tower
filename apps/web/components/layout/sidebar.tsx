@@ -11,10 +11,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className={cn(
-        "hidden w-64 shrink-0 flex-col gap-4 p-4 lg:flex",
-        "sticky top-0 h-screen"
-      )}
+      className={cn("hidden w-64 shrink-0 flex-col gap-4 p-4 lg:flex", "sticky top-0 h-screen")}
     >
       <div className="glass-panel flex items-center gap-3 rounded-lg px-4 py-4">
         <div className="brand-mark">CP</div>
@@ -61,8 +58,10 @@ export function Sidebar() {
                   className={cn(
                     "ml-auto h-1.5 w-1.5 rounded-full transition-all",
                     module.status === "healthy" && "bg-ok shadow-[0_0_8px_rgb(var(--color-ok))]",
-                    module.status === "degraded" && "bg-warn shadow-[0_0_8px_rgb(var(--color-warn))]",
-                    module.status === "down" && "bg-danger shadow-[0_0_8px_rgb(var(--color-danger))]",
+                    module.status === "degraded" &&
+                      "bg-warn shadow-[0_0_8px_rgb(var(--color-warn))]",
+                    module.status === "down" &&
+                      "bg-danger shadow-[0_0_8px_rgb(var(--color-danger))]",
                     module.status === "idle" && "bg-muted/40"
                   )}
                 />

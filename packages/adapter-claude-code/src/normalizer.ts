@@ -1,9 +1,3 @@
-import {
-  AGENT_RUNTIMES,
-  SESSION_ACTOR_ROLES,
-  SESSION_STATES,
-  TOOL_CALL_STATUSES
-} from "@control-plane/core";
 import type {
   JsonObject,
   JsonValue,
@@ -14,7 +8,13 @@ import type {
   SessionState,
   SessionTurn,
   ToolCall,
-  ToolResult
+  ToolResult,
+} from "@control-plane/core";
+import {
+  AGENT_RUNTIMES,
+  SESSION_ACTOR_ROLES,
+  SESSION_STATES,
+  TOOL_CALL_STATUSES,
 } from "@control-plane/core";
 import type {
   ClaudeAssistantEntry,
@@ -23,7 +23,7 @@ import type {
   ClaudeRawValue,
   ClaudeSystemEntry,
   ClaudeTranscriptEntry,
-  ClaudeUserEntry
+  ClaudeUserEntry,
 } from "./types.js";
 
 type ClaudeTextBlock = Extract<ClaudeContentBlock, { readonly type: "text" }>;
@@ -102,7 +102,7 @@ export function normalizeTranscript(
     createdAt,
     updatedAt,
     ...(title !== undefined ? { title } : {}),
-    metadata: collectSessionMetadata(entries)
+    metadata: collectSessionMetadata(entries),
   };
 
   return {
@@ -111,7 +111,7 @@ export function normalizeTranscript(
     toolCalls,
     toolResults,
     skipped,
-    batch: { session, turns }
+    batch: { session, turns },
   };
 }
 
@@ -156,15 +156,22 @@ function normalizeUserEntry(
           actor,
           content: { kind: "text", text: entry.message.content },
           createdAt,
-          entry
-        })
-      }
+          entry,
+        }),
+      },
     ];
   }
 
   const groups: NormalizedTurnGroup[] = [];
   for (const block of entry.message.content ?? []) {
-    const normalized = normalizeBlockAsUser(block, entry, sessionId, nextSequence, actor, createdAt);
+    const normalized = normalizeBlockAsUser(
+      block,
+      entry,
+      sessionId,
+      nextSequence,
+      actor,
+      createdAt
+    );
     if (normalized) {
       groups.push(normalized);
     }
@@ -189,8 +196,8 @@ function normalizeBlockAsUser(
         actor,
         content: { kind: "text", text: block.text },
         createdAt,
-        entry
-      })
+        entry,
+      }),
     };
   }
 
@@ -204,8 +211,8 @@ function normalizeBlockAsUser(
       completedAt: createdAt,
       metadata: {
         source: "claude-code",
-        ...(entry.uuid ? { entryUuid: entry.uuid } : {})
-      }
+        ...(entry.uuid ? { entryUuid: entry.uuid } : {}),
+      },
     };
 
     return {
@@ -216,9 +223,9 @@ function normalizeBlockAsUser(
         actor: { role: SESSION_ACTOR_ROLES.Tool },
         content: { kind: "tool_result", result: toolResult },
         createdAt,
-        entry
+        entry,
       }),
-      toolResult
+      toolResult,
     };
   }
 
@@ -243,15 +250,22 @@ function normalizeAssistantEntry(
           actor,
           content: { kind: "text", text: entry.message.content },
           createdAt,
-          entry
-        })
-      }
+          entry,
+        }),
+      },
     ];
   }
 
   const groups: NormalizedTurnGroup[] = [];
   for (const block of entry.message.content ?? []) {
-    const normalized = normalizeBlockAsAssistant(block, entry, sessionId, nextSequence, actor, createdAt);
+    const normalized = normalizeBlockAsAssistant(
+      block,
+      entry,
+      sessionId,
+      nextSequence,
+      actor,
+      createdAt
+    );
     if (normalized) {
       groups.push(normalized);
     }
@@ -276,8 +290,8 @@ function normalizeBlockAsAssistant(
         actor,
         content: { kind: "text", text: block.text },
         createdAt,
-        entry
-      })
+        entry,
+      }),
     };
   }
 
@@ -291,8 +305,8 @@ function normalizeBlockAsAssistant(
         content: { kind: "text", text: block.thinking },
         createdAt,
         entry,
-        extraMetadata: { thinking: true }
-      })
+        extraMetadata: { thinking: true },
+      }),
     };
   }
 
@@ -307,8 +321,8 @@ function normalizeBlockAsAssistant(
       startedAt: createdAt,
       metadata: {
         source: "claude-code",
-        ...(entry.uuid ? { entryUuid: entry.uuid } : {})
-      }
+        ...(entry.uuid ? { entryUuid: entry.uuid } : {}),
+      },
     };
 
     return {
@@ -319,9 +333,9 @@ function normalizeBlockAsAssistant(
         actor,
         content: { kind: "tool_call", call: toolCall },
         createdAt,
-        entry
+        entry,
       }),
-      toolCall
+      toolCall,
     };
   }
 
@@ -336,10 +350,7 @@ function normalizeSystemEntry(
   const actor: SessionActor = { role: SESSION_ACTOR_ROLES.System };
   const createdAt = entry.timestamp ?? new Date().toISOString();
 
-  const text =
-    typeof entry.message?.content === "string"
-      ? entry.message.content
-      : entry.content;
+  const text = typeof entry.message?.content === "string" ? entry.message.content : entry.content;
 
   if (!text) {
     return [];
@@ -354,9 +365,9 @@ function normalizeSystemEntry(
         actor,
         content: { kind: "text", text },
         createdAt,
-        entry
-      })
-    }
+        entry,
+      }),
+    },
   ];
 }
 
@@ -378,7 +389,7 @@ function buildTurn(input: BuildTurnInput): SessionTurn {
     ...(input.entry.parentUuid ? { parentUuid: input.entry.parentUuid } : {}),
     ...(input.entry.cwd ? { cwd: input.entry.cwd } : {}),
     ...(input.entry.version ? { claudeVersion: input.entry.version } : {}),
-    ...(input.extraMetadata ?? {})
+    ...(input.extraMetadata ?? {}),
   };
 
   const correlationId = input.entry.uuid ?? input.entry.parentUuid;
@@ -391,7 +402,7 @@ function buildTurn(input: BuildTurnInput): SessionTurn {
     content: input.content,
     createdAt: input.createdAt,
     ...(correlationId ? { correlationId } : {}),
-    metadata
+    metadata,
   };
 }
 
@@ -518,7 +529,12 @@ function lastDefined<T, R>(
 }
 
 function toJsonValue(raw: ClaudeRawValue): JsonValue {
-  if (raw === null || typeof raw === "string" || typeof raw === "number" || typeof raw === "boolean") {
+  if (
+    raw === null ||
+    typeof raw === "string" ||
+    typeof raw === "number" ||
+    typeof raw === "boolean"
+  ) {
     return raw;
   }
   if (Array.isArray(raw)) {

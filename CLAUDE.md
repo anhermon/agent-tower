@@ -23,7 +23,9 @@
 - `packages/core` — canonical domain types and capability-based adapter contracts. No runtime deps.
 - `packages/events` — typed event bus and append-only event log abstractions + mock stream.
 - `packages/storage` — repository interfaces and Phase 1 in-memory storage.
-- `packages/adapter-claude-code` — first real adapter: read-only JSONL → canonical types.
+- `packages/adapter-claude-code` — first real adapter: read-only JSONL → canonical types; also hosts shared skill-manifest discovery and skill usage/efficacy analytics reused by the web app, the CLI, and the MCP server.
+- `packages/cli` — `cp` binary exposing the same read-only analytics surface to shells and scripts. Imports the adapter directly.
+- `packages/mcp-server` — stdio MCP server (`control-plane-mcp`) wrapping the same analytics as typed MCP tools. Launched via `.mcp.json`.
 - `packages/testing` — shared fixtures (currently `core` fixtures only).
 - `docs/architecture` — durable decisions (overview, adapter contracts, data model, security).
 - `docs/architecture/decisions` — ADR log. The **why** behind the rules in this file; see `decisions/README.md` for the template and index.
@@ -46,6 +48,14 @@
 - **Before declaring done:** run `pnpm typecheck` and `pnpm test`. For UI changes also run `pnpm test:e2e` or verify in a browser.
 - **Do not** wire real ingestion, persistence, CRUD, or runtime control in Phase 1 — that scope is listed as deferred in `docs/architecture/overview.md` and the per-module docs. Rationale: [ADR-0001](docs/architecture/decisions/0001-phase-1-skeleton.md), [ADR-0003](docs/architecture/decisions/0003-local-first-storage.md).
 - Session notes belong in `.claude/` (gitignored). `NOTES.md`, `TODO.md`, `PLAN.md`, `SCRATCH.md` at the repo root are also gitignored — use them for temporal docs, never commit.
+
+## Agent Interaction Surfaces
+Three surfaces let an LLM agent inspect control-plane data without navigating source:
+- **Project skill** — `.claude/skills/control-plane-inspect/SKILL.md` maps natural-language questions ("highest-token sessions?", "skills with negative delta?") to concrete commands. Claude Code loads it automatically when working inside this repo. The `.claude/` tree is gitignored by default; if you want the skill version-controlled, add `!/.claude/skills/` to `.gitignore`.
+- **CLI** — `packages/cli` ships the `cp` binary with read-only subcommands: `cp health`, `cp sessions top|show`, `cp skills top|usage|efficacy`, `cp agents list`. JSON output by default, `--pretty` for humans. Build once with `pnpm --filter @control-plane/cli build`, then run via `node packages/cli/dist/cli.js <subcommand>` from the repo root (or `pnpm link --global` inside the package for `$PATH` access).
+- **MCP server** — `packages/mcp-server` ships `control-plane-mcp` (stdio MCP, 7 tools: `control_plane_health`, `sessions_top`, `sessions_show`, `skills_top`, `skills_usage`, `skills_efficacy`, `agents_list`). Registered at repo root via `.mcp.json`; requires `pnpm --filter @control-plane/mcp-server build` once before first use. All tools are read-only and never throw — errors surface as `{ok:false, reason, message?}`.
+
+Data surface for all three: `CLAUDE_CONTROL_PLANE_DATA_ROOT` (env) → `~/.claude/projects` fallback → unconfigured. Skill-manifest discovery uses `CONTROL_PLANE_SKILLS_ROOTS` (env) → `~/.claude/skills` fallback.
 
 ## Subtree Guides
 - [`apps/web/CLAUDE.md`](apps/web/CLAUDE.md) — dashboard shell, routing, module UI conventions.

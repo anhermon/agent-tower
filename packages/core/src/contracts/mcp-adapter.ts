@@ -3,7 +3,7 @@ import type {
   McpResourceContent,
   McpResourceDescriptor,
   McpServerDescriptor,
-  McpToolDescriptor
+  McpToolDescriptor,
 } from "../domain/mcps.js";
 import type { ToolResult } from "../domain/tools.js";
 import type { AdapterContext, AdapterLifecycle } from "./common.js";
@@ -24,10 +24,7 @@ export interface McpAdapter extends AdapterLifecycle {
     serverId: string,
     context?: AdapterContext
   ) => Promise<readonly McpToolDescriptor[]>;
-  readonly callTool: (
-    request: McpToolCallRequest,
-    context?: AdapterContext
-  ) => Promise<ToolResult>;
+  readonly callTool: (request: McpToolCallRequest, context?: AdapterContext) => Promise<ToolResult>;
   readonly listResources: (
     serverId: string,
     context?: AdapterContext

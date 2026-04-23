@@ -4,7 +4,7 @@ export const AGENT_RUNTIMES = {
   Claude: "claude",
   OpenAI: "openai",
   Local: "local",
-  Custom: "custom"
+  Custom: "custom",
 } as const;
 
 export type AgentRuntime = (typeof AGENT_RUNTIMES)[keyof typeof AGENT_RUNTIMES];
@@ -12,7 +12,7 @@ export type AgentRuntime = (typeof AGENT_RUNTIMES)[keyof typeof AGENT_RUNTIMES];
 export const AGENT_KINDS = {
   Interactive: "interactive",
   Worker: "worker",
-  System: "system"
+  System: "system",
 } as const;
 
 export type AgentKind = (typeof AGENT_KINDS)[keyof typeof AGENT_KINDS];
@@ -21,7 +21,7 @@ export const AGENT_STATUSES = {
   Available: "available",
   Busy: "busy",
   Offline: "offline",
-  Error: "error"
+  Error: "error",
 } as const;
 
 export type AgentStatus = (typeof AGENT_STATUSES)[keyof typeof AGENT_STATUSES];

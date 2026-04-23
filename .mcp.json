@@ -1,0 +1,10 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
+  "mcpServers": {
+    "control-plane": {
+      "command": "node",
+      "args": ["packages/mcp-server/dist/server.js"],
+      "env": {}
+    }
+  }
+}

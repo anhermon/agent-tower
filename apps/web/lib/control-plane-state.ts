@@ -1,5 +1,5 @@
 import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
-import { listAgentsOrEmpty, type AgentInventoryItem } from "@/lib/agents-source";
+import { type AgentInventoryItem, listAgentsOrEmpty } from "@/lib/agents-source";
 import { listSessionsOrEmpty } from "@/lib/sessions-source";
 import { listSkillsOrEmpty } from "@/lib/skills-source";
 import type { ActivityEvent, HealthState, Metric } from "@/types/control-plane";
@@ -19,13 +19,11 @@ export interface OverviewState {
   readonly agentsAdapterError: string | null;
 }
 
-export async function getOverviewState(
-  now: Date = new Date()
-): Promise<OverviewState> {
+export async function getOverviewState(now: Date = new Date()): Promise<OverviewState> {
   const [sessions, agents, skills] = await Promise.all([
     listSessionsOrEmpty(),
     listAgentsOrEmpty(now),
-    listSkillsOrEmpty()
+    listSkillsOrEmpty(),
   ]);
 
   const metrics: Metric[] = [
@@ -35,15 +33,13 @@ export async function getOverviewState(
       detail: sessions.ok
         ? describeActiveSessions(agents, sessions.sessions.length)
         : describeSessionsAdapter(sessions),
-      trend: "flat"
+      trend: "flat",
     },
     {
       label: "Agent instances",
       value: agents.ok ? String(agents.agents.length) : UNIMPLEMENTED,
-      detail: agents.ok
-        ? describeAgents(agents.agents)
-        : describeAgentsAdapter(agents),
-      trend: "flat"
+      detail: agents.ok ? describeAgents(agents.agents) : describeAgentsAdapter(agents),
+      trend: "flat",
     },
     {
       label: "Skills",
@@ -51,20 +47,20 @@ export async function getOverviewState(
       detail: skills.ok
         ? describeSkills(skills.skills.length, skills.roots.length)
         : describeSkillsAdapter(skills),
-      trend: "flat"
+      trend: "flat",
     },
     {
       label: "Webhook deliveries",
       value: UNIMPLEMENTED,
       detail: "Webhooks module not yet implemented",
-      trend: "flat"
+      trend: "flat",
     },
     {
       label: "Replay frames",
       value: UNIMPLEMENTED,
       detail: "Replay module not yet implemented",
-      trend: "flat"
-    }
+      trend: "flat",
+    },
   ];
 
   return {
@@ -73,7 +69,7 @@ export async function getOverviewState(
     agents: agents.ok ? agents.agents : [],
     agentsAdapterConfigured: agents.ok,
     agentsAdapterError:
-      !agents.ok && agents.reason === "error" ? agents.message ?? "Unknown error" : null
+      !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
   };
 }
 
@@ -85,20 +81,14 @@ export function statusToHealthState(status: AgentStatus): HealthState {
       return "degraded";
     case AGENT_STATUSES.Error:
       return "down";
-    case AGENT_STATUSES.Offline:
     default:
       return "idle";
   }
 }
 
-function formatActiveSessions(
-  agents: Awaited<ReturnType<typeof listAgentsOrEmpty>>
-): string {
+function formatActiveSessions(agents: Awaited<ReturnType<typeof listAgentsOrEmpty>>): string {
   if (!agents.ok) return UNIMPLEMENTED;
-  const active = agents.agents.reduce(
-    (sum, agent) => sum + agent.state.activeSessionIds.length,
-    0
-  );
+  const active = agents.agents.reduce((sum, agent) => sum + agent.state.activeSessionIds.length, 0);
   return String(active);
 }
 
@@ -129,9 +119,7 @@ function describeSkills(count: number, roots: number): string {
   return `Across ${roots} root${roots === 1 ? "" : "s"}`;
 }
 
-function describeSessionsAdapter(
-  result: Awaited<ReturnType<typeof listSessionsOrEmpty>>
-): string {
+function describeSessionsAdapter(result: Awaited<ReturnType<typeof listSessionsOrEmpty>>): string {
   if (result.ok) return "";
   if (result.reason === "unconfigured") {
     return "Claude Code data root not configured";
@@ -139,9 +127,7 @@ function describeSessionsAdapter(
   return result.message ?? "Sessions adapter error";
 }
 
-function describeAgentsAdapter(
-  result: Awaited<ReturnType<typeof listAgentsOrEmpty>>
-): string {
+function describeAgentsAdapter(result: Awaited<ReturnType<typeof listAgentsOrEmpty>>): string {
   if (result.ok) return "";
   if (result.reason === "unconfigured") {
     return "Claude Code data root not configured";
@@ -149,9 +135,7 @@ function describeAgentsAdapter(
   return result.message ?? "Agents adapter error";
 }
 
-function describeSkillsAdapter(
-  result: Awaited<ReturnType<typeof listSkillsOrEmpty>>
-): string {
+function describeSkillsAdapter(result: Awaited<ReturnType<typeof listSkillsOrEmpty>>): string {
   if (result.ok) return "";
   if (result.reason === "unconfigured") {
     return "Skills root not configured";

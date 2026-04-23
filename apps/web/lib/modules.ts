@@ -10,7 +10,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "skeleton",
     owner: "",
-    docs: "docs/architecture/overview.md"
+    docs: "docs/architecture/overview.md",
   },
   {
     key: "sessions",
@@ -21,7 +21,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "active",
     owner: "",
-    docs: "docs/modules/sessions.md"
+    docs: "docs/modules/sessions.md",
   },
   {
     key: "webhooks",
@@ -32,7 +32,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "active",
     owner: "",
-    docs: "docs/modules/webhooks.md"
+    docs: "docs/modules/webhooks.md",
   },
   {
     key: "agents",
@@ -43,7 +43,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "active",
     owner: "",
-    docs: "docs/modules/agents.md"
+    docs: "docs/modules/agents.md",
   },
   {
     key: "kanban",
@@ -54,7 +54,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "active",
     owner: "",
-    docs: "docs/modules/kanban.md"
+    docs: "docs/modules/kanban.md",
   },
   {
     key: "skills",
@@ -65,7 +65,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "active",
     owner: "",
-    docs: "docs/modules/skills.md"
+    docs: "docs/modules/skills.md",
   },
   {
     key: "mcps",
@@ -76,7 +76,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "deferred",
     owner: "",
-    docs: "docs/modules/mcps.md"
+    docs: "docs/modules/mcps.md",
   },
   {
     key: "channels",
@@ -87,7 +87,7 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "deferred",
     owner: "",
-    docs: "docs/modules/channels.md"
+    docs: "docs/modules/channels.md",
   },
   {
     key: "replay",
@@ -98,8 +98,8 @@ export const modules: ModuleDefinition[] = [
     status: "degraded",
     phase: "deferred",
     owner: "",
-    docs: "docs/modules/replay.md"
-  }
+    docs: "docs/modules/replay.md",
+  },
 ];
 
 export function getModuleByHref(pathname: string): ModuleDefinition {

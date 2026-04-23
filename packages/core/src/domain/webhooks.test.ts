@@ -3,7 +3,7 @@ import {
   WEBHOOK_EVENT_TYPES,
   type WebhookDelivery,
   type WebhookEventType,
-  type WebhookSubscription
+  type WebhookSubscription,
 } from "./webhooks.js";
 
 describe("webhook canonical types", () => {
@@ -15,7 +15,7 @@ describe("webhook canonical types", () => {
       "tool_call.changed",
       "cost.recorded",
       "ticket.changed",
-      "replay.completed"
+      "replay.completed",
     ];
     // Values should be exactly the documented set — no more, no less.
     expect(new Set(Object.values(WEBHOOK_EVENT_TYPES))).toEqual(new Set(expected));
@@ -27,7 +27,7 @@ describe("webhook canonical types", () => {
       url: "https://example.test/hook",
       eventTypes: [WEBHOOK_EVENT_TYPES.SessionChanged],
       enabled: true,
-      createdAt: "2026-04-23T10:00:00.000Z"
+      createdAt: "2026-04-23T10:00:00.000Z",
     };
     expect(subscription.displayName).toBeUndefined();
     expect(subscription.eventTypes).toHaveLength(1);
@@ -38,13 +38,10 @@ describe("webhook canonical types", () => {
       id: "sub-2",
       displayName: "Staging: session updates",
       url: "https://staging.example.test/hook",
-      eventTypes: [
-        WEBHOOK_EVENT_TYPES.SessionChanged,
-        WEBHOOK_EVENT_TYPES.SessionTurnCreated
-      ],
+      eventTypes: [WEBHOOK_EVENT_TYPES.SessionChanged, WEBHOOK_EVENT_TYPES.SessionTurnCreated],
       enabled: false,
       secretRef: "env:STAGING_WEBHOOK_SECRET",
-      createdAt: "2026-04-23T10:00:00.000Z"
+      createdAt: "2026-04-23T10:00:00.000Z",
     };
     expect(subscription.displayName).toBe("Staging: session updates");
     expect(subscription.secretRef).toBe("env:STAGING_WEBHOOK_SECRET");
@@ -57,7 +54,7 @@ describe("webhook canonical types", () => {
       eventType: WEBHOOK_EVENT_TYPES.SessionChanged,
       attemptedAt: "2026-04-23T10:00:00.000Z",
       status: "delivered",
-      responseStatus: 200
+      responseStatus: 200,
     };
     expect(delivery.status).toBe("delivered");
   });

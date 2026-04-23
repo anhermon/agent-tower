@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type JSX } from "react";
+import { type JSX, useMemo, useState } from "react";
 import type { SkillUsageStats } from "@/lib/skills-usage-source";
 import { formatBytes, formatTokens } from "./format-usage";
 
@@ -19,20 +19,20 @@ const METRICS: ReadonlyArray<MetricConfig> = [
     key: "invocations",
     label: "Invocations",
     pick: (stat) => stat.invocationCount,
-    format: (value) => value.toLocaleString()
+    format: (value) => value.toLocaleString(),
   },
   {
     key: "size",
     label: "Skill size",
     pick: (stat) => stat.sizeBytes,
-    format: (value) => formatBytes(value)
+    format: (value) => formatBytes(value),
   },
   {
     key: "composite",
     label: "Tokens injected",
     pick: (stat) => stat.tokensInjected,
-    format: (value) => formatTokens(value)
-  }
+    format: (value) => formatTokens(value),
+  },
 ];
 
 /**
@@ -48,7 +48,7 @@ const METRICS: ReadonlyArray<MetricConfig> = [
 export function SkillsBarChart({
   skills,
   topN = 15,
-  initialMetric = "invocations"
+  initialMetric = "invocations",
 }: {
   readonly skills: readonly SkillUsageStats[];
   readonly topN?: number;
@@ -60,7 +60,7 @@ export function SkillsBarChart({
   const rows = useMemo(() => {
     const scored = skills.map((skill) => ({
       skill,
-      value: active.pick(skill)
+      value: active.pick(skill),
     }));
     scored.sort((a, b) => b.value - a.value);
     return scored.slice(0, topN);
@@ -100,10 +100,7 @@ export function SkillsBarChart({
               >
                 <SkillLabel skill={skill} />
                 <div className="bar-track" aria-hidden="true">
-                  <div
-                    className="h-full rounded-full bg-info/70"
-                    style={{ width: `${pct}%` }}
-                  />
+                  <div className="h-full rounded-full bg-info/70" style={{ width: `${pct}%` }} />
                 </div>
                 <span
                   className="w-20 shrink-0 text-right font-mono text-xs text-muted-strong"

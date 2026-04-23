@@ -6,7 +6,7 @@ export const MCP_SERVER_STATUSES = {
   Connecting: "connecting",
   Connected: "connected",
   Disconnected: "disconnected",
-  Error: "error"
+  Error: "error",
 } as const;
 
 export type McpServerStatus = (typeof MCP_SERVER_STATUSES)[keyof typeof MCP_SERVER_STATUSES];

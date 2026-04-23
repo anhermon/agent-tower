@@ -6,11 +6,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Modular Agents Control Plane",
-  description: "Operational dashboard shell for modular agent orchestration."
+  description: "Operational dashboard shell for modular agent orchestration.",
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: ReactNode;
 }>) {

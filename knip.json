@@ -1,0 +1,42 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["**/*.test.ts", "**/*.test.tsx", "e2e/**", "packages/testing/fixtures/**"],
+  "ignoreBinaries": ["turbo", "next", "vitest", "playwright", "tsc", "task"],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "*.config.ts",
+        "*.config.js",
+        "*.config.mjs",
+        "*.config.cjs",
+        "vitest.config.ts",
+        "playwright.config.ts",
+        "eslint.config.mjs",
+        ".size-limit.json",
+        "lighthouserc.json",
+        "scripts/**/*.mjs"
+      ]
+    },
+    "apps/web": {
+      "entry": [
+        "app/**/page.tsx",
+        "app/**/layout.tsx",
+        "app/**/route.ts",
+        "app/**/loading.tsx",
+        "app/**/error.tsx",
+        "next.config.ts",
+        "next.config.js",
+        "next.config.mjs",
+        "tailwind.config.ts",
+        "postcss.config.js",
+        "postcss.config.cjs",
+        "postcss.config.mjs"
+      ],
+      "project": ["{app,components,lib,types}/**/*.{ts,tsx}"]
+    },
+    "packages/*": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    }
+  }
+}

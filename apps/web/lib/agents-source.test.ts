@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, utimes, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AGENT_STATUSES } from "@control-plane/core";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 let mockedHome: string | null = null;
 
@@ -10,16 +10,12 @@ vi.mock("node:os", async () => {
   const actual = await vi.importActual<typeof import("node:os")>("node:os");
   return {
     ...actual,
-    homedir: () => mockedHome ?? actual.homedir()
+    homedir: () => mockedHome ?? actual.homedir(),
   };
 });
 
-const {
-  __clearAgentInventoryCacheForTests,
-  listAgentsOrEmpty,
-  loadAgentOrUndefined,
-  toAgentId
-} = await import("./agents-source");
+const { __clearAgentInventoryCacheForTests, listAgentsOrEmpty, loadAgentOrUndefined, toAgentId } =
+  await import("./agents-source");
 
 const CLAUDE_DATA_ROOT_ENV = "CLAUDE_CONTROL_PLANE_DATA_ROOT";
 
@@ -63,18 +59,31 @@ describe("agents-source", () => {
     tempRoot = root;
     process.env[CLAUDE_DATA_ROOT_ENV] = root;
 
-    await seedTranscript(root, "-Users-alice-project-one", "session-a1", "2026-04-23T10:00:00.000Z");
-    await seedTranscript(root, "-Users-alice-project-one", "session-a2", "2026-04-23T11:00:00.000Z");
-    await seedTranscript(root, "-Users-alice-project-two", "session-b1", "2026-04-23T09:00:00.000Z");
+    await seedTranscript(
+      root,
+      "-Users-alice-project-one",
+      "session-a1",
+      "2026-04-23T10:00:00.000Z"
+    );
+    await seedTranscript(
+      root,
+      "-Users-alice-project-one",
+      "session-a2",
+      "2026-04-23T11:00:00.000Z"
+    );
+    await seedTranscript(
+      root,
+      "-Users-alice-project-two",
+      "session-b1",
+      "2026-04-23T09:00:00.000Z"
+    );
 
     const result = await listAgentsOrEmpty(new Date("2026-04-23T12:00:00.000Z"));
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.agents).toHaveLength(2);
 
-    const byProject = Object.fromEntries(
-      result.agents.map((agent) => [agent.projectId, agent])
-    );
+    const byProject = Object.fromEntries(result.agents.map((agent) => [agent.projectId, agent]));
 
     const projectOne = byProject["-Users-alice-project-one"]!;
     expect(projectOne.sessionCount).toBe(2);
@@ -96,7 +105,7 @@ describe("agents-source", () => {
 
     const fresh = new Date(Date.now() - 5 * 60 * 1_000); // 5 minutes ago
     await seedTranscript(root, "-Users-fresh", "session-fresh", fresh.toISOString(), {
-      mtime: fresh
+      mtime: fresh,
     });
 
     const result = await listAgentsOrEmpty(new Date());
@@ -115,7 +124,7 @@ describe("agents-source", () => {
 
     const old = new Date(Date.now() - 5 * 24 * 60 * 60 * 1_000); // 5 days ago
     await seedTranscript(root, "-Users-stale", "session-stale", old.toISOString(), {
-      mtime: old
+      mtime: old,
     });
 
     const result = await listAgentsOrEmpty(new Date());
@@ -155,7 +164,7 @@ describe("agents-source", () => {
     expect(result.sessions).toHaveLength(2);
     expect(result.sessions.map((session) => session.sessionId).sort()).toEqual([
       "session-b1",
-      "session-b2"
+      "session-b2",
     ]);
   });
 });
@@ -177,8 +186,8 @@ async function seedTranscript(
       timestamp,
       cwd: "/tmp/x",
       version: "1.0.0",
-      message: { role: "user", content: "hello" }
-    }
+      message: { role: "user", content: "hello" },
+    },
   ];
   const filePath = path.join(projectDir, `${sessionId}.jsonl`);
   await writeFile(filePath, entries.map((entry) => JSON.stringify(entry)).join("\n"), "utf8");

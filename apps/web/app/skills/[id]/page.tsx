@@ -1,28 +1,29 @@
 import Link from "next/link";
+import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
+import { DateRangePicker } from "@/components/sessions/date-range-picker";
+import { formatShortDate, formatTokens } from "@/components/skills/format-usage";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { formatBytes, formatRelative } from "@/lib/format";
-import { SKILLS_ROOTS_ENV, loadSkillOrUndefined } from "@/lib/skills-source";
-import {
-  computeSkillsUsage,
-  type SkillUsageStats
-} from "@/lib/skills-usage-source";
-import {
-  formatShortDate,
-  formatTokens
-} from "@/components/skills/format-usage";
+import { loadSkillOrUndefined, SKILLS_ROOTS_ENV } from "@/lib/skills-source";
+import { computeSkillsUsage, type SkillUsageStats } from "@/lib/skills-usage-source";
 
 export const dynamic = "force-dynamic";
 
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams: SearchParams;
 };
 
-export default async function SkillDetailPage({ params }: PageProps) {
+export default async function SkillDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;
   const decodedId = safeDecode(id);
+  const sp = await searchParams;
+  const range = resolveRangeFromSearchParams(sp);
   const [result, usage] = await Promise.all([
     loadSkillOrUndefined(decodedId),
-    computeSkillsUsage()
+    computeSkillsUsage({ range }),
   ]);
 
   if (!result.ok) {
@@ -44,7 +45,9 @@ export default async function SkillDetailPage({ params }: PageProps) {
         ) : (
           <ErrorState
             title="Could not load skill"
-            description={result.message ?? "An unknown error occurred reading the configured roots."}
+            description={
+              result.message ?? "An unknown error occurred reading the configured roots."
+            }
           />
         )}
       </section>
@@ -53,9 +56,9 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
   const { skill } = result;
   const stats = usage.ok
-    ? usage.report.perSkill.find(
+    ? (usage.report.perSkill.find(
         (entry) => entry.skillId === skill.id || entry.skillId === skill.name
-      ) ?? null
+      ) ?? null)
     : null;
 
   return (
@@ -64,9 +67,12 @@ export default async function SkillDetailPage({ params }: PageProps) {
         <Link href="/skills" className="text-cyan hover:underline">
           ← Back to skills
         </Link>
-        <span className="font-mono text-xs text-muted" title={skill.id}>
-          {skill.id}
-        </span>
+        <div className="flex items-center gap-3">
+          <DateRangePicker />
+          <span className="font-mono text-xs text-muted" title={skill.id}>
+            {skill.id}
+          </span>
+        </div>
       </div>
 
       <header className="glass-panel accent-gradient-subtle relative overflow-hidden rounded-lg p-6">
@@ -76,10 +82,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
             <h1 className="mt-2 break-words text-2xl font-semibold leading-tight text-ink md:text-[28px]">
               {skill.name}
             </h1>
-            <p
-              className="mt-2 break-all font-mono text-xs text-muted"
-              title={skill.filePath}
-            >
+            <p className="mt-2 break-all font-mono text-xs text-muted" title={skill.filePath}>
               {skill.filePath}
             </p>
           </div>
@@ -109,9 +112,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
       {skill.description ? (
         <section>
           <p className="eyebrow">Description</p>
-          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink">
-            {skill.description}
-          </p>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink">{skill.description}</p>
         </section>
       ) : null}
 
@@ -194,7 +195,10 @@ function UsageBlock({ stats }: { readonly stats: SkillUsageStats | null }) {
 
       <div className="glass-panel rounded-md p-4">
         <p className="eyebrow">Hour of day (UTC)</p>
-        <div className="mt-3 grid grid-cols-24 gap-[2px]" style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}>
+        <div
+          className="mt-3 grid grid-cols-24 gap-[2px]"
+          style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+        >
           {stats.perHourOfDay.map((count, hour) => {
             const intensity = count / maxHour;
             const lightness = 18 + Math.round(intensity * 46);
@@ -248,7 +252,7 @@ function Stat({
   label,
   value,
   hint,
-  mono
+  mono,
 }: {
   readonly label: string;
   readonly value: string;

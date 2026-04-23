@@ -1,3 +1,10 @@
+import type {
+  AgentDescriptor,
+  AgentState,
+  ChannelMessage,
+  SessionDescriptor,
+  SessionTurn,
+} from "@control-plane/core";
 import {
   AGENT_KINDS,
   AGENT_RUNTIMES,
@@ -6,14 +13,7 @@ import {
   CHANNEL_MESSAGE_DIRECTIONS,
   CLAUDE_FIRST_CAPABILITIES,
   SESSION_ACTOR_ROLES,
-  SESSION_STATES
-} from "@control-plane/core";
-import type {
-  AgentDescriptor,
-  AgentState,
-  ChannelMessage,
-  SessionDescriptor,
-  SessionTurn
+  SESSION_STATES,
 } from "@control-plane/core";
 
 export const mockClaudeAgent = {
@@ -23,14 +23,14 @@ export const mockClaudeAgent = {
   displayName: "Fixture Claude Agent",
   version: "fixture",
   capabilities: CLAUDE_FIRST_CAPABILITIES,
-  labels: ["fixture", "claude"]
+  labels: ["fixture", "claude"],
 } as const satisfies AgentDescriptor;
 
 export const mockClaudeAgentState = {
   agentId: mockClaudeAgent.id,
   status: AGENT_STATUSES.Available,
   activeSessionIds: [],
-  lastSeenAt: "2026-01-01T00:00:00.000Z"
+  lastSeenAt: "2026-01-01T00:00:00.000Z",
 } as const satisfies AgentState;
 
 export const mockSession = {
@@ -43,8 +43,8 @@ export const mockSession = {
   title: "Fixture session",
   channel: {
     kind: CHANNEL_KINDS.Api,
-    id: "api_fixture"
-  }
+    id: "api_fixture",
+  },
 } as const satisfies SessionDescriptor;
 
 export const mockUserTurn = {
@@ -54,20 +54,20 @@ export const mockUserTurn = {
   actor: {
     role: SESSION_ACTOR_ROLES.User,
     id: "user_fixture",
-    displayName: "Fixture User"
+    displayName: "Fixture User",
   },
   content: {
     kind: "text",
-    text: "Summarize the current control-plane status."
+    text: "Summarize the current control-plane status.",
   },
-  createdAt: "2026-01-01T00:00:01.000Z"
+  createdAt: "2026-01-01T00:00:01.000Z",
 } as const satisfies SessionTurn;
 
 export const mockInboundChannelMessage = {
   id: "message_fixture_001",
   channel: {
     kind: CHANNEL_KINDS.Api,
-    id: "api_fixture"
+    id: "api_fixture",
   },
   direction: CHANNEL_MESSAGE_DIRECTIONS.Inbound,
   createdAt: "2026-01-01T00:00:01.000Z",
@@ -75,11 +75,11 @@ export const mockInboundChannelMessage = {
     id: "identity_fixture_001",
     channel: {
       kind: CHANNEL_KINDS.Api,
-      id: "api_fixture"
+      id: "api_fixture",
     },
     displayName: "Fixture User",
-    externalUserId: "user_fixture"
+    externalUserId: "user_fixture",
   },
   text: "Summarize the current control-plane status.",
-  correlationId: "corr_fixture_001"
+  correlationId: "corr_fixture_001",
 } as const satisfies ChannelMessage;

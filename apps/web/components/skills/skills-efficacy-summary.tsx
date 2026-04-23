@@ -10,7 +10,7 @@ import { formatPercent } from "./format-efficacy";
  * siblings.
  */
 export function SkillsEfficacySummary({
-  report
+  report,
 }: {
   readonly report: SkillsEfficacyReport;
 }): JSX.Element {
@@ -21,23 +21,23 @@ export function SkillsEfficacySummary({
   }> = [
     {
       label: "Sessions analyzed",
-      value: report.sessionsAnalyzed.toLocaleString()
+      value: report.sessionsAnalyzed.toLocaleString(),
     },
     {
       label: "Sessions w/ skill",
       value: report.sessionsWithSkill.toLocaleString(),
-      hint: `${report.baseline.sessionsScored.toLocaleString()} scored for baseline`
+      hint: `${report.baseline.sessionsScored.toLocaleString()} scored for baseline`,
     },
     {
       label: "Baseline effective score",
       value: formatPercent(report.baseline.effectiveScore),
-      hint: "satisfaction × outcome"
+      hint: "satisfaction × outcome",
     },
     {
       label: "Skills profiled",
       value: report.skillsProfiled.toLocaleString(),
-      hint: `${report.qualifying.length} qualifying · ${report.insufficientData.length} below threshold`
-    }
+      hint: `${report.qualifying.length} qualifying · ${report.insufficientData.length} below threshold`,
+    },
   ];
 
   return (
@@ -45,17 +45,11 @@ export function SkillsEfficacySummary({
       {items.map((item) => (
         <div key={item.label} className="glass-panel-soft rounded-sm p-3">
           <dt className="eyebrow">{item.label}</dt>
-          <dd
-            className="mt-1 truncate text-xl font-semibold text-ink"
-            title={item.value}
-          >
+          <dd className="mt-1 truncate text-xl font-semibold text-ink" title={item.value}>
             {item.value}
           </dd>
           {item.hint ? (
-            <p
-              className="mt-1 truncate text-[11px] text-muted"
-              title={item.hint}
-            >
+            <p className="mt-1 truncate text-[11px] text-muted" title={item.hint}>
               {item.hint}
             </p>
           ) : null}

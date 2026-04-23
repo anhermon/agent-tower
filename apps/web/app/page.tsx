@@ -2,9 +2,9 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "@/components/ui/metric-card";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import type { AgentInventoryItem } from "@/lib/agents-source";
 import { getOverviewState, statusToHealthState } from "@/lib/control-plane-state";
 import { getModuleByKey } from "@/lib/modules";
-import type { AgentInventoryItem } from "@/lib/agents-source";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,10 @@ export default async function DashboardPage() {
           {state.activity.length > 0 ? (
             <div className="divide-y divide-line/60">
               {state.activity.map((event) => (
-                <article className="grid gap-3 px-5 py-4 md:grid-cols-[96px_minmax(0,1fr)_112px]" key={event.id}>
+                <article
+                  className="grid gap-3 px-5 py-4 md:grid-cols-[96px_minmax(0,1fr)_112px]"
+                  key={event.id}
+                >
                   <p className="font-mono text-xs text-muted">{event.timestamp}</p>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-ink">{event.title}</p>
@@ -70,7 +73,7 @@ export default async function DashboardPage() {
 function AgentRuntimesPanel({
   agents,
   configured,
-  error
+  error,
 }: {
   readonly agents: readonly AgentInventoryItem[];
   readonly configured: boolean;

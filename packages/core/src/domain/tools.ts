@@ -5,7 +5,7 @@ export const TOOL_CALL_STATUSES = {
   Running: "running",
   Succeeded: "succeeded",
   Failed: "failed",
-  Cancelled: "cancelled"
+  Cancelled: "cancelled",
 } as const;
 
 export type ToolCallStatus = (typeof TOOL_CALL_STATUSES)[keyof typeof TOOL_CALL_STATUSES];
@@ -59,7 +59,7 @@ export const TOOL_CATEGORIES = {
   Todo: "todo",
   Skill: "skill",
   Mcp: "mcp",
-  Other: "other"
+  Other: "other",
 } as const;
 
 export type ToolCategory = (typeof TOOL_CATEGORIES)[keyof typeof TOOL_CATEGORIES];
@@ -106,7 +106,7 @@ const TOOL_CATEGORY_MAP: Readonly<Record<string, ToolCategory>> = {
   Skill: "skill",
   ToolSearch: "skill",
   ListMcpResourcesTool: "skill",
-  ReadMcpResourceTool: "skill"
+  ReadMcpResourceTool: "skill",
 };
 
 /**
@@ -127,7 +127,9 @@ export function isMcpTool(name: string): boolean {
  * Parses `mcp__<server>__<tool>` into its components. Returns `null` for names
  * that do not match the MCP pattern or whose parts are empty.
  */
-export function parseMcpTool(name: string): { readonly server: string; readonly tool: string } | null {
+export function parseMcpTool(
+  name: string
+): { readonly server: string; readonly tool: string } | null {
   if (!isMcpTool(name)) return null;
   const parts = name.split("__");
   if (parts.length < 3) return null;

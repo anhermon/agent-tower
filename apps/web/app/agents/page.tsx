@@ -4,9 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import {
-  listAgentsOrEmpty,
   type AgentInventoryItem,
-  type ListAgentsResult
+  type ListAgentsResult,
+  listAgentsOrEmpty,
 } from "@/lib/agents-source";
 import { getModuleByKey } from "@/lib/modules";
 import { CLAUDE_DATA_ROOT_ENV, getConfiguredDataRoot } from "@/lib/sessions-source";
@@ -29,10 +29,9 @@ export default async function AgentsPage() {
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Inventory of agent instances discovered from the configured Claude
-            Code data root. Each project directory is one agent scoped to that
-            cwd. State is derived from transcript activity — no heartbeats,
-            no writes.
+            Inventory of agent instances discovered from the configured Claude Code data root. Each
+            project directory is one agent scoped to that cwd. State is derived from transcript
+            activity — no heartbeats, no writes.
           </p>
           {dataRoot ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={dataRoot}>
@@ -64,7 +63,9 @@ function AgentsBody({ result }: { result: ListAgentsResult }) {
     return (
       <ErrorState
         title="Could not list agents"
-        description={result.message ?? "An unknown error occurred reading the configured data root."}
+        description={
+          result.message ?? "An unknown error occurred reading the configured data root."
+        }
       />
     );
   }
@@ -92,16 +93,13 @@ function SummaryStrip({ agents }: { readonly agents: readonly AgentInventoryItem
     { label: "Total agents", value: agents.length },
     { label: "Available", value: counts[AGENT_STATUSES.Available] },
     { label: "Busy", value: counts[AGENT_STATUSES.Busy] },
-    { label: "Offline", value: counts[AGENT_STATUSES.Offline] }
+    { label: "Offline", value: counts[AGENT_STATUSES.Offline] },
   ];
 
   return (
     <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-md border border-line bg-panel p-3 shadow-control"
-        >
+        <div key={item.label} className="rounded-md border border-line bg-panel p-3 shadow-control">
           <dt className="text-xs uppercase tracking-wide text-muted">{item.label}</dt>
           <dd className="mt-1 text-xl font-semibold text-ink">{item.value}</dd>
         </div>
@@ -110,14 +108,12 @@ function SummaryStrip({ agents }: { readonly agents: readonly AgentInventoryItem
   );
 }
 
-function countByStatus(
-  agents: readonly AgentInventoryItem[]
-): Record<AgentStatus, number> {
+function countByStatus(agents: readonly AgentInventoryItem[]): Record<AgentStatus, number> {
   const counts: Record<AgentStatus, number> = {
     [AGENT_STATUSES.Available]: 0,
     [AGENT_STATUSES.Busy]: 0,
     [AGENT_STATUSES.Offline]: 0,
-    [AGENT_STATUSES.Error]: 0
+    [AGENT_STATUSES.Error]: 0,
   };
   for (const agent of agents) {
     counts[agent.state.status] += 1;

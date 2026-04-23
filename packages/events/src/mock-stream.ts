@@ -1,9 +1,9 @@
 import {
   ControlPlaneEventType,
   EVENT_ENVELOPE_VERSION,
-  EventSourceKind,
   type EventEnvelope,
   type EventMetadata,
+  EventSourceKind,
   type EventStream,
   type EventType,
 } from "./types.js";
@@ -29,7 +29,7 @@ export function createMockEventEnvelope<
   TPayload = Readonly<Record<string, unknown>>,
   TMetadata extends EventMetadata = EventMetadata,
 >(
-  options: MockEventEnvelopeOptions<TType, TPayload, TMetadata> = {},
+  options: MockEventEnvelopeOptions<TType, TPayload, TMetadata> = {}
 ): EventEnvelope<TType, TPayload, TMetadata> {
   const id = options.id ?? `event-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const event: EventEnvelope<TType, TPayload, TMetadata> = {
@@ -53,7 +53,7 @@ function withOptionalEventFields<
   TMetadata extends EventMetadata,
 >(
   event: EventEnvelope<TType, TPayload, TMetadata>,
-  options: MockEventEnvelopeOptions<TType, TPayload, TMetadata>,
+  options: MockEventEnvelopeOptions<TType, TPayload, TMetadata>
 ): EventEnvelope<TType, TPayload, TMetadata> {
   return {
     ...event,
@@ -64,7 +64,7 @@ function withOptionalEventFields<
 }
 
 export async function* createMockEventStream<TEvent extends EventEnvelope>(
-  events: readonly TEvent[],
+  events: readonly TEvent[]
 ): EventStream<TEvent> {
   for (const event of events) {
     yield event;
@@ -72,7 +72,7 @@ export async function* createMockEventStream<TEvent extends EventEnvelope>(
 }
 
 export async function collectEventStream<TEvent>(
-  stream: AsyncIterable<TEvent>,
+  stream: AsyncIterable<TEvent>
 ): Promise<readonly TEvent[]> {
   const events: TEvent[] = [];
 

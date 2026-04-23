@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, type JSX } from "react";
+import type { JSX } from "react";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatShortDate } from "./format-usage";
 
 interface Point {
@@ -8,33 +9,62 @@ interface Point {
   readonly count: number;
 }
 
-/**
- * Area chart of invocations per day rendered as a single responsive SVG.
- *
- * - X axis is the ordinal day index (no date gap compensation — the upstream
- *   data layer owns whether to fill gaps).
- * - Y axis is linear from 0 to max(count).
- * - Outliers (days with count > 1.5× the median non-zero count) get a marker.
- *
- * No charting library is used; every shape is a stock SVG primitive so the
- * component can hydrate on the client without extra bundle weight.
- */
-export function SkillsTimeline({
-  series
-}: {
-  readonly series: readonly Point[];
-}): JSX.Element {
-  const { path, area, markers, max, first, last } = useMemo(
-    () => buildTimeline(series),
-    [series]
-  );
+interface TooltipPayloadEntry {
+  readonly value: number;
+  readonly payload: Row;
+}
 
-  if (series.length < 2) {
+interface TooltipProps {
+  readonly active?: boolean;
+  readonly payload?: readonly TooltipPayloadEntry[];
+}
+
+interface Row {
+  readonly date: string;
+  readonly label: string;
+  readonly count: number;
+}
+
+function formatY(v: number): string {
+  return v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v);
+}
+
+function CustomTooltip({ active, payload }: TooltipProps): JSX.Element | null {
+  if (!active || !payload || payload.length === 0) return null;
+  const row = payload[0]?.payload;
+  if (!row) return null;
+  return (
+    <div className="rounded-sm border border-line/70 bg-panel/95 px-3 py-2 text-xs shadow-glass">
+      <p className="text-muted">
+        {formatShortDate(row.date)} <span className="text-muted-strong">·</span>{" "}
+        <span className="font-semibold text-ink">{row.count.toLocaleString()}</span> invocations
+      </p>
+    </div>
+  );
+}
+
+export function SkillsTimeline({ series }: { readonly series: readonly Point[] }): JSX.Element {
+  if (series.length === 0) {
     return (
       <div className="glass-panel-soft rounded-sm p-6 text-center text-sm text-muted">
         Not enough history to plot a timeline yet.
       </div>
     );
+  }
+
+  const rows: Row[] = series.map((p) => ({
+    date: p.date,
+    label: formatShortDate(p.date),
+    count: p.count,
+  }));
+
+  let max = 0;
+  let first: string | null = null;
+  let last: string | null = null;
+  for (const p of series) {
+    if (p.count > max) max = p.count;
+    if (first === null) first = p.date;
+    last = p.date;
   }
 
   return (
@@ -54,135 +84,33 @@ export function SkillsTimeline({
         </span>
       </div>
 
-      <div className="relative w-full">
-        <svg
-          role="img"
-          aria-label="Invocations per day"
-          viewBox="0 0 1000 160"
-          preserveAspectRatio="none"
-          className="h-40 w-full"
-        >
-          <title>Invocations per day</title>
-          {/* Gridlines */}
-          <line
-            x1="0"
-            y1="0.5"
-            x2="1000"
-            y2="0.5"
-            stroke="currentColor"
-            strokeOpacity="0.08"
-            className="text-muted"
-          />
-          <line
-            x1="0"
-            y1="159.5"
-            x2="1000"
-            y2="159.5"
-            stroke="currentColor"
-            strokeOpacity="0.12"
-            className="text-muted"
-          />
-
-          <path d={area} className="fill-info/20" />
-          <path
-            d={path}
-            className="stroke-info"
-            fill="none"
-            strokeWidth={2}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-
-          {markers.map((m) => (
-            <circle
-              key={`${m.date}-${m.x}`}
-              cx={m.x}
-              cy={m.y}
-              r={3}
-              className="fill-info stroke-canvas"
-              strokeWidth={1.5}
-              vectorEffect="non-scaling-stroke"
-            >
-              <title>{`${m.date} · ${m.count} invocations`}</title>
-            </circle>
-          ))}
-        </svg>
+      <div role="img" aria-label="Invocations per day" className="w-full">
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={rows} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgb(var(--color-line))" vertical={false} />
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 11, fill: "rgb(var(--color-muted))" }}
+              tickLine={false}
+              axisLine={false}
+              interval="preserveStartEnd"
+              minTickGap={24}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: "rgb(var(--color-muted))" }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={formatY}
+              width={40}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "rgb(var(--color-line))", fillOpacity: 0.2 }}
+            />
+            <Bar dataKey="count" fill="#38bdf8" radius={[2, 2, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
-}
-
-interface BuildResult {
-  readonly path: string;
-  readonly area: string;
-  readonly markers: ReadonlyArray<{
-    readonly x: number;
-    readonly y: number;
-    readonly count: number;
-    readonly date: string;
-  }>;
-  readonly max: number;
-  readonly first: string | null;
-  readonly last: string | null;
-}
-
-function buildTimeline(series: readonly Point[]): BuildResult {
-  if (series.length === 0) {
-    return { path: "", area: "", markers: [], max: 0, first: null, last: null };
-  }
-
-  const width = 1000;
-  const height = 160;
-
-  let max = 0;
-  for (const p of series) {
-    if (p.count > max) max = p.count;
-  }
-  const safeMax = max === 0 ? 1 : max;
-
-  const denom = series.length === 1 ? 1 : series.length - 1;
-  const coords = series.map((p, idx) => {
-    const x = (idx / denom) * width;
-    const y = height - (p.count / safeMax) * (height - 4) - 2;
-    return { x, y, count: p.count, date: p.date };
-  });
-
-  const pathParts: string[] = [];
-  coords.forEach((c, idx) => {
-    pathParts.push(`${idx === 0 ? "M" : "L"}${c.x.toFixed(2)} ${c.y.toFixed(2)}`);
-  });
-  const path = pathParts.join(" ");
-
-  const firstCoord = coords[0]!;
-  const lastCoord = coords[coords.length - 1]!;
-  const area = `M${firstCoord.x.toFixed(2)} ${height} ${pathParts
-    .join(" ")
-    .replace(/^M/, "L")} L${lastCoord.x.toFixed(2)} ${height} Z`;
-
-  // Outlier threshold: 1.5× median of non-zero counts. Fallback to max when
-  // the series is effectively flat.
-  const nonZero = series.map((p) => p.count).filter((c) => c > 0).sort((a, b) => a - b);
-  let threshold = safeMax;
-  if (nonZero.length > 0) {
-    const mid = Math.floor(nonZero.length / 2);
-    const median =
-      nonZero.length % 2 === 0
-        ? ((nonZero[mid - 1] ?? 0) + (nonZero[mid] ?? 0)) / 2
-        : (nonZero[mid] ?? 0);
-    if (median > 0) threshold = median * 1.5;
-  }
-
-  const markers = coords
-    .filter((c) => c.count > 1 && c.count >= threshold)
-    .map((c) => ({ x: c.x, y: c.y, count: c.count, date: c.date }));
-
-  return {
-    path,
-    area,
-    markers,
-    max,
-    first: firstCoord.date,
-    last: lastCoord.date
-  };
 }

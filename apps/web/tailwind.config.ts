@@ -2,11 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./lib/**/*.{ts,tsx}"
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -24,26 +20,26 @@ const config: Config = {
         info: "rgb(var(--color-info) / <alpha-value>)",
         ok: "rgb(var(--color-ok) / <alpha-value>)",
         warn: "rgb(var(--color-warn) / <alpha-value>)",
-        danger: "rgb(var(--color-danger) / <alpha-value>)"
+        danger: "rgb(var(--color-danger) / <alpha-value>)",
       },
       borderRadius: {
         xs: "10px",
         sm: "12px",
         md: "16px",
         lg: "22px",
-        "2xl": "22px"
+        "2xl": "22px",
       },
       boxShadow: {
         control: "var(--shadow-control)",
         glass: "var(--shadow-glass)",
-        glow: "var(--shadow-glow)"
+        glow: "var(--shadow-glow)",
       },
       backdropBlur: {
-        glass: "18px"
-      }
-    }
+        glass: "18px",
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };
 
 export default config;

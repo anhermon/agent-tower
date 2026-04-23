@@ -10,7 +10,7 @@ import { formatShortDate, formatTokens } from "./format-usage";
  * feel like siblings.
  */
 export function SkillsUsageSummary({
-  report
+  report,
 }: {
   readonly report: SkillsUsageReport;
 }): JSX.Element {
@@ -28,26 +28,26 @@ export function SkillsUsageSummary({
   }> = [
     {
       label: "Total invocations",
-      value: totals.totalInvocations.toLocaleString()
+      value: totals.totalInvocations.toLocaleString(),
     },
     {
       label: "Distinct skills",
       value: totals.distinctSkills.toLocaleString(),
-      hint: `${totals.knownSkills} known · ${totals.unknownSkills} unknown`
+      hint: `${totals.knownSkills} known · ${totals.unknownSkills} unknown`,
     },
     {
       label: "Sessions scanned",
       value: totals.sessionsScanned.toLocaleString(),
-      hint: `${totals.filesScanned.toLocaleString()} files`
+      hint: `${totals.filesScanned.toLocaleString()} files`,
     },
     {
       label: "Tokens injected",
-      value: formatTokens(totals.totalTokensInjected)
+      value: formatTokens(totals.totalTokensInjected),
     },
     {
       label: "Time span",
-      value: timespan
-    }
+      value: timespan,
+    },
   ];
 
   return (

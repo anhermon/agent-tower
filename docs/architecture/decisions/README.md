@@ -40,3 +40,4 @@ One line each, with why they were rejected.
 - [0001 — Phase 1 scope is skeleton-only](0001-phase-1-skeleton.md)
 - [0002 — Agent-agnostic core + capability-based contracts](0002-agent-agnostic-core.md)
 - [0003 — Local-first storage, explicit filesystem roots](0003-local-first-storage.md)
+- [0004 — `recharts` for analytics charts](0004-recharts-for-analytics.md)

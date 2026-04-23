@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, stat, utimes, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { SkillManifest } from "./skills-source";
+import type { SkillManifest } from "./manifests.js";
 
 let mockedHome: string | null = null;
 
@@ -10,14 +10,12 @@ vi.mock("node:os", async () => {
   const actual = await vi.importActual<typeof import("node:os")>("node:os");
   return {
     ...actual,
-    homedir: () => mockedHome ?? actual.homedir()
+    homedir: () => mockedHome ?? actual.homedir(),
   };
 });
 
-const { CLAUDE_DATA_ROOT_ENV } = await import("./sessions-source");
-const { __clearSkillsEfficacyCacheForTests, computeSkillsEfficacy } = await import(
-  "./skills-efficacy-source"
-);
+const { CLAUDE_DATA_ROOT_ENV } = await import("../data-root.js");
+const { __clearSkillsEfficacyCacheForTests, computeSkillsEfficacy } = await import("./efficacy.js");
 
 function manifest(overrides: Partial<SkillManifest> & { id: string; name: string }): SkillManifest {
   return {
@@ -35,7 +33,7 @@ function manifest(overrides: Partial<SkillManifest> & { id: string; name: string
     sizeBytes: overrides.sizeBytes ?? 0,
     modifiedAt: overrides.modifiedAt ?? "2026-01-01T00:00:00.000Z",
     frontmatter: overrides.frontmatter ?? {},
-    body: overrides.body ?? ""
+    body: overrides.body ?? "",
   };
 }
 
@@ -66,7 +64,7 @@ function userEntry(opts: {
     sessionId: opts.sessionId,
     timestamp: opts.timestamp,
     cwd: "/repo/x",
-    message: { role: "user", content: [{ type: "text", text: opts.text }] }
+    message: { role: "user", content: [{ type: "text", text: opts.text }] },
   };
 }
 
@@ -81,14 +79,14 @@ function userToolResultEntry(opts: {
     type: "tool_result",
     tool_use_id: opts.toolUseId,
     content: opts.content,
-    is_error: opts.isError ?? false
+    is_error: opts.isError ?? false,
   };
   return {
     type: "user",
     sessionId: opts.sessionId,
     timestamp: opts.timestamp,
     cwd: "/repo/x",
-    message: { role: "user", content: [block] }
+    message: { role: "user", content: [block] },
   };
 }
 
@@ -105,8 +103,8 @@ function assistantTextEntry(opts: {
     message: {
       role: "assistant",
       model: "claude-test",
-      content: [{ type: "text", text: opts.text }]
-    }
+      content: [{ type: "text", text: opts.text }],
+    },
   };
 }
 
@@ -123,18 +121,22 @@ function assistantSkillEntry(opts: {
     type: "tool_use",
     id: opts.toolUseId,
     name: "Skill",
-    input: { skill: opts.skill }
+    input: { skill: opts.skill },
   });
   return {
     type: "assistant",
     sessionId: opts.sessionId,
     timestamp: opts.timestamp,
     cwd: "/repo/x",
-    message: { role: "assistant", model: "claude-test", content }
+    message: { role: "assistant", model: "claude-test", content },
   };
 }
 
-async function writeJsonl(dir: string, sessionId: string, entries: readonly unknown[]): Promise<string> {
+async function writeJsonl(
+  dir: string,
+  sessionId: string,
+  entries: readonly unknown[]
+): Promise<string> {
   const filePath = path.join(dir, `${sessionId}.jsonl`);
   await writeFile(filePath, entries.map((e) => JSON.stringify(e)).join("\n"), "utf8");
   return filePath;
@@ -190,7 +192,7 @@ describe("skills-efficacy-source", () => {
       satisfaction: 0,
       outcomeMultiplier: 0,
       effectiveScore: 0,
-      sessionsScored: 0
+      sessionsScored: 0,
     });
     expect(result.report.sessionsAnalyzed).toBe(0);
     expect(result.report.sessionsWithSkill).toBe(0);
@@ -201,7 +203,7 @@ describe("skills-efficacy-source", () => {
       completed: 0,
       partial: 0,
       abandoned: 0,
-      unknown: 0
+      unknown: 0,
     });
     expect(result.report.minSessionsForQualifying).toBe(3);
   });
@@ -216,44 +218,44 @@ describe("skills-efficacy-source", () => {
       userEntry({
         timestamp: "2026-04-01T10:00:00.000Z",
         sessionId,
-        text: "please use the alpha skill"
+        text: "please use the alpha skill",
       }),
       assistantSkillEntry({
         timestamp: "2026-04-01T10:00:01.000Z",
         sessionId,
         skill: "alpha",
-        toolUseId: "tu-1"
+        toolUseId: "tu-1",
       }),
       userToolResultEntry({
         timestamp: "2026-04-01T10:00:02.000Z",
         sessionId,
         toolUseId: "tu-1",
-        content: "ok"
+        content: "ok",
       }),
       assistantSkillEntry({
         timestamp: "2026-04-01T10:00:03.000Z",
         sessionId,
         skill: "alpha",
-        toolUseId: "tu-2"
+        toolUseId: "tu-2",
       }),
       userToolResultEntry({
         timestamp: "2026-04-01T10:00:04.000Z",
         sessionId,
         toolUseId: "tu-2",
-        content: "ok"
+        content: "ok",
       }),
       assistantTextEntry({
         timestamp: "2026-04-01T10:00:05.000Z",
         sessionId,
-        text: "Done with alpha."
-      })
+        text: "Done with alpha.",
+      }),
     ];
     await writeJsonl(project, sessionId, entries);
 
     process.env[CLAUDE_DATA_ROOT_ENV] = root;
     const result = await computeSkillsEfficacy({
       skills: [manifest({ id: "alpha", name: "Alpha" })],
-      minSessionsForQualifying: 1
+      minSessionsForQualifying: 1,
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -289,48 +291,48 @@ describe("skills-efficacy-source", () => {
       userEntry({
         timestamp: recent,
         sessionId,
-        text: "use beta please"
+        text: "use beta please",
       }),
       assistantSkillEntry({
         timestamp: recent,
         sessionId,
         skill: "beta",
-        toolUseId: "err-1"
+        toolUseId: "err-1",
       }),
       userToolResultEntry({
         timestamp: recent,
         sessionId,
         toolUseId: "err-1",
         content: "Error: boom",
-        isError: true
+        isError: true,
       }),
       assistantSkillEntry({
         timestamp: recent,
         sessionId,
         skill: "beta",
-        toolUseId: "err-2"
+        toolUseId: "err-2",
       }),
       userToolResultEntry({
         timestamp: recent,
         sessionId,
         toolUseId: "err-2",
         content: "Error: still boom",
-        isError: true
+        isError: true,
       }),
       // Final assistant ends with orphan tool_use — no matching tool_result.
       assistantSkillEntry({
         timestamp: recent,
         sessionId,
         skill: "beta",
-        toolUseId: "orphan-9"
-      })
+        toolUseId: "orphan-9",
+      }),
     ];
     await writeJsonl(project, sessionId, entries);
 
     process.env[CLAUDE_DATA_ROOT_ENV] = root;
     const result = await computeSkillsEfficacy({
       skills: [],
-      minSessionsForQualifying: 1
+      minSessionsForQualifying: 1,
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -354,13 +356,13 @@ describe("skills-efficacy-source", () => {
       userEntry({
         timestamp: "2026-04-03T10:00:00.000Z",
         sessionId,
-        text: "hi there"
+        text: "hi there",
       }),
       userEntry({
         timestamp: "2026-04-03T10:00:01.000Z",
         sessionId,
-        text: "[Request interrupted by user]"
-      })
+        text: "[Request interrupted by user]",
+      }),
     ];
     await writeJsonl(project, sessionId, entries);
 
@@ -384,15 +386,15 @@ describe("skills-efficacy-source", () => {
           timestamp: baseTs,
           sessionId,
           skill,
-          toolUseId: `${sessionId}-tu-1`
+          toolUseId: `${sessionId}-tu-1`,
         }),
         userToolResultEntry({
           timestamp: baseTs,
           sessionId,
           toolUseId: `${sessionId}-tu-1`,
-          content: "ok"
+          content: "ok",
         }),
-        assistantTextEntry({ timestamp: baseTs, sessionId, text: "Done." })
+        assistantTextEntry({ timestamp: baseTs, sessionId, text: "Done." }),
       ];
       await writeJsonl(project, sessionId, entries);
     }
@@ -448,51 +450,51 @@ describe("skills-efficacy-source", () => {
       userEntry({
         timestamp: "2026-04-05T10:00:00.000Z",
         sessionId,
-        text: "no, that is wrong"
+        text: "no, that is wrong",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:01.000Z",
         sessionId,
-        text: "stop, don't do that"
+        text: "stop, don't do that",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:02.000Z",
         sessionId,
-        text: "actually, do it differently"
+        text: "actually, do it differently",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:03.000Z",
         sessionId,
-        text: "instead, try that"
+        text: "instead, try that",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:04.000Z",
         sessionId,
-        text: "[Request interrupted by user]"
+        text: "[Request interrupted by user]",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:05.000Z",
         sessionId,
-        text: "[Request interrupted by user]"
+        text: "[Request interrupted by user]",
       }),
       userEntry({
         timestamp: "2026-04-05T10:00:06.000Z",
         sessionId,
-        text: "[Request interrupted by user]"
+        text: "[Request interrupted by user]",
       }),
       assistantSkillEntry({
         timestamp: "2026-04-05T10:00:07.000Z",
         sessionId,
         skill: "gamma",
-        toolUseId: "g-1"
+        toolUseId: "g-1",
       }),
       userToolResultEntry({
         timestamp: "2026-04-05T10:00:08.000Z",
         sessionId,
         toolUseId: "g-1",
         content: "Error: fail",
-        isError: true
-      })
+        isError: true,
+      }),
     ];
     await writeJsonl(project, sessionId, entries);
 
@@ -517,13 +519,13 @@ describe("skills-efficacy-source", () => {
       "great job",
       "awesome output",
       "nice work",
-      "nicely done"
+      "nicely done",
     ]) {
       entries.push(
         userEntry({
           timestamp: `2026-04-06T10:00:0${t}.000Z`,
           sessionId,
-          text: msg
+          text: msg,
         })
       );
       t += 1;
@@ -533,7 +535,7 @@ describe("skills-efficacy-source", () => {
         timestamp: `2026-04-06T10:00:0${t}.000Z`,
         sessionId,
         skill: "delta",
-        toolUseId: "d-1"
+        toolUseId: "d-1",
       })
     );
     t += 1;
@@ -542,7 +544,7 @@ describe("skills-efficacy-source", () => {
         timestamp: `2026-04-06T10:00:0${t}.000Z`,
         sessionId,
         toolUseId: "d-1",
-        content: "ok"
+        content: "ok",
       })
     );
     t += 1;
@@ -550,7 +552,7 @@ describe("skills-efficacy-source", () => {
       assistantTextEntry({
         timestamp: `2026-04-06T10:00:0${t}.000Z`,
         sessionId,
-        text: "Here you go."
+        text: "Here you go.",
       })
     );
 
@@ -567,6 +569,69 @@ describe("skills-efficacy-source", () => {
     expect(result.report.baseline.effectiveScore).toBeLessThanOrEqual(1);
   });
 
+  it("given_range__when_scoring__then_excludes_sessions_outside_range", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-range");
+    await mkdir(project, { recursive: true });
+
+    async function writeCompleted(sessionId: string, skill: string, baseTs: string): Promise<void> {
+      const entries = [
+        userEntry({ timestamp: baseTs, sessionId, text: `please ${skill}` }),
+        assistantSkillEntry({
+          timestamp: baseTs,
+          sessionId,
+          skill,
+          toolUseId: `${sessionId}-tu-1`,
+        }),
+        userToolResultEntry({
+          timestamp: baseTs,
+          sessionId,
+          toolUseId: `${sessionId}-tu-1`,
+          content: "ok",
+        }),
+        assistantTextEntry({ timestamp: baseTs, sessionId, text: "Done." }),
+      ];
+      await writeJsonl(project, sessionId, entries);
+    }
+
+    await writeCompleted(
+      "rng11111-0000-0000-0000-000000000001",
+      "alpha",
+      "2026-04-01T10:00:00.000Z"
+    );
+    await writeCompleted(
+      "rng22222-0000-0000-0000-000000000002",
+      "alpha",
+      "2026-04-05T10:00:00.000Z"
+    );
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+
+    // Sanity baseline: with no range, both sessions analyzed.
+    const unscoped = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(unscoped.ok).toBe(true);
+    if (!unscoped.ok) return;
+    expect(unscoped.report.sessionsAnalyzed).toBe(2);
+
+    // Range covers only the first session's firstAt.
+    const scoped = await computeSkillsEfficacy({
+      skills: [],
+      minSessionsForQualifying: 1,
+      range: { from: "2026-04-01", to: "2026-04-01" },
+    });
+    expect(scoped.ok).toBe(true);
+    if (!scoped.ok) return;
+    expect(scoped.report.sessionsAnalyzed).toBe(1);
+    expect(scoped.report.sessionsWithSkill).toBe(1);
+    expect(scoped.report.baseline.sessionsScored).toBe(1);
+    expect(scoped.report.outcomeDistribution.completed).toBe(1);
+    const alphaRow =
+      scoped.report.qualifying.find((r) => r.skillId === "alpha") ??
+      scoped.report.insufficientData.find((r) => r.skillId === "alpha");
+    expect(alphaRow).toBeDefined();
+    expect(alphaRow?.sessionsCount).toBe(1);
+  });
+
   it("given_unchanged_mtime__when_computing_twice__then_cache_serves_stale_summary", async () => {
     const root = await makeDataRoot();
     const project = path.join(root, "cache-proj");
@@ -579,19 +644,19 @@ describe("skills-efficacy-source", () => {
         timestamp: "2026-04-07T10:00:01.000Z",
         sessionId,
         skill: "epsilon",
-        toolUseId: "e-1"
+        toolUseId: "e-1",
       }),
       userToolResultEntry({
         timestamp: "2026-04-07T10:00:02.000Z",
         sessionId,
         toolUseId: "e-1",
-        content: "ok"
+        content: "ok",
       }),
       assistantTextEntry({
         timestamp: "2026-04-07T10:00:03.000Z",
         sessionId,
-        text: "Done."
-      })
+        text: "Done.",
+      }),
     ];
     const filePath = await writeJsonl(project, sessionId, baseEntries);
 
@@ -614,19 +679,19 @@ describe("skills-efficacy-source", () => {
         timestamp: "2026-04-07T10:00:04.000Z",
         sessionId,
         skill: "epsilon",
-        toolUseId: "e-2"
+        toolUseId: "e-2",
       }),
       userToolResultEntry({
         timestamp: "2026-04-07T10:00:05.000Z",
         sessionId,
         toolUseId: "e-2",
-        content: "ok"
+        content: "ok",
       }),
       assistantTextEntry({
         timestamp: "2026-04-07T10:00:06.000Z",
         sessionId,
-        text: "Done again."
-      })
+        text: "Done again.",
+      }),
     ];
     await writeFile(filePath, extended.map((e) => JSON.stringify(e)).join("\n"), "utf8");
     await utimes(filePath, originalMtime, originalMtime);

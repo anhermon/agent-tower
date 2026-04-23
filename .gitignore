@@ -7,6 +7,11 @@ test-results/
 .turbo/
 .vercel/
 
+# CI artifacts (local-first CI)
+.ci/
+.coverage-reports/
+.lighthouseci/
+
 .env
 .env.*
 !.env.example

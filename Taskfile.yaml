@@ -1,28 +1,201 @@
 version: "3"
 
+# Tiered CI gates. See docs/superpowers/specs/2026-04-23-ci-quality-gates-design.md.
+# T0 runs in your editor. T1 runs on commit (lefthook). T2 runs on push.
+# T3 is `task ci`. T4 is `task ci:nightly`. Reports land in .ci/reports/.
+
+vars:
+  WEB_PKG: "@control-plane/web"
+  WEB_URL: "http://127.0.0.1:3000"
+
 tasks:
+  # --- Dev loop -------------------------------------------------------------
   dev:
     desc: Start the web dashboard
     cmds:
       - pnpm dev
 
+  # --- Fast sanity ----------------------------------------------------------
   typecheck:
-    desc: Run TypeScript checks across workspaces
+    desc: TypeScript across all workspaces
     cmds:
       - pnpm typecheck
 
   test:
-    desc: Run unit tests across workspaces
+    desc: Unit tests across all workspaces
     cmds:
       - pnpm test
 
+  test:coverage:
+    desc: Unit tests with enforced coverage thresholds
+    cmds:
+      - pnpm vitest run --config vitest.coverage.config.ts
+      - node scripts/ci/coverage-report.mjs
+
   test:e2e:
-    desc: Run Playwright smoke tests
+    desc: Playwright (all projects)
     cmds:
       - pnpm test:e2e
 
-  verify:
-    desc: Run the standard local verification suite
+  test:e2e:smoke:
+    desc: Playwright smoke tier only
     cmds:
-      - pnpm typecheck
-      - pnpm test
+      - pnpm playwright test --project=smoke
+
+  test:a11y:
+    desc: Accessibility scan (axe-core via Playwright)
+    cmds:
+      - pnpm playwright test --project=a11y
+
+  test:visual:
+    desc: Visual regression (screenshot baselines)
+    cmds:
+      - pnpm playwright test --project=visual
+
+  # --- Lint / format --------------------------------------------------------
+  fmt:
+    desc: Biome format + import-sort (write changes)
+    cmds:
+      - pnpm biome check --write .
+
+  fmt:check:
+    desc: Biome format + lint (check only, no writes)
+    cmds:
+      - pnpm biome check .
+
+  lint:
+    desc: ESLint (deep semantic lint — React, hooks, a11y, imports, complexity)
+    cmds:
+      - pnpm eslint .
+
+  # --- Security / quality helpers ------------------------------------------
+  audit:
+    desc: pnpm audit wrapper (fails on high/critical CVEs)
+    cmds:
+      - node scripts/ci/audit.mjs
+
+  license:
+    desc: License allowlist check (fails on GPL/AGPL/LGPL/SSPL/BUSL/Commons-Clause/EUPL)
+    cmds:
+      - node scripts/ci/license-check.mjs
+
+  sbom:
+    desc: Generate CycloneDX SBOM
+    cmds:
+      - node scripts/ci/sbom.mjs
+
+  gitleaks:
+    desc: Full-repo secret scan
+    cmds:
+      - gitleaks detect --config .gitleaks.toml --no-banner --redact
+
+  knip:
+    desc: Dead-code / unused-exports / unused-deps scan
+    cmds:
+      - node scripts/ci/knip-run.mjs
+
+  size:
+    desc: Bundle-size budgets (requires an existing web build)
+    deps: [build:web]
+    cmds:
+      - node scripts/ci/bundle-size.mjs
+
+  lhci:
+    desc: Lighthouse CI against a production build of the web app
+    deps: [build:web]
+    cmds:
+      - pnpm lhci autorun --config=lighthouserc.json
+
+  # --- Builds ---------------------------------------------------------------
+  build:
+    desc: Build all workspace packages
+    cmds:
+      - pnpm -r build
+
+  build:web:
+    desc: Production build of the web app
+    cmds:
+      - pnpm --filter {{.WEB_PKG}} build
+
+  # --- Heavy nightly-only ---------------------------------------------------
+  osv:
+    desc: osv-scanner deep vulnerability scan (requires osv-scanner binary)
+    cmds:
+      - osv-scanner --lockfile=pnpm-lock.yaml --format=json --output=.ci/reports/osv.json || true
+
+  semgrep:
+    desc: SAST scan via semgrep (requires semgrep binary)
+    cmds:
+      - semgrep --config=auto --json --output=.ci/reports/semgrep.json . || true
+
+  stryker:
+    desc: Mutation testing (pure-logic packages only)
+    cmds:
+      - pnpm -r --filter @control-plane/core --filter @control-plane/events exec stryker run
+
+  outdated:
+    desc: Report outdated dependencies
+    cmds:
+      - pnpm outdated --long --recursive > .ci/reports/outdated.txt || true
+
+  # --- Tiered composites ---------------------------------------------------
+  verify:
+    desc: "Local sanity: typecheck + unit tests (kept for backwards compat)"
+    cmds:
+      - task: typecheck
+      - task: test
+
+  ci:fast:
+    desc: "T2 (pre-push): lint + types + unit+coverage + build + quick audit"
+    cmds:
+      - task: fmt:check
+      - task: lint
+      - task: typecheck
+      - task: test:coverage
+      - task: build
+      - task: audit
+
+  ci:security:
+    desc: "T3 subset: audit + license + sbom + gitleaks"
+    cmds:
+      - task: audit
+      - task: license
+      - task: sbom
+      - task: gitleaks
+
+  ci:perf:
+    desc: "T3 subset: web build + lhci + bundle-size"
+    cmds:
+      - task: build:web
+      - task: lhci
+      - task: size
+
+  ci:
+    desc: "T3: full gate — correctness + security + perf + cleanliness"
+    cmds:
+      - task: ci:fast
+      - task: knip
+      - task: license
+      - task: sbom
+      - task: gitleaks
+      - task: test:e2e:smoke
+      - task: test:a11y
+      - task: ci:perf
+      - task: ci:health
+
+  ci:nightly:
+    desc: "T4: deep/expensive — full e2e + visual + osv + semgrep + stryker + outdated"
+    cmds:
+      - task: ci
+      - task: test:e2e
+      - task: test:visual
+      - task: osv
+      - task: semgrep
+      - task: stryker
+      - task: outdated
+      - task: ci:health
+
+  ci:health:
+    desc: Aggregate all .ci/reports/*.json into latest.json and print a health board
+    cmds:
+      - node scripts/ci-health.mjs

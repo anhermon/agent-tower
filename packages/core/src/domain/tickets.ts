@@ -5,7 +5,7 @@ export const TICKET_STATUSES = {
   InProgress: "in_progress",
   Blocked: "blocked",
   Resolved: "resolved",
-  Closed: "closed"
+  Closed: "closed",
 } as const;
 
 export type TicketStatus = (typeof TICKET_STATUSES)[keyof typeof TICKET_STATUSES];
@@ -14,7 +14,7 @@ export const TICKET_PRIORITIES = {
   Low: "low",
   Normal: "normal",
   High: "high",
-  Urgent: "urgent"
+  Urgent: "urgent",
 } as const;
 
 export type TicketPriority = (typeof TICKET_PRIORITIES)[keyof typeof TICKET_PRIORITIES];

@@ -8,7 +8,6 @@ import type {
   WebhookRecord,
 } from "./models.js";
 import {
-  RepositoryListOrder,
   type AgentRepository,
   type AuditEntryRepository,
   type ControlPlaneRepositories,
@@ -16,6 +15,7 @@ import {
   type EventRepository,
   type ModuleRegistryRepository,
   type RepositoryListOptions,
+  RepositoryListOrder,
   type SessionRepository,
   type WebhookRepository,
 } from "./repositories.js";
@@ -113,9 +113,11 @@ export class InMemoryEventRepository<TEvent extends PersistedEventEnvelope = Per
 
   async listAfterSequence(
     sequence: number,
-    limit?: number,
+    limit?: number
   ): Promise<readonly EventRecord<TEvent>[]> {
-    const records = Array.from(this.records.values()).filter((record) => record.sequence > sequence);
+    const records = Array.from(this.records.values()).filter(
+      (record) => record.sequence > sequence
+    );
     return typeof limit === "number" ? records.slice(0, limit) : records;
   }
 
@@ -163,10 +165,12 @@ export class InMemoryControlPlaneRepositories implements ControlPlaneRepositorie
 
 function applyListOptions<TRecord>(
   records: readonly TRecord[],
-  options: RepositoryListOptions,
+  options: RepositoryListOptions
 ): readonly TRecord[] {
   const ordered =
-    options.order === RepositoryListOrder.Descending ? Array.from(records).reverse() : Array.from(records);
+    options.order === RepositoryListOrder.Descending
+      ? Array.from(records).reverse()
+      : Array.from(records);
   const offset = options.offset ?? 0;
   const end = typeof options.limit === "number" ? offset + options.limit : undefined;
 

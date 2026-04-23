@@ -9,23 +9,15 @@ const BASE_URL = `http://127.0.0.1:${PORT}`;
  * is recreated empty by `e2e/global-setup.ts` before the dev server boots.
  * Specs that want transcripts write into this directory and clean up after.
  */
-const SESSIONS_FIXTURE_ROOT = path.resolve(
-  process.cwd(),
-  "test-results",
-  "e2e-claude-fixture"
-);
+const SESSIONS_FIXTURE_ROOT = path.resolve(process.cwd(), "test-results", "e2e-claude-fixture");
 
-const SKILLS_FIXTURE_ROOT = path.resolve(
-  process.cwd(),
-  "test-results",
-  "e2e-skills-fixture"
-);
+const SKILLS_FIXTURE_ROOT = path.resolve(process.cwd(), "test-results", "e2e-skills-fixture");
 
 export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
   expect: {
-    timeout: 5_000
+    timeout: 5_000,
   },
   // The sessions e2e suite shares on-disk fixtures with the dev server, so run
   // specs sequentially to keep seed/cleanup deterministic across files.
@@ -33,7 +25,7 @@ export default defineConfig({
   globalSetup: "./e2e/global-setup.ts",
   use: {
     baseURL: BASE_URL,
-    trace: "on-first-retry"
+    trace: "on-first-retry",
   },
   webServer: {
     command: "pnpm dev",
@@ -42,17 +34,40 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       CLAUDE_CONTROL_PLANE_DATA_ROOT: SESSIONS_FIXTURE_ROOT,
-      CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT
-    }
+      CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT,
+    },
   },
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] }
+      use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "mobile",
-      use: { ...devices["Pixel 7"] }
-    }
-  ]
+      use: { ...devices["Pixel 7"] },
+    },
+    // Tier-based slices so `task` can run each independently. Each project
+    // inherits the global `use` config (baseURL, trace) unless overridden.
+    {
+      name: "smoke",
+      testMatch: /.*\.smoke\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "a11y",
+      testMatch: /.*\.a11y\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "visual",
+      testMatch: /.*\.visual\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "full",
+      testMatch: /.*\.spec\.ts/,
+      testIgnore: [/\.smoke\./, /\.a11y\./, /\.visual\./],
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
 });

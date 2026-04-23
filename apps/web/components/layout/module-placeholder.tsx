@@ -42,7 +42,7 @@ export function ModulePlaceholder({
   emptyTitle,
   emptyDescription,
   capabilities,
-  children
+  children,
 }: ModulePlaceholderProps) {
   return (
     <section>

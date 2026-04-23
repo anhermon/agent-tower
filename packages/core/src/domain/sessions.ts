@@ -11,7 +11,7 @@ export const SESSION_STATES = {
   Paused: "paused",
   Completed: "completed",
   Failed: "failed",
-  Cancelled: "cancelled"
+  Cancelled: "cancelled",
 } as const;
 
 export type SessionState = (typeof SESSION_STATES)[keyof typeof SESSION_STATES];
@@ -20,7 +20,7 @@ export const SESSION_ACTOR_ROLES = {
   User: "user",
   Agent: "agent",
   Tool: "tool",
-  System: "system"
+  System: "system",
 } as const;
 
 export type SessionActorRole = (typeof SESSION_ACTOR_ROLES)[keyof typeof SESSION_ACTOR_ROLES];
@@ -89,7 +89,7 @@ export interface SessionDerivedFlags {
 export const COMPACTION_TRIGGERS = {
   Auto: "auto",
   Manual: "manual",
-  Unknown: "unknown"
+  Unknown: "unknown",
 } as const;
 
 export type CompactionTrigger = (typeof COMPACTION_TRIGGERS)[keyof typeof COMPACTION_TRIGGERS];

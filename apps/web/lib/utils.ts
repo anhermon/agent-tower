@@ -9,7 +9,7 @@ export function stateLabel(state: HealthState): string {
     healthy: "Healthy",
     degraded: "Degraded",
     down: "Down",
-    idle: "Idle"
+    idle: "Idle",
   };
 
   return labels[state];
@@ -23,7 +23,7 @@ export function stateTone(state: HealthState): string {
     healthy: "text-ok",
     degraded: "text-warn",
     down: "text-danger",
-    idle: "text-muted"
+    idle: "text-muted",
   };
 
   return tones[state];

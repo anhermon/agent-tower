@@ -1,0 +1,75 @@
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import * as os from "node:os";
+import path from "node:path";
+import { CLAUDE_DATA_ROOT_ENV } from "@control-plane/adapter-claude-code";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { captureOutput } from "../test-helpers.js";
+import { runSessionsShow } from "./sessions-show.js";
+
+describe("runSessionsShow", () => {
+  const originalEnv = process.env[CLAUDE_DATA_ROOT_ENV];
+  const tempDirs: string[] = [];
+
+  beforeEach(() => {
+    delete process.env[CLAUDE_DATA_ROOT_ENV];
+  });
+
+  afterEach(async () => {
+    if (originalEnv === undefined) delete process.env[CLAUDE_DATA_ROOT_ENV];
+    else process.env[CLAUDE_DATA_ROOT_ENV] = originalEnv;
+    while (tempDirs.length > 0) {
+      const dir = tempDirs.pop();
+      if (dir) await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("given_missing_session__when_showing__then_exit_one_and_not_found", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "control-plane-cli-show-"));
+    tempDirs.push(root);
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+
+    const { exitCode, stdout } = await captureOutput(() => runSessionsShow(["does-not-exist"]));
+    expect(exitCode).toBe(1);
+    const parsed = JSON.parse(stdout) as { ok: boolean; reason?: string };
+    expect(parsed.ok).toBe(false);
+    expect(parsed.reason).toBe("not-found");
+  });
+
+  it("given_seeded_session__when_showing_json__then_payload_excludes_turns", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "control-plane-cli-show-hit-"));
+    tempDirs.push(root);
+    const project = path.join(root, "proj");
+    await mkdir(project, { recursive: true });
+
+    const sessionId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const assistant = {
+      type: "assistant" as const,
+      sessionId,
+      timestamp: "2026-04-10T10:00:00.000Z",
+      cwd: "/repo/p",
+      message: {
+        role: "assistant" as const,
+        model: "claude-sonnet-4-5",
+        content: [{ type: "text" as const, text: "ok" }],
+        usage: {
+          input_tokens: 3,
+          output_tokens: 4,
+          cache_read_input_tokens: 0,
+          cache_creation_input_tokens: 0,
+        },
+      },
+    };
+    await writeFile(path.join(project, `${sessionId}.jsonl`), JSON.stringify(assistant), "utf8");
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+
+    const { exitCode, stdout } = await captureOutput(() => runSessionsShow([sessionId]));
+    expect(exitCode).toBe(0);
+    const parsed = JSON.parse(stdout) as {
+      ok: boolean;
+      session: { sessionId: string; turns?: unknown };
+    };
+    expect(parsed.ok).toBe(true);
+    expect(parsed.session.sessionId).toBe(sessionId);
+    expect(parsed.session).not.toHaveProperty("turns");
+  });
+});

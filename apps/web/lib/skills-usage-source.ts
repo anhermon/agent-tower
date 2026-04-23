@@ -6,12 +6,12 @@ import "server-only";
  * a single source of truth.
  */
 
-export {
-  __clearSkillsUsageCacheForTests,
-  computeSkillsUsage
-} from "@control-plane/adapter-claude-code";
 export type {
   ListSkillsUsageResult,
+  SkillsUsageReport,
   SkillUsageStats,
-  SkillsUsageReport
+} from "@control-plane/adapter-claude-code";
+export {
+  __clearSkillsUsageCacheForTests,
+  computeSkillsUsage,
 } from "@control-plane/adapter-claude-code";

@@ -7,7 +7,7 @@ import type {
   ClaudeContentBlock,
   ClaudeSummaryEntry,
   ClaudeTranscriptEntry,
-  ClaudeUserEntry
+  ClaudeUserEntry,
 } from "./types.js";
 
 /**
@@ -66,7 +66,7 @@ export async function listSessionFiles(
         projectId: projectName,
         filePath,
         sizeBytes: fileStat.size,
-        modifiedAt: fileStat.mtime.toISOString()
+        modifiedAt: fileStat.mtime.toISOString(),
       });
     }
   }
@@ -184,7 +184,7 @@ export async function readTranscriptPreview(
     summary,
     model,
     firstTimestamp,
-    turnCountLowerBound
+    turnCountLowerBound,
   };
 }
 

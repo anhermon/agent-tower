@@ -1,5 +1,6 @@
 export const CONTROL_PLANE_CAPABILITIES = {
   SessionStreaming: "session.streaming",
+  SessionAnalytics: "session-analytics",
   ToolCalling: "tool.calling",
   McpClient: "mcp.client",
   RuntimeControl: "runtime.control",
@@ -9,7 +10,7 @@ export const CONTROL_PLANE_CAPABILITIES = {
   Replay: "replay",
   Webhooks: "webhooks",
   Tickets: "tickets",
-  Skills: "skills"
+  Skills: "skills",
 } as const;
 
 export type ControlPlaneCapability =
@@ -20,7 +21,7 @@ export const CLAUDE_FIRST_CAPABILITIES = [
   CONTROL_PLANE_CAPABILITIES.ToolCalling,
   CONTROL_PLANE_CAPABILITIES.McpClient,
   CONTROL_PLANE_CAPABILITIES.RuntimeControl,
-  CONTROL_PLANE_CAPABILITIES.Skills
+  CONTROL_PLANE_CAPABILITIES.Skills,
 ] as const satisfies readonly ControlPlaneCapability[];
 
 export const AGENT_AGNOSTIC_CAPABILITIES = [
@@ -28,13 +29,14 @@ export const AGENT_AGNOSTIC_CAPABILITIES = [
   CONTROL_PLANE_CAPABILITIES.ChannelEgress,
   CONTROL_PLANE_CAPABILITIES.Pricing,
   CONTROL_PLANE_CAPABILITIES.Replay,
+  CONTROL_PLANE_CAPABILITIES.SessionAnalytics,
   CONTROL_PLANE_CAPABILITIES.Webhooks,
-  CONTROL_PLANE_CAPABILITIES.Tickets
+  CONTROL_PLANE_CAPABILITIES.Tickets,
 ] as const satisfies readonly ControlPlaneCapability[];
 
 export const DEFAULT_CONTROL_PLANE_CAPABILITIES = [
   ...CLAUDE_FIRST_CAPABILITIES,
-  ...AGENT_AGNOSTIC_CAPABILITIES
+  ...AGENT_AGNOSTIC_CAPABILITIES,
 ] as const satisfies readonly ControlPlaneCapability[];
 
 export interface CapabilitySet {
@@ -50,5 +52,5 @@ export const capabilitySet = (
     ? { required }
     : {
         required,
-        optional
+        optional,
       };

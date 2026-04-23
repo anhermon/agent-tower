@@ -3,14 +3,14 @@ import {
   CLAUDE_DATA_ROOT_ENV,
   ClaudeCodeAnalyticsSource,
   ClaudeCodeSessionSource,
-  getConfiguredDataRoot,
-  readTranscriptPreview,
-  resolveDataRoot,
   type ClaudeSessionFile,
   type DataRootOrigin,
+  getConfiguredDataRoot,
   type NormalizedTranscript,
   type ResolvedDataRoot,
-  type TranscriptPreview
+  readTranscriptPreview,
+  resolveDataRoot,
+  type TranscriptPreview,
 } from "@control-plane/adapter-claude-code";
 import type {
   CostBreakdown,
@@ -19,7 +19,7 @@ import type {
   ReplayData,
   SessionUsageSummary,
   Timeseries,
-  ToolAnalytics
+  ToolAnalytics,
 } from "@control-plane/core";
 
 /**
@@ -34,12 +34,8 @@ import type {
  *   3. `null` → UI renders an empty state with configuration guidance.
  */
 
-export {
-  CLAUDE_DATA_ROOT_ENV,
-  getConfiguredDataRoot,
-  resolveDataRoot
-};
 export type { DataRootOrigin, ResolvedDataRoot };
+export { CLAUDE_DATA_ROOT_ENV, getConfiguredDataRoot, resolveDataRoot };
 
 export function getConfiguredSessionSource(): ClaudeCodeSessionSource | null {
   const resolved = resolveDataRoot();
@@ -99,7 +95,7 @@ export async function listSessionsOrEmpty(): Promise<ListSessionsResult> {
     return {
       ok: false,
       reason: "error",
-      message: errorMessage(error)
+      message: errorMessage(error),
     };
   }
 }
@@ -134,7 +130,7 @@ async function enrichWithPreviews(
             summary: null,
             model: null,
             firstTimestamp: null,
-            turnCountLowerBound: 0
+            turnCountLowerBound: 0,
           };
         }
       }
@@ -143,7 +139,7 @@ async function enrichWithPreviews(
         title: preview.title,
         firstUserText: preview.firstUserText,
         model: preview.model,
-        turnCountLowerBound: preview.turnCountLowerBound
+        turnCountLowerBound: preview.turnCountLowerBound,
       };
     }
   };
@@ -154,7 +150,11 @@ async function enrichWithPreviews(
 
 export type LoadSessionResult =
   | { readonly ok: true; readonly transcript: NormalizedTranscript }
-  | { readonly ok: false; readonly reason: "unconfigured" | "not_found" | "error"; readonly message?: string };
+  | {
+      readonly ok: false;
+      readonly reason: "unconfigured" | "not_found" | "error";
+      readonly message?: string;
+    };
 
 export async function loadSessionOrUndefined(id: string): Promise<LoadSessionResult> {
   const source = getConfiguredSessionSource();
@@ -171,7 +171,7 @@ export async function loadSessionOrUndefined(id: string): Promise<LoadSessionRes
     return {
       ok: false,
       reason: "error",
-      message: errorMessage(error)
+      message: errorMessage(error),
     };
   }
 }
@@ -195,9 +195,7 @@ function errResult(error: unknown): ErrResult {
   return { ok: false, reason: "error", message: errorMessage(error) };
 }
 
-export async function listProjectSummariesOrEmpty(): Promise<
-  Result<readonly ProjectSummary[]>
-> {
+export async function listProjectSummariesOrEmpty(): Promise<Result<readonly ProjectSummary[]>> {
   const src = getConfiguredAnalyticsSource();
   if (!src) return { ok: false, reason: "unconfigured" };
   try {
@@ -207,9 +205,10 @@ export async function listProjectSummariesOrEmpty(): Promise<
   }
 }
 
-export async function listSessionSummariesOrEmpty(
-  filter?: { projectId?: string; range?: DateRange }
-): Promise<Result<readonly SessionUsageSummary[]>> {
+export async function listSessionSummariesOrEmpty(filter?: {
+  projectId?: string;
+  range?: DateRange;
+}): Promise<Result<readonly SessionUsageSummary[]>> {
   const src = getConfiguredAnalyticsSource();
   if (!src) return { ok: false, reason: "unconfigured" };
   try {
@@ -255,9 +254,7 @@ export async function loadActivityTimeseriesOrEmpty(
   }
 }
 
-export async function loadCostBreakdownOrEmpty(
-  range?: DateRange
-): Promise<Result<CostBreakdown>> {
+export async function loadCostBreakdownOrEmpty(range?: DateRange): Promise<Result<CostBreakdown>> {
   const src = getConfiguredAnalyticsSource();
   if (!src) return { ok: false, reason: "unconfigured" };
   try {

@@ -7,6 +7,10 @@
     "./fixtures/core": {
       "types": "./fixtures/core/index.ts",
       "import": "./fixtures/core/index.ts"
+    },
+    "./fixtures/claude-code": {
+      "types": "./fixtures/claude-code/index.ts",
+      "import": "./fixtures/claude-code/index.ts"
     }
   },
   "scripts": {

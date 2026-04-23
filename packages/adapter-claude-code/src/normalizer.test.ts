@@ -1,11 +1,10 @@
-import { describe, expect, it } from "vitest";
 import {
   AGENT_RUNTIMES,
   SESSION_ACTOR_ROLES,
   SESSION_STATES,
-  TOOL_CALL_STATUSES
+  TOOL_CALL_STATUSES,
 } from "@control-plane/core";
-import type { SessionTurn } from "@control-plane/core";
+import { describe, expect, it } from "vitest";
 import { normalizeTranscript } from "./normalizer.js";
 import type { ClaudeTranscriptEntry } from "./types.js";
 
@@ -13,7 +12,7 @@ const SESSION_ID = "session-abc";
 const BASE = {
   sessionId: SESSION_ID,
   cwd: "/tmp/project",
-  version: "2.1.97"
+  version: "2.1.97",
 } as const;
 
 describe("normalizeTranscript", () => {
@@ -28,7 +27,7 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "Hello" }
+        message: { role: "user", content: "Hello" },
       },
       {
         ...BASE,
@@ -39,9 +38,9 @@ describe("normalizeTranscript", () => {
         message: {
           role: "assistant",
           model: "claude-sonnet-4-6",
-          content: [{ type: "text", text: "Hi there" }]
-        }
-      }
+          content: [{ type: "text", text: "Hi there" }],
+        },
+      },
     ];
 
     const result = normalizeTranscript(entries);
@@ -76,9 +75,9 @@ describe("normalizeTranscript", () => {
           role: "assistant",
           content: [
             { type: "thinking", thinking: "Plan first" },
-            { type: "tool_use", id: "tool_use_1", name: "Bash", input: { command: "ls" } }
-          ]
-        }
+            { type: "tool_use", id: "tool_use_1", name: "Bash", input: { command: "ls" } },
+          ],
+        },
       },
       {
         ...BASE,
@@ -92,11 +91,11 @@ describe("normalizeTranscript", () => {
             {
               type: "tool_result",
               tool_use_id: "tool_use_1",
-              content: "file1\nfile2"
-            }
-          ]
-        }
-      }
+              content: "file1\nfile2",
+            },
+          ],
+        },
+      },
     ];
 
     const result = normalizeTranscript(entries);
@@ -134,11 +133,11 @@ describe("normalizeTranscript", () => {
               type: "tool_result",
               tool_use_id: "broken",
               is_error: true,
-              content: "boom"
-            }
-          ]
-        }
-      }
+              content: "boom",
+            },
+          ],
+        },
+      },
     ];
 
     const { toolResults } = normalizeTranscript(entries);
@@ -152,8 +151,8 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "Summarize the onboarding doc\nand file a ticket" }
-      }
+        message: { role: "user", content: "Summarize the onboarding doc\nand file a ticket" },
+      },
     ];
     const { session } = normalizeTranscript(entries);
     expect(session.title).toBe("Summarize the onboarding doc");
@@ -166,13 +165,13 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "raw user question" }
+        message: { role: "user", content: "raw user question" },
       },
       {
         ...BASE,
         type: "summary",
-        summary: "Designing the webhook retry policy"
-      }
+        summary: "Designing the webhook retry policy",
+      },
     ];
     const { session } = normalizeTranscript(entries);
     expect(session.title).toBe("Designing the webhook retry policy");
@@ -187,16 +186,16 @@ describe("normalizeTranscript", () => {
         timestamp: "2026-01-01T00:00:00.000Z",
         message: {
           role: "user",
-          content: "<local-command-caveat>Caveat: running /status</local-command-caveat>"
-        }
+          content: "<local-command-caveat>Caveat: running /status</local-command-caveat>",
+        },
       },
       {
         ...BASE,
         type: "user",
         uuid: "u2",
         timestamp: "2026-01-01T00:00:01.000Z",
-        message: { role: "user", content: "Plan the migration to Postgres 16" }
-      }
+        message: { role: "user", content: "Plan the migration to Postgres 16" },
+      },
     ];
     const { session } = normalizeTranscript(entries);
     expect(session.title).toBe("Plan the migration to Postgres 16");
@@ -209,8 +208,8 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "ping" }
-      }
+        message: { role: "user", content: "ping" },
+      },
     ];
     const { session } = normalizeTranscript(entries);
     expect(session.title).toBeUndefined();
@@ -223,8 +222,8 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "raw" }
-      }
+        message: { role: "user", content: "raw" },
+      },
     ];
     const { session } = normalizeTranscript(entries, { title: "Explicit" });
     expect(session.title).toBe("Explicit");
@@ -239,8 +238,8 @@ describe("normalizeTranscript", () => {
         type: "user",
         uuid: "u1",
         timestamp: "2026-01-01T00:00:00.000Z",
-        message: { role: "user", content: "hi" }
-      }
+        message: { role: "user", content: "hi" },
+      },
     ];
 
     const result = normalizeTranscript(entries);

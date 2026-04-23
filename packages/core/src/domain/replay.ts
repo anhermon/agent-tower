@@ -6,7 +6,7 @@ import type { CompactionTrigger } from "./sessions.js";
 export const REPLAY_MODES = {
   DryRun: "dry_run",
   Deterministic: "deterministic",
-  LiveAdapters: "live_adapters"
+  LiveAdapters: "live_adapters",
 } as const;
 
 export type ReplayMode = (typeof REPLAY_MODES)[keyof typeof REPLAY_MODES];

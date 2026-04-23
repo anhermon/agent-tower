@@ -1,3 +1,5 @@
+import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
+import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { SkillGrid, type SkillGridItem } from "@/components/skills/skill-grid";
 import { SkillsDashboard } from "@/components/skills/skills-dashboard";
 import { SkillsEfficacyDashboard } from "@/components/skills/skills-efficacy-dashboard";
@@ -5,30 +7,28 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getModuleByKey } from "@/lib/modules";
+import { computeSkillsEfficacy, type ListSkillsEfficacyResult } from "@/lib/skills-efficacy-source";
 import {
-  SKILLS_ROOTS_ENV,
-  listSkillsOrEmpty,
   type ListSkillsResult,
+  listSkillsOrEmpty,
   type ResolvedSkillsRoot,
-  type SkillManifest
+  SKILLS_ROOTS_ENV,
+  type SkillManifest,
 } from "@/lib/skills-source";
-import {
-  computeSkillsUsage,
-  type ListSkillsUsageResult
-} from "@/lib/skills-usage-source";
-import {
-  computeSkillsEfficacy,
-  type ListSkillsEfficacyResult
-} from "@/lib/skills-efficacy-source";
+import { computeSkillsUsage, type ListSkillsUsageResult } from "@/lib/skills-usage-source";
 
 export const dynamic = "force-dynamic";
 
-export default async function SkillsPage() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export default async function SkillsPage({ searchParams }: { searchParams: SearchParams }) {
   const module = getModuleByKey("skills");
+  const sp = await searchParams;
+  const range = resolveRangeFromSearchParams(sp);
   const [result, usage, efficacy] = await Promise.all([
     listSkillsOrEmpty(),
-    computeSkillsUsage(),
-    computeSkillsEfficacy()
+    computeSkillsUsage({ range }),
+    computeSkillsEfficacy({ range }),
   ]);
   const status = result.ok && result.skills.length > 0 ? "healthy" : "degraded";
 
@@ -45,14 +45,13 @@ export default async function SkillsPage() {
           </div>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
             Skill registry discovered from local <code className="font-mono text-xs">SKILL.md</code>{" "}
-            files. Invocation volume and session-outcome efficacy are derived from
-            local Claude Code transcripts. Read-only; nothing is written.
+            files. Invocation volume and session-outcome efficacy are derived from local Claude Code
+            transcripts. Read-only; nothing is written.
           </p>
-          {result.ok && result.roots.length > 0 ? (
-            <RootList roots={result.roots} />
-          ) : null}
+          {result.ok && result.roots.length > 0 ? <RootList roots={result.roots} /> : null}
         </div>
         <div className="flex h-10 shrink-0 items-center gap-2">
+          <DateRangePicker />
           <Button>Refresh</Button>
         </div>
       </div>
@@ -66,7 +65,7 @@ export default async function SkillsPage() {
 
 function UsageSection({
   result,
-  usage
+  usage,
 }: {
   readonly result: ListSkillsResult;
   readonly usage: ListSkillsUsageResult;
@@ -81,8 +80,8 @@ function UsageSection({
           Invocation telemetry
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-          How often each skill was invoked, how large it is on disk, and the rough
-          token volume it has injected into conversations.
+          How often each skill was invoked, how large it is on disk, and the rough token volume it
+          has injected into conversations.
         </p>
       </div>
       {usage.ok ? (
@@ -102,7 +101,9 @@ function UsageSection({
       ) : (
         <ErrorState
           title="Could not compute skill usage"
-          description={usage.message ?? "An unknown error occurred reading Claude Code session transcripts."}
+          description={
+            usage.message ?? "An unknown error occurred reading Claude Code session transcripts."
+          }
         />
       )}
     </div>
@@ -111,7 +112,7 @@ function UsageSection({
 
 function EfficacySection({
   result,
-  efficacy
+  efficacy,
 }: {
   readonly result: ListSkillsResult;
   readonly efficacy: ListSkillsEfficacyResult;
@@ -127,10 +128,10 @@ function EfficacySection({
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
           Each session is scored with a heuristic{" "}
-          <code className="font-mono text-xs">effective = satisfaction × outcome</code>
-          {" "}(completed=1.0, partial=0.7, abandoned=0.3, unknown=0.6). Skills are
-          ranked by the delta between sessions that invoked them and the global
-          baseline. Qualifying threshold: ≥3 sessions.
+          <code className="font-mono text-xs">effective = satisfaction × outcome</code>{" "}
+          (completed=1.0, partial=0.7, abandoned=0.3, unknown=0.6). Skills are ranked by the delta
+          between sessions that invoked them and the global baseline. Qualifying threshold: ≥3
+          sessions.
         </p>
       </div>
       {efficacy.ok ? (
@@ -162,12 +163,10 @@ function CatalogueSection({ result }: { readonly result: ListSkillsResult }) {
     <div className="mt-10 border-t border-line/60 pt-8">
       <div className="mb-6">
         <p className="eyebrow">Catalogue</p>
-        <h2 className="mt-1 text-2xl font-semibold tracking-tight text-ink">
-          Discovered skills
-        </h2>
+        <h2 className="mt-1 text-2xl font-semibold tracking-tight text-ink">Discovered skills</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-          Every <code className="font-mono text-xs">SKILL.md</code> under the
-          configured roots. Click a card for the full manifest.
+          Every <code className="font-mono text-xs">SKILL.md</code> under the configured roots.
+          Click a card for the full manifest.
         </p>
       </div>
       <SkillsBody result={result} />
@@ -189,7 +188,9 @@ function SkillsBody({ result }: { result: ListSkillsResult }) {
     return (
       <ErrorState
         title="Could not list skills"
-        description={result.message ?? "An unknown error occurred reading the configured skills roots."}
+        description={
+          result.message ?? "An unknown error occurred reading the configured skills roots."
+        }
       />
     );
   }
@@ -225,7 +226,7 @@ function toGridItem(skill: SkillManifest): SkillGridItem {
     rootLabel: skill.rootLabel,
     relativePath: skill.relativePath,
     modifiedAt: skill.modifiedAt,
-    sizeBytes: skill.sizeBytes
+    sizeBytes: skill.sizeBytes,
   };
 }
 
@@ -248,7 +249,7 @@ function RootList({ roots }: { roots: readonly ResolvedSkillsRoot[] }) {
 
 function SummaryStrip({
   skills,
-  roots
+  roots,
 }: {
   readonly skills: readonly SkillManifest[];
   readonly roots: readonly ResolvedSkillsRoot[];
@@ -259,7 +260,7 @@ function SummaryStrip({
     { label: "Skills", value: String(skills.length) },
     { label: "Roots scanned", value: String(roots.length) },
     { label: "With description", value: String(withDescription) },
-    { label: "With triggers", value: String(withTriggers) }
+    { label: "With triggers", value: String(withTriggers) },
   ];
 
   return (

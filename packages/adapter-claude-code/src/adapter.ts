@@ -8,26 +8,26 @@ import type {
   SessionIngestBatch,
   SessionUsageSummary,
   Timeseries,
-  ToolAnalytics
+  ToolAnalytics,
 } from "@control-plane/core";
-import {
-  listSessionFiles,
-  readTranscriptFile,
-  type ClaudeCodeDataRoot,
-  type ClaudeSessionFile,
-  type ReadTranscriptResult
-} from "./reader.js";
-import {
-  normalizeTranscript,
-  type NormalizedTranscript,
-  type NormalizeOptions
-} from "./normalizer.js";
 import { foldCostBreakdown } from "./analytics/cost.js";
 import { foldProjectSummaries } from "./analytics/project-summary.js";
 import { foldReplay } from "./analytics/replay.js";
 import { foldSessionSummary } from "./analytics/session-summary.js";
 import { foldTimeseries } from "./analytics/timeseries.js";
 import { foldToolAnalytics } from "./analytics/tools.js";
+import {
+  type NormalizedTranscript,
+  type NormalizeOptions,
+  normalizeTranscript,
+} from "./normalizer.js";
+import {
+  type ClaudeCodeDataRoot,
+  type ClaudeSessionFile,
+  listSessionFiles,
+  type ReadTranscriptResult,
+  readTranscriptFile,
+} from "./reader.js";
 
 /**
  * Read-only Claude Code source adapter.
@@ -61,9 +61,7 @@ export class ClaudeCodeSessionSource {
     return normalizeTranscript(entries, options);
   }
 
-  async *stream(
-    options: NormalizeOptions = {}
-  ): AsyncGenerator<SessionIngestBatch, void, void> {
+  async *stream(options: NormalizeOptions = {}): AsyncGenerator<SessionIngestBatch, void, void> {
     const sessions = await this.listSessions();
     for (const session of sessions) {
       const { entries } = await readTranscriptFile(session.filePath);
@@ -72,9 +70,7 @@ export class ClaudeCodeSessionSource {
       try {
         const normalized = normalizeTranscript(entries, options);
         yield normalized.batch;
-      } catch {
-        continue;
-      }
+      } catch {}
     }
   }
 }
@@ -92,7 +88,10 @@ interface CachedParse {
  */
 export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private readonly parseCache = new Map<string, CachedParse>();
-  private readonly summaryCache = new Map<string, { mtime: string; summary: SessionUsageSummary }>();
+  private readonly summaryCache = new Map<
+    string,
+    { mtime: string; summary: SessionUsageSummary }
+  >();
 
   constructor(private readonly root: ClaudeCodeDataRoot) {}
 
@@ -174,9 +173,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
         }
       }
     };
-    await Promise.all(
-      Array.from({ length: Math.min(concurrency, files.length) }, worker)
-    );
+    await Promise.all(Array.from({ length: Math.min(concurrency, files.length) }, worker));
     return results.filter(Boolean);
   }
 
@@ -187,7 +184,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
     const parsed = await this.parseFile(file);
     const summary = foldSessionSummary(parsed.entries, {
       sessionId: file.sessionId,
-      includeTurns: false
+      includeTurns: false,
     });
     this.summaryCache.set(key, { mtime: file.modifiedAt, summary });
     return summary;

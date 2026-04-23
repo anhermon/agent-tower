@@ -1,43 +1,73 @@
 import Link from "next/link";
 import { SessionDetail } from "@/components/sessions/session-detail";
 import { EmptyState, ErrorState } from "@/components/ui/state";
-import { CLAUDE_DATA_ROOT_ENV, loadSessionOrUndefined } from "@/lib/sessions-source";
+import { loadReplay } from "@/lib/sessions-analytics";
+import { CLAUDE_DATA_ROOT_ENV, loadSessionUsageOrEmpty } from "@/lib/sessions-source";
 
 export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function SessionDetailPage({ params }: PageProps) {
+export default async function SessionDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;
-  const result = await loadSessionOrUndefined(id);
+  const qs = (await searchParams) ?? {};
+  const rawTurn = qs.turn;
+  const deepLinkTurn =
+    typeof rawTurn === "string" ? rawTurn : Array.isArray(rawTurn) ? rawTurn[0] : undefined;
 
-  if (!result.ok) {
+  const [replayResult, usageResult] = await Promise.all([
+    loadReplay(id),
+    loadSessionUsageOrEmpty(id),
+  ]);
+
+  if (!replayResult.ok) {
     return (
       <section className="space-y-5">
         <Link href="/sessions" className="text-sm text-accent hover:underline">
           ← Back to sessions
         </Link>
-        {result.reason === "unconfigured" ? (
+        {replayResult.reason === "unconfigured" ? (
           <EmptyState
             title="No sessions records"
             description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory.`}
           />
-        ) : result.reason === "not_found" ? (
-          <EmptyState
-            title="Session not found"
-            description={`No transcript with id ${id} was found under the configured data root.`}
-          />
         ) : (
           <ErrorState
             title="Could not load session"
-            description={result.message ?? "An unknown error occurred reading the transcript."}
+            description={
+              replayResult.message ?? "An unknown error occurred reading the transcript."
+            }
           />
         )}
       </section>
     );
   }
 
-  return <SessionDetail transcript={result.transcript} />;
+  if (!replayResult.value) {
+    return (
+      <section className="space-y-5">
+        <Link href="/sessions" className="text-sm text-accent hover:underline">
+          ← Back to sessions
+        </Link>
+        <EmptyState
+          title="Session not found"
+          description={`No transcript with id ${id} was found under the configured data root.`}
+        />
+      </section>
+    );
+  }
+
+  const usage = usageResult.ok ? usageResult.value : undefined;
+
+  return (
+    <SessionDetail
+      replay={replayResult.value}
+      flags={usage?.flags}
+      durationMs={usage?.durationMs}
+      deepLinkTurn={deepLinkTurn}
+    />
+  );
 }

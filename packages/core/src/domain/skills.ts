@@ -4,7 +4,7 @@ export const SKILL_STATUSES = {
   Draft: "draft",
   Active: "active",
   Deprecated: "deprecated",
-  Disabled: "disabled"
+  Disabled: "disabled",
 } as const;
 
 export type SkillStatus = (typeof SKILL_STATUSES)[keyof typeof SKILL_STATUSES];
@@ -13,7 +13,7 @@ export const SKILL_SOURCE_KINDS = {
   Local: "local",
   Git: "git",
   Registry: "registry",
-  Inline: "inline"
+  Inline: "inline",
 } as const;
 
 export type SkillSourceKind = (typeof SKILL_SOURCE_KINDS)[keyof typeof SKILL_SOURCE_KINDS];
