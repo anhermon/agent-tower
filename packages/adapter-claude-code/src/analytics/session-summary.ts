@@ -50,6 +50,26 @@ export const BLOAT_WITHOUT_COMPACTION_THRESHOLD = 150_000;
 export const REPEAT_READ_MIN_COUNT = 3;
 /** Upper bound on how many repeat-read entries we surface (top-N by count). */
 export const REPEAT_READ_TOP_N = 10;
+/**
+ * Minimum `turnsWithTools` before `sequentialToolTurnPct` is computed. Sessions
+ * below this threshold produce `sequentialToolTurnPct = 0` — the metric is not
+ * statistically meaningful on tiny sessions (a 1-turn session trivially scores
+ * 1.0). See the "Known calibration limits" section of
+ * `.claude/skills/control-plane-inspect/SKILL.md`.
+ */
+export const SEQUENTIAL_TOOLS_MIN_TURNS = 10;
+/**
+ * Minimum `totalToolResults` before `toolFailurePct` is computed. A single
+ * failing tool call would otherwise yield 1.0 — well above the scorer's
+ * saturation threshold — on sessions that aren't structurally failing.
+ */
+export const TOOL_FAILURE_MIN_SAMPLES = 5;
+/**
+ * Minimum session `durationMs` before `bloatWithoutCompaction` is allowed to
+ * be true. Short sessions can cross the peak-input threshold in a burst that
+ * never warranted a `/compact` in the first place; this avoids flagging them.
+ */
+export const BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS = 300_000;
 
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
@@ -379,7 +399,7 @@ function buildSummary(state: FoldState): SessionUsageSummary {
     userMessageCount: state.userMessageCount,
     assistantMessageCount: state.assistantMessageCount,
     ...buildSummaryOptionalFields(state, durationMs),
-    waste: buildWasteSignals(state),
+    waste: buildWasteSignals(state, durationMs),
   };
 }
 
@@ -398,22 +418,38 @@ function buildSummaryOptionalFields(
   };
 }
 
-function buildWasteSignals(state: FoldState): SessionWasteSignals {
+function buildWasteSignals(state: FoldState, durationMs: number | undefined): SessionWasteSignals {
   const cacheDenominator = state.usage.cacheCreationInputTokens + state.usage.cacheReadInputTokens;
   const cacheThrashRatio =
     cacheDenominator > 0 ? state.usage.cacheCreationInputTokens / cacheDenominator : 0;
   const mcpToolCallPct =
     state.totalToolUseBlocks > 0 ? state.mcpToolCalls / state.totalToolUseBlocks : 0;
+  // Gated: sessions with fewer than SEQUENTIAL_TOOLS_MIN_TURNS tool-bearing
+  // turns produce 0. A 1-turn single-tool session is not statistically
+  // meaningful evidence of "missed batching".
   const sequentialToolTurnPct =
-    state.turnsWithTools > 0 ? state.singleToolTurns / state.turnsWithTools : 0;
+    state.turnsWithTools >= SEQUENTIAL_TOOLS_MIN_TURNS
+      ? state.singleToolTurns / state.turnsWithTools
+      : 0;
+  // Gated: sessions with fewer than TOOL_FAILURE_MIN_SAMPLES tool_result blocks
+  // produce 0. A single failing call would otherwise pin toolFailurePct at 1.0.
   const toolFailurePct =
-    state.totalToolResults > 0 ? state.toolFailures / state.totalToolResults : 0;
+    state.totalToolResults >= TOOL_FAILURE_MIN_SAMPLES
+      ? state.toolFailures / state.totalToolResults
+      : 0;
 
   const repeatReads: RepeatReadEntry[] = [...state.readFileCounts.entries()]
     .filter(([, count]) => count >= REPEAT_READ_MIN_COUNT)
     .map(([filePath, count]) => ({ filePath, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, REPEAT_READ_TOP_N);
+
+  // Gated: `bloatWithoutCompaction` requires the session to have actually
+  // lived long enough that a compaction would have been appropriate. Short
+  // bursts that happen to hit 150k peak input are not the kind of session
+  // this flag is meant to catch.
+  const longEnoughForBloatFlag =
+    typeof durationMs === "number" && durationMs > BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS;
 
   return {
     cacheThrashRatio,
@@ -423,6 +459,7 @@ function buildWasteSignals(state: FoldState): SessionWasteSignals {
     toolFailurePct,
     peakInputTokensBetweenCompactions: state.peakInputTokensBetweenCompactions,
     bloatWithoutCompaction:
+      longEnoughForBloatFlag &&
       state.peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
       state.compactions.length === 0,
     repeatReads,

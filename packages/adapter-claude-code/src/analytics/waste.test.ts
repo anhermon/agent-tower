@@ -130,3 +130,35 @@ describe("scoreSessionsWaste", () => {
     expect(verdicts[2]!.overall).toBeGreaterThan(verdicts[0]!.overall);
   });
 });
+
+// The upstream fold is responsible for gating small-session inputs (see
+// SEQUENTIAL_TOOLS_MIN_TURNS / TOOL_FAILURE_MIN_SAMPLES /
+// BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS in session-summary.ts). The scorer
+// stays purely saturation-based on whatever the fold produced. These cases
+// pin that separation: when the fold has already zeroed a gated sub-score,
+// the scorer emits a zero sub-score and no flag for that dimension.
+describe("scoreSessionWaste with gated inputs", () => {
+  it("given_zeroed_small_session_signals__when_scoring__then_no_flags_fire", () => {
+    // Mimics a short, single-tool session where the fold gated every
+    // suspicious metric to 0 before scoring.
+    const summary = makeSummary(
+      "session-small-gated",
+      makeWaste({
+        // The fold would clamp these to 0; assert the scorer is a no-op when it does.
+        sequentialToolTurnPct: 0,
+        toolFailurePct: 0,
+        bloatWithoutCompaction: false,
+        peakInputTokensBetweenCompactions: 40_000,
+        totalToolUseBlocks: 1,
+        totalToolResults: 1,
+      })
+    );
+
+    const verdict = scoreSessionWaste(summary);
+
+    expect(verdict.scores.sequentialTools).toBe(0);
+    expect(verdict.scores.toolHammering).toBe(0);
+    expect(verdict.scores.compactionAbsence).toBe(0);
+    expect(verdict.flags).toEqual([]);
+  });
+});

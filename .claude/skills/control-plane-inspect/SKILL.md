@@ -123,14 +123,14 @@ Typical flag categories (emitted when the sub-score > 0.3):
 
 ### Known calibration limits (read before quoting a waste score)
 
-The current scorer (`packages/adapter-claude-code/src/analytics/waste.ts` + `session-summary.ts`) has no session-size gating on several sub-scores. Don't treat a high `overall` in isolation — cross-check with session length and cost first.
+The scorer (`packages/adapter-claude-code/src/analytics/waste.ts` + `session-summary.ts`) now gates the three historically loudest sub-scores on session size. The remaining limit is ranking skew — cost and waste don't track.
 
-1. **`sequentialToolTurnPct` saturates 0.5→0.85 with zero turn-count gate.** A 1-turn session that used exactly one tool scores **the same `sequentialTools = 1.0`** as a 309-turn session that never batched. In the current corpus the corpus-wide average for this sub-score is ≈ 0.73 — it's loud enough to dominate the `overall` score on almost every session. Before quoting "Single-tool turns: 100%" as waste, verify `turns >= 10` and that the session isn't a structurally single-tool flow (pure chat, single-task automation, aborted session).
-2. **`toolFailurePct` has no minimum-sample gate.** A session with 1 tool call that failed → `toolFailurePct = 1.0` → `toolHammering = 1.0`. Always check `totalToolResults` before quoting a failure rate; anything under ~5 calls is noise.
-3. **`bloatWithoutCompaction` is a binary signal with no duration gate.** A 6-turn / 30-second session that happens to hit 150k peak input is flagged identically to a 3-hour 500-turn session. Cross-reference with `durationMs` before acting.
+1. **`sequentialToolTurnPct` is gated at `turnsWithTools >= 10`.** Below the gate the sub-score is `0`. Previously a 1-turn single-tool session scored `sequentialTools = 1.0` — corpus-wide avg on this sub-score dropped meaningfully after the gate. (Constant: `SEQUENTIAL_TOOLS_MIN_TURNS`.)
+2. **`toolFailurePct` is gated at `totalToolResults >= 5`.** Below the gate it's `0`. A 1-sample 100% failure rate no longer pins `toolHammering` to `1.0`. (Constant: `TOOL_FAILURE_MIN_SAMPLES`.)
+3. **`bloatWithoutCompaction` is gated at `durationMs > 5 * 60_000`** (5 minutes). A short burst that crossed the 150k peak-input threshold is no longer flagged as "long session without /compact". Sessions without a resolvable duration also fail the gate. (Constant: `BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS`.)
 4. **Top-waste lists ≠ top-cost lists.** The most *expensive* sessions often aren't in the top-waste ranking (they have healthy cache-reuse and big genuine context), while the top-waste ranking is frequently dominated by short artifact sessions. For "what to actually fix" recommendations, start from `cp sessions top --by=cost` then filter by waste, not the other way around.
 
-If the user is asking "what should I actually change?", use the **"Trustworthy waste triage" recipe** below (which applies these guards) rather than raw `cp sessions waste` output.
+If the user is asking "what should I actually change?", use the **"Trustworthy waste triage" recipe** below (which layers cost and turn thresholds on top of the gates) rather than raw `cp sessions waste` output.
 
 ### `cp health`
 
@@ -403,7 +403,7 @@ cp sessions top --by=cost --limit=20 --json \
 
 ### Trustworthy waste triage (guards against scoring artifacts)
 
-`cp sessions waste` alone is noisy because `sequentialTools` saturates on tiny sessions (see "Known calibration limits"). Intersect it with cost and turn-count thresholds to get an actionable list:
+`cp sessions waste` is noticeably less noisy since the small-session gates landed, but top-waste still skews toward sessions that happen to live just above the gates. Intersect with cost and turn-count thresholds to get an actionable list:
 
 ```sh
 cp sessions waste --min-score=0.4 --limit=50 --json \
