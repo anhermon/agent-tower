@@ -1,8 +1,12 @@
-import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
 import { describe, expect, it } from "vitest";
-import type { ClaudeTranscriptEntry } from "../types.js";
+
+import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
+
+
 import { foldSessionSummary } from "./session-summary.js";
 import { foldToolAnalytics } from "./tools.js";
+
+import type { ClaudeTranscriptEntry } from "../types.js";
 
 function entries(name: Parameters<typeof claudeCodeFixture>[0]): readonly ClaudeTranscriptEntry[] {
   return claudeCodeFixture(name).entries as readonly ClaudeTranscriptEntry[];

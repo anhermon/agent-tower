@@ -4,6 +4,7 @@
 import { spawn } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+
 import { paths, writeReport } from "./lib/report.mjs";
 
 const TOOL = "license-check";

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { runCli } from "./cli.js";
 import { captureOutput } from "./test-helpers.js";
 

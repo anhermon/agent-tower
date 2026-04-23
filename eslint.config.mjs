@@ -266,13 +266,23 @@ export default tseslint.config(
   },
 
   // ------------------------------------------------------------------
-  // E2E Playwright specs live at the repo root and are not included in
-  // any tsconfig, so the `projectService` parser can't type-check them.
-  // Disable type-aware linting for the e2e tree (mirrors the config-files
-  // override above). Structural rules still apply via the tests block.
+  // Out-of-project-graph TypeScript files:
+  //   - E2E Playwright specs (not in any tsconfig).
+  //   - Package test files (package tsconfigs exclude `*.test.ts`).
+  //   - Build / CI / GitHub scripts (no tsconfig covers them).
+  //   - Test shims (outside package source trees).
+  // For these the `projectService` parser can't type-check, so we
+  // disable type-aware linting (mirrors the config-files override
+  // above). Structural rules still apply via the tests block.
   // ------------------------------------------------------------------
   {
-    files: ["e2e/**/*.{ts,tsx}"],
+    files: [
+      "e2e/**/*.{ts,tsx}",
+      "packages/*/src/**/*.test.{ts,tsx}",
+      "packages/*/src/test-helpers.{ts,tsx}",
+      "scripts/**/*.{ts,mts,cts,mjs,cjs,js}",
+      "test/**/*.{ts,tsx}",
+    ],
     languageOptions: {
       parserOptions: { projectService: false, project: null },
     },

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
+
 import { writeReport } from "./lib/report.mjs";
 
 const TIER = "T3";

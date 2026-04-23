@@ -1,5 +1,7 @@
 import { PassThrough } from "node:stream";
+
 import { describe, expect, it } from "vitest";
+
 import { createFanoutWriter, STDERR_LEVEL_FLOOR } from "./streams.js";
 
 /**

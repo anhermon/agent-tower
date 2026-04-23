@@ -1,12 +1,16 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
+
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import {
   __clearSkillsUsageCacheForTests,
   CLAUDE_DATA_ROOT_ENV,
 } from "@control-plane/adapter-claude-code";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { captureOutput } from "../test-helpers.js";
+
 import { runSkillsUsage } from "./skills-usage.js";
 
 describe("runSkillsUsage", () => {
