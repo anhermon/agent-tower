@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --------------------------------------------------------------------------
+ * Control Plane design tokens.
+ *
+ * Default (root + .dark) is the Hermes "ops dashboard" palette: deep navy
+ * canvas with purple -> cyan accents, translucent glass surfaces, glowing
+ * status pills.  A lighter variant is kept under `.light` so the existing
+ * theme-toggle keeps working end-to-end.
+ * ----------------------------------------------------------------------- */
+
+:root,
+.dark {
+  color-scheme: dark;
+
+  --focus-ring: 141 196 255;
+
+  /* Core palette */
+  --color-canvas: 7 11 20;                    /* #070b14 */
+  --color-panel: 12 18 32;                    /* rgba-ready surface base */
+  --color-panel-alpha: 0.88;                  /* glass alpha */
+  --color-panel-strong: 16 24 42;
+  --color-soft: 22 32 56;
+  --color-ink: 237 242 255;                   /* #edf2ff */
+  --color-muted: 154 167 194;                 /* #9aa7c2 */
+  --color-muted-strong: 198 208 230;
+  --color-line: 47 60 96;                     /* Dark blue-gray that reads well at /1 */
+  --color-line-alpha: 1;
+  --color-line-strong-alpha: 1;
+  --color-line-accent: 151 169 214;           /* For /20-style translucent borders */
+
+  /* Accents */
+  --color-accent: 143 124 255;                /* #8f7cff purple */
+  --color-accent-foreground: 7 11 20;
+  --color-cyan: 77 214 255;                   /* #4dd6ff */
+  --color-info: 119 167 255;                  /* #77a7ff */
+
+  /* Semantic */
+  --color-ok: 46 211 138;                     /* #2ed38a */
+  --color-warn: 255 191 95;                   /* #ffbf5f */
+  --color-danger: 255 107 126;                /* #ff6b7e */
+
+  /* Shapes / elevation */
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 10px;
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-glass: 0 20px 60px rgb(0 0 0 / 0.35);
+  --shadow-glow: 0 16px 36px rgb(77 214 255 / 0.16);
+}
+
+.light {
+  color-scheme: light;
+  --focus-ring: 37 99 235;
+  --color-canvas: 245 247 250;
+  --color-panel: 255 255 255;
+  --color-panel-alpha: 1;
+  --color-panel-strong: 255 255 255;
+  --color-soft: 242 246 252;
+  --color-ink: 24 33 47;
+  --color-muted: 104 115 134;
+  --color-muted-strong: 60 71 89;
+  --color-line: 217 224 232;
+  --color-line-alpha: 1;
+  --color-line-strong-alpha: 1;
+  --color-line-accent: 99 102 241;
+  --color-accent: 99 102 241;
+  --color-accent-foreground: 255 255 255;
+  --color-cyan: 14 165 233;
+  --color-info: 37 99 235;
+  --color-ok: 18 128 92;
+  --color-warn: 183 121 31;
+  --color-danger: 194 65 58;
+  --shadow-control: 0 1px 2px rgb(15 23 42 / 0.08);
+  --shadow-glass: 0 20px 40px rgb(15 23 42 / 0.08);
+  --shadow-glow: 0 12px 28px rgb(99 102 241 / 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: rgb(var(--color-canvas));
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: rgb(var(--color-ink));
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: rgb(var(--color-canvas));
+  background-image:
+    radial-gradient(1200px 600px at -10% -20%, rgb(var(--color-accent) / 0.22), transparent 60%),
+    radial-gradient(900px 500px at 110% -10%, rgb(var(--color-cyan) / 0.14), transparent 55%),
+    linear-gradient(180deg, rgb(var(--color-canvas) / 0.95), rgb(var(--color-canvas)) 40%);
+  background-attachment: fixed;
+}
+
+.light body {
+  background-image:
+    radial-gradient(900px 500px at -10% -20%, rgb(var(--color-accent) / 0.10), transparent 55%),
+    radial-gradient(800px 420px at 110% -10%, rgb(var(--color-cyan) / 0.08), transparent 55%),
+    linear-gradient(180deg, rgb(var(--color-canvas)), rgb(var(--color-canvas)) 60%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: rgb(var(--color-accent) / 0.35);
+  color: rgb(var(--color-ink));
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--focus-ring));
+  outline-offset: 2px;
+}
+
+/* -------- Reusable design primitives -------- */
+
+@layer components {
+  /* Translucent glass surface used by header, sidebar, panels, cards. */
+  .glass-panel {
+    border: 1px solid rgb(var(--color-line) / var(--color-line-alpha));
+    background: rgb(var(--color-panel) / var(--color-panel-alpha));
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-glass);
+  }
+
+  .glass-panel-soft {
+    border: 1px solid rgb(var(--color-line) / var(--color-line-alpha));
+    background: rgb(var(--color-soft) / 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .light .glass-panel-soft {
+    background: rgb(var(--color-soft));
+  }
+
+  /* Purple -> cyan gradient identity. */
+  .accent-gradient {
+    background-image: linear-gradient(135deg, rgb(var(--color-accent)), rgb(var(--color-cyan)));
+  }
+
+  .accent-gradient-subtle {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--color-accent) / 0.18),
+      rgb(var(--color-cyan) / 0.08)
+    );
+  }
+
+  /* Uppercase label ("eyebrow") used above headings, values, and in cards. */
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(var(--color-muted));
+  }
+
+  /* Gradient brand mark (the "CP" / "H" square). */
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+    background: linear-gradient(135deg, rgb(var(--color-accent)), rgb(var(--color-cyan)));
+    box-shadow: var(--shadow-glow);
+  }
+
+  .brand-mark.lg {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    font-size: 22px;
+  }
+
+  /* Glowing status pill (dot + label). Tone via utility colour classes. */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--color-line) / var(--color-line-strong-alpha));
+    background: rgb(255 255 255 / 0.03);
+    color: rgb(var(--color-muted-strong));
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .pill::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background: currentColor;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  /* Ghost/outline control used for sort/filter/nav buttons. */
+  .control-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid rgb(var(--color-line) / var(--color-line-strong-alpha));
+    background: rgb(255 255 255 / 0.03);
+    color: rgb(var(--color-ink));
+    font-size: 13px;
+    font-weight: 500;
+    transition: 150ms ease;
+  }
+
+  .control-chip:hover,
+  .control-chip.is-active {
+    border-color: rgb(var(--color-info) / 0.55);
+    background: rgb(var(--color-info) / 0.12);
+    transform: translateY(-1px);
+  }
+
+  /* Bar track used in inline chart cells. */
+  .bar-track {
+    height: 8px;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.08);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgb(var(--color-accent)), rgb(var(--color-cyan)));
+  }
+}
