@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/layout/page-header";
+import { LiveActivityPanel } from "@/components/sessions/live-activity-panel";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "@/components/ui/metric-card";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -22,39 +23,7 @@ export default async function DashboardPage() {
         ))}
       </div>
       <div className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <section className="glass-panel rounded-md">
-          <div className="flex h-14 items-center justify-between border-b border-line/60 px-5">
-            <div>
-              <p className="eyebrow">Event stream</p>
-              <h2 className="text-sm font-semibold text-ink">Live Activity</h2>
-            </div>
-            <span className="text-xs text-muted">No source connected</span>
-          </div>
-          {state.activity.length > 0 ? (
-            <div className="divide-y divide-line/60">
-              {state.activity.map((event) => (
-                <article
-                  className="grid gap-3 px-5 py-4 md:grid-cols-[96px_minmax(0,1fr)_112px]"
-                  key={event.id}
-                >
-                  <p className="font-mono text-xs text-muted">{event.timestamp}</p>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">{event.title}</p>
-                    <p className="mt-1 text-sm leading-6 text-muted">{event.detail}</p>
-                  </div>
-                  <Badge state={event.state} className="justify-self-start md:justify-self-end" />
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="p-5">
-              <EmptyState
-                title="No live events"
-                description="Connect an event source or adapter to populate the control-plane event stream."
-              />
-            </div>
-          )}
-        </section>
+        <LiveActivityPanel />
         <AgentRuntimesPanel
           agents={state.agents}
           configured={state.agentsAdapterConfigured}
