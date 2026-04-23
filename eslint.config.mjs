@@ -259,5 +259,19 @@ export default tseslint.config(
       parserOptions: { projectService: false, project: null },
     },
     ...tseslint.configs.disableTypeChecked,
+  },
+
+  // ------------------------------------------------------------------
+  // E2E Playwright specs live at the repo root and are not included in
+  // any tsconfig, so the `projectService` parser can't type-check them.
+  // Disable type-aware linting for the e2e tree (mirrors the config-files
+  // override above). Structural rules still apply via the tests block.
+  // ------------------------------------------------------------------
+  {
+    files: ["e2e/**/*.{ts,tsx}"],
+    languageOptions: {
+      parserOptions: { projectService: false, project: null },
+    },
+    ...tseslint.configs.disableTypeChecked,
   }
 );
