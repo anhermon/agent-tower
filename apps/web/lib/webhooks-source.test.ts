@@ -218,7 +218,7 @@ describe("webhooks-source", () => {
     expect(loaded.ok).toBe(true);
     if (!loaded.ok) return;
     expect(loaded.deliveries).toHaveLength(1);
-    expect(loaded.deliveries[0]!.id).toBe("github:delivery-1");
+    expect(loaded.deliveries[0].id).toBe("github:delivery-1");
   });
 
   it("given_a_valid_file__when_loading_by_id__then_returns_the_listing", async () => {

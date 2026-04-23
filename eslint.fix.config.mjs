@@ -32,6 +32,7 @@ export default tseslint.config(
       "**/node_modules/**",
       "**/dist/**",
       "**/.next/**",
+      "**/.next.perf/**",
       "**/build/**",
       "**/coverage/**",
       "**/.coverage-reports/**",

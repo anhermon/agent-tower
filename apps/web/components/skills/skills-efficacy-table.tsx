@@ -52,7 +52,7 @@ export function SkillsEfficacyTable({
   readonly baseline: EfficacyBaseline;
 }): JSX.Element {
   const [sortKey, setSortKey] = useState<SortKey>("delta");
-  const active = SORTS.find((s) => s.key === sortKey) ?? SORTS[0]!;
+  const active = SORTS.find((s) => s.key === sortKey) ?? SORTS[0];
 
   const sorted = useMemo(() => {
     const next = [...rows];

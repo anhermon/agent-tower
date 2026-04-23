@@ -370,7 +370,7 @@ export function mergeAgentAnimationSnapshots(
 }
 
 function latestSnapshot(snapshots: readonly AgentAnimationSnapshot[]): AgentAnimationSnapshot {
-  let latest = snapshots[0]!;
+  let latest = snapshots[0];
   for (const snapshot of snapshots.slice(1)) {
     if (snapshot.lastEventAt > latest.lastEventAt) {
       latest = snapshot;

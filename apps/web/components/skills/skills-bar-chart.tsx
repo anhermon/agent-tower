@@ -57,7 +57,7 @@ export function SkillsBarChart({
   readonly initialMetric?: Metric;
 }): JSX.Element {
   const [metric, setMetric] = useState<Metric>(initialMetric);
-  const active = METRICS.find((m) => m.key === metric) ?? METRICS[0]!;
+  const active = METRICS.find((m) => m.key === metric) ?? METRICS[0];
 
   const rows = useMemo(() => {
     const scored = skills.map((skill) => ({

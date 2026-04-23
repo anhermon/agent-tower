@@ -184,7 +184,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async summaryFor(file: ClaudeSessionFile): Promise<SessionUsageSummary> {
     const key = file.filePath;
     const cached = this.summaryCache.get(key);
-    if (cached && cached.mtime === file.modifiedAt) return cached.summary;
+    if (cached?.mtime === file.modifiedAt) return cached.summary;
     const parsed = await this.parseFile(file);
     const summary = foldSessionSummary(parsed.entries, {
       sessionId: file.sessionId,
@@ -197,7 +197,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async parseFile(file: ClaudeSessionFile): Promise<ReadTranscriptResult> {
     const key = file.filePath;
     const cached = this.parseCache.get(key);
-    if (cached && cached.mtime === file.modifiedAt) return cached.result;
+    if (cached?.mtime === file.modifiedAt) return cached.result;
     const result = await readTranscriptFile(file.filePath);
     this.parseCache.set(key, { mtime: file.modifiedAt, result });
     return result;

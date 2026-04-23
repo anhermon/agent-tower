@@ -33,7 +33,7 @@ export function parseFlags<T extends Record<string, unknown>>(
     });
     return {
       values: result.values as T,
-      positionals: result.positionals as readonly string[],
+      positionals: result.positionals,
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

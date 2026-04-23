@@ -146,7 +146,7 @@ function FileCard({ variant, path }: { variant: "updated" | "written" | "read"; 
 }
 
 function extractFirstUrl(text: string): string | null {
-  const match = text.match(/https?:\/\/[^\s"'>]+/);
+  const match = /https?:\/\/[^\s"'>]+/.exec(text);
   return match ? match[0] : null;
 }
 

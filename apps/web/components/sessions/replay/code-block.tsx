@@ -76,7 +76,7 @@ export function CodeBlock({ code, language }: Props) {
       </div>
       <SyntaxHighlighter
         language={language}
-        style={oneDark as { [key: string]: React.CSSProperties }}
+        style={oneDark}
         customStyle={{
           margin: 0,
           padding: "0.75rem",

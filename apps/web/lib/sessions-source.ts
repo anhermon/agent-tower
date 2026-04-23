@@ -60,7 +60,7 @@ export function getConfiguredAnalyticsSource(): ClaudeCodeAnalyticsSource | null
     analyticsCache = null;
     return null;
   }
-  if (analyticsCache && analyticsCache.directory === resolved.directory) {
+  if (analyticsCache?.directory === resolved.directory) {
     return analyticsCache.source;
   }
   const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
@@ -126,7 +126,7 @@ async function enrichWithPreviews(
       const index = cursor;
       cursor += 1;
       if (index >= files.length) return;
-      const file = files[index]!;
+      const file = files[index];
       const cacheKey = `${file.filePath}:${file.modifiedAt}`;
       let preview = previewCache.get(cacheKey);
       if (!preview) {

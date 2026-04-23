@@ -87,7 +87,7 @@ describe("agents-source", () => {
 
     const byProject = Object.fromEntries(result.agents.map((agent) => [agent.projectId, agent]));
 
-    const projectOne = byProject["-Users-alice-project-one"]!;
+    const projectOne = byProject["-Users-alice-project-one"];
     expect(projectOne.sessionCount).toBe(2);
     expect(projectOne.descriptor.id).toBe(toAgentId("-Users-alice-project-one"));
     expect(projectOne.descriptor.runtime).toBe("claude");
@@ -95,7 +95,7 @@ describe("agents-source", () => {
     expect(projectOne.descriptor.displayName).toBe("/Users/alice/project/one");
     expect(projectOne.descriptor.metadata?.projectId).toBe("-Users-alice-project-one");
 
-    const projectTwo = byProject["-Users-alice-project-two"]!;
+    const projectTwo = byProject["-Users-alice-project-two"];
     expect(projectTwo.sessionCount).toBe(1);
     expect(projectTwo.totalBytes).toBeGreaterThan(0);
   });
@@ -115,8 +115,8 @@ describe("agents-source", () => {
     if (!result.ok) return;
     expect(result.agents).toHaveLength(1);
     const [agent] = result.agents;
-    expect(agent!.state.status).toBe(AGENT_STATUSES.Available);
-    expect(agent!.state.activeSessionIds).toContain("session-fresh");
+    expect(agent.state.status).toBe(AGENT_STATUSES.Available);
+    expect(agent.state.activeSessionIds).toContain("session-fresh");
   });
 
   it("given_an_old_transcript__when_deriving_state__then_it_is_offline", async () => {
@@ -134,8 +134,8 @@ describe("agents-source", () => {
     if (!result.ok) return;
     expect(result.agents).toHaveLength(1);
     const [agent] = result.agents;
-    expect(agent!.state.status).toBe(AGENT_STATUSES.Offline);
-    expect(agent!.state.activeSessionIds).toEqual([]);
+    expect(agent.state.status).toBe(AGENT_STATUSES.Offline);
+    expect(agent.state.activeSessionIds).toEqual([]);
   });
 
   it("given_unknown_agent_id__when_loading_agent__then_returns_not_found", async () => {

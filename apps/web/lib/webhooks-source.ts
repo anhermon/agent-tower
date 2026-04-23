@@ -127,7 +127,7 @@ async function buildSnapshot(file: string): Promise<WebhooksSnapshot> {
   const deliveriesCacheKey = await getGithubWebhookDeliveriesFileCacheKey();
   const cacheKey = `${file}:${info.mtime.toISOString()}:${info.size}:${deliveriesCacheKey}`;
   const cached = snapshotCache.get(file);
-  if (cached && cached.key === cacheKey) {
+  if (cached?.key === cacheKey) {
     return cached.snapshot;
   }
 

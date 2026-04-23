@@ -168,16 +168,16 @@ function validateTicket(input: unknown): TicketRecord {
     createdAt,
     updatedAt,
     ...(optionalString(input, "description") !== null
-      ? { description: optionalString(input, "description") as string }
+      ? { description: optionalString(input, "description")! }
       : {}),
     ...(optionalString(input, "assigneeAgentId") !== null
-      ? { assigneeAgentId: optionalString(input, "assigneeAgentId") as string }
+      ? { assigneeAgentId: optionalString(input, "assigneeAgentId")! }
       : {}),
     ...(optionalString(input, "sessionId") !== null
-      ? { sessionId: optionalString(input, "sessionId") as string }
+      ? { sessionId: optionalString(input, "sessionId")! }
       : {}),
     ...(optionalString(input, "externalUrl") !== null
-      ? { externalUrl: optionalString(input, "externalUrl") as string }
+      ? { externalUrl: optionalString(input, "externalUrl")! }
       : {}),
     ...(isRecord(input.metadata) ? { metadata: input.metadata as TicketRecord["metadata"] } : {}),
   };
@@ -250,5 +250,5 @@ export function groupTicketsByStatus(
       return a.id.localeCompare(b.id);
     });
   }
-  return buckets as Record<TicketStatus, readonly TicketRecord[]>;
+  return buckets;
 }

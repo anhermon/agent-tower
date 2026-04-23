@@ -141,7 +141,7 @@ export function AgentMascot({
         <img className="agent-mascot__eyes" src={eyeSrc} alt="" />
         <img className="agent-mascot__mouth" src={mouthSrc} alt="" />
         {hasLaptop ? (
-          <img className="agent-mascot__laptop" src={manifest.parts.laptop!} alt="" />
+          <img className="agent-mascot__laptop" src={manifest.parts.laptop} alt="" />
         ) : null}
       </div>
     </div>

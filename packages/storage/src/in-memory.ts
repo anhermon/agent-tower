@@ -50,7 +50,7 @@ export class InMemoryEntityRepository<TRecord extends { readonly id: string }>
       return Promise.reject(new Error(`Record does not exist: ${id}`));
     }
 
-    const updated = { ...current, ...patch, id } as TRecord;
+    const updated = { ...current, ...patch, id };
     this.records.set(id, updated);
     return Promise.resolve(updated);
   }

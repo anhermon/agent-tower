@@ -161,7 +161,6 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
         // Minimal inline script to smoothly scroll the target turn into view on
         // first paint. Falls back silently when the id is unknown.
         <script
-          // eslint-disable-next-line react/no-danger
           // biome-ignore lint/security/noDangerouslySetInnerHtml: escaped id, used to smooth-scroll deep-link target
           dangerouslySetInnerHTML={{
             __html: `window.requestAnimationFrame(function(){var el=document.getElementById('turn-${escapeJs(

@@ -108,8 +108,8 @@ describe("kanban-source", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.tickets).toHaveLength(4);
-    expect(result.tickets[0]!.id).toBe("TCK-1");
-    expect(result.tickets[0]!.assigneeAgentId).toBe("claude-code:-Users-someone-project");
+    expect(result.tickets[0].id).toBe("TCK-1");
+    expect(result.tickets[0].assigneeAgentId).toBe("claude-code:-Users-someone-project");
     expect(result.source.filePath).toBe(filePath);
     expect(result.source.origin).toBe("env");
   });

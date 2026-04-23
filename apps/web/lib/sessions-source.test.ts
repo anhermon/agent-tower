@@ -97,11 +97,11 @@ describe("sessions-source", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.sessions).toHaveLength(1);
-    expect(result.sessions[0]!.sessionId).toBe(sessionId);
-    expect(result.sessions[0]!.projectId).toBe("sample-project");
-    expect(result.sessions[0]!.messageCount).toBe(2);
-    expect(result.sessions[0]!.durationMs).toBe(1000);
-    expect(result.sessions[0]!.estimatedCostUsd).toBeGreaterThan(0);
+    expect(result.sessions[0].sessionId).toBe(sessionId);
+    expect(result.sessions[0].projectId).toBe("sample-project");
+    expect(result.sessions[0].messageCount).toBe(2);
+    expect(result.sessions[0].durationMs).toBe(1000);
+    expect(result.sessions[0].estimatedCostUsd).toBeGreaterThan(0);
   });
 
   it("given_env_var_with_a_valid_jsonl__when_loading_session__then_returns_normalized_transcript", async () => {
@@ -134,7 +134,7 @@ describe("sessions-source", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.value.length).toBe(1);
-    expect(result.value[0]!.sessionCount).toBe(1);
+    expect(result.value[0].sessionCount).toBe(1);
   });
 
   it("given_configured_data_root__when_loading_a_session_usage__then_returns_the_summary_with_real_metrics", async () => {

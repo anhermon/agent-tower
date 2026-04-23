@@ -129,7 +129,7 @@ export function ActivityHeatmap({ data }: Props) {
         {weeks.map((w, wi) => {
           const first = w.days[0].label;
           const prev = wi > 0 ? weeks[wi - 1].days[0].label : null;
-          if (prev && prev.getMonth() === first.getMonth()) return null;
+          if (prev?.getMonth() === first.getMonth()) return null;
           if (first.getDate() > 7) return null;
           const x = DAY_LABEL_W + wi * (CELL + GAP);
           return (
