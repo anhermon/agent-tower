@@ -137,23 +137,59 @@ function parsePreviewLine(trimmed: string): ClaudeTranscriptEntry | null {
 }
 
 function updatePreviewState(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  updateTurnCount(state, parsed);
+  updateFirstTimestamp(state, parsed);
+  updateModel(state, parsed);
+  updateSummary(state, parsed);
+  updateFirstUserText(state, parsed);
+}
+
+function updateTurnCount(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
   if (parsed.type === "user" || parsed.type === "assistant") {
     state.turnCountLowerBound += 1;
   }
+}
+
+function updateFirstTimestamp(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
   if (!state.firstTimestamp && typeof parsed.timestamp === "string") {
     state.firstTimestamp = parsed.timestamp;
   }
+}
+
+function updateModel(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
   if (!state.model && parsed.type === "assistant") {
     const m = (parsed as ClaudeAssistantEntry).message?.model;
     if (typeof m === "string" && m.length > 0) state.model = m;
   }
+}
+
+function updateSummary(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
   if (!state.summary && parsed.type === "summary") {
     const s = (parsed as ClaudeSummaryEntry).summary;
     if (typeof s === "string" && s.trim().length > 0) state.summary = s.trim();
   }
+}
+
+function updateFirstUserText(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
   if (!state.firstUserText && parsed.type === "user") {
     state.firstUserText = extractFirstUserText((parsed as ClaudeUserEntry).message?.content);
   }
+}
+
+/** Returns true if the caller should break (stop reading). */
+function processPreviewLine(
+  rawLine: string,
+  lineNumber: number,
+  maxLines: number,
+  state: PreviewState
+): boolean {
+  if (lineNumber > maxLines && state.firstUserText !== null) return true;
+  const trimmed = rawLine.trim();
+  if (trimmed.length === 0) return false;
+  const parsed = parsePreviewLine(trimmed);
+  if (!parsed) return false;
+  updatePreviewState(state, parsed);
+  return !!(state.firstUserText && state.summary && state.model && lineNumber >= 8);
 }
 
 /**
@@ -180,16 +216,7 @@ export async function readTranscriptPreview(
   try {
     for await (const rawLine of reader) {
       lineNumber += 1;
-      if (lineNumber > maxLines && state.firstUserText !== null) break;
-      const trimmed = rawLine.trim();
-      if (trimmed.length === 0) continue;
-
-      const parsed = parsePreviewLine(trimmed);
-      if (!parsed) continue;
-
-      updatePreviewState(state, parsed);
-
-      if (state.firstUserText && state.summary && state.model && lineNumber >= 8) break;
+      if (processPreviewLine(rawLine, lineNumber, maxLines, state)) break;
     }
   } finally {
     reader.close();
