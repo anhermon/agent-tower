@@ -13,10 +13,16 @@
 ## Commands
 - `pnpm install` — bootstrap workspaces.
 - `pnpm dev` — run `@control-plane/web` on `127.0.0.1:3000` (cleans `.next` first).
-- `pnpm typecheck` — TS across all workspaces (this is also what `pnpm lint` runs).
+- `pnpm typecheck` — TS across all workspaces.
 - `pnpm test` — Vitest unit tests, all workspaces.
 - `pnpm test:e2e` — Playwright smoke tests (starts dev server automatically).
 - `task verify` — typecheck + unit tests, the local "ready-to-commit" gate.
+- **CI tiers** (see `docs/superpowers/specs/2026-04-23-ci-quality-gates-design.md`):
+  - `task ci:fast` — T2: lint + types + unit+coverage + build + audit. Pre-push gate.
+  - `task ci` — T3: full correctness + perf + security + cleanliness. Project-healthy gate.
+  - `task ci:security` / `ci:perf` — T3 subsets.
+  - `task ci:nightly` — T4: full E2E + visual + osv-scanner + semgrep + stryker + outdated.
+  - `task ci:health` — one-line green/red board from `.ci/reports/latest.json`.
 
 ## Architecture Map
 - `apps/web` — Next.js App Router dashboard, routes, module registry, local API endpoints.
@@ -30,6 +36,10 @@
 - `docs/architecture` — durable decisions (overview, adapter contracts, data model, security).
 - `docs/architecture/decisions` — ADR log. The **why** behind the rules in this file; see `decisions/README.md` for the template and index.
 - `docs/modules` — per-module product/UX specs (agents, sessions, webhooks, kanban, skills, mcps, channels, replay).
+- `docs/superpowers/specs` — implementation design specs (CI tiers, etc.).
+- `docs/perf` — baseline, improvement map, and after-reports for perf work.
+- `docs/testing` — test strategy (layers, TDD/BDD split, coverage bars).
+- `scripts/ci` — per-tool CI wrappers; report contract + aggregator.
 - `e2e` — Playwright specs at the repo root, not nested in the web app.
 
 ## Entry Points
@@ -63,7 +73,10 @@ Data surface for all three: `CLAUDE_CONTROL_PLANE_DATA_ROOT` (env) → `~/.claud
 - [`packages/events/CLAUDE.md`](packages/events/CLAUDE.md) — event bus + append-only log.
 - [`packages/storage/CLAUDE.md`](packages/storage/CLAUDE.md) — repository interfaces + in-memory impl.
 - [`packages/adapter-claude-code/CLAUDE.md`](packages/adapter-claude-code/CLAUDE.md) — Claude Code JSONL source adapter. See also `packages/adapter-claude-code/AGENTS.md` for the canonical mapping table.
+- [`packages/cli/CLAUDE.md`](packages/cli/CLAUDE.md) — `cp` read-only analytics CLI.
+- [`packages/mcp-server/CLAUDE.md`](packages/mcp-server/CLAUDE.md) — stdio MCP server wrapping the same analytics.
 - [`packages/testing/CLAUDE.md`](packages/testing/CLAUDE.md) — shared fixtures.
+- [`scripts/ci/CLAUDE.md`](scripts/ci/CLAUDE.md) — per-tool CI wrappers + report contract.
 - [`e2e/CLAUDE.md`](e2e/CLAUDE.md) — Playwright smoke suite, fixture roots, empty-state baseline.
 
 ## Sharp Edges
