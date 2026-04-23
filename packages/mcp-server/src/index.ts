@@ -51,13 +51,15 @@ export function createServer(options: CreateServerOptions = {}): Server {
   const byName = new Map<string, ToolDefinition>();
   for (const tool of REGISTERED_TOOLS) byName.set(tool.name, tool);
 
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({
-    tools: REGISTERED_TOOLS.map((tool) => ({
-      name: tool.name,
-      description: tool.description,
-      inputSchema: tool.inputSchema,
-    })),
-  }));
+  server.setRequestHandler(ListToolsRequestSchema, () =>
+    Promise.resolve({
+      tools: REGISTERED_TOOLS.map((tool) => ({
+        name: tool.name,
+        description: tool.description,
+        inputSchema: tool.inputSchema,
+      })),
+    })
+  );
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;

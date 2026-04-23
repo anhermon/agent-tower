@@ -38,7 +38,7 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
 {
   private readonly records: EventLogRecord<TEvent>[] = [];
 
-  async append(event: TEvent): Promise<EventLogAppendResult<TEvent>> {
+  append(event: TEvent): Promise<EventLogAppendResult<TEvent>> {
     const sequence = this.records.length + 1;
     const record: EventLogRecord<TEvent> = {
       sequence,
@@ -48,7 +48,7 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
     };
 
     this.records.push(record);
-    return { record };
+    return Promise.resolve({ record });
   }
 
   async appendMany(events: readonly TEvent[]): Promise<readonly EventLogAppendResult<TEvent>[]> {
@@ -61,9 +61,7 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
     return results;
   }
 
-  async read(
-    options: EventLogReadOptions<TEvent> = {}
-  ): Promise<readonly EventLogRecord<TEvent>[]> {
+  read(options: EventLogReadOptions<TEvent> = {}): Promise<readonly EventLogRecord<TEvent>[]> {
     const afterSequence = cursorToSequence(options.afterCursor);
     const hasCursor = Boolean(options.afterCursor);
     const direction = options.direction ?? EventLogReadDirection.Forward;
@@ -92,7 +90,9 @@ export class InMemoryAppendOnlyEventLog<TEvent extends EventEnvelope = EventEnve
       return eventMatchesFilter(record.event, options.filter);
     });
 
-    return typeof options.limit === "number" ? filtered.slice(0, options.limit) : filtered;
+    return Promise.resolve(
+      typeof options.limit === "number" ? filtered.slice(0, options.limit) : filtered
+    );
   }
 
   async *stream(
