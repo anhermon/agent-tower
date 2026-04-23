@@ -41,3 +41,4 @@ One line each, with why they were rejected.
 - [0002 — Agent-agnostic core + capability-based contracts](0002-agent-agnostic-core.md)
 - [0003 — Local-first storage, explicit filesystem roots](0003-local-first-storage.md)
 - [0004 — `recharts` for analytics charts](0004-recharts-for-analytics.md)
+- [0005 — Sessions live watch via `fs.watch`](0005-sessions-live-watch.md)

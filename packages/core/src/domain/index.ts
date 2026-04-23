@@ -4,6 +4,7 @@ export * from "./channels.js";
 export * from "./common.js";
 export * from "./costs.js";
 export * from "./events.js";
+export * from "./live.js";
 export * from "./mcps.js";
 export * from "./projects.js";
 export * from "./replay.js";
