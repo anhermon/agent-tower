@@ -126,40 +126,49 @@ function renderExport(replay: ReplayData): string {
 </html>`;
 }
 
+type ToolResultMap = ReadonlyMap<string, { content: string; isError: boolean }>;
+
 function renderTurn(
   turn: ReplayTurn,
   index: number,
   compactionBefore: ReplayCompactionEvent | undefined,
-  toolResults: ReadonlyMap<string, { content: string; isError: boolean }>
+  toolResults: ToolResultMap
 ): string {
   const parts: string[] = [];
-  if (compactionBefore) {
-    parts.push(
-      `<div class="compaction"><strong>⚡ Context compaction</strong> · trigger ${escapeHtml(
-        compactionBefore.trigger
-      )} · ${formatTokens(compactionBefore.preTokens)} tokens before</div>`
-    );
-  }
-
+  if (compactionBefore) parts.push(renderCompaction(compactionBefore));
   if (turn.type === "user") {
-    parts.push('<section class="turn user">');
-    parts.push(
-      `<p class="eyebrow">User · ${escapeHtml(new Date(turn.timestamp).toISOString())}</p>`
-    );
-    if (turn.text)
-      parts.push(`<div class="bubble user-bubble"><pre>${escapeHtml(turn.text)}</pre></div>`);
-    if (turn.toolResults) {
-      for (const r of turn.toolResults) {
-        parts.push(
-          `<div class="tool-result ${r.isError ? "error" : ""}"><pre>${escapeHtml(r.content).slice(0, 4000)}</pre></div>`
-        );
-      }
-    }
-    parts.push("</section>");
-    return parts.join("");
+    parts.push(renderUserTurn(turn));
+  } else {
+    parts.push(renderAssistantTurn(turn, index, toolResults));
   }
+  return parts.join("");
+}
 
-  parts.push('<section class="turn assistant">');
+function renderCompaction(compaction: ReplayCompactionEvent): string {
+  return `<div class="compaction"><strong>⚡ Context compaction</strong> · trigger ${escapeHtml(
+    compaction.trigger
+  )} · ${formatTokens(compaction.preTokens)} tokens before</div>`;
+}
+
+function renderUserTurn(turn: ReplayTurn): string {
+  const parts: string[] = ['<section class="turn user">'];
+  parts.push(`<p class="eyebrow">User · ${escapeHtml(new Date(turn.timestamp).toISOString())}</p>`);
+  if (turn.text) {
+    parts.push(`<div class="bubble user-bubble"><pre>${escapeHtml(turn.text)}</pre></div>`);
+  }
+  if (turn.toolResults) {
+    for (const r of turn.toolResults) {
+      parts.push(
+        `<div class="tool-result ${r.isError ? "error" : ""}"><pre>${escapeHtml(r.content).slice(0, 4000)}</pre></div>`
+      );
+    }
+  }
+  parts.push("</section>");
+  return parts.join("");
+}
+
+function renderAssistantTurn(turn: ReplayTurn, index: number, toolResults: ToolResultMap): string {
+  const parts: string[] = ['<section class="turn assistant">'];
   parts.push(
     `<p class="eyebrow">Claude · ${escapeHtml(turn.model ?? "unknown")} · #${index + 1}</p>`
   );
@@ -169,36 +178,37 @@ function renderTurn(
     );
   }
   if (turn.toolCalls) {
-    for (const tc of turn.toolCalls) {
-      const result = toolResults.get(tc.id);
-      const mcp = parseMcpTool(tc.name);
-      const display = mcp ? `${mcp.server} · ${mcp.tool}` : tc.name;
-      parts.push(
-        `<div class="tool-call"><div class="tc-head"><strong>${escapeHtml(display)}</strong></div><pre>${escapeHtml(
-          JSON.stringify(tc.input, null, 2).slice(0, 2000)
-        )}</pre>${
-          result
-            ? `<div class="tc-result ${result.isError ? "error" : ""}"><pre>${escapeHtml(result.content.slice(0, 3000))}</pre></div>`
-            : ""
-        }</div>`
-      );
-    }
+    for (const tc of turn.toolCalls) parts.push(renderToolCall(tc, toolResults.get(tc.id)));
   }
   if (turn.text) {
     parts.push(`<div class="bubble assistant-bubble"><pre>${escapeHtml(turn.text)}</pre></div>`);
   }
-  if (turn.usage) {
-    const u = turn.usage;
-    parts.push(
-      `<p class="usage">in ${formatTokens(u.inputTokens)} · out ${formatTokens(u.outputTokens)} · cW ${formatTokens(
-        u.cacheCreationInputTokens
-      )} · cR ${formatTokens(u.cacheReadInputTokens)}${
-        typeof turn.estimatedCostUsd === "number" ? ` · ${formatCost(turn.estimatedCostUsd)}` : ""
-      }</p>`
-    );
-  }
+  if (turn.usage) parts.push(renderUsage(turn));
   parts.push("</section>");
   return parts.join("");
+}
+
+function renderToolCall(
+  tc: NonNullable<ReplayTurn["toolCalls"]>[number],
+  result: { content: string; isError: boolean } | undefined
+): string {
+  const mcp = parseMcpTool(tc.name);
+  const display = mcp ? `${mcp.server} · ${mcp.tool}` : tc.name;
+  const body = escapeHtml(JSON.stringify(tc.input, null, 2).slice(0, 2000));
+  const resultHtml = result
+    ? `<div class="tc-result ${result.isError ? "error" : ""}"><pre>${escapeHtml(result.content.slice(0, 3000))}</pre></div>`
+    : "";
+  return `<div class="tool-call"><div class="tc-head"><strong>${escapeHtml(display)}</strong></div><pre>${body}</pre>${resultHtml}</div>`;
+}
+
+function renderUsage(turn: ReplayTurn): string {
+  const u = turn.usage;
+  if (!u) return "";
+  const cost =
+    typeof turn.estimatedCostUsd === "number" ? ` · ${formatCost(turn.estimatedCostUsd)}` : "";
+  return `<p class="usage">in ${formatTokens(u.inputTokens)} · out ${formatTokens(u.outputTokens)} · cW ${formatTokens(
+    u.cacheCreationInputTokens
+  )} · cR ${formatTokens(u.cacheReadInputTokens)}${cost}</p>`;
 }
 
 // Inline CSS — dark theme, tailwind-equivalent. Kept small and self-contained.
