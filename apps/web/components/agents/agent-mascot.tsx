@@ -117,8 +117,7 @@ export function AgentMascot({
   const eyeSrc = pickEyeSrc(manifest, visible);
   const mouthSrc = pickMouthSrc(manifest, visible);
   const hasLaptop = Boolean(manifest.parts.laptop);
-  const looping =
-    visible.baseState === AGENT_ANIMATION_BASE_STATES.Working && (reducedMotion ? false : true);
+  const looping = visible.baseState === AGENT_ANIMATION_BASE_STATES.Working && !reducedMotion;
 
   return (
     <div className="agent-mascot__frame">
