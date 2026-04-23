@@ -61,6 +61,13 @@ function makeAccumulator(): ProjectAccumulator {
 }
 
 function accumulateSessionIntoProject(acc: ProjectAccumulator, s: SessionUsageSummary): void {
+  accumulateUsageAndCost(acc, s);
+  accumulateDatesAndBranch(acc, s);
+  mergeFlags(acc.flags, s.flags);
+  accumulateToolsAndModel(acc, s);
+}
+
+function accumulateUsageAndCost(acc: ProjectAccumulator, s: SessionUsageSummary): void {
   acc.usage.inputTokens += s.usage.inputTokens;
   acc.usage.outputTokens += s.usage.outputTokens;
   acc.usage.cacheReadInputTokens += s.usage.cacheReadInputTokens;
@@ -68,11 +75,16 @@ function accumulateSessionIntoProject(acc: ProjectAccumulator, s: SessionUsageSu
   acc.estimatedCostUsd += s.estimatedCostUsd;
   acc.totalMessages += s.userMessageCount + s.assistantMessageCount;
   acc.totalDurationMs += s.durationMs ?? 0;
+}
+
+function accumulateDatesAndBranch(acc: ProjectAccumulator, s: SessionUsageSummary): void {
   if (s.startTime && (!acc.firstActive || s.startTime < acc.firstActive))
     acc.firstActive = s.startTime;
   if (s.endTime && (!acc.lastActive || s.endTime > acc.lastActive)) acc.lastActive = s.endTime;
   if (s.gitBranch) acc.branches.add(s.gitBranch);
-  mergeFlags(acc.flags, s.flags);
+}
+
+function accumulateToolsAndModel(acc: ProjectAccumulator, s: SessionUsageSummary): void {
   for (const [tool, count] of Object.entries(s.toolCounts)) {
     acc.toolCounts[tool] = (acc.toolCounts[tool] ?? 0) + count;
   }

@@ -38,29 +38,12 @@ export function foldTimeseries(
   let maxDate: string | undefined;
 
   for (const s of sessions) {
-    if (!s.startTime) continue;
-    const ts = Date.parse(s.startTime);
-    if (!Number.isFinite(ts)) continue;
-    const date = toDate(ts);
-    const hour = new Date(ts).getUTCHours();
-    const day = new Date(ts).getUTCDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-    if (!minDate || date < minDate) minDate = date;
-    if (!maxDate || date > maxDate) maxDate = date;
-
-    const messageCount = s.userMessageCount + s.assistantMessageCount;
-    const toolCallCount = Object.values(s.toolCounts).reduce((a, b) => a + b, 0);
-
-    bucketDay(daily, date, s, messageCount, toolCallCount);
-
-    hourCounts[hour] = (hourCounts[hour] ?? 0) + messageCount;
-    const dow = dowCounts[day];
-    if (dow) {
-      dow.sessionCount += 1;
-      dow.messageCount += messageCount;
-    }
-
-    activeDates.add(date);
+    const dated = parseSessionDate(s);
+    if (!dated) continue;
+    const { date, hour, day } = dated;
+    minDate = expandMin(minDate, date);
+    maxDate = expandMax(maxDate, date);
+    accumulate(s, date, hour, day, daily, hourCounts, dowCounts, activeDates);
   }
 
   const dailyArr = [...daily.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
@@ -82,6 +65,50 @@ export function foldTimeseries(
     dayOfWeek,
     streaks,
   };
+}
+
+function expandMin(current: string | undefined, date: string): string {
+  return !current || date < current ? date : current;
+}
+
+function expandMax(current: string | undefined, date: string): string {
+  return !current || date > current ? date : current;
+}
+
+function parseSessionDate(
+  s: SessionUsageSummary
+): { date: string; hour: number; day: 0 | 1 | 2 | 3 | 4 | 5 | 6 } | null {
+  if (!s.startTime) return null;
+  const ts = Date.parse(s.startTime);
+  if (!Number.isFinite(ts)) return null;
+  const d = new Date(ts);
+  return {
+    date: toDate(ts),
+    hour: d.getUTCHours(),
+    day: d.getUTCDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6,
+  };
+}
+
+function accumulate(
+  s: SessionUsageSummary,
+  date: string,
+  hour: number,
+  day: 0 | 1 | 2 | 3 | 4 | 5 | 6,
+  daily: Map<string, Mutable<TimeseriesPoint>>,
+  hourCounts: number[],
+  dowCounts: Mutable<DayOfWeekBin>[],
+  activeDates: Set<string>
+): void {
+  const messageCount = s.userMessageCount + s.assistantMessageCount;
+  const toolCallCount = Object.values(s.toolCounts).reduce((a, b) => a + b, 0);
+  bucketDay(daily, date, s, messageCount, toolCallCount);
+  hourCounts[hour] = (hourCounts[hour] ?? 0) + messageCount;
+  const dow = dowCounts[day];
+  if (dow) {
+    dow.sessionCount += 1;
+    dow.messageCount += messageCount;
+  }
+  activeDates.add(date);
 }
 
 function bucketDay(
@@ -133,7 +160,6 @@ export function computeStreaks(activeDates: ReadonlySet<string>, now?: string): 
   }
   const sorted = [...activeDates].sort();
   // sorted is non-empty (size > 0 guard above), so this index access is safe.
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const lastActive = sorted[sorted.length - 1]!;
 
   return {
