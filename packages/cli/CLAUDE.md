@@ -13,7 +13,9 @@
 - `src/data-root.ts` — resolves `CLAUDE_CONTROL_PLANE_DATA_ROOT` → `~/.claude/projects` fallback.
 
 ## Subcommands
-`cp health | audit | sessions top|show|waste | skills top|usage|efficacy | agents list | mcp <stub>`. One `*.ts` + `*.test.ts` pair per command under `src/commands/`. Every command returns a plain object — `output.ts` handles stringification.
+`cp health | audit | sessions top|show|waste | skills top|usage|efficacy|housekeep | agents list | mcp <stub>`. One `*.ts` + `*.test.ts` pair per command under `src/commands/`. Every command returns a plain object — `output.ts` handles stringification.
+
+**`cp skills housekeep`** is the only subcommand that writes to disk. By default it's a dry run that lists dead-weight / cold-giant / negative-efficacy skills. With `--apply`, it moves dead-weight skill directories to `<skillsRoot>/.archive/<YYYYMMDD-HHMMSS>/`. It never deletes, and never touches cold-giant or negative-efficacy entries.
 
 **`cp audit`** is the holistic one-shot audit. Bundles top-by-cost, top-by-waste-score, corpus-wide waste aggregates, cold-giant skills, negative-efficacy skills, and per-project breakdown. The rest of the subcommands are single-question tools — prefer `audit` for open-ended efficiency questions, the others for targeted follow-ups.
 
