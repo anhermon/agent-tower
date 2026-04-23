@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface TodoItem {
   readonly content: string;
-  readonly status: "pending" | "in_progress" | "completed" | string;
+  readonly status: "pending" | "in_progress" | "completed";
   readonly activeForm?: string;
 }
 
@@ -47,7 +47,7 @@ function parseTodos(input: JsonValue): readonly TodoItem[] | null {
   return parsed.length > 0 ? parsed : null;
 }
 
-const STATUS_TONE: Record<string, { icon: string; text: string }> = {
+const STATUS_TONE: Record<TodoItem["status"], { icon: string; text: string }> = {
   completed: { icon: "✓", text: "text-ok" },
   in_progress: { icon: "◐", text: "text-info" },
   pending: { icon: "◯", text: "text-muted" },
@@ -83,10 +83,10 @@ export function TodoWritePanel({ input }: Props) {
       </button>
       {open ? (
         <ul className="space-y-1 border-t border-line/60 px-3 py-2">
-          {todos.map((todo, i) => {
+          {todos.map((todo) => {
             const tone = STATUS_TONE[todo.status] ?? STATUS_TONE.pending;
             return (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={`${todo.status}-${todo.content}`} className="flex items-start gap-2 text-sm">
                 <span className={cn("mt-0.5 font-mono text-xs", tone.text)} aria-hidden>
                   {tone.icon}
                 </span>

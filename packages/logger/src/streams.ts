@@ -18,7 +18,10 @@ export const STDERR_LEVEL_FLOOR = 40;
 const REQUEST_COMPONENT = "request";
 const require = createRequire(import.meta.url);
 
-type PrettyFactory = typeof import("pino-pretty");
+// pino-pretty uses `export =` so we use an import-equals type alias
+// instead of an inline import() annotation.
+import type PinoPrettyModule = require("pino-pretty");
+type PrettyFactory = typeof PinoPrettyModule;
 
 export interface FanoutSinks {
   readonly stdoutStream: NodeJS.WritableStream;

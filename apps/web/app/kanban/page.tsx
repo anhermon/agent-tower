@@ -1,5 +1,4 @@
-import { TICKET_STATUSES, type TicketStatus } from "@control-plane/core";
-
+import { TICKET_STATUSES, type TicketRecord, type TicketStatus } from "@control-plane/core";
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -84,11 +83,7 @@ function KanbanBody({ result }: { result: ListTicketsResult }) {
   );
 }
 
-function SummaryStrip({
-  tickets,
-}: {
-  readonly tickets: readonly import("@control-plane/core").TicketRecord[];
-}) {
+function SummaryStrip({ tickets }: { readonly tickets: readonly TicketRecord[] }) {
   const counts = countByStatus(tickets);
   const items: readonly { readonly label: string; readonly value: number }[] = [
     { label: "Total", value: tickets.length },
@@ -109,9 +104,7 @@ function SummaryStrip({
   );
 }
 
-function countByStatus(
-  tickets: readonly import("@control-plane/core").TicketRecord[]
-): Record<TicketStatus, number> {
+function countByStatus(tickets: readonly TicketRecord[]): Record<TicketStatus, number> {
   const counts: Record<TicketStatus, number> = {
     [TICKET_STATUSES.Open]: 0,
     [TICKET_STATUSES.InProgress]: 0,

@@ -71,7 +71,9 @@ export class ClaudeCodeSessionSource {
       try {
         const normalized = normalizeTranscript(entries, options);
         yield normalized.batch;
-      } catch {}
+      } catch {
+        // intentionally empty — malformed transcripts are skipped silently
+      }
     }
   }
 }
@@ -168,7 +170,8 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
         const index = cursor;
         cursor += 1;
         if (index >= files.length) return;
-        const file = files[index]!;
+        const file = files[index];
+        if (!file) return;
         try {
           results[index] = await this.summaryFor(file);
         } catch {
