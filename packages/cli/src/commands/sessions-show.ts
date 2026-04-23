@@ -1,19 +1,26 @@
-import { ClaudeCodeAnalyticsSource, scoreSessionWaste } from "@control-plane/adapter-claude-code";
+import {
+  ClaudeCodeAnalyticsSource,
+  type SkillTurnAttribution,
+  scoreSessionWaste,
+  type TurnTimeline,
+} from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
 import { resolveOrExplain } from "../data-root.js";
 import { parseFlags, UsageError } from "../flags.js";
-import { bold, resolveOutputMode, writeJson, writeLine } from "../output.js";
+import { bold, renderTable, resolveOutputMode, writeJson, writeLine } from "../output.js";
 
 export async function runSessionsShow(argv: readonly string[]): Promise<number> {
   const { values, positionals } = parseFlags<{
     json?: boolean;
     pretty?: boolean;
     full?: boolean;
+    timeline?: boolean;
   }>(argv, {
     json: { type: "boolean" },
     pretty: { type: "boolean" },
     full: { type: "boolean" },
+    timeline: { type: "boolean" },
   });
 
   const sessionId = positionals[0];
@@ -37,8 +44,14 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     return 1;
   }
 
+  const includeTimeline = values.timeline === true;
+  const timelineBundle = includeTimeline ? await source.loadSessionTimeline(sessionId) : undefined;
+
   if (mode.json) {
-    writeJson({ ok: true, session: projectSummary(summary, values.full === true) });
+    writeJson({
+      ok: true,
+      session: projectSummary(summary, values.full === true, timelineBundle),
+    });
     return 0;
   }
 
@@ -74,11 +87,63 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
       }
     }
   }
+
+  if (timelineBundle) {
+    writeLine("");
+    writeLine(bold("Per-turn timeline (assistant turns only)"));
+    writeLine(renderTimelineTable(timelineBundle.timeline, timelineBundle.skillAttribution));
+  }
+
   return 0;
 }
 
-function projectSummary(summary: SessionUsageSummary, includeTurns: boolean): unknown {
-  if (includeTurns) return summary;
+function projectSummary(
+  summary: SessionUsageSummary,
+  includeTurns: boolean,
+  timelineBundle:
+    | { readonly timeline: TurnTimeline; readonly skillAttribution: SkillTurnAttribution }
+    | undefined
+): unknown {
+  const base = includeTurns ? summary : stripTurns(summary);
+  if (!timelineBundle) return base;
+  return {
+    ...(base as object),
+    timeline: timelineBundle.timeline,
+    skillAttribution: timelineBundle.skillAttribution,
+  };
+}
+
+function stripTurns(summary: SessionUsageSummary): Omit<SessionUsageSummary, "turns"> {
   const { turns: _turns, ...rest } = summary;
+  void _turns;
   return rest;
+}
+
+function renderTimelineTable(timeline: TurnTimeline, attribution: SkillTurnAttribution): string {
+  const attrByTurn = new Map(attribution.entries.map((e) => [e.turnIndex, e]));
+  const headers = ["#", "tools", "cacheHit%", "inTok", "outTok", "skills", "flags"];
+  const rows: string[][] = [];
+  for (const entry of timeline.entries) {
+    if (entry.role !== "assistant") continue;
+    const skills = attrByTurn.get(entry.turnIndex)?.skillsActivatedOnThisTurn ?? [];
+    const flags: string[] = [];
+    if (entry.wastedTurn) flags.push("WASTE");
+    rows.push([
+      String(entry.turnIndex),
+      summarizeTools(entry.toolsUsed),
+      `${(entry.cacheHitRate * 100).toFixed(1)}`,
+      String(entry.inputTokens),
+      String(entry.outputTokens),
+      skills.join(",") || "-",
+      flags.join(",") || "-",
+    ]);
+  }
+  if (rows.length === 0) return "(no assistant turns)";
+  return renderTable(headers, rows);
+}
+
+function summarizeTools(tools: readonly string[]): string {
+  if (tools.length === 0) return "-";
+  if (tools.length <= 3) return tools.join(",");
+  return `${tools.slice(0, 3).join(",")}+${tools.length - 3}`;
 }

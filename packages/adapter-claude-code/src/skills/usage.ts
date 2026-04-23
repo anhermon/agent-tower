@@ -6,7 +6,10 @@ import type { DateRange } from "@control-plane/core";
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
 
+import { detectSkillFromBlock } from "./detect.js";
 import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
+
+import type { ClaudeContentBlock } from "../types.js";
 
 /**
  * Extracts Skill-tool invocation telemetry from locally stored Claude Code
@@ -189,16 +192,11 @@ async function readInvocationsFromFile(filePath: string): Promise<readonly RawIn
       const cwd = typeof entry.cwd === "string" ? entry.cwd : null;
 
       for (const block of content) {
-        if (!block || typeof block !== "object") continue;
-        const blk = block as Record<string, unknown>;
-        if (blk.type !== "tool_use" || blk.name !== "Skill") continue;
-        const input = blk.input;
-        if (!input || typeof input !== "object") continue;
-        const skill = (input as Record<string, unknown>).skill;
-        if (typeof skill !== "string") continue;
-        const trimmedSkill = skill.trim();
-        if (trimmedSkill.length === 0) continue;
-        results.push({ skillKey: trimmedSkill, timestamp, sessionId, cwd });
+        // Skill-invocation detection is shared with `analytics/skill-turn-attribution.ts`
+        // via `detectSkillFromBlock` — never fork the regex/shape check here.
+        const skillKey = detectSkillFromBlock(block as ClaudeContentBlock);
+        if (!skillKey) continue;
+        results.push({ skillKey, timestamp, sessionId, cwd });
       }
     }
   } catch {

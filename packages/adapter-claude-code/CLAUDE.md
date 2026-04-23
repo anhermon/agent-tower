@@ -15,7 +15,7 @@
 - `src/reader.ts` — low-level JSONL enumeration + line parsing.
 - `src/normalizer.ts` — pure raw→canonical mapping.
 - `src/data-root.ts` — `CLAUDE_CONTROL_PLANE_DATA_ROOT` env var + `~/.claude/projects` fallback. Shared by every consumer.
-- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary, **waste** (`scoreSessionWaste` → 6 sub-scores + overall + verbatim flags). Every `SessionUsageSummary` carries `.waste: SessionWasteSignals` populated during `foldSessionSummary`.
+- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary, **waste** (`scoreSessionWaste` → 6 sub-scores + overall + verbatim flags). Every `SessionUsageSummary` carries `.waste: SessionWasteSignals` populated during `foldSessionSummary`. The fold applies small-session gates (`SEQUENTIAL_TOOLS_MIN_TURNS = 10`, `TOOL_FAILURE_MIN_SAMPLES = 5`, `BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS = 300_000`) before emitting `sequentialToolTurnPct` / `toolFailurePct` / `bloatWithoutCompaction`, so downstream scorers don't fire on statistically meaningless inputs.
 - `src/skills/manifests.ts` — `SKILL.md` discovery from `CONTROL_PLANE_SKILLS_ROOTS` → `~/.claude/skills`.
 - `src/skills/usage.ts` — `Skill` tool_use invocation counts + size-weighted injection totals.
 - `src/skills/efficacy.ts` — session-outcome heuristic + per-skill delta vs baseline.

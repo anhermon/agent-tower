@@ -39,6 +39,63 @@ describe("runSessionsShow", () => {
     expect(parsed.reason).toBe("not_found");
   });
 
+  it("given_seeded_session__when_timeline_flag__then_payload_includes_timeline_and_attribution", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "control-plane-cli-show-tl-"));
+    tempDirs.push(root);
+    const project = path.join(root, "proj");
+    await mkdir(project, { recursive: true });
+
+    const sessionId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    const lines = [
+      {
+        type: "assistant" as const,
+        sessionId,
+        uuid: "turn-a",
+        timestamp: "2026-04-10T10:00:00.000Z",
+        cwd: "/repo/p",
+        message: {
+          role: "assistant" as const,
+          model: "claude-sonnet-4-5",
+          content: [
+            { type: "tool_use" as const, id: "t1", name: "Skill", input: { skill: "testing" } },
+          ],
+          usage: {
+            input_tokens: 5,
+            output_tokens: 2,
+            cache_read_input_tokens: 100,
+            cache_creation_input_tokens: 20,
+          },
+        },
+      },
+    ];
+    await writeFile(
+      path.join(project, `${sessionId}.jsonl`),
+      lines.map((l) => JSON.stringify(l)).join("\n"),
+      "utf8"
+    );
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+
+    const { exitCode, stdout } = await captureOutput(() =>
+      runSessionsShow([sessionId, "--timeline"])
+    );
+    expect(exitCode).toBe(0);
+    const parsed = JSON.parse(stdout) as {
+      ok: boolean;
+      session: {
+        sessionId: string;
+        timeline?: { entries: { turnIndex: number; toolsUsed: string[] }[] };
+        skillAttribution?: {
+          entries: { turnIndex: number; skillsActivatedOnThisTurn: string[] }[];
+        };
+      };
+    };
+    expect(parsed.ok).toBe(true);
+    expect(parsed.session.timeline?.entries[0]?.toolsUsed).toEqual(["Skill"]);
+    expect(parsed.session.skillAttribution?.entries[0]?.skillsActivatedOnThisTurn).toEqual([
+      "testing",
+    ]);
+  });
+
   it("given_seeded_session__when_showing_json__then_payload_excludes_turns", async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), "control-plane-cli-show-hit-"));
     tempDirs.push(root);
