@@ -21,6 +21,7 @@ Map user questions to a single `cp` command. Prefer `cp` over reading JSONL tran
 | "Which skills inject the most tokens into context?" | `cp skills top --by=tokens-injected` |
 | "Which skills have a negative efficacy delta?" | `cp skills efficacy --negative-only --min-sessions=5` |
 | "Full skill efficacy report with sample sizes" | `cp skills efficacy` |
+| **"Archive dead-weight skills / skills never invoked / clean up my skills"** | **`cp skills housekeep --pretty`** (dry-run) then **`cp skills housekeep --apply`** |
 | "List every Claude Code agent (one per project cwd)" | `cp agents list` |
 | "Is the control plane wired up to local data?" | `cp health` |
 | "Per-project session counts" | `cp agents list --pretty` |
@@ -326,6 +327,7 @@ Example output:
 | `cp skills top` | `skills_top` |
 | `cp skills usage` | `skills_usage` |
 | `cp skills efficacy` | `skills_efficacy` |
+| `cp skills housekeep` | `skills_housekeep` (read-only dry-run; apply is CLI-only) |
 | `cp agents list` | `agents_list` |
 
 ## CLI vs MCP
@@ -443,6 +445,28 @@ comm -23 \
   <(ls ~/.claude/skills | sort) \
   <(cp skills usage --json | jq -r '.results[].name' | sort)
 ```
+
+### Archive dead-weight skills
+
+`cp skills housekeep` audits every `SKILL.md` under `CONTROL_PLANE_SKILLS_ROOTS` (default `~/.claude/skills`) and classifies it into three buckets:
+
+- **Dead weight** — 0 invocations across scanned sessions. Safe to archive automatically.
+- **Cold giants** — `sizeBytes > 8000` AND 1–4 invocations. Pure context tax when auto-loaded; report only, no automatic archival.
+- **Negative efficacy** — Δ < -0.05 over ≥5 qualifying sessions. Report only.
+
+Dry run first (default):
+
+```sh
+cp skills housekeep --pretty
+```
+
+Once you've reviewed the dead-weight list, move the directories into `<skillsRoot>/.archive/<YYYYMMDD-HHMMSS>/` with:
+
+```sh
+cp skills housekeep --apply
+```
+
+`--apply` NEVER deletes. It only renames each dead-weight directory under `.archive/<timestamp>/`, preserving the root-relative layout. To revert, move the directory back out of `.archive/`. The MCP equivalent (`skills_housekeep`) is read-only by design — use the CLI for the destructive half.
 
 ### Top-cost deep-dive template
 

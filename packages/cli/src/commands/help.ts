@@ -14,6 +14,10 @@ export const COMMANDS: readonly CommandDescriptor[] = [
   { name: "skills top", summary: "Top skills by invocations, size, bytes/tokens injected" },
   { name: "skills usage", summary: "Full skills usage report with totals" },
   { name: "skills efficacy", summary: "Skill efficacy vs all-sessions baseline" },
+  {
+    name: "skills housekeep",
+    summary: "List (dry-run) or archive (--apply) dead-weight skills",
+  },
   { name: "agents list", summary: "List agents grouped from Claude Code projects" },
   { name: "mcp", summary: "MCP server stub (separate package)" },
   { name: "help", summary: "Print this help block" },

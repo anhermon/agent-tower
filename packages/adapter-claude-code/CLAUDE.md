@@ -19,6 +19,7 @@
 - `src/skills/manifests.ts` — `SKILL.md` discovery from `CONTROL_PLANE_SKILLS_ROOTS` → `~/.claude/skills`.
 - `src/skills/usage.ts` — `Skill` tool_use invocation counts + size-weighted injection totals.
 - `src/skills/efficacy.ts` — session-outcome heuristic + per-skill delta vs baseline.
+- `src/skills/hygiene.ts` — pure fold that classifies the catalogue into dead-weight (0 invocations), cold-giant, and negative-efficacy buckets. Powers `cp skills housekeep`.
 - `src/types.ts` — raw Claude Code entry shapes, kept internal.
 
 ## Entry Points / Flow

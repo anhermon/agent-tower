@@ -8,6 +8,7 @@ import { runSessionsShow } from "./commands/sessions-show.js";
 import { runSessionsTop } from "./commands/sessions-top.js";
 import { runSessionsWaste } from "./commands/sessions-waste.js";
 import { runSkillsEfficacy } from "./commands/skills-efficacy.js";
+import { runSkillsHousekeep } from "./commands/skills-housekeep.js";
 import { runSkillsTop } from "./commands/skills-top.js";
 import { runSkillsUsage } from "./commands/skills-usage.js";
 import { UsageError } from "./flags.js";
@@ -101,9 +102,11 @@ async function runSkills(sub: string | undefined, rest: readonly string[]): Prom
       return runSkillsUsage(rest);
     case "efficacy":
       return runSkillsEfficacy(rest);
+    case "housekeep":
+      return runSkillsHousekeep(rest);
     default:
       throw new UsageError(
-        `Unknown skills subcommand: ${sub ?? "(none)"}. Try \`top\`, \`usage\`, or \`efficacy\`.`
+        `Unknown skills subcommand: ${sub ?? "(none)"}. Try \`top\`, \`usage\`, \`efficacy\`, or \`housekeep\`.`
       );
   }
 }
