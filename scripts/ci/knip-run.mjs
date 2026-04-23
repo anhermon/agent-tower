@@ -39,19 +39,13 @@ function extractJson(stdout) {
   }
 }
 
-function countIssues(report) {
-  const counts = {
-    unusedFiles: 0,
-    unusedDeps: 0,
-    unusedExports: 0,
-    unlistedDeps: 0,
-  };
+function emptyIssueCounts() {
+  return { unusedFiles: 0, unusedDeps: 0, unusedExports: 0, unlistedDeps: 0 };
+}
 
-  if (!report) return counts;
-
-  // knip json reporter: { files: [...], issues: [ { file, dependencies, devDependencies, unlisted, exports, types, ... } ] }
+/** Accumulate counts from the structured { files, issues } knip reporter shape. */
+function accumulateStructured(report, counts) {
   if (Array.isArray(report.files)) counts.unusedFiles += report.files.length;
-
   const issues = Array.isArray(report.issues) ? report.issues : [];
   for (const item of issues) {
     if (Array.isArray(item.dependencies)) counts.unusedDeps += item.dependencies.length;
@@ -61,30 +55,38 @@ function countIssues(report) {
     if (Array.isArray(item.exports)) counts.unusedExports += item.exports.length;
     if (Array.isArray(item.types)) counts.unusedExports += item.types.length;
   }
+}
+
+const FLAT_TYPE_TO_COUNT_KEY = {
+  files: "unusedFiles",
+  dependencies: "unusedDeps",
+  devDependencies: "unusedDeps",
+  unlisted: "unlistedDeps",
+  unresolved: "unlistedDeps",
+  exports: "unusedExports",
+  types: "unusedExports",
+  nsExports: "unusedExports",
+  nsTypes: "unusedExports",
+};
+
+/** Accumulate counts from the flat array-of-typed-issues knip reporter shape. */
+function accumulateFlat(report, counts) {
+  for (const item of report) {
+    const key = FLAT_TYPE_TO_COUNT_KEY[item.type];
+    if (key) counts[key] += 1;
+  }
+}
+
+function countIssues(report) {
+  const counts = emptyIssueCounts();
+  if (!report) return counts;
+
+  // knip json reporter: { files: [...], issues: [ { file, dependencies, devDependencies, unlisted, exports, types, ... } ] }
+  accumulateStructured(report, counts);
 
   // Some knip versions output a flat array of issue objects with `type`.
   if (Array.isArray(report)) {
-    for (const item of report) {
-      switch (item.type) {
-        case "files":
-          counts.unusedFiles += 1;
-          break;
-        case "dependencies":
-        case "devDependencies":
-          counts.unusedDeps += 1;
-          break;
-        case "unlisted":
-        case "unresolved":
-          counts.unlistedDeps += 1;
-          break;
-        case "exports":
-        case "types":
-        case "nsExports":
-        case "nsTypes":
-          counts.unusedExports += 1;
-          break;
-      }
-    }
+    accumulateFlat(report, counts);
   }
 
   return counts;

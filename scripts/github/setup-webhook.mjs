@@ -87,12 +87,23 @@ function parseArgs(argv) {
   return parsed;
 }
 
-/** Returns the number of extra tokens consumed (0 or 1), or -1 on unknown arg. */
-function parseArg(parsed, arg, next) {
+function handleHelpFlag(arg) {
   if (arg === "--help" || arg === "-h") {
     printHelp();
     process.exit(0);
   }
+}
+
+function parseEventsList(raw) {
+  return raw
+    .split(",")
+    .map((event) => event.trim())
+    .filter(Boolean);
+}
+
+/** Returns the number of extra tokens consumed (0 or 1), or -1 on unknown arg. */
+function parseArg(parsed, arg, next) {
+  handleHelpFlag(arg);
   if (arg === "--repo" && next) {
     parsed.repo = next;
     return 1;
@@ -106,10 +117,7 @@ function parseArg(parsed, arg, next) {
     return 1;
   }
   if (arg === "--events" && next) {
-    parsed.events = next
-      .split(",")
-      .map((event) => event.trim())
-      .filter(Boolean);
+    parsed.events = parseEventsList(next);
     return 1;
   }
   return -1;

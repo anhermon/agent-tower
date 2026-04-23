@@ -27,22 +27,31 @@ export async function resolveAndServe({
     return new Response("Forbidden: path must be under session cwd", { status: 403 });
   }
 
+  const statError = await validateFileStat(candidate, statImpl);
+  if (statError) return statError;
+
+  return readAndServe(candidate, readFileImpl);
+}
+
+async function validateFileStat(
+  candidate: string,
+  statImpl: typeof stat
+): Promise<Response | null> {
   let fileStat: Awaited<ReturnType<typeof stat>>;
   try {
     fileStat = await statImpl(candidate);
   } catch {
     return new Response("Not found", { status: 404 });
   }
-  if (!fileStat.isFile()) {
-    return new Response("Not a file", { status: 415 });
-  }
-  if (fileStat.size > 2 * 1024 * 1024) {
+  if (!fileStat.isFile()) return new Response("Not a file", { status: 415 });
+  if (fileStat.size > 2 * 1024 * 1024)
     return new Response("File too large (>2MB)", { status: 413 });
-  }
-  if (!hasSafeExtension(candidate)) {
+  if (!hasSafeExtension(candidate))
     return new Response("Unsupported content type", { status: 415 });
-  }
+  return null;
+}
 
+async function readAndServe(candidate: string, readFileImpl: typeof readFile): Promise<Response> {
   try {
     const buf = await readFileImpl(candidate);
     return new Response(buf.toString("utf8"), {

@@ -195,6 +195,23 @@ function CalendarPopover({
   );
 }
 
+function parseRangeParams(params: ReturnType<typeof useSearchParams>): {
+  from: Date | null;
+  to: Date | null;
+} {
+  return {
+    from: parseIsoDate(params?.get("from") ?? null),
+    to: parseIsoDate(params?.get("to") ?? null),
+  };
+}
+
+function computeRangeLabel(preset: Preset, range: DayPickerRange | undefined): string {
+  if (preset === "custom" && range?.from && range.to) {
+    return `${formatShort(range.from)} – ${formatShort(range.to)}`;
+  }
+  return "Pick dates";
+}
+
 /**
  * URL-driven date-range control. Updates `?from=YYYY-MM-DD&to=YYYY-MM-DD` on
  * every change; the server component reads them and re-fetches. Never uses
@@ -205,8 +222,7 @@ export function DateRangePicker() {
   const pathname = usePathname() ?? "";
   const params = useSearchParams();
 
-  const fromParam = parseIsoDate(params?.get("from") ?? null);
-  const toParam = parseIsoDate(params?.get("to") ?? null);
+  const { from: fromParam, to: toParam } = parseRangeParams(params);
 
   const currentPreset: Preset = useMemo(
     () => resolveCurrentPreset(fromParam, toParam, params),
@@ -250,10 +266,7 @@ export function DateRangePicker() {
     router.push(`${pathname}?${next.toString()}`);
   }
 
-  const label =
-    currentPreset === "custom" && range?.from && range.to
-      ? `${formatShort(range.from)} – ${formatShort(range.to)}`
-      : "Pick dates";
+  const label = computeRangeLabel(currentPreset, range);
 
   function handleRangeSelect(next: DayPickerRange | undefined) {
     setRange(next);

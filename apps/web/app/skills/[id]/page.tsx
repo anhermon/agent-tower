@@ -27,33 +27,7 @@ export default async function SkillDetailPage({ params, searchParams }: PageProp
     computeSkillsUsage({ range }),
   ]);
 
-  if (!result.ok) {
-    return (
-      <section className="space-y-5">
-        <Link href="/skills" className="text-sm text-cyan hover:underline">
-          ← Back to skills
-        </Link>
-        {result.reason === "unconfigured" ? (
-          <EmptyState
-            title="No skills roots"
-            description={`Set ${SKILLS_ROOTS_ENV} or create ~/.claude/skills to populate the Skills module.`}
-          />
-        ) : result.reason === "not_found" ? (
-          <EmptyState
-            title="Skill not found"
-            description={`No skill with id ${decodedId} was found under the configured roots.`}
-          />
-        ) : (
-          <ErrorState
-            title="Could not load skill"
-            description={
-              result.message ?? "An unknown error occurred reading the configured roots."
-            }
-          />
-        )}
-      </section>
-    );
-  }
+  if (!result.ok) return renderSkillError(result, decodedId);
 
   const { skill } = result;
   const stats = usage.ok
@@ -148,6 +122,35 @@ export default async function SkillDetailPage({ params, searchParams }: PageProp
           {skill.body.length > 0 ? skill.body : "(empty)"}
         </pre>
       </section>
+    </section>
+  );
+}
+
+function renderSkillError(
+  result: Awaited<ReturnType<typeof loadSkillOrUndefined>> & { ok: false },
+  decodedId: string
+) {
+  return (
+    <section className="space-y-5">
+      <Link href="/skills" className="text-sm text-cyan hover:underline">
+        ← Back to skills
+      </Link>
+      {result.reason === "unconfigured" ? (
+        <EmptyState
+          title="No skills roots"
+          description={`Set ${SKILLS_ROOTS_ENV} or create ~/.claude/skills to populate the Skills module.`}
+        />
+      ) : result.reason === "not_found" ? (
+        <EmptyState
+          title="Skill not found"
+          description={`No skill with id ${decodedId} was found under the configured roots.`}
+        />
+      ) : (
+        <ErrorState
+          title="Could not load skill"
+          description={result.message ?? "An unknown error occurred reading the configured roots."}
+        />
+      )}
     </section>
   );
 }
