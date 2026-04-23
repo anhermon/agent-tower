@@ -3,6 +3,7 @@
 import type { ModelCostBreakdown } from "@control-plane/core";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { formatTokens } from "@/lib/format";
+import type { ChartTooltipProps } from "./_types";
 
 interface Props {
   readonly models: readonly ModelCostBreakdown[];
@@ -22,10 +23,11 @@ function shortModel(model: string): string {
   return parts.slice(0, 3).join("-");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomTooltip({ active, payload }: any) {
-  if (!active || !payload?.length) return null;
-  const { name, value } = payload[0];
+function CustomTooltip({ active, payload }: ChartTooltipProps<number, string>) {
+  if (!active || !payload || payload.length === 0) return null;
+  const entry = payload[0];
+  const name = entry?.name ?? "";
+  const value = typeof entry?.value === "number" ? entry.value : 0;
   return (
     <div className="rounded-sm border border-line/70 bg-panel/95 px-3 py-2 text-xs shadow-glass">
       <p className="text-muted">{name}</p>
@@ -73,8 +75,8 @@ export function ModelBreakdownDonut({ models }: Props) {
             dataKey="value"
             strokeWidth={0}
           >
-            {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} aria-label={data[i].name} />
+            {data.map((entry, i) => (
+              <Cell key={entry.name} fill={COLORS[i % COLORS.length]} aria-label={entry.name} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />

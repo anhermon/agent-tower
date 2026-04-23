@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import type { TooltipPayloadEntry } from "./_types";
 
 interface Props {
   readonly tools: readonly ToolSummary[];
@@ -75,17 +76,18 @@ export function ToolRankingChart({ tools }: Props) {
               borderRadius: 4,
               fontSize: 12,
             }}
-            formatter={
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ((val: unknown, _name: unknown, props: any) => [
-                `${Number(val ?? 0).toLocaleString()} calls`,
-                props?.payload?.name ?? "",
-              ]) as never
-            }
+            formatter={(val, _name, item: TooltipPayloadEntry) => {
+              const calls = typeof val === "number" ? val : Number(val ?? 0);
+              // `item.payload` carries the original row (`ToolSummary`), which
+              // Recharts types as `any`. Narrow defensively before reading.
+              const row = item.payload as { name?: unknown } | undefined;
+              const toolName = typeof row?.name === "string" ? row.name : "";
+              return [`${calls.toLocaleString()} calls`, toolName];
+            }}
           />
           <Bar dataKey="totalCalls" radius={[0, 3, 3, 0]}>
-            {top.map((t, i) => (
-              <Cell key={i} fill={colorFor(t.category)} fillOpacity={0.92} />
+            {top.map((t) => (
+              <Cell key={t.name} fill={colorFor(t.category)} fillOpacity={0.92} />
             ))}
           </Bar>
         </BarChart>
