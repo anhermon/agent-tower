@@ -1,11 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import type { ModuleDefinition } from "@/types/control-plane";
 
-type PageHeaderProps = {
+interface PageHeaderProps {
   module: ModuleDefinition;
   action?: string;
-};
+}
 
 export function PageHeader({ module, action = "Refresh" }: PageHeaderProps) {
   return (

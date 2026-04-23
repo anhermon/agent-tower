@@ -1,5 +1,7 @@
-import type { SessionDerivedFlags } from "@control-plane/core";
 import { describe, expect, it } from "vitest";
+
+import type { SessionDerivedFlags } from "@control-plane/core";
+
 import { sessionBadgeCount } from "@/components/sessions/session-badges";
 import { matchesSessionFilters } from "@/components/sessions/session-filters";
 import { filterAndSort, type SessionListRow } from "@/components/sessions/session-list";

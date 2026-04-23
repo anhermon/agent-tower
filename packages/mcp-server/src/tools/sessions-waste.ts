@@ -4,6 +4,7 @@ import {
   scoreSessionWaste,
 } from "@control-plane/adapter-claude-code";
 import type { DateRange, SessionAnalyticsFilter } from "@control-plane/core";
+
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 interface ParsedSessionsWasteInput {

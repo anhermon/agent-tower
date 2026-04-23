@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge";
+
 import type { PlaceholderRecord } from "@/types/control-plane";
 
-type DataTableProps = {
+interface DataTableProps {
   rows: PlaceholderRecord[];
-};
+}
 
 export function DataTable({ rows }: DataTableProps) {
   return (

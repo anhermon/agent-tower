@@ -1,6 +1,5 @@
 "use client";
 
-import type { ProjectCostRow } from "@control-plane/core";
 import {
   Bar,
   BarChart,
@@ -11,6 +10,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { ProjectCostRow } from "@control-plane/core";
+
 import { formatCost } from "@/lib/format";
 
 interface Props {

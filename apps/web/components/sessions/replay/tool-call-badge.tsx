@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   categorizeTool,
   isMcpTool,
@@ -7,13 +9,13 @@ import {
   type ReplayToolCall,
   type ToolCategory,
 } from "@control-plane/core";
-import { useState } from "react";
+
 import { cn } from "@/lib/utils";
 
-type Props = {
+interface Props {
   readonly tool: ReplayToolCall;
   readonly result?: { readonly content: string; readonly isError: boolean };
-};
+}
 
 // Category → tailwind text colour. Keep aligned with the UI design tokens.
 const CATEGORY_TONE: Readonly<Record<ToolCategory, { text: string; border: string; bg: string }>> =

@@ -1,9 +1,11 @@
 "use client";
 
-import type { SessionSearchHit } from "@control-plane/core";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import type { SessionSearchHit } from "@control-plane/core";
+
 import { truncateMiddle } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

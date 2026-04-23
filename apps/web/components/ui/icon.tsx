@@ -1,6 +1,6 @@
 import type { ModuleDefinition } from "@/types/control-plane";
 
-type IconProps = {
+interface IconProps {
   name:
     | ModuleDefinition["icon"]
     | "search"
@@ -12,7 +12,7 @@ type IconProps = {
     | "sun"
     | "moon";
   className?: string;
-};
+}
 
 const paths: Record<IconProps["name"], string> = {
   grid: "M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z",

@@ -1,8 +1,11 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
-import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
+
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
+
 import { GITHUB_WEBHOOK_DELIVERIES_FILE_ENV } from "./github-webhooks";
 import {
   __clearWebhooksCacheForTests,

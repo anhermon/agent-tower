@@ -28,7 +28,7 @@ export function foldTimeseries(
   // Bucket by UTC calendar date of session start.
   const daily = new Map<string, Mutable<TimeseriesPoint>>();
   const hourCounts = new Array<number>(24).fill(0);
-  const dowCounts: Array<Mutable<DayOfWeekBin>> = [];
+  const dowCounts: Mutable<DayOfWeekBin>[] = [];
   for (let day = 0; day < 7; day++) {
     dowCounts.push({ day: day as 0 | 1 | 2 | 3 | 4 | 5 | 6, sessionCount: 0, messageCount: 0 });
   }

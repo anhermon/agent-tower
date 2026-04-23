@@ -1,9 +1,11 @@
 "use client";
 
-import type { ProjectSummary } from "@control-plane/core";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import type { ProjectSummary } from "@control-plane/core";
+
 import { formatCost, formatRelative, truncateMiddle } from "@/lib/format";
 import { cn } from "@/lib/utils";
 

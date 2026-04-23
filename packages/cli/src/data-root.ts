@@ -3,6 +3,7 @@ import {
   type ResolvedDataRoot,
   resolveDataRoot,
 } from "@control-plane/adapter-claude-code";
+
 import { bold, dim, writeJson, writeLine } from "./output.js";
 
 /**

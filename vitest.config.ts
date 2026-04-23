@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
 const fromRoot = (relative: string) => fileURLToPath(new URL(relative, import.meta.url));

@@ -1,8 +1,9 @@
 "use client";
 
-import type { JSX } from "react";
-import type { SkillsEfficacyReport } from "@/lib/skills-efficacy-source";
 import { formatPercent } from "./format-efficacy";
+
+import type { SkillsEfficacyReport } from "@/lib/skills-efficacy-source";
+import type { JSX } from "react";
 
 /**
  * Stat-card strip for the Skill Efficacy dashboard. Mirrors the
@@ -14,11 +15,11 @@ export function SkillsEfficacySummary({
 }: {
   readonly report: SkillsEfficacyReport;
 }): JSX.Element {
-  const items: ReadonlyArray<{
+  const items: readonly {
     readonly label: string;
     readonly value: string;
     readonly hint?: string;
-  }> = [
+  }[] = [
     {
       label: "Sessions analyzed",
       value: report.sessionsAnalyzed.toLocaleString(),

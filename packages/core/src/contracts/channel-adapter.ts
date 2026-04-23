@@ -1,10 +1,10 @@
+import type { AdapterContext, AdapterLifecycle, Subscription } from "./common.js";
 import type {
   ChannelBinding,
   ChannelKind,
   ChannelMessage,
   ChannelRef,
 } from "../domain/channels.js";
-import type { AdapterContext, AdapterLifecycle, Subscription } from "./common.js";
 
 export interface ChannelSendRequest {
   readonly binding: ChannelBinding;

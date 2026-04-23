@@ -1,3 +1,4 @@
+import type { AdapterContext, AdapterLifecycle } from "./common.js";
 import type { JsonValue } from "../domain/common.js";
 import type {
   McpResourceContent,
@@ -6,7 +7,6 @@ import type {
   McpToolDescriptor,
 } from "../domain/mcps.js";
 import type { ToolResult } from "../domain/tools.js";
-import type { AdapterContext, AdapterLifecycle } from "./common.js";
 
 export interface McpToolCallRequest {
   readonly serverId: string;

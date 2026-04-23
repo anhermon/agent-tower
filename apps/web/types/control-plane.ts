@@ -24,7 +24,7 @@ export type ModuleIcon =
 
 export type ModulePhase = "skeleton" | "active" | "deferred";
 
-export type ModuleDefinition = {
+export interface ModuleDefinition {
   key: ModuleKey;
   label: string;
   href: string;
@@ -37,28 +37,28 @@ export type ModuleDefinition = {
   owner: string;
   /** Path (repo-relative) to the module's product/UX spec. */
   docs: string;
-};
+}
 
-export type Metric = {
+export interface Metric {
   label: string;
   value: string;
   detail: string;
   trend: "up" | "down" | "flat";
-};
+}
 
-export type ActivityEvent = {
+export interface ActivityEvent {
   id: string;
   module: ModuleKey;
   title: string;
   detail: string;
   timestamp: string;
   state: HealthState;
-};
+}
 
-export type PlaceholderRecord = {
+export interface PlaceholderRecord {
   id: string;
   name: string;
   status: HealthState;
   owner: string;
   updatedAt: string;
-};
+}

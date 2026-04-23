@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 
 type WebhookSubscriptionStatus = "active" | "paused";
 
-type WebhookStatusBadgeProps = {
+interface WebhookStatusBadgeProps {
   readonly status: WebhookSubscriptionStatus;
   readonly className?: string;
-};
+}
 
 const LABELS: Record<WebhookSubscriptionStatus, string> = {
   active: "Active",

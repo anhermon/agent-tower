@@ -22,7 +22,7 @@ truth; nothing belongs to two layers.
 | 6 | E2E full (multi-browser, long journeys) | Playwright | `e2e/journeys/**/*.spec.ts` | T4 |
 | 7 | Visual regression | Playwright `toHaveScreenshot` | `e2e/visual/**/*.visual.spec.ts` | T4 |
 | 8 | Accessibility | `@axe-core/playwright` | `e2e/a11y/**/*.a11y.spec.ts` | T3 |
-| 9 | Performance assertions | Lighthouse CI (`@lhci/cli`) | `lighthouserc.json` + `budget.json` | T3 (sampled) / T4 (full) |
+| 9 | Performance assertions | Lighthouse CI (`@lhci/cli`) | `lighthouserc.json` / `lighthouserc.perf.json` (explicit assertions; `budget.json` + `task size` for bytes) | T3 (sampled) / T4 (full) |
 
 Tier meaning (from the CI design doc): T0 editor save, T1 pre-commit, T2
 pre-push, T3 `task ci`, T4 `task ci:nightly`.

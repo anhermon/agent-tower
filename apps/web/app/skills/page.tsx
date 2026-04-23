@@ -1,7 +1,6 @@
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { SkillGrid, SkillsEfficacyDashboard } from "@/components/skills/_lazy";
-import type { SkillGridItem } from "@/components/skills/skill-grid";
 import { SkillsDashboard } from "@/components/skills/skills-dashboard";
 import { ViewportMount } from "@/components/skills/viewport-mount";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +16,8 @@ import {
   type SkillManifest,
 } from "@/lib/skills-source";
 import { computeSkillsUsage, type ListSkillsUsageResult } from "@/lib/skills-usage-source";
+
+import type { SkillGridItem } from "@/components/skills/skill-grid";
 
 export const dynamic = "force-dynamic";
 

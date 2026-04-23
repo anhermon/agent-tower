@@ -2,7 +2,9 @@ export type Id = string;
 export type IsoDateTime = string;
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
-export type JsonObject = { readonly [key: string]: JsonValue };
+export interface JsonObject {
+  readonly [key: string]: JsonValue;
+}
 export type JsonArray = readonly JsonValue[];
 
 export interface LabeledValue {

@@ -8,6 +8,7 @@ import {
   type AgentStatus,
   CLAUDE_FIRST_CAPABILITIES,
 } from "@control-plane/core";
+
 import { getConfiguredSessionSource, resolveDataRoot } from "./sessions-source";
 
 /**

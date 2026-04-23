@@ -1,4 +1,5 @@
 import path from "node:path";
+
 import { defineConfig, devices } from "@playwright/test";
 
 // Default to the dev server on 3000. Override to 3100 to run e2e/perf specs

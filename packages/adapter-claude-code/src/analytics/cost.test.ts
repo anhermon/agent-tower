@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { estimateCostFromUsage } from "@control-plane/core";
 import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
 
-
 import { foldCostBreakdown } from "./cost.js";
 import { foldSessionSummary } from "./session-summary.js";
 

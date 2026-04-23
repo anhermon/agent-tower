@@ -1,7 +1,9 @@
 import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
+
 import { type AgentInventoryItem, listAgentsOrEmpty } from "@/lib/agents-source";
 import { listSessionsOrEmpty } from "@/lib/sessions-source";
 import { listSkillsOrEmpty } from "@/lib/skills-source";
+
 import type { ActivityEvent, HealthState, Metric } from "@/types/control-plane";
 
 /**

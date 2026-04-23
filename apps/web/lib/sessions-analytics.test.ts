@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import type {
   CostBreakdown,
   ProjectSummary,
@@ -8,7 +10,7 @@ import type {
   Timeseries,
   ToolAnalytics,
 } from "@control-plane/core";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import {
   __setAnalyticsSourceResolverForTests,
   getActivity,
@@ -340,7 +342,6 @@ describe("sessions-analytics", () => {
           // Promise is tagged with the correct element type so the non-Error
           // rejection flows back through the source's declared signature.
           const rejection: Promise<readonly ProjectSummary[]> =
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- Reason: intentional non-Error rejection.
             Promise.reject("plain-string-rejection");
           return rejection;
         },

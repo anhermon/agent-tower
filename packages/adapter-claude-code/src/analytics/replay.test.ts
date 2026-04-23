@@ -7,7 +7,6 @@ import { foldReplay } from "./replay.js";
 
 import type { ClaudeTranscriptEntry } from "../types.js";
 
-
 function entries(name: Parameters<typeof claudeCodeFixture>[0]): readonly ClaudeTranscriptEntry[] {
   return claudeCodeFixture(name).entries as readonly ClaudeTranscriptEntry[];
 }

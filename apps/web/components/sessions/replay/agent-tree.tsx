@@ -1,17 +1,17 @@
 import type { JsonValue, ReplayData, ReplayTurn } from "@control-plane/core";
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
-};
+}
 
-type TaskInvocation = {
+interface TaskInvocation {
   readonly id: string;
   readonly turnIndex: number;
   readonly description: string;
   readonly subagent?: string;
   readonly prompt?: string;
   readonly hasResult: boolean;
-};
+}
 
 /**
  * Renders Task tool invocations (sub-agent hand-offs) as a tree. Each entry

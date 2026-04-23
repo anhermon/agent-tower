@@ -1,6 +1,5 @@
 "use client";
 
-import type { TimeseriesPoint } from "@control-plane/core";
 import {
   Area,
   AreaChart,
@@ -11,6 +10,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { TimeseriesPoint } from "@control-plane/core";
+
 import type { ChartTooltipProps } from "./_types";
 
 interface Props {

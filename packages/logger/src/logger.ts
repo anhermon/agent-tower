@@ -1,4 +1,5 @@
 import pino, { type Logger as PinoLogger } from "pino";
+
 import { type LoggerConfig, resolveLoggerConfig } from "./config.js";
 import { buildStreams } from "./streams.js";
 

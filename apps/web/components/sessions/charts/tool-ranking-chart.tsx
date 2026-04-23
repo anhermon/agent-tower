@@ -1,6 +1,5 @@
 "use client";
 
-import type { ToolSummary } from "@control-plane/core";
 import {
   Bar,
   BarChart,
@@ -11,6 +10,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { ToolSummary } from "@control-plane/core";
+
 import type { TooltipPayloadEntry } from "./_types";
 
 interface Props {

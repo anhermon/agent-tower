@@ -11,11 +11,11 @@ export type ParsedToolResult =
   | { readonly kind: "web_fetch"; readonly text: string }
   | { readonly kind: "plain"; readonly text: string };
 
-type Props = {
+interface Props {
   readonly content: string;
   readonly isError: boolean;
   readonly toolName?: string;
-};
+}
 
 /**
  * Best-effort parse of a Claude Code tool-result body. Recognises the common
@@ -28,14 +28,13 @@ export function parseToolResultMessage(raw: string, toolName?: string): ParsedTo
   if (!s) return { kind: "plain", text: raw };
 
   const prefix = "The file ";
-  const phrasings: Array<{ needle: string; kind: "file_updated" | "file_written" | "file_read" }> =
-    [
-      { needle: " has been updated successfully", kind: "file_updated" },
-      { needle: " has been written successfully", kind: "file_written" },
-      { needle: " has been written.", kind: "file_written" },
-      { needle: " was read successfully", kind: "file_read" },
-      { needle: " has been read.", kind: "file_read" },
-    ];
+  const phrasings: { needle: string; kind: "file_updated" | "file_written" | "file_read" }[] = [
+    { needle: " has been updated successfully", kind: "file_updated" },
+    { needle: " has been written successfully", kind: "file_written" },
+    { needle: " has been written.", kind: "file_written" },
+    { needle: " was read successfully", kind: "file_read" },
+    { needle: " has been read.", kind: "file_read" },
+  ];
 
   if (s.startsWith(prefix)) {
     for (const { needle, kind } of phrasings) {

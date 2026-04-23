@@ -1,6 +1,11 @@
 import "server-only";
-import type { ReplayCompactionEvent, ReplayData, ReplayTurn } from "@control-plane/core";
-import { parseMcpTool } from "@control-plane/core";
+import {
+  type ReplayCompactionEvent,
+  type ReplayData,
+  type ReplayTurn,
+  parseMcpTool,
+} from "@control-plane/core";
+
 import { loadReplay } from "@/lib/sessions-analytics";
 
 /**

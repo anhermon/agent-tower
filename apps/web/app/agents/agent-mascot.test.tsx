@@ -1,5 +1,9 @@
 /* @vitest-environment jsdom */
 
+import { cleanup, render, screen } from "@testing-library/react";
+import React from "react";
+import { afterEach, describe, expect, it } from "vitest";
+
 import {
   AGENT_ANIMATION_BASE_STATES,
   AGENT_ANIMATION_OVERLAYS,
@@ -9,9 +13,7 @@ import {
   type AgentAnimationSnapshot,
   type AgentState,
 } from "@control-plane/core";
-import { cleanup, render, screen } from "@testing-library/react";
-import React from "react";
-import { afterEach, describe, expect, it } from "vitest";
+
 import { AgentMascot, type MascotManifest } from "@/components/agents/agent-mascot";
 
 const AGENT_ID = "claude-code:-Users-agent-card";

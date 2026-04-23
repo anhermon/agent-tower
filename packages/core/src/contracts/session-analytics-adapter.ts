@@ -1,8 +1,8 @@
+import type { AdapterContext, AdapterLifecycle } from "./common.js";
 import type { CostBreakdown, DateRange, Timeseries, ToolAnalytics } from "../domain/analytics.js";
 import type { ProjectSummary } from "../domain/projects.js";
 import type { ReplayData } from "../domain/replay.js";
 import type { SessionUsageSummary } from "../domain/sessions.js";
-import type { AdapterContext, AdapterLifecycle } from "./common.js";
 
 export interface SessionAnalyticsFilter {
   readonly projectId?: string;

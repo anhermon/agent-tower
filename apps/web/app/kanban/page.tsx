@@ -1,4 +1,5 @@
 import { TICKET_STATUSES, type TicketStatus } from "@control-plane/core";
+
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";

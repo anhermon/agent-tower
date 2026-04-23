@@ -1,10 +1,11 @@
 import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
+
 import { cn } from "@/lib/utils";
 
-type AgentStatusBadgeProps = {
+interface AgentStatusBadgeProps {
   status: AgentStatus;
   className?: string;
-};
+}
 
 const LABELS: Record<AgentStatus, string> = {
   [AGENT_STATUSES.Available]: "Available",

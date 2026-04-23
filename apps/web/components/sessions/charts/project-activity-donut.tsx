@@ -1,8 +1,11 @@
 "use client";
 
-import type { ProjectSummary } from "@control-plane/core";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import type { ProjectSummary } from "@control-plane/core";
+
 import { formatTokens } from "@/lib/format";
+
 import type { ChartTooltipProps } from "./_types";
 
 interface Props {

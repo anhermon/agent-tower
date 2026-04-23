@@ -1,7 +1,8 @@
 "use client";
 
-import type { AgentAnimationSnapshot } from "@control-plane/core";
 import { useEffect, useState } from "react";
+
+import type { AgentAnimationSnapshot } from "@control-plane/core";
 
 const AGENT_EVENTS_URL = "/api/agents/events";
 

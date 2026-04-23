@@ -13,12 +13,16 @@ import {
   type ReplayTurn,
   type TurnUsage,
 } from "@control-plane/core";
+
 import {
   isTextBlock,
   isThinkingBlock,
   isToolResultBlock,
   isToolUseBlock,
 } from "../content-blocks.js";
+
+import { normalizeTurnUsage } from "./session-summary.js";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
@@ -27,7 +31,6 @@ import type {
   ClaudeTranscriptEntry,
   ClaudeUserEntry,
 } from "../types.js";
-import { normalizeTurnUsage } from "./session-summary.js";
 
 export interface ReplayFoldOptions {
   readonly sessionId?: string;

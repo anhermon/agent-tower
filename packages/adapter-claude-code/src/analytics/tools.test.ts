@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
 
-
 import { foldSessionSummary } from "./session-summary.js";
 import { foldToolAnalytics } from "./tools.js";
 

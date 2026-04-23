@@ -1,17 +1,17 @@
-import type { ReplayData } from "@control-plane/core";
-import { parseMcpTool } from "@control-plane/core";
+import { type ReplayData, parseMcpTool } from "@control-plane/core";
+
 import { formatCost, formatTokens } from "@/lib/format";
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
-};
+}
 
-type Bar = {
+interface Bar {
   readonly label: string;
   readonly value: number;
   readonly barClass: string;
   readonly textClass: string;
-};
+}
 
 /**
  * Right-rail sidebar: token mini-bars, top-8 tools, compaction list, and

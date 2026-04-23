@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { type JSX, useMemo, useState } from "react";
-import type { SkillUsageStats } from "@/lib/skills-usage-source";
+
 import { formatBytes, formatTokens } from "./format-usage";
+
+import type { SkillUsageStats } from "@/lib/skills-usage-source";
 
 type Metric = "invocations" | "size" | "composite";
 
@@ -14,7 +16,7 @@ interface MetricConfig {
   readonly format: (value: number) => string;
 }
 
-const METRICS: ReadonlyArray<MetricConfig> = [
+const METRICS: readonly MetricConfig[] = [
   {
     key: "invocations",
     label: "Invocations",

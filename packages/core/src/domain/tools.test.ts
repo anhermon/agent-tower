@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
+
 import { categorizeTool, isMcpTool, parseMcpTool, type ToolCategory } from "./tools.js";
 
 // Exhaustive mapping of every tool name we expect to see in Claude Code
 // transcripts to its canonical category. Adding a new tool means adding a row
 // here — the test guarantees categorization stays deterministic.
-const EXPECTED: ReadonlyArray<readonly [string, ToolCategory]> = [
+const EXPECTED: readonly (readonly [string, ToolCategory])[] = [
   // file-io
   ["Read", "file-io"],
   ["Write", "file-io"],

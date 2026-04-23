@@ -1,6 +1,5 @@
 "use client";
 
-import type { SessionDerivedFlags } from "@control-plane/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -12,6 +11,9 @@ import {
   useRef,
   useState,
 } from "react";
+
+import type { SessionDerivedFlags } from "@control-plane/core";
+
 import { SessionBadges } from "@/components/sessions/session-badges";
 import {
   matchesSessionFilters,
@@ -25,8 +27,9 @@ import {
   formatRelative,
   truncateMiddle,
 } from "@/lib/format";
-import type { SessionListing } from "@/lib/sessions-source";
 import { cn } from "@/lib/utils";
+
+import type { SessionListing } from "@/lib/sessions-source";
 
 /**
  * Paginated + filterable sessions table. Accepts either plain `SessionListing`
@@ -55,13 +58,13 @@ export interface SessionListRow extends SessionListing {
   readonly messageCount?: number;
 }
 
-type SessionListProps = {
+interface SessionListProps {
   sessions: readonly SessionListRow[];
   /** Optional initial page size. Defaults to 25. */
   pageSize?: number;
   /** Hide the project column — useful when the list is already project-scoped. */
   hideProjectColumn?: boolean;
-};
+}
 
 const DEFAULT_PAGE_SIZE = 25;
 
@@ -82,7 +85,7 @@ export function SessionList({
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
 
   const filterInputRef = useRef<HTMLInputElement>(null);
-  const rowRefs = useRef<Array<HTMLTableRowElement | null>>([]);
+  const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
 
   const hasAnyFlags = useMemo(() => sessions.some((session) => session.flags), [sessions]);
 
@@ -291,14 +294,14 @@ function Pagination({
   );
 }
 
-type SortableThProps = {
+interface SortableThProps {
   label: string;
   active: boolean;
   direction: SortDirection;
   onClick: () => void;
   className?: string;
   align?: "left" | "right";
-};
+}
 
 function SortableTh({
   label,

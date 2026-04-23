@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+
 import { GlobalSearch } from "@/components/sessions/global-search";
 
 /**

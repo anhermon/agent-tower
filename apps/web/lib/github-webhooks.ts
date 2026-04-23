@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { appendFile, mkdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
+
 import {
   DOMAIN_EVENT_TYPES,
   type JsonObject,
@@ -258,6 +259,15 @@ function toDeliveryMetadata(input: PersistGithubWebhookDeliveryInput): JsonObjec
 
   const senderLogin = getNestedString(input.payload, ["sender", "login"]);
   if (senderLogin) metadata.senderLogin = senderLogin;
+
+  const sessionId =
+    getNestedString(input.payload, ["sessionId"]) ??
+    getNestedString(input.payload, ["session_id"]) ??
+    getNestedString(input.payload, ["session", "id"]) ??
+    getNestedString(input.payload, ["client_payload", "sessionId"]) ??
+    getNestedString(input.payload, ["client_payload", "session_id"]) ??
+    getNestedString(input.payload, ["check_run", "external_id"]);
+  if (sessionId) metadata.sessionId = sessionId;
 
   return metadata;
 }

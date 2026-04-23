@@ -1,7 +1,8 @@
 "use client";
 
-import type { TimeseriesPoint } from "@control-plane/core";
 import { useMemo } from "react";
+
+import type { TimeseriesPoint } from "@control-plane/core";
 
 interface Props {
   readonly data: readonly TimeseriesPoint[];

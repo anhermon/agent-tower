@@ -1,11 +1,13 @@
-import type { TicketRecord } from "@control-plane/core";
 import Link from "next/link";
+
+import type { TicketRecord } from "@control-plane/core";
+
 import { TicketPriorityBadge } from "@/components/kanban/ticket-status-badge";
 import { formatRelative, truncateMiddle } from "@/lib/format";
 
-type TicketCardProps = {
+interface TicketCardProps {
   readonly ticket: TicketRecord;
-};
+}
 
 export function TicketCard({ ticket }: TicketCardProps) {
   const href = `/kanban/${encodeURIComponent(ticket.id)}`;

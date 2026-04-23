@@ -1,4 +1,5 @@
 import { PRICING } from "@control-plane/core";
+
 import {
   CacheEfficiencyPanel,
   CostByProjectChart,

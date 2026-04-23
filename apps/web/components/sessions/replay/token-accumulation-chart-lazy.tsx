@@ -1,7 +1,8 @@
 "use client";
 
-import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
 import dynamic from "next/dynamic";
+
+import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
 
 // Defer recharts into a client-only chunk. The chart is below the fold and
 // decorative, so CSR-only is acceptable and keeps recharts off the initial
@@ -16,10 +17,10 @@ const TokenAccumulationChart = dynamic(
   }
 );
 
-type Props = {
+interface Props {
   readonly turns: readonly ReplayTurn[];
   readonly compactions: readonly ReplayCompactionEvent[];
-};
+}
 
 export function TokenAccumulationChartLazy(props: Props) {
   return <TokenAccumulationChart {...props} />;

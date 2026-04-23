@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ProjectCard } from "@/components/sessions/project-card";
 import { ProjectSwitcher } from "@/components/sessions/project-switcher";
 import { Badge } from "@/components/ui/badge";

@@ -1,4 +1,5 @@
 import { defineConfig, mergeConfig } from "vitest/config";
+
 import baseConfig, { coverageExclude, coverageInclude } from "./vitest.config";
 
 // Coverage-enforcing config for CI. `task ci:fast` runs:

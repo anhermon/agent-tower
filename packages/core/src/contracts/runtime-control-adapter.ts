@@ -1,7 +1,7 @@
+import type { AdapterContext, AdapterLifecycle } from "./common.js";
 import type { AgentState } from "../domain/agents.js";
 import type { JsonObject } from "../domain/common.js";
 import type { SessionDescriptor } from "../domain/sessions.js";
-import type { AdapterContext, AdapterLifecycle } from "./common.js";
 
 export interface RuntimeControlCommand {
   readonly target: RuntimeTarget;

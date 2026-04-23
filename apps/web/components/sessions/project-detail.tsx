@@ -1,5 +1,7 @@
-import type { ProjectSummary, SessionUsageSummary } from "@control-plane/core";
 import Link from "next/link";
+
+import type { ProjectSummary, SessionUsageSummary } from "@control-plane/core";
+
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { SessionList, type SessionListRow } from "@/components/sessions/session-list";
 import {
@@ -10,6 +12,7 @@ import {
   formatTokens,
   truncateMiddle,
 } from "@/lib/format";
+
 import type { SessionListing } from "@/lib/sessions-source";
 
 /**

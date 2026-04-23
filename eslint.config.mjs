@@ -40,6 +40,8 @@ export default tseslint.config(
       "**/.coverage-reports/**",
       "**/.lighthouseci/**",
       "**/.ci/**",
+      // Git worktrees live under .claude/ — never lint them alongside the main tree.
+      "**/.claude/**",
       "**/*.tsbuildinfo",
       "**/playwright-report/**",
       "**/test-results/**",

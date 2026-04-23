@@ -1,6 +1,7 @@
-import type { ReplayCompactionEvent, ReplayData, SessionDerivedFlags } from "@control-plane/core";
 import Link from "next/link";
-import type { ReactNode } from "react";
+
+import type { ReplayCompactionEvent, ReplayData, SessionDerivedFlags } from "@control-plane/core";
+
 import { ExportButton } from "@/components/sessions/export-button";
 import { AgentTree } from "@/components/sessions/replay/agent-tree";
 import { ExplorerPanel } from "@/components/sessions/replay/explorer-panel";
@@ -12,17 +13,19 @@ import { TurnCard } from "@/components/sessions/replay/turn-card";
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 
+import type { ReactNode } from "react";
+
 type ToolResultLookup = ReadonlyMap<
   string,
   { readonly content: string; readonly isError: boolean; readonly toolName?: string }
 >;
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
   readonly flags?: SessionDerivedFlags;
   readonly durationMs?: number;
   readonly deepLinkTurn?: string;
-};
+}
 
 export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props): ReactNode {
   const assistantCount = replay.turns.filter((t) => t.type === "assistant").length;

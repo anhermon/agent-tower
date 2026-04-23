@@ -230,9 +230,19 @@ function errorMessage(error: unknown): string {
 // without importing the adapter directly. No UI file changes in Wave 0 —
 // these exist for Wave 1 to call.
 
-type Unconfigured = { readonly ok: false; readonly reason: "unconfigured" };
-type ErrResult = { readonly ok: false; readonly reason: "error"; readonly message: string };
-type Ok<T> = { readonly ok: true; readonly value: T };
+interface Unconfigured {
+  readonly ok: false;
+  readonly reason: "unconfigured";
+}
+interface ErrResult {
+  readonly ok: false;
+  readonly reason: "error";
+  readonly message: string;
+}
+interface Ok<T> {
+  readonly ok: true;
+  readonly value: T;
+}
 type Result<T> = Ok<T> | Unconfigured | ErrResult;
 
 function errResult(error: unknown): ErrResult {

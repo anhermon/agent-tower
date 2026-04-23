@@ -1,8 +1,10 @@
 import { mkdir, mkdtemp, rm, utimes, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
-import { AGENT_STATUSES } from "@control-plane/core";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { AGENT_STATUSES } from "@control-plane/core";
 
 let mockedHome: string | null = null;
 

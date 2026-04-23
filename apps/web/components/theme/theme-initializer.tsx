@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
+
 import {
   applyControlPlaneThemeFromStorage,
   CONTROL_PLANE_THEME_STORAGE_KEY,
@@ -16,41 +17,6 @@ import {
 export function ThemeInitializer() {
   useLayoutEffect(() => {
     applyControlPlaneThemeFromStorage();
-    // #region agent log
-    try {
-      const root = document.documentElement;
-      const canvas = getComputedStyle(root).getPropertyValue("--color-canvas").trim();
-      fetch("http://127.0.0.1:7735/ingest/3f85a983-40b3-4a81-90a2-c1548bdaf42b", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "fbf592" },
-        body: JSON.stringify({
-          sessionId: "fbf592",
-          hypothesisId: "H-hydration",
-          runId: "post-fix-2",
-          location: "theme-initializer.tsx:useLayoutEffect",
-          message: "post-hydration theme apply",
-          data: {
-            stored: (() => {
-              try {
-                return window.localStorage.getItem(CONTROL_PLANE_THEME_STORAGE_KEY);
-              } catch {
-                return null;
-              }
-            })(),
-            htmlClass: root.className,
-            hasDarkClass: root.classList.contains("dark"),
-            colorCanvas: canvas,
-            shouldUseDark: shouldUseDarkFromStorageAndMedia(),
-          },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {
-        // Reason: fire-and-forget debug ingest; swallow network errors.
-      });
-    } catch {
-      // ignore
-    }
-    // #endregion
   }, []);
 
   useLayoutEffect(() => {

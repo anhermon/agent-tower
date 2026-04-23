@@ -1,4 +1,5 @@
 import { ClaudeCodeAnalyticsSource, resolveDataRoot } from "@control-plane/adapter-claude-code";
+
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 interface ParsedSessionsShowInput {

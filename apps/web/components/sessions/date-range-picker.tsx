@@ -3,8 +3,10 @@
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { DateRange as DayPickerRange } from "react-day-picker";
+
 import { cn } from "@/lib/utils";
+
+import type { DateRange as DayPickerRange } from "react-day-picker";
 
 // Lazy boundary: `react-day-picker` (~25-30 kB gz) is only needed when the
 // popover opens. `ssr: false` is legal here because the file is `"use client"`.

@@ -1,17 +1,17 @@
-import type { ReactNode } from "react";
-
 import { Badge, PhaseBadge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/state";
-import type { ModuleDefinition } from "@/types/control-plane";
 
-export type CapabilityPreview = {
+import type { ModuleDefinition } from "@/types/control-plane";
+import type { ReactNode } from "react";
+
+export interface CapabilityPreview {
   /** Short label for the preview card (e.g. "Deliveries"). */
   readonly label: string;
   /** Why this value is a dash — shown under the value as small muted text. */
   readonly detail: string;
-};
+}
 
-type ModulePlaceholderProps = {
+interface ModulePlaceholderProps {
   /** The registry entry for this module; drives header label + phase badge. */
   readonly module: ModuleDefinition;
   /** Expanded one-to-two sentence description of what the module will do. */
@@ -24,7 +24,7 @@ type ModulePlaceholderProps = {
   readonly capabilities: readonly CapabilityPreview[];
   /** Optional trailing content rendered below the empty state. */
   readonly children?: ReactNode;
-};
+}
 
 /**
  * Shared polished empty state for deferred / skeleton modules.

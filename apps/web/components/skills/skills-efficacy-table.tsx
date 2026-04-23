@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { type JSX, useMemo, useState } from "react";
+
+import { formatDelta, formatPercent, outcomeColor } from "./format-efficacy";
+
 import type {
   EfficacyBaseline,
   SessionOutcome,
   SkillEfficacyRow,
 } from "@/lib/skills-efficacy-source";
-import { formatDelta, formatPercent, outcomeColor } from "./format-efficacy";
 
 type SortKey = "delta" | "sessions" | "effective";
 
@@ -17,7 +19,7 @@ interface SortConfig {
   readonly compare: (a: SkillEfficacyRow, b: SkillEfficacyRow) => number;
 }
 
-const SORTS: ReadonlyArray<SortConfig> = [
+const SORTS: readonly SortConfig[] = [
   {
     key: "delta",
     label: "Δ vs baseline",
@@ -200,10 +202,10 @@ function OutcomeMix({ row }: { readonly row: SkillEfficacyRow }): JSX.Element {
     row.outcomeBreakdown.abandoned +
     row.outcomeBreakdown.unknown;
 
-  const segments: ReadonlyArray<{
+  const segments: readonly {
     readonly outcome: SessionOutcome;
     readonly count: number;
-  }> = [
+  }[] = [
     { outcome: "completed", count: row.outcomeBreakdown.completed },
     { outcome: "partial", count: row.outcomeBreakdown.partial },
     { outcome: "abandoned", count: row.outcomeBreakdown.abandoned },

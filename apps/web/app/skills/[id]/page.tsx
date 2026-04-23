@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { formatShortDate, formatTokens } from "@/components/skills/format-usage";
@@ -11,10 +12,10 @@ export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
   searchParams: SearchParams;
-};
+}
 
 export default async function SkillDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;

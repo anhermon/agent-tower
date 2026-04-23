@@ -6,7 +6,6 @@ import { foldSessionSummary } from "./session-summary.js";
 
 import type { ClaudeTranscriptEntry } from "../types.js";
 
-
 function entriesOf(
   name: Parameters<typeof claudeCodeFixture>[0]
 ): readonly ClaudeTranscriptEntry[] {

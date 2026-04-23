@@ -1,18 +1,20 @@
 "use client";
 
-import type { JsonValue } from "@control-plane/core";
 import { useState } from "react";
+
+import type { JsonValue } from "@control-plane/core";
+
 import { cn } from "@/lib/utils";
 
-type TodoItem = {
+interface TodoItem {
   readonly content: string;
   readonly status: "pending" | "in_progress" | "completed" | string;
   readonly activeForm?: string;
-};
+}
 
-type Props = {
+interface Props {
   readonly input: JsonValue;
-};
+}
 
 function parseTodos(input: JsonValue): readonly TodoItem[] | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;

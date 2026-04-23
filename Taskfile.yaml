@@ -74,7 +74,7 @@ tasks:
     desc: ESLint (deep semantic lint — React, hooks, a11y, imports, complexity)
     deps: [build:packages]
     cmds:
-      - pnpm eslint .
+      - pnpm eslint . --cache --cache-location .ci/.eslintcache
 
   # Builds only the workspace packages (not apps/web) so downstream type-aware
   # lint/typecheck can resolve `@control-plane/*` imports against real `dist/`

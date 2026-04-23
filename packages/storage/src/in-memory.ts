@@ -1,12 +1,3 @@
-import type {
-  AgentRecord,
-  AuditEntryRecord,
-  EventRecord,
-  ModuleRegistryRecord,
-  PersistedEventEnvelope,
-  SessionRecord,
-  WebhookRecord,
-} from "./models.js";
 import {
   type AgentRepository,
   type AuditEntryRepository,
@@ -19,6 +10,16 @@ import {
   type SessionRepository,
   type WebhookRepository,
 } from "./repositories.js";
+
+import type {
+  AgentRecord,
+  AuditEntryRecord,
+  EventRecord,
+  ModuleRegistryRecord,
+  PersistedEventEnvelope,
+  SessionRecord,
+  WebhookRecord,
+} from "./models.js";
 
 export class InMemoryEntityRepository<TRecord extends { readonly id: string }>
   implements EntityRepository<TRecord>

@@ -2,10 +2,13 @@ import "server-only";
 import { createReadStream, type Stats } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createInterface } from "node:readline";
+
 import { type ClaudeSessionFile, listSessionFiles } from "@control-plane/adapter-claude-code";
 import type { SessionSearchHit } from "@control-plane/core";
+
 import { getConfiguredDataRoot } from "@/lib/sessions-source";
 import { withAudit } from "@/lib/with-audit";
+
 import { type CachedResult, getFileCacheForNeedle, setFileCacheForNeedle } from "./cache";
 
 /**
