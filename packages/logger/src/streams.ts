@@ -6,6 +6,9 @@ import { Writable } from "node:stream";
 import pino, { type StreamEntry } from "pino";
 
 import type { LoggerConfig } from "./config.js";
+// pino-pretty uses `export =` so we use an import-equals type alias
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import type PinoPrettyModule = require("pino-pretty");
 
 /**
  * Pino "warn" numeric level. Anything >= 40 is treated as stderr-worthy
@@ -17,10 +20,6 @@ export const STDERR_LEVEL_FLOOR = 40;
 /** Components whose output is routed to requests.log instead of stdout.log. */
 const REQUEST_COMPONENT = "request";
 const require = createRequire(import.meta.url);
-
-// pino-pretty uses `export =` so we use an import-equals type alias
-// instead of an inline import() annotation.
-import type PinoPrettyModule = require("pino-pretty");
 type PrettyFactory = typeof PinoPrettyModule;
 
 export interface FanoutSinks {

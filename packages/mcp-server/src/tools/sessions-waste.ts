@@ -19,19 +19,22 @@ const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
 const DEFAULT_MIN_SCORE = 0.3;
 
+function parseFiniteNumber(val: unknown): number | null {
+  return typeof val === "number" && Number.isFinite(val) ? val : null;
+}
+
+function parseNonEmptyString(val: unknown): string | null {
+  return typeof val === "string" && val.length > 0 ? val : null;
+}
+
 function parseInput(raw: unknown): ParsedSessionsWasteInput {
   const r = asRecord(raw);
-  const limit = r.limit;
-  const minScore = r.minScore;
-  const project = r.project;
-  const since = r.since;
-  const until = r.until;
   return {
-    limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
-    minScore: typeof minScore === "number" && Number.isFinite(minScore) ? minScore : null,
-    project: typeof project === "string" && project.length > 0 ? project : null,
-    since: typeof since === "string" && since.length > 0 ? since : null,
-    until: typeof until === "string" && until.length > 0 ? until : null,
+    limit: parseFiniteNumber(r.limit),
+    minScore: parseFiniteNumber(r.minScore),
+    project: parseNonEmptyString(r.project),
+    since: parseNonEmptyString(r.since),
+    until: parseNonEmptyString(r.until),
   };
 }
 

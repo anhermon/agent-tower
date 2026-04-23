@@ -1,4 +1,5 @@
 import {
+  type GithubWebhookHeaders,
   getConfiguredGithubWebhookSecret,
   parseGithubWebhookJson,
   persistGithubWebhookDelivery,
@@ -67,9 +68,7 @@ function checkContentLength(headers: Headers): Response | null {
 }
 
 async function persistDelivery(
-  headers: ReturnType<typeof validateGithubWebhookHeaders> extends { ok: true; headers: infer H }
-    ? H
-    : never,
+  headers: GithubWebhookHeaders,
   rawBody: string,
   signatureVerified: boolean
 ): Promise<Response> {

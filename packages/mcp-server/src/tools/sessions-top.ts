@@ -16,19 +16,26 @@ interface ParsedSessionsTopInput {
 const DEFAULT_BY: SessionsTopBy = "tokens";
 const DEFAULT_LIMIT = 10;
 
+function parseBy(val: unknown): SessionsTopBy | null {
+  return val === "cost" || val === "turns" || val === "tokens" ? val : null;
+}
+
+function parseFiniteNumber(val: unknown): number | null {
+  return typeof val === "number" && Number.isFinite(val) ? val : null;
+}
+
+function parseNonEmptyString(val: unknown): string | null {
+  return typeof val === "string" && val.length > 0 ? val : null;
+}
+
 function parseInput(raw: unknown): ParsedSessionsTopInput {
   const r = asRecord(raw);
-  const by = r.by;
-  const limit = r.limit;
-  const projectId = r.projectId;
-  const since = r.since;
-  const until = r.until;
   return {
-    by: by === "cost" || by === "turns" || by === "tokens" ? by : null,
-    limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
-    projectId: typeof projectId === "string" && projectId.length > 0 ? projectId : null,
-    since: typeof since === "string" && since.length > 0 ? since : null,
-    until: typeof until === "string" && until.length > 0 ? until : null,
+    by: parseBy(r.by),
+    limit: parseFiniteNumber(r.limit),
+    projectId: parseNonEmptyString(r.projectId),
+    since: parseNonEmptyString(r.since),
+    until: parseNonEmptyString(r.until),
   };
 }
 
