@@ -1,0 +1,28 @@
+version: "3"
+
+tasks:
+  dev:
+    desc: Start the web dashboard
+    cmds:
+      - pnpm dev
+
+  typecheck:
+    desc: Run TypeScript checks across workspaces
+    cmds:
+      - pnpm typecheck
+
+  test:
+    desc: Run unit tests across workspaces
+    cmds:
+      - pnpm test
+
+  test:e2e:
+    desc: Run Playwright smoke tests
+    cmds:
+      - pnpm test:e2e
+
+  verify:
+    desc: Run the standard local verification suite
+    cmds:
+      - pnpm typecheck
+      - pnpm test
