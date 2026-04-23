@@ -12,7 +12,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function SessionsPage() {
-  const module = getModuleByKey("sessions");
+  const mod = getModuleByKey("sessions");
   const dataRoot = getConfiguredDataRoot();
   const result = await listSessionsOrEmpty();
 
@@ -23,7 +23,7 @@ export default async function SessionsPage() {
       <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
