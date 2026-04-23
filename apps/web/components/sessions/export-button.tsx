@@ -28,6 +28,44 @@ export interface ExportButtonProps {
   readonly className?: string;
 }
 
+function buildExportUrl(
+  scope: ExportButtonProps["scope"],
+  sessionId: string | undefined,
+  projectId: string | undefined,
+  from: string | undefined,
+  to: string | undefined
+): string {
+  const params = new URLSearchParams();
+  params.set("scope", scope);
+  if (scope === "session" && sessionId) params.set("ids", sessionId);
+  if (scope === "project" && projectId) params.set("projectId", projectId);
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+  return `/api/sessions/export?${params.toString()}`;
+}
+
+async function fetchAndTriggerDownload(url: string): Promise<void> {
+  const res = await fetch(url, { method: "GET" });
+  if (!res.ok) {
+    const body = (await res.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(body?.error ?? `Export failed (${res.status})`);
+  }
+  const blob = await res.blob();
+  const disposition = res.headers.get("Content-Disposition") ?? "";
+  const filenameMatch = /filename="([^"]+)"/.exec(disposition);
+  const filename =
+    filenameMatch?.[1] ?? `control-plane-sessions-${new Date().toISOString().slice(0, 10)}.json`;
+
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = href;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(href);
+}
+
 export function ExportButton({
   scope,
   sessionId,
@@ -44,34 +82,8 @@ export function ExportButton({
     setBusy(true);
     setError(null);
     try {
-      const params = new URLSearchParams();
-      params.set("scope", scope);
-      if (scope === "session" && sessionId) params.set("ids", sessionId);
-      if (scope === "project" && projectId) params.set("projectId", projectId);
-      if (from) params.set("from", from);
-      if (to) params.set("to", to);
-
-      const url = `/api/sessions/export?${params.toString()}`;
-      const res = await fetch(url, { method: "GET" });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(body?.error ?? `Export failed (${res.status})`);
-      }
-      const blob = await res.blob();
-      const disposition = res.headers.get("Content-Disposition") ?? "";
-      const filenameMatch = /filename="([^"]+)"/.exec(disposition);
-      const filename =
-        filenameMatch?.[1] ??
-        `control-plane-sessions-${new Date().toISOString().slice(0, 10)}.json`;
-
-      const href = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = href;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(href);
+      const url = buildExportUrl(scope, sessionId, projectId, from, to);
+      await fetchAndTriggerDownload(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {

@@ -27,24 +27,26 @@ interface Props {
   readonly deepLinkTurn?: string;
 }
 
+function computeTotalTokens(replay: ReplayData): number {
+  let total = 0;
+  for (const t of replay.turns) {
+    if (!t.usage) continue;
+    total +=
+      t.usage.inputTokens +
+      t.usage.outputTokens +
+      t.usage.cacheReadInputTokens +
+      t.usage.cacheCreationInputTokens;
+  }
+  return total;
+}
+
 export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props): ReactNode {
   const assistantCount = replay.turns.filter((t) => t.type === "assistant").length;
   const toolResults = collectToolResults(replay);
   const compactionByTurn = new Map<number, ReplayCompactionEvent>();
   for (const c of replay.compactions) compactionByTurn.set(c.turnIndex, c);
 
-  let inputTokens = 0,
-    outputTokens = 0,
-    cacheRead = 0,
-    cacheWrite = 0;
-  for (const t of replay.turns) {
-    if (!t.usage) continue;
-    inputTokens += t.usage.inputTokens;
-    outputTokens += t.usage.outputTokens;
-    cacheRead += t.usage.cacheReadInputTokens;
-    cacheWrite += t.usage.cacheCreationInputTokens;
-  }
-  const totalTokens = inputTokens + outputTokens + cacheRead + cacheWrite;
+  const totalTokens = computeTotalTokens(replay);
 
   let assistantIndex = 0;
 

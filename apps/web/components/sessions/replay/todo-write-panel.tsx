@@ -16,23 +16,33 @@ interface Props {
   readonly input: JsonValue;
 }
 
-function parseTodos(input: JsonValue): readonly TodoItem[] | null {
+function extractTodosArray(input: JsonValue): JsonValue[] | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
   const obj = input as Record<string, JsonValue>;
   const todos = obj.todos;
-  if (!Array.isArray(todos)) return null;
+  return Array.isArray(todos) ? todos : null;
+}
+
+function parseSingleTodo(raw: JsonValue): TodoItem | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const r = raw as Record<string, JsonValue>;
+  const content = r.content;
+  const status = r.status;
+  if (typeof content !== "string" || typeof status !== "string") return null;
+  return {
+    content,
+    status,
+    activeForm: typeof r.activeForm === "string" ? r.activeForm : undefined,
+  };
+}
+
+function parseTodos(input: JsonValue): readonly TodoItem[] | null {
+  const todosArray = extractTodosArray(input);
+  if (!todosArray) return null;
   const parsed: TodoItem[] = [];
-  for (const raw of todos) {
-    if (!raw || typeof raw !== "object" || Array.isArray(raw)) continue;
-    const r = raw as Record<string, JsonValue>;
-    const content = r.content;
-    const status = r.status;
-    if (typeof content !== "string" || typeof status !== "string") continue;
-    parsed.push({
-      content,
-      status,
-      activeForm: typeof r.activeForm === "string" ? r.activeForm : undefined,
-    });
+  for (const raw of todosArray) {
+    const item = parseSingleTodo(raw);
+    if (item) parsed.push(item);
   }
   return parsed.length > 0 ? parsed : null;
 }
