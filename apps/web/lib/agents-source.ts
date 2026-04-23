@@ -229,9 +229,32 @@ function deriveStatus(lastActiveAt: string | null, now: Date): AgentStatus {
   if (!lastActiveAt) return AGENT_STATUSES.Offline;
   const ageMs = now.getTime() - new Date(lastActiveAt).getTime();
   if (!Number.isFinite(ageMs)) return AGENT_STATUSES.Offline;
-  if (ageMs < ONE_HOUR_MS) return AGENT_STATUSES.Available;
-  if (ageMs < ONE_DAY_MS) return AGENT_STATUSES.Busy;
-  return AGENT_STATUSES.Offline;
+  // Guard against clock skew / future mtimes: a negative age would otherwise
+  // fall through to the `< ONE_HOUR_MS` branch and report the agent as
+  // Available, which is misleading.
+  const status =
+    ageMs < 0
+      ? AGENT_STATUSES.Offline
+      : ageMs < ONE_HOUR_MS
+        ? AGENT_STATUSES.Available
+        : ageMs < ONE_DAY_MS
+          ? AGENT_STATUSES.Busy
+          : AGENT_STATUSES.Offline;
+  // #region debug log H-B
+  fetch("http://127.0.0.1:7735/ingest/3f85a983-40b3-4a81-90a2-c1548bdaf42b", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "b38cee" },
+    body: JSON.stringify({
+      sessionId: "b38cee",
+      hypothesisId: "H-B",
+      location: "apps/web/lib/agents-source.ts:deriveStatus",
+      message: "agent status derivation",
+      data: { lastActiveAt, ageMs, status, future: ageMs < 0 },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  return status;
 }
 
 export function toAgentId(projectId: string): string {

@@ -67,7 +67,11 @@ export async function getOverviewState(now: Date = new Date()): Promise<Overview
     metrics,
     activity: [],
     agents: agents.ok ? agents.agents : [],
-    agentsAdapterConfigured: agents.ok,
+    // "configured" means the adapter resolved a data root — an error while
+    // listing is still a configured adapter, just a failing one. Without this
+    // distinction the panel header shows "Adapter not configured" while the
+    // body correctly shows an ErrorState.
+    agentsAdapterConfigured: agents.ok || agents.reason !== "unconfigured",
     agentsAdapterError:
       !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
   };
@@ -106,10 +110,26 @@ function describeAgents(agents: readonly AgentInventoryItem[]): string {
   if (agents.length === 0) {
     return "No Claude Code projects found";
   }
-  const available = agents.filter(
-    (agent) => agent.state.status === AGENT_STATUSES.Available
-  ).length;
-  return `${available} available, ${agents.length - available} idle/offline`;
+  let available = 0;
+  let busy = 0;
+  let offline = 0;
+  for (const agent of agents) {
+    switch (agent.state.status) {
+      case AGENT_STATUSES.Available:
+        available += 1;
+        break;
+      case AGENT_STATUSES.Busy:
+        busy += 1;
+        break;
+      default:
+        offline += 1;
+        break;
+    }
+  }
+  const parts: string[] = [`${available} available`];
+  if (busy > 0) parts.push(`${busy} busy`);
+  parts.push(`${offline} offline`);
+  return parts.join(", ");
 }
 
 function describeSkills(count: number, roots: number): string {

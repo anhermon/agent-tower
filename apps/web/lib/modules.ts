@@ -8,7 +8,7 @@ export const modules: ModuleDefinition[] = [
     icon: "grid",
     description: "Fleet health, orchestration pressure, and recent control-plane events.",
     status: "degraded",
-    phase: "skeleton",
+    phase: "active",
     owner: "",
     docs: "docs/architecture/overview.md",
   },
