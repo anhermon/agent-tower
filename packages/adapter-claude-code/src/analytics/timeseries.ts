@@ -34,7 +34,6 @@ export function foldTimeseries(
   }
 
   const activeDates = new Set<string>();
-
   let minDate: string | undefined;
   let maxDate: string | undefined;
 
@@ -52,18 +51,7 @@ export function foldTimeseries(
     const messageCount = s.userMessageCount + s.assistantMessageCount;
     const toolCallCount = Object.values(s.toolCounts).reduce((a, b) => a + b, 0);
 
-    const bucket = daily.get(date) ?? {
-      date,
-      sessionCount: 0,
-      messageCount: 0,
-      toolCallCount: 0,
-      estimatedCostUsd: 0,
-    };
-    bucket.sessionCount += 1;
-    bucket.messageCount += messageCount;
-    bucket.toolCallCount += toolCallCount;
-    bucket.estimatedCostUsd += s.estimatedCostUsd;
-    daily.set(date, bucket);
+    bucketDay(daily, date, s, messageCount, toolCallCount);
 
     hourCounts[hour] = (hourCounts[hour] ?? 0) + messageCount;
     const dow = dowCounts[day];
@@ -80,23 +68,7 @@ export function foldTimeseries(
   const dayOfWeek: DayOfWeekBin[] = dowCounts;
 
   const baseStreaks = computeStreaks(activeDates, options.now);
-
-  // Enrich streaks with the most-active-day message count by scanning daily
-  // buckets. `computeStreaks` alone has no access to per-day counts, so it
-  // leaves `mostActiveDayMessageCount` at 0; here we have the data.
-  let mostActiveDate: string | null = baseStreaks.mostActiveDate;
-  let mostActiveDayMessageCount = 0;
-  for (const point of dailyArr) {
-    if (point.messageCount > mostActiveDayMessageCount) {
-      mostActiveDayMessageCount = point.messageCount;
-      mostActiveDate = point.date;
-    }
-  }
-  const streaks: StreakStats = {
-    ...baseStreaks,
-    mostActiveDate,
-    mostActiveDayMessageCount,
-  };
+  const streaks = enrichStreaksWithMostActive(baseStreaks, dailyArr);
 
   const range: DateRange = options.range ?? {
     from: minDate ?? "1970-01-01",
@@ -112,6 +84,44 @@ export function foldTimeseries(
   };
 }
 
+function bucketDay(
+  daily: Map<string, Mutable<TimeseriesPoint>>,
+  date: string,
+  s: SessionUsageSummary,
+  messageCount: number,
+  toolCallCount: number
+): void {
+  const bucket = daily.get(date) ?? {
+    date,
+    sessionCount: 0,
+    messageCount: 0,
+    toolCallCount: 0,
+    estimatedCostUsd: 0,
+  };
+  bucket.sessionCount += 1;
+  bucket.messageCount += messageCount;
+  bucket.toolCallCount += toolCallCount;
+  bucket.estimatedCostUsd += s.estimatedCostUsd;
+  daily.set(date, bucket);
+}
+
+function enrichStreaksWithMostActive(
+  baseStreaks: StreakStats,
+  dailyArr: readonly Mutable<TimeseriesPoint>[]
+): StreakStats {
+  // `computeStreaks` has no access to per-day counts, so it leaves
+  // `mostActiveDayMessageCount` at 0. Enrich by scanning daily buckets.
+  let mostActiveDate: string | null = baseStreaks.mostActiveDate;
+  let mostActiveDayMessageCount = 0;
+  for (const point of dailyArr) {
+    if (point.messageCount > mostActiveDayMessageCount) {
+      mostActiveDayMessageCount = point.messageCount;
+      mostActiveDate = point.date;
+    }
+  }
+  return { ...baseStreaks, mostActiveDate, mostActiveDayMessageCount };
+}
+
 export function computeStreaks(activeDates: ReadonlySet<string>, now?: string): StreakStats {
   if (activeDates.size === 0) {
     return {
@@ -122,42 +132,52 @@ export function computeStreaks(activeDates: ReadonlySet<string>, now?: string): 
     };
   }
   const sorted = [...activeDates].sort();
+  // sorted is non-empty (size > 0 guard above), so this index access is safe.
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const lastActive = sorted[sorted.length - 1]!;
+
+  return {
+    currentStreakDays: computeCurrentRun(sorted, lastActive, now),
+    longestStreakDays: computeLongestRun(sorted),
+    mostActiveDate: lastActive,
+    mostActiveDayMessageCount: 0,
+  };
+}
+
+function computeLongestRun(sorted: readonly string[]): number {
   let longest = 1;
   let run = 1;
   for (let i = 1; i < sorted.length; i++) {
-    const prev = sorted[i - 1]!;
-    const current = sorted[i]!;
-    if (daysBetween(prev, current) === 1) {
+    const prev = sorted[i - 1];
+    const cur = sorted[i];
+    if (prev !== undefined && cur !== undefined && daysBetween(prev, cur) === 1) {
       run += 1;
       if (run > longest) longest = run;
     } else {
       run = 1;
     }
   }
+  return longest;
+}
 
-  let currentStreakDays = 0;
-  const lastActive = sorted[sorted.length - 1]!;
-  if (now) {
-    const gap = daysBetween(lastActive, now);
-    if (gap <= 1) {
-      currentStreakDays = 1;
-      for (let i = sorted.length - 2; i >= 0; i--) {
-        const prev = sorted[i]!;
-        if (daysBetween(prev, sorted[i + 1]!) === 1) {
-          currentStreakDays += 1;
-        } else {
-          break;
-        }
-      }
+function computeCurrentRun(
+  sorted: readonly string[],
+  lastActive: string,
+  now: string | undefined
+): number {
+  if (!now) return 0;
+  if (daysBetween(lastActive, now) > 1) return 0;
+  let currentStreakDays = 1;
+  for (let i = sorted.length - 2; i >= 0; i--) {
+    const prev = sorted[i];
+    const next = sorted[i + 1];
+    if (prev !== undefined && next !== undefined && daysBetween(prev, next) === 1) {
+      currentStreakDays += 1;
+    } else {
+      break;
     }
   }
-
-  return {
-    currentStreakDays,
-    longestStreakDays: longest,
-    mostActiveDate: lastActive,
-    mostActiveDayMessageCount: 0,
-  };
+  return currentStreakDays;
 }
 
 function toDate(ts: number): string {
