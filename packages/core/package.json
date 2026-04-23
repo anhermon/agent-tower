@@ -1,0 +1,22 @@
+{
+  "name": "@control-plane/core",
+  "version": "0.1.0",
+  "description": "Canonical domain types and adapter contracts for the Modular Agents Control Plane.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "pnpm typecheck",
+    "test": "vitest run --passWithNoTests"
+  }
+}
