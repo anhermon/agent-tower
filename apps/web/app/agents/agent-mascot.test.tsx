@@ -38,7 +38,7 @@ describe("AgentMascot", () => {
     expect(mascot.className).toContain("agent-mascot--card");
   });
 
-  it("given_reduced_motion__when_working__then_looping_class_is_disabled", () => {
+  it("given_reduced_motion__when_working__then_raf_loop_is_disabled", () => {
     render(
       <AgentMascot
         agentState={agentState({ activeSessionIds: [SESSION_ID] })}
@@ -48,12 +48,16 @@ describe("AgentMascot", () => {
     );
 
     const mascot = screen.getByRole("img", { name: "Clawd is working" });
-    expect(mascot.className).not.toContain("is-looping");
+    expect(mascot.getAttribute("data-reduced-motion")).toBe("true");
     expect(mascot.className).toContain("agent-mascot--reduced-motion");
+    // Frame must stay at 0 when the RAF loop is not installed.
+    expect(mascot.getAttribute("data-frame")).toBe("0");
+    // Legacy looping class is no longer used by the sprite renderer.
+    expect(mascot.className).not.toContain("is-looping");
   });
 
-  it("given_missing_optional_assets__when_overlay_is_present__then_base_parts_render_without_crashing", () => {
-    const { container } = render(
+  it("given_bogus_atlas_url__when_overlay_is_present__then_role_and_label_still_render", () => {
+    render(
       <AgentMascot
         agentState={agentState({ activeSessionIds: [SESSION_ID] })}
         snapshot={{
@@ -61,7 +65,7 @@ describe("AgentMascot", () => {
           overlay: AGENT_ANIMATION_OVERLAYS.Permission,
           fatigueLevel: AGENT_FATIGUE_LEVELS.Tired,
         }}
-        assetManifest={manifestWithoutOptionalAssets}
+        assetManifest={manifestWithBogusAtlas}
       />
     );
 
@@ -69,10 +73,10 @@ describe("AgentMascot", () => {
       name: "Clawd needs permission",
     });
     expect(mascot.getAttribute("data-overlay")).toBe(AGENT_ANIMATION_OVERLAYS.Permission);
-    // Base parts: shadow, body, leftArm, rightArm, head, eyes, mouth.
-    // The laptop prop is gated on `props.laptop` being defined, and this
-    // manifest intentionally omits it, so we expect exactly 7 <img>s.
-    expect(container.querySelectorAll("img")).toHaveLength(7);
+    // Component remains renderable even when the atlas URL is invalid; the
+    // sprite layer is still in the DOM so the card slot keeps stable
+    // dimensions.
+    expect(mascot.querySelector('[data-testid="agent-mascot-sprite"]')).toBeTruthy();
   });
 });
 
@@ -98,26 +102,27 @@ function snapshot(baseState: AgentAnimationBaseState): AgentAnimationSnapshot {
   };
 }
 
-const manifestWithoutOptionalAssets: MascotManifest = {
+const manifestWithBogusAtlas: MascotManifest = {
+  version: 3,
   name: "Test Clawd",
-  parts: {
-    shadow: "/shadow.svg",
-    body: "/body.svg",
-    head: "/head.svg",
-    leftArm: "/left-arm.svg",
-    rightArm: "/right-arm.svg",
+  renderer: "sprite-sheet",
+  atlas: {
+    url: "/this/url/does/not/exist.png",
+    width: 2016,
+    height: 2016,
+    cols: 6,
+    rows: 6,
+    cellWidth: 336,
+    cellHeight: 336,
   },
-  eyes: {
-    open: "/eyes-open.svg",
-    closed: "/eyes-closed.svg",
-    happy: "/eyes-happy.svg",
-    worried: "/eyes-worried.svg",
-    wide: "/eyes-wide.svg",
-  },
-  mouths: {
-    neutral: "/mouth-neutral.svg",
-    smile: "/mouth-smile.svg",
-    frown: "/mouth-frown.svg",
-    o: "/mouth-o.svg",
+  animations: {
+    sleeping: { row: 0, frames: 6, fps: 3, loop: true },
+    waking: { row: 1, frames: 6, fps: 2, loop: false, loops: 1 },
+    working: { row: 2, frames: 6, fps: 8, loop: true },
+    attention_permission: { row: 3, frames: 6, fps: 8, loop: true },
+    attention_compacting: { row: 3, frames: 6, fps: 6, loop: true },
+    done: { row: 4, frames: 6, fps: 8, loop: false },
+    failed: { row: 5, frames: 6, fps: 8, loop: false },
+    skill_loaded: { row: 4, frames: 6, fps: 10, loop: false },
   },
 };

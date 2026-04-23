@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "name": "Clawd",
+  "renderer": "sprite-sheet",
+  "atlas": {
+    "url": "/agents/mascot/v3/clawd-code-sprite-atlas.png",
+    "width": 2016,
+    "height": 2016,
+    "cols": 6,
+    "rows": 6,
+    "cellWidth": 336,
+    "cellHeight": 336
+  },
+  "animations": {
+    "sleeping": { "row": 0, "frames": 6, "fps": 3, "loop": true },
+    "waking": { "row": 1, "frames": 6, "fps": 2, "loop": false, "loops": 1 },
+    "working": { "row": 2, "frames": 6, "fps": 8, "loop": true },
+    "attention_permission": { "row": 3, "frames": 6, "fps": 8, "loop": true },
+    "attention_compacting": { "row": 3, "frames": 6, "fps": 6, "loop": true },
+    "done": { "row": 4, "frames": 6, "fps": 8, "loop": false },
+    "failed": { "row": 5, "frames": 6, "fps": 8, "loop": false },
+    "skill_loaded": { "row": 4, "frames": 6, "fps": 10, "loop": false }
+  }
+}
