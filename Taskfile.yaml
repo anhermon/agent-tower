@@ -7,6 +7,13 @@ version: "3"
 vars:
   WEB_PKG: "@control-plane/web"
   WEB_URL: "http://127.0.0.1:3000"
+  # Isolated test server — separate port + separate .next dir so the perf
+  # sweep is immune to parallel edits on the dev server / source tree.
+  TEST_PORT: "3100"
+  TEST_URL: "http://127.0.0.1:3100"
+  TEST_DIST: ".next.perf"
+  TEST_PIDFILE: ".ci/reports/test-server.pid"
+  TEST_LOGFILE: ".ci/reports/test-server.log"
 
 tasks:
   # --- Dev loop -------------------------------------------------------------
@@ -105,6 +112,74 @@ tasks:
     deps: [build:web]
     cmds:
       - pnpm lhci autorun --config=lighthouserc.json
+
+  # --- Isolated test server (port 3100, pinned dist dir) ------------------
+  # Built once into {{.TEST_DIST}} and served via `next start`. Because
+  # `next start` reads only the pre-built artifacts, edits to source files
+  # (including parallel agents modifying components) never affect a running
+  # test server. This is the server LHCI + Playwright perf specs talk to —
+  # the human dev server on :3000 stays untouched.
+  test-server:build:
+    desc: Build the web app into {{.TEST_DIST}} (isolated from the dev server)
+    cmds:
+      - mkdir -p .ci/reports
+      - NEXT_DIST_DIR={{.TEST_DIST}} pnpm --filter {{.WEB_PKG}} exec next build
+
+  test-server:up:
+    desc: Build + start the isolated test server on {{.TEST_URL}}
+    deps: [test-server:build]
+    cmds:
+      - task: test-server:down
+      - |
+        mkdir -p .ci/reports
+        NEXT_DIST_DIR={{.TEST_DIST}} pnpm --filter {{.WEB_PKG}} exec \
+          next start --hostname 127.0.0.1 --port {{.TEST_PORT}} \
+          > {{.TEST_LOGFILE}} 2>&1 &
+        echo $! > {{.TEST_PIDFILE}}
+      - |
+        for i in $(seq 1 60); do
+          if curl -fsS {{.TEST_URL}}/api/health > /dev/null 2>&1; then
+            echo "Test server ready on {{.TEST_URL}} (pid $(cat {{.TEST_PIDFILE}}))"
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "Test server did not become healthy; last log lines:"
+        tail -40 {{.TEST_LOGFILE}} || true
+        exit 1
+
+  test-server:down:
+    desc: Stop the isolated test server if running
+    cmds:
+      - |
+        if [ -f {{.TEST_PIDFILE}} ]; then
+          pid=$(cat {{.TEST_PIDFILE}})
+          if kill -0 "$pid" 2>/dev/null; then
+            kill "$pid" 2>/dev/null || true
+            # give it 3s to exit cleanly, then force
+            for i in 1 2 3; do kill -0 "$pid" 2>/dev/null || break; sleep 1; done
+            kill -0 "$pid" 2>/dev/null && kill -9 "$pid" 2>/dev/null || true
+          fi
+          rm -f {{.TEST_PIDFILE}}
+        fi
+      # Belt-and-suspenders: clear anything still bound to the port
+      - lsof -ti tcp:{{.TEST_PORT}} 2>/dev/null | xargs -r kill -9 2>/dev/null || true
+
+  test-server:status:
+    desc: Print test server status and last log lines
+    cmds:
+      - |
+        if [ -f {{.TEST_PIDFILE}} ] && kill -0 $(cat {{.TEST_PIDFILE}}) 2>/dev/null; then
+          echo "Test server UP (pid $(cat {{.TEST_PIDFILE}})) on {{.TEST_URL}}"
+        else
+          echo "Test server DOWN"
+        fi
+      - test -f {{.TEST_LOGFILE}} && tail -20 {{.TEST_LOGFILE}} || true
+
+  lhci:perf:
+    desc: Run LHCI against the isolated test server (expects test-server:up)
+    cmds:
+      - pnpm lhci autorun --config=lighthouserc.perf.json
 
   # --- Builds ---------------------------------------------------------------
   build:
