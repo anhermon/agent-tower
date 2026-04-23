@@ -44,7 +44,9 @@ export function ThemeInitializer() {
           },
           timestamp: Date.now(),
         }),
-      }).catch(() => {});
+      }).catch(() => {
+        // Reason: fire-and-forget debug ingest; swallow network errors.
+      });
     } catch {
       // ignore
     }
