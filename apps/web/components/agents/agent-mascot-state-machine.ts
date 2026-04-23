@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+
 import {
   AGENT_ANIMATION_BASE_STATES,
   AGENT_ANIMATION_OVERLAYS,
@@ -11,7 +13,6 @@ import {
   type AgentFatigueLevel,
   type AgentState,
 } from "@control-plane/core";
-import { useEffect, useMemo, useState } from "react";
 
 const TRANSIENT_OVERLAY_MS: Record<AgentAnimationOverlay, number> = {
   [AGENT_ANIMATION_OVERLAYS.None]: 0,

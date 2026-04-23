@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
 import { SessionDetail } from "@/components/sessions/session-detail";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { loadReplay } from "@/lib/sessions-analytics";
@@ -7,10 +8,10 @@ import { CLAUDE_DATA_ROOT_ENV, loadSessionUsageOrEmpty } from "@/lib/sessions-so
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
+}
 
 export default async function SessionDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;

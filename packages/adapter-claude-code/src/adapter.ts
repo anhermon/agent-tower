@@ -10,6 +10,7 @@ import type {
   Timeseries,
   ToolAnalytics,
 } from "@control-plane/core";
+
 import { foldCostBreakdown } from "./analytics/cost.js";
 import { foldProjectSummaries } from "./analytics/project-summary.js";
 import { foldReplay } from "./analytics/replay.js";
@@ -70,7 +71,10 @@ export class ClaudeCodeSessionSource {
       try {
         const normalized = normalizeTranscript(entries, options);
         yield normalized.batch;
-      } catch {}
+      } catch {
+        // Skip malformed transcripts; `readTranscriptFile` already records
+        // per-file errors on its own result path.
+      }
     }
   }
 }
@@ -183,7 +187,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async summaryFor(file: ClaudeSessionFile): Promise<SessionUsageSummary> {
     const key = file.filePath;
     const cached = this.summaryCache.get(key);
-    if (cached && cached.mtime === file.modifiedAt) return cached.summary;
+    if (cached?.mtime === file.modifiedAt) return cached.summary;
     const parsed = await this.parseFile(file);
     const summary = foldSessionSummary(parsed.entries, {
       sessionId: file.sessionId,
@@ -196,7 +200,7 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async parseFile(file: ClaudeSessionFile): Promise<ReadTranscriptResult> {
     const key = file.filePath;
     const cached = this.parseCache.get(key);
-    if (cached && cached.mtime === file.modifiedAt) return cached.result;
+    if (cached?.mtime === file.modifiedAt) return cached.result;
     const result = await readTranscriptFile(file.filePath);
     this.parseCache.set(key, { mtime: file.modifiedAt, result });
     return result;

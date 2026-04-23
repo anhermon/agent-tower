@@ -8,6 +8,7 @@ import {
   type AgentStatus,
   CLAUDE_FIRST_CAPABILITIES,
 } from "@control-plane/core";
+
 import { getConfiguredSessionSource, resolveDataRoot } from "./sessions-source";
 
 /**
@@ -105,7 +106,7 @@ function buildInventory(
   }`;
   const cacheKey = directory;
   const cached = inventoryCache.get(cacheKey);
-  if (cached && cached.signature === signature) {
+  if (cached?.signature === signature) {
     // Re-derive state with the current `now` so status ages correctly between
     // cached listings. Descriptor + aggregate counts stay stable.
     const refreshed = cached.agents.map((agent) =>

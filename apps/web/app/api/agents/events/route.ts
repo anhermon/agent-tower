@@ -2,8 +2,10 @@ import "server-only";
 import { type FSWatcher, watch } from "node:fs";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
+
 import { readTranscriptFile } from "@control-plane/adapter-claude-code";
 import type { AgentAnimationSnapshot } from "@control-plane/core";
+
 import {
   AGENT_ANIMATION_SUBAGENT_IDLE_MS,
   type AgentAnimationDerivation,

@@ -1,6 +1,5 @@
 "use client";
 
-import type { ToolSummary } from "@control-plane/core";
 import {
   Bar,
   BarChart,
@@ -11,6 +10,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { ToolSummary } from "@control-plane/core";
 
 interface Props {
   readonly tools: readonly ToolSummary[];

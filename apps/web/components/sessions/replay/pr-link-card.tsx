@@ -1,8 +1,8 @@
 import type { ReplayData } from "@control-plane/core";
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
-};
+}
 
 interface PrLink {
   readonly url: string;

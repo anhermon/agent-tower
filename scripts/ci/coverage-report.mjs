@@ -21,6 +21,7 @@
 
 import { readFile, stat } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
+
 import { paths, writeReport } from "./lib/report.mjs";
 
 const REPO_ROOT = paths.repoRoot;

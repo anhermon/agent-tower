@@ -2,9 +2,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
 import { MetricCard } from "@/components/ui/metric-card";
 import { EmptyState, ErrorState } from "@/components/ui/state";
-import type { AgentInventoryItem } from "@/lib/agents-source";
 import { getOverviewState, statusToHealthState } from "@/lib/control-plane-state";
 import { getModuleByKey } from "@/lib/modules";
+
+import type { AgentInventoryItem } from "@/lib/agents-source";
 
 export const dynamic = "force-dynamic";
 

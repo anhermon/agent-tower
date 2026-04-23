@@ -2,6 +2,7 @@ import { type Dirent, existsSync, type Stats, statSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
+
 import YAML from "yaml";
 
 /**
@@ -172,7 +173,7 @@ async function discoverSkillFiles(root: string): Promise<readonly string[]> {
     if (depth > MAX_DEPTH) return;
     let entries: Dirent[];
     try {
-      entries = (await readdir(dir, { withFileTypes: true })) as Dirent[];
+      entries = await readdir(dir, { withFileTypes: true });
     } catch {
       return;
     }
@@ -209,7 +210,7 @@ async function loadManifestCached(
   }
   const cacheKey = `${filePath}:${info.mtime.toISOString()}:${root.directory}`;
   const cached = manifestCache.get(filePath);
-  if (cached && cached.key === cacheKey) {
+  if (cached?.key === cacheKey) {
     return cached.manifest;
   }
 
@@ -312,7 +313,7 @@ function humanizeSlug(relativePath: string): string | null {
 }
 
 function firstHeadingAbstract(body: string): string | null {
-  const match = body.match(/^#\s+[^\n]+\n+([^\n][\s\S]*?)(?:\n\n|$)/m);
+  const match = /^#\s+[^\n]+\n+([^\n][\s\S]*?)(?:\n\n|$)/m.exec(body);
   if (!match) return null;
   const text = match[1]?.trim();
   return text && text.length > 0 ? text : null;

@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { type CSSProperties, type JSX, useMemo } from "react";
-import type { SkillsUsageReport, SkillUsageStats } from "@/lib/skills-usage-source";
+
 import { maxCount } from "./format-usage";
+
+import type { SkillsUsageReport, SkillUsageStats } from "@/lib/skills-usage-source";
 
 const HOUR_LABELS = Array.from({ length: 24 }, (_, i) => i);
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;

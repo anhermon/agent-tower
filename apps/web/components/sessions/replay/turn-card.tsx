@@ -1,11 +1,18 @@
 "use client";
 
-import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
 import dynamic from "next/dynamic";
 import { memo, useState } from "react";
+
+import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
+
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
 import { CompactionCard } from "./compaction-card";
+import { RawToggle } from "./raw-toggle";
+import { TodoWritePanel } from "./todo-write-panel";
+import { ToolCallBadge } from "./tool-call-badge";
+import { UserToolResult } from "./user-tool-result";
 
 // Dynamically load the markdown renderer so react-markdown + remark-gfm land
 // in a lazy chunk rather than the initial session-detail bundle.
@@ -19,11 +26,6 @@ const AssistantMarkdown = dynamic(
   }
 );
 
-import { RawToggle } from "./raw-toggle";
-import { TodoWritePanel } from "./todo-write-panel";
-import { ToolCallBadge } from "./tool-call-badge";
-import { UserToolResult } from "./user-tool-result";
-
 type ToolResultLookup = ReadonlyMap<
   string,
   { readonly content: string; readonly isError: boolean; readonly toolName?: string }
@@ -31,13 +33,13 @@ type ToolResultLookup = ReadonlyMap<
 
 const ASSISTANT_COLLAPSE_THRESHOLD = 900;
 
-type Props = {
+interface Props {
   readonly turn: ReplayTurn;
   readonly turnNumber: number;
   readonly assistantNumber?: number;
   readonly compactionBefore?: ReplayCompactionEvent;
   readonly toolResults: ToolResultLookup;
-};
+}
 
 function TurnCardInner(props: Props) {
   return props.turn.type === "user" ? <UserTurn {...props} /> : <AssistantTurn {...props} />;
@@ -217,7 +219,7 @@ function AssistantTurn({ turn, assistantNumber, compactionBefore, toolResults }:
 function TokenBreakdown({ turn }: { turn: ReplayTurn }) {
   const u = turn.usage;
   if (!u) return null;
-  const items: Array<{ label: string; value: number; color: string } | null> = [
+  const items: ({ label: string; value: number; color: string } | null)[] = [
     u.inputTokens ? { label: "In", value: u.inputTokens, color: "#60a5fa" } : null,
     u.outputTokens ? { label: "Out", value: u.outputTokens, color: "#d97706" } : null,
     u.cacheCreationInputTokens

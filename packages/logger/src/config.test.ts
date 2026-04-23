@@ -1,5 +1,7 @@
 import path from "node:path";
+
 import { describe, expect, it } from "vitest";
+
 import { resolveLoggerConfig } from "./config.js";
 
 describe("resolveLoggerConfig — LOG_LEVEL parsing", () => {

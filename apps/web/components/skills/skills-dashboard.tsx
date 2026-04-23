@@ -1,7 +1,5 @@
 "use client";
 
-import type { JSX } from "react";
-import type { SkillsUsageReport } from "@/lib/skills-usage-source";
 import {
   HourBreakdownChart,
   SkillsBarChart,
@@ -11,6 +9,9 @@ import {
 } from "./_lazy";
 import { SkillsUsageSummary } from "./skills-usage-summary";
 import { ViewportMount } from "./viewport-mount";
+
+import type { SkillsUsageReport } from "@/lib/skills-usage-source";
+import type { JSX } from "react";
 
 /**
  * Composition shell for the Skills usage analytics view. Orders the four

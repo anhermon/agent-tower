@@ -1,19 +1,20 @@
 import { cn, stateLabel, stateTone } from "@/lib/utils";
+
 import type { HealthState, ModulePhase } from "@/types/control-plane";
 
-type BadgeProps = {
+interface BadgeProps {
   state: HealthState;
   className?: string;
-};
+}
 
 export function Badge({ state, className }: BadgeProps) {
   return <span className={cn("pill", stateTone(state), className)}>{stateLabel(state)}</span>;
 }
 
-type PhaseBadgeProps = {
+interface PhaseBadgeProps {
   phase: ModulePhase;
   className?: string;
-};
+}
 
 const PHASE_LABELS: Record<ModulePhase, string> = {
   active: "Active",

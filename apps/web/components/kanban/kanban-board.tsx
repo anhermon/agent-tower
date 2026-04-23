@@ -1,10 +1,11 @@
 import type { TicketRecord } from "@control-plane/core";
+
 import { LaneColumn } from "@/components/kanban/lane-column";
 import { groupTicketsByStatus, KANBAN_LANE_LABELS, KANBAN_LANE_ORDER } from "@/lib/kanban-source";
 
-type KanbanBoardProps = {
+interface KanbanBoardProps {
   readonly tickets: readonly TicketRecord[];
-};
+}
 
 export function KanbanBoard({ tickets }: KanbanBoardProps) {
   const grouped = groupTicketsByStatus(tickets);

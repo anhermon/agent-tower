@@ -1,6 +1,8 @@
+import { describe, expect, it } from "vitest";
+
 import type { ClaudeTranscriptEntry } from "@control-plane/adapter-claude-code";
 import { AGENT_ANIMATION_BASE_STATES, AGENT_ANIMATION_OVERLAYS } from "@control-plane/core";
-import { describe, expect, it } from "vitest";
+
 import {
   AGENT_ANIMATION_PERMISSION_TIMEOUT_MS,
   deriveAgentAnimationSnapshot,

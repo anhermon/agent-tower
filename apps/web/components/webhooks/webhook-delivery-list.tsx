@@ -1,9 +1,10 @@
 import type { WebhookDelivery } from "@control-plane/core";
+
 import { formatRelative } from "@/lib/format";
 
-type WebhookDeliveryListProps = {
+interface WebhookDeliveryListProps {
   readonly deliveries: readonly WebhookDelivery[];
-};
+}
 
 const STATUS_LABELS: Record<WebhookDelivery["status"], string> = {
   pending: "Pending",

@@ -2,10 +2,13 @@ import "server-only";
 import { createReadStream, type Stats } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createInterface } from "node:readline";
+
 import { type ClaudeSessionFile, listSessionFiles } from "@control-plane/adapter-claude-code";
 import type { SessionSearchHit } from "@control-plane/core";
+
 import { getConfiguredDataRoot } from "@/lib/sessions-source";
 import { withAudit } from "@/lib/with-audit";
+
 import { type CachedResult, getFileCacheForNeedle, setFileCacheForNeedle } from "./cache";
 
 /**
@@ -150,7 +153,7 @@ async function scanFile(
   }
 
   const cached = cache.get(file.filePath);
-  if (cached && cached.mtimeMs === mtimeMs && cached.sizeBytes === sizeBytes) {
+  if (cached?.mtimeMs === mtimeMs && cached.sizeBytes === sizeBytes) {
     return cached.hits;
   }
 
@@ -199,13 +202,13 @@ interface ParsedEntry {
     readonly role?: string;
     readonly content?:
       | string
-      | ReadonlyArray<{
+      | readonly {
           readonly type?: string;
           readonly text?: string;
           readonly thinking?: string;
           readonly input?: unknown;
           readonly content?: unknown;
-        }>;
+        }[];
   };
   readonly summary?: string;
 }
@@ -214,7 +217,7 @@ function safeJsonParse(line: string): ParsedEntry | null {
   try {
     const parsed = JSON.parse(line) as unknown;
     if (parsed && typeof parsed === "object") {
-      return parsed as ParsedEntry;
+      return parsed;
     }
     return null;
   } catch {

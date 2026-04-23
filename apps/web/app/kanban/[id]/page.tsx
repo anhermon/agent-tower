@@ -1,5 +1,7 @@
-import type { TicketRecord } from "@control-plane/core";
 import Link from "next/link";
+
+import type { TicketRecord } from "@control-plane/core";
+
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/kanban/ticket-status-badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { formatRelative } from "@/lib/format";
@@ -7,9 +9,9 @@ import { loadTicketOrUndefined, TICKETS_FILE_ENV } from "@/lib/kanban-source";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
-};
+}
 
 export default async function TicketDetailPage({ params }: PageProps) {
   const { id } = await params;

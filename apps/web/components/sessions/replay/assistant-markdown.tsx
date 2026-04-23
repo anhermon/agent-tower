@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
 import { cn } from "@/lib/utils";
 
 // Dynamically load the CodeBlock (Prism + one-dark theme) only when an
@@ -13,10 +14,10 @@ const CodeBlock = dynamic(() => import("./code-block").then((m) => m.CodeBlock),
   loading: () => <pre aria-busy="true" className="whitespace-pre-wrap" />,
 });
 
-type Props = {
+interface Props {
   readonly content: string;
   readonly className?: string;
-};
+}
 
 /**
  * Renders Claude assistant text as GitHub-flavored markdown. Fenced code
@@ -86,10 +87,10 @@ export function AssistantMarkdown({ content, className }: Props) {
   );
 }
 
-type CodeProps = {
+interface CodeProps {
   readonly className?: string;
   readonly children?: React.ReactNode;
-};
+}
 
 function CodeRenderer({ className, children }: CodeProps) {
   const languageMatch = /language-(\w+)/.exec(className ?? "");

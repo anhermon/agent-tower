@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 let mockedHome: string | null = null;
@@ -96,11 +97,11 @@ describe("sessions-source", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.sessions).toHaveLength(1);
-    expect(result.sessions[0]!.sessionId).toBe(sessionId);
-    expect(result.sessions[0]!.projectId).toBe("sample-project");
-    expect(result.sessions[0]!.messageCount).toBe(2);
-    expect(result.sessions[0]!.durationMs).toBe(1000);
-    expect(result.sessions[0]!.estimatedCostUsd).toBeGreaterThan(0);
+    expect(result.sessions[0].sessionId).toBe(sessionId);
+    expect(result.sessions[0].projectId).toBe("sample-project");
+    expect(result.sessions[0].messageCount).toBe(2);
+    expect(result.sessions[0].durationMs).toBe(1000);
+    expect(result.sessions[0].estimatedCostUsd).toBeGreaterThan(0);
   });
 
   it("given_env_var_with_a_valid_jsonl__when_loading_session__then_returns_normalized_transcript", async () => {

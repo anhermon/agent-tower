@@ -1,5 +1,7 @@
-import type { ProjectSummary } from "@control-plane/core";
 import Link from "next/link";
+
+import type { ProjectSummary } from "@control-plane/core";
+
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { formatCost, formatDuration, formatRelative, truncateMiddle } from "@/lib/format";
 
@@ -136,7 +138,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 function topEntries(
   counts: Readonly<Record<string, number>>,
   limit: number
-): ReadonlyArray<readonly [string, number]> {
+): readonly (readonly [string, number])[] {
   return Object.entries(counts)
     .sort(([, a], [, b]) => b - a)
     .slice(0, limit);

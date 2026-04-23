@@ -1,3 +1,5 @@
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import type {
   CostBreakdown,
   ProjectSummary,
@@ -8,7 +10,7 @@ import type {
   Timeseries,
   ToolAnalytics,
 } from "@control-plane/core";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import {
   __setAnalyticsSourceResolverForTests,
   getActivity,
@@ -331,7 +333,7 @@ describe("sessions-analytics", () => {
     it("coerces_non_Error_throws_to_string_message", async () => {
       const source: SessionAnalyticsSource = {
         listProjectSummaries: async () => {
-          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          // eslint-disable-next-line no-throw-literal
           throw "plain-string-rejection";
         },
         listSessionSummaries: async () => [],

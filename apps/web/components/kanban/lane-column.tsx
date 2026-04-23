@@ -1,11 +1,12 @@
 import type { TicketRecord, TicketStatus } from "@control-plane/core";
+
 import { TicketCard } from "@/components/kanban/ticket-card";
 
-type LaneColumnProps = {
+interface LaneColumnProps {
   readonly status: TicketStatus;
   readonly label: string;
   readonly tickets: readonly TicketRecord[];
-};
+}
 
 export function LaneColumn({ status, label, tickets }: LaneColumnProps) {
   return (

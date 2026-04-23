@@ -1,5 +1,6 @@
 import { ClaudeCodeAnalyticsSource, scoreSessionWaste } from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
+
 import { resolveOrExplain } from "../data-root.js";
 import { parseFlags, UsageError } from "../flags.js";
 import { bold, resolveOutputMode, writeJson, writeLine } from "../output.js";

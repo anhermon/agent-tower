@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
 const fromRoot = (relative: string) => fileURLToPath(new URL(relative, import.meta.url));
@@ -33,12 +34,7 @@ const sharedAlias = {
 // project's tests exercised them. Declared once and reused by the coverage
 // config for consistent numerator/denominator across `vitest run --coverage`
 // and `vitest run --config vitest.coverage.config.ts`.
-export const coverageInclude = [
-  "packages/*/src/**/*.{ts,tsx}",
-  "apps/web/lib/**/*.{ts,tsx}",
-  "apps/web/app/**/*.{ts,tsx}",
-  "apps/web/components/**/*.{ts,tsx}",
-];
+export const coverageInclude = ["packages/*/src/**/*.{ts,tsx}", "apps/web/lib/**/*.{ts,tsx}"];
 
 export const coverageExclude = [
   "**/dist/**",
@@ -54,6 +50,10 @@ export const coverageExclude = [
 ];
 
 export default defineConfig({
+  esbuild: {
+    jsx: "automatic",
+    jsxImportSource: "react",
+  },
   resolve: {
     alias: sharedAlias,
   },

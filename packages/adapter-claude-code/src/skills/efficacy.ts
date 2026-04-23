@@ -1,8 +1,11 @@
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
+
 import type { DateRange } from "@control-plane/core";
+
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
+
 import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
 
 /**
@@ -155,7 +158,7 @@ async function summarizeWithCache(
     seen.add(file.filePath);
     const cached = fileCache.get(file.filePath);
     let entry: FileCacheEntry;
-    if (cached && cached.mtime === file.modifiedAt) {
+    if (cached?.mtime === file.modifiedAt) {
       entry = cached;
     } else {
       const fresh = await summarizeFile(file);
@@ -498,8 +501,9 @@ function extractUserText(entry: Record<string, unknown>): string | null {
     if (b.type === "text" && typeof b.text === "string") {
       parts.push(b.text);
       lastTextBlock = b.text;
-    } else if (b.type === "tool_result") {
     }
+    // tool_result blocks are intentionally ignored for text concatenation;
+    // their payloads aren't user-visible completion signals.
   }
   if (parts.length === 0) return null;
   return lastTextBlock ?? parts.join("\n");

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 import {
   AGENT_ANIMATION_BASE_STATES,
   AGENT_ANIMATION_OVERLAYS,
@@ -8,9 +10,10 @@ import {
   type AgentFatigueLevel,
   type AgentState,
 } from "@control-plane/core";
-import React, { useEffect, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 import mascotManifest from "@/public/agents/mascot/v3/manifest.json";
+
 import { type AgentMascotVisualState, useAgentMascotState } from "./agent-mascot-state-machine";
 
 type MascotSize = "card" | "detail";
@@ -57,14 +60,14 @@ type AnimationKey =
   | "failed"
   | "skill_loaded";
 
-type AgentMascotProps = {
+interface AgentMascotProps {
   readonly agentState: AgentState;
   readonly snapshot?: AgentAnimationSnapshot;
   readonly size?: MascotSize;
   readonly className?: string;
   readonly reducedMotion?: boolean;
   readonly assetManifest?: MascotManifest;
-};
+}
 
 const defaultManifest = mascotManifest as MascotManifest;
 

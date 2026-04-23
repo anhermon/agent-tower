@@ -14,6 +14,7 @@ import {
   type SessionWasteSignals,
   type TurnUsage,
 } from "@control-plane/core";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
@@ -336,7 +337,7 @@ function classifyBlock(
     return;
   }
   if (block.type === "tool_use") {
-    const name = typeof block.name === "string" ? (block.name as string) : "";
+    const name = typeof block.name === "string" ? block.name : "";
     if (!name) return;
     toolCounts[name] = (toolCounts[name] ?? 0) + 1;
     const category = categorizeTool(name);

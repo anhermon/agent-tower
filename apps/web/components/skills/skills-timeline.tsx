@@ -1,8 +1,10 @@
 "use client";
 
-import type { JSX } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 import { formatShortDate } from "./format-usage";
+
+import type { JSX } from "react";
 
 interface Point {
   readonly date: string;

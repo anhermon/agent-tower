@@ -1,5 +1,6 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+
 import { agentsListTool } from "./tools/agents-list.js";
 import { controlPlaneAuditTool } from "./tools/audit.js";
 import { healthTool } from "./tools/health.js";
@@ -9,6 +10,7 @@ import { sessionsWasteTool } from "./tools/sessions-waste.js";
 import { skillsEfficacyTool } from "./tools/skills-efficacy.js";
 import { skillsTopTool } from "./tools/skills-top.js";
 import { skillsUsageTool } from "./tools/skills-usage.js";
+
 import type { ToolDefinition } from "./tools/types.js";
 
 export const REGISTERED_TOOLS: readonly ToolDefinition[] = [

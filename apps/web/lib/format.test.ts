@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import {
   formatBytes,
   formatCost,
@@ -102,7 +103,7 @@ describe("formatCost", () => {
   });
 
   it("roundtrips_sample_fixtures", () => {
-    const fixtures: Array<[number, string]> = [
+    const fixtures: [number, string][] = [
       [0, "$0.00"],
       [0.0041, "$0.0041"],
       [12.34, "$12.34"],

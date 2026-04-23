@@ -168,6 +168,6 @@ function defaultProjectKey(s: SessionUsageSummary): {
   const parts = cwd.split("/").filter(Boolean);
   return {
     id: cwd,
-    displayName: parts.length > 0 ? (parts[parts.length - 1] as string) : cwd,
+    displayName: parts.length > 0 ? parts[parts.length - 1]! : cwd,
   };
 }

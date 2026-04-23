@@ -2,7 +2,9 @@ import { createWriteStream, mkdirSync, type WriteStream } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { Writable } from "node:stream";
+
 import pino, { type StreamEntry } from "pino";
+
 import type { LoggerConfig } from "./config.js";
 
 /**
@@ -41,7 +43,7 @@ export function createFanoutWriter(sinks: FanoutSinks): Writable {
       callback();
     },
     final(callback) {
-      const pending: Array<Promise<void>> = [];
+      const pending: Promise<void>[] = [];
       for (const stream of [sinks.stdoutStream, sinks.stderrStream, sinks.requestsStream]) {
         if (stream && "end" in stream && typeof stream.end === "function") {
           pending.push(

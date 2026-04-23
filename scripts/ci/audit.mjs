@@ -2,6 +2,7 @@
 // Runs `pnpm audit` and writes a machine-readable summary.
 // Exits non-zero iff advisories exist at `high` or `critical` severity.
 import { spawn } from "node:child_process";
+
 import { paths, writeReport } from "./lib/report.mjs";
 
 const TOOL = "audit";

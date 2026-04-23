@@ -1,19 +1,22 @@
 "use client";
 
-import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
 import Link from "next/link";
 import { type ReactNode, useDeferredValue, useMemo, useState } from "react";
+
+import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
+
 import { AgentStatusBadge } from "@/components/agents/agent-status-badge";
-import type { AgentInventoryItem } from "@/lib/agents-source";
 import { formatBytes, formatRelative, truncateMiddle } from "@/lib/format";
+
+import type { AgentInventoryItem } from "@/lib/agents-source";
 
 type SortKey = "displayName" | "status" | "lastActiveAt" | "sessionCount" | "totalBytes";
 type SortDirection = "asc" | "desc";
 type StatusFilter = "all" | AgentStatus;
 
-type AgentGridProps = {
+interface AgentGridProps {
   readonly agents: readonly AgentInventoryItem[];
-};
+}
 
 const STATUS_FILTERS: readonly { readonly value: StatusFilter; readonly label: string }[] = [
   { value: "all", label: "All" },

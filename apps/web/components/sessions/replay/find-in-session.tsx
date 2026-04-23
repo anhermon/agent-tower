@@ -1,15 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
-type Props = {
+interface Props {
   /** Only captures ⌘F/Ctrl+F when true — the caller toggles this when the
    *  replay panel has focus so we don't hijack the global browser find. */
   readonly enabled?: boolean;
   /** Selector of the scrollable element whose text we'll search. */
   readonly targetSelector?: string;
-};
+}
 
 const HIGHLIGHT_CLASS = "cp-find-hit";
 const ACTIVE_CLASS = "cp-find-active";

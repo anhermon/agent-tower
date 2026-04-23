@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { WebhookDeliveryList } from "@/components/webhooks/webhook-delivery-list";
 import { WebhookSecretBanner } from "@/components/webhooks/webhook-secret-banner";
@@ -8,9 +9,9 @@ import { loadWebhookOrUndefined, WEBHOOKS_FILE_ENV } from "@/lib/webhooks-source
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
-};
+}
 
 export default async function WebhookDetailPage({ params }: PageProps) {
   const { id } = await params;

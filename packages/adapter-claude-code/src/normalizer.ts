@@ -1,25 +1,23 @@
-import type {
-  JsonObject,
-  JsonValue,
-  SessionActor,
-  SessionContent,
-  SessionDescriptor,
-  SessionIngestBatch,
-  SessionState,
-  SessionTurn,
-  ToolCall,
-  ToolResult,
-} from "@control-plane/core";
 import {
   AGENT_RUNTIMES,
+  type JsonObject,
+  type JsonValue,
   SESSION_ACTOR_ROLES,
   SESSION_STATES,
+  type SessionActor,
+  type SessionContent,
+  type SessionDescriptor,
+  type SessionIngestBatch,
+  type SessionState,
+  type SessionTurn,
   TOOL_CALL_STATUSES,
+  type ToolCall,
+  type ToolResult,
 } from "@control-plane/core";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
-  ClaudeRawRecord,
   ClaudeRawValue,
   ClaudeSystemEntry,
   ClaudeTranscriptEntry,
@@ -541,7 +539,7 @@ function toJsonValue(raw: ClaudeRawValue): JsonValue {
     return raw.map((item) => toJsonValue(item));
   }
   const entries: [string, JsonValue][] = [];
-  for (const [key, value] of Object.entries(raw as ClaudeRawRecord)) {
+  for (const [key, value] of Object.entries(raw)) {
     if (value === undefined) continue;
     entries.push([key, toJsonValue(value)]);
   }

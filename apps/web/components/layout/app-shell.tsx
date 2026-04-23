@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 
-type AppShellProps = {
+import type { ReactNode } from "react";
+
+interface AppShellProps {
   children: ReactNode;
-};
+}
 
 export function AppShell({ children }: AppShellProps) {
   return (

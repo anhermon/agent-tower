@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
-type StateBlockProps = {
+interface StateBlockProps {
   title: string;
   description: string;
   action?: ReactNode;
-};
+}
 
 export function LoadingState({ title = "Loading", description }: Partial<StateBlockProps>) {
   return (

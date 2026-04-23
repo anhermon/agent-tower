@@ -1,4 +1,5 @@
 import { eventMatchesFilter } from "./bus.js";
+
 import type { AsyncEventStream, EventEnvelope, EventSubscriptionFilter } from "./types.js";
 
 export const EVENT_LOG_START_CURSOR = "0" as const;

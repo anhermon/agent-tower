@@ -1,6 +1,6 @@
-type WebhookSecretBannerProps = {
+interface WebhookSecretBannerProps {
   readonly secretRef: string | undefined;
-};
+}
 
 /**
  * Deliberately read-only banner. Secret management (creating, rotating, or

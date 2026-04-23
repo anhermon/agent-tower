@@ -142,11 +142,11 @@ export function foldToolAnalytics(
 }
 
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
-type FlagMap = {
+interface FlagMap {
   readonly compaction: number;
   readonly thinking: number;
   readonly taskAgent: number;
   readonly mcp: number;
   readonly webSearch: number;
   readonly webFetch: number;
-};
+}

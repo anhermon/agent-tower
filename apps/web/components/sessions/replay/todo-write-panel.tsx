@@ -1,18 +1,20 @@
 "use client";
 
-import type { JsonValue } from "@control-plane/core";
 import { useState } from "react";
+
+import type { JsonValue } from "@control-plane/core";
+
 import { cn } from "@/lib/utils";
 
-type TodoItem = {
+interface TodoItem {
   readonly content: string;
   readonly status: "pending" | "in_progress" | "completed" | string;
   readonly activeForm?: string;
-};
+}
 
-type Props = {
+interface Props {
   readonly input: JsonValue;
-};
+}
 
 function parseTodos(input: JsonValue): readonly TodoItem[] | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
@@ -72,7 +74,7 @@ export function TodoWritePanel({ input }: Props) {
       {open ? (
         <ul className="space-y-1 border-t border-line/60 px-3 py-2">
           {todos.map((todo, i) => {
-            const tone = STATUS_TONE[todo.status] ?? STATUS_TONE.pending!;
+            const tone = STATUS_TONE[todo.status] ?? STATUS_TONE.pending;
             return (
               <li key={i} className="flex items-start gap-2 text-sm">
                 <span className={cn("mt-0.5 font-mono text-xs", tone.text)} aria-hidden>

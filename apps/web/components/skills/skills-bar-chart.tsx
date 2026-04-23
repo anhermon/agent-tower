@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { type JSX, useMemo, useState } from "react";
-import type { SkillUsageStats } from "@/lib/skills-usage-source";
+
 import { formatBytes, formatTokens } from "./format-usage";
+
+import type { SkillUsageStats } from "@/lib/skills-usage-source";
 
 type Metric = "invocations" | "size" | "composite";
 
@@ -14,7 +16,7 @@ interface MetricConfig {
   readonly format: (value: number) => string;
 }
 
-const METRICS: ReadonlyArray<MetricConfig> = [
+const METRICS: readonly MetricConfig[] = [
   {
     key: "invocations",
     label: "Invocations",
@@ -55,7 +57,7 @@ export function SkillsBarChart({
   readonly initialMetric?: Metric;
 }): JSX.Element {
   const [metric, setMetric] = useState<Metric>(initialMetric);
-  const active = METRICS.find((m) => m.key === metric) ?? METRICS[0]!;
+  const active = METRICS.find((m) => m.key === metric) ?? METRICS[0];
 
   const rows = useMemo(() => {
     const scored = skills.map((skill) => ({
@@ -91,7 +93,7 @@ export function SkillsBarChart({
         </div>
       ) : (
         <ul className="flex flex-col gap-2">
-          {rows.map(({ skill, value }, idx) => {
+          {rows.map(({ skill, value }, _idx) => {
             // True relative share. The previous 1.5% floor visually inflated
             // near-zero values; use exact percentages here so the chart is
             // honest. Zero-value rows render a zero-width bar.

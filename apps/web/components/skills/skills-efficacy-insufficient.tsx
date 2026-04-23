@@ -1,7 +1,7 @@
 "use client";
 
-import type { JSX } from "react";
 import type { SkillEfficacyRow } from "@/lib/skills-efficacy-source";
+import type { JSX } from "react";
 
 /**
  * Compact card listing skills excluded from scoring due to insufficient

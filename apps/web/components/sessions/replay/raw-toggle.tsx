@@ -1,12 +1,14 @@
 "use client";
 
-import type { ReplayTurn } from "@control-plane/core";
 import { useState } from "react";
+
+import type { ReplayTurn } from "@control-plane/core";
+
 import { cn } from "@/lib/utils";
 
-type Props = {
+interface Props {
   readonly turn: ReplayTurn;
-};
+}
 
 /**
  * Renders a small "raw" toggle that exposes the full turn JSON. Collapsed by

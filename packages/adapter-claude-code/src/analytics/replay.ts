@@ -13,6 +13,9 @@ import {
   type ReplayTurn,
   type TurnUsage,
 } from "@control-plane/core";
+
+import { normalizeTurnUsage } from "./session-summary.js";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
@@ -21,7 +24,6 @@ import type {
   ClaudeTranscriptEntry,
   ClaudeUserEntry,
 } from "../types.js";
-import { normalizeTurnUsage } from "./session-summary.js";
 
 export interface ReplayFoldOptions {
   readonly sessionId?: string;
@@ -96,7 +98,7 @@ export function foldReplay(
           meta.trigger === "auto" ? "auto" : meta.trigger === "manual" ? "manual" : "unknown";
         const directSummary =
           typeof (sys as unknown as { content?: unknown }).content === "string"
-            ? ((sys as unknown as { content: string }).content as string)
+            ? (sys as unknown as { content: string }).content
             : undefined;
         const fallbackSummary =
           summaries.length > 0 ? summaries[summaries.length - 1]?.summary : undefined;
@@ -165,7 +167,7 @@ export function foldReplay(
       if (Array.isArray(content)) {
         for (const block of content as readonly ClaudeContentBlock[]) {
           if (block.type === "text" && typeof block.text === "string") {
-            text += block.text as string;
+            text += block.text;
           }
           if (block.type === "thinking") {
             hasThinking = true;

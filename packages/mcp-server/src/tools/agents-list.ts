@@ -3,6 +3,7 @@ import {
   listSessionFiles,
   resolveDataRoot,
 } from "@control-plane/adapter-claude-code";
+
 import { errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 interface AgentStats {

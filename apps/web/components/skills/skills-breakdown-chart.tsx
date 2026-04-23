@@ -1,6 +1,5 @@
 "use client";
 
-import type { JSX } from "react";
 import {
   Bar,
   BarChart,
@@ -11,8 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { SkillUsageStats } from "@/lib/skills-usage-source";
+
 import { formatShortDate } from "./format-usage";
+
+import type { SkillUsageStats } from "@/lib/skills-usage-source";
+import type { JSX } from "react";
 
 const PALETTE = [
   "#38bdf8",

@@ -1,7 +1,9 @@
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { getLogger, initLogger, resetLoggerForTests } from "./logger.js";
 
 /**
@@ -67,9 +69,10 @@ beforeEach(() => {
 
 afterEach(() => {
   resetLoggerForTests();
-  for (const [key, value] of Object.entries(savedEnv) as Array<
-    [keyof typeof savedEnv, string | undefined]
-  >) {
+  for (const [key, value] of Object.entries(savedEnv) as [
+    keyof typeof savedEnv,
+    string | undefined,
+  ][]) {
     if (value === undefined) delete process.env[key];
     else process.env[key] = value;
   }

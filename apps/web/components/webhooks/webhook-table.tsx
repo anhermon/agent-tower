@@ -1,11 +1,13 @@
 import Link from "next/link";
+
 import { subscriptionStatus, WebhookStatusBadge } from "@/components/webhooks/webhook-status-badge";
 import { formatRelative, truncateMiddle } from "@/lib/format";
+
 import type { WebhookSubscriptionListing } from "@/lib/webhooks-source";
 
-type WebhookTableProps = {
+interface WebhookTableProps {
   readonly listings: readonly WebhookSubscriptionListing[];
-};
+}
 
 export function WebhookTable({ listings }: WebhookTableProps) {
   return (

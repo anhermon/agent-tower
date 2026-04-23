@@ -1,7 +1,9 @@
 import { mkdirSync, mkdtempSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { __clearSearchCacheForTests } from "./cache";
 import { GET } from "./route";
 
@@ -110,17 +112,17 @@ describe("GET /api/sessions/search — matching", () => {
     const root = seedFixtureRoot();
     const res = await requestSearch(root, new URLSearchParams({ q: "mempalace" }));
     expect(res.status).toBe(200);
-    const hits = (await res.json()) as Array<{
+    const hits = (await res.json()) as {
       sessionId: string;
       turnId: string;
       snippet: string;
       score: number;
       projectSlug: string;
-    }>;
+    }[];
     expect(hits.length).toBeGreaterThan(0);
-    expect(hits[0]!.snippet.toLowerCase()).toContain("mempalace");
-    expect(hits[0]!.sessionId).toMatch(/aaaaaaaa-/);
-    expect(hits[0]!.projectSlug).toBe("-Users-w5-sample");
+    expect(hits[0].snippet.toLowerCase()).toContain("mempalace");
+    expect(hits[0].sessionId).toMatch(/aaaaaaaa-/);
+    expect(hits[0].projectSlug).toBe("-Users-w5-sample");
   });
 
   it("given_unmatched_query__when_searching__then_empty_array", async () => {

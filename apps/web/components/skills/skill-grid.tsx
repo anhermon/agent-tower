@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
+
 import { formatRelative } from "@/lib/format";
+
 import type { SkillManifest } from "@/lib/skills-source";
 
 const INITIAL_CARDS = 24;
@@ -31,9 +33,9 @@ export type SkillGridItem = Pick<
   | "sizeBytes"
 >;
 
-type SkillGridProps = {
+interface SkillGridProps {
   skills: readonly SkillGridItem[];
-};
+}
 
 export function SkillGrid({ skills }: SkillGridProps) {
   const [query, setQuery] = useState("");
@@ -183,12 +185,12 @@ export function SkillGrid({ skills }: SkillGridProps) {
   );
 }
 
-type SortChipProps = {
+interface SortChipProps {
   label: string;
   active: boolean;
   direction: SortDirection;
   onClick: () => void;
-};
+}
 
 function SortChip({ label, active, direction, onClick }: SortChipProps) {
   return (

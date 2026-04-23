@@ -1,4 +1,5 @@
 import { readFile, stat } from "node:fs/promises";
+
 import {
   WEBHOOK_EVENT_TYPES,
   type WebhookDelivery,
@@ -10,6 +11,7 @@ import {
   type WebhookRecord,
   WebhookStatus,
 } from "@control-plane/storage";
+
 import {
   getGithubWebhookDeliveriesFileCacheKey,
   readGithubWebhookDeliveriesFromFile,
@@ -125,7 +127,7 @@ async function buildSnapshot(file: string): Promise<WebhooksSnapshot> {
   const deliveriesCacheKey = await getGithubWebhookDeliveriesFileCacheKey();
   const cacheKey = `${file}:${info.mtime.toISOString()}:${info.size}:${deliveriesCacheKey}`;
   const cached = snapshotCache.get(file);
-  if (cached && cached.key === cacheKey) {
+  if (cached?.key === cacheKey) {
     return cached.snapshot;
   }
 
@@ -178,8 +180,7 @@ function coerceSubscription(value: unknown, index: number, file: string): Webhoo
   if (!isPlainObject(value)) {
     throw new Error(`Entry ${index} in ${file} is not an object.`);
   }
-  const { id, url, eventTypes, enabled, createdAt, secretRef, displayName, metadata } =
-    value as Record<string, unknown>;
+  const { id, url, eventTypes, enabled, createdAt, secretRef, displayName, metadata } = value;
   if (typeof id !== "string" || id.length === 0) {
     throw new Error(`Entry ${index} in ${file} is missing a string \`id\`.`);
   }

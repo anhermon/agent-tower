@@ -1,6 +1,6 @@
+import type { AdapterContext, AdapterLifecycle } from "./common.js";
 import type { DomainEventEnvelope, EventCursor } from "../domain/events.js";
 import type { SessionDescriptor, SessionTurn } from "../domain/sessions.js";
-import type { AdapterContext, AdapterLifecycle } from "./common.js";
 
 export interface SessionIngestBatch {
   readonly session: SessionDescriptor;

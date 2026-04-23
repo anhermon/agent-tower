@@ -1,8 +1,11 @@
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
+
 import type { DateRange } from "@control-plane/core";
+
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
+
 import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
 
 /**
@@ -124,7 +127,7 @@ async function scanWithCache(files: readonly ClaudeSessionFile[]): Promise<ScanR
     seen.add(file.filePath);
     const cached = fileCache.get(file.filePath);
     let entry: FileCacheEntry;
-    if (cached && cached.mtime === file.modifiedAt) {
+    if (cached?.mtime === file.modifiedAt) {
       entry = cached;
     } else {
       const parsed = await readInvocationsFromFile(file.filePath);

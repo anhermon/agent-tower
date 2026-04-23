@@ -1,10 +1,12 @@
-import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
 import Link from "next/link";
+
+import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
+
 import { formatBytes, formatRelative, truncateMiddle } from "@/lib/format";
 
-type AgentSessionListProps = {
+interface AgentSessionListProps {
   readonly sessions: readonly ClaudeSessionFile[];
-};
+}
 
 export function AgentSessionList({ sessions }: AgentSessionListProps) {
   if (sessions.length === 0) {
