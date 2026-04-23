@@ -112,8 +112,8 @@ function parseTicketsFile(raw: string): readonly unknown[] {
 
   // JSON array if the first non-whitespace character is `[`.
   if (trimmed.startsWith("[")) {
-    const parsed = JSON.parse(trimmed);
-    if (!Array.isArray(parsed)) {
+    const parsed: unknown = JSON.parse(trimmed);
+    if (!isUnknownArray(parsed)) {
       throw new Error("Tickets JSON must be an array of TicketRecord objects.");
     }
     return parsed;
@@ -185,6 +185,10 @@ function validateTicket(input: unknown): TicketRecord {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isUnknownArray(value: unknown): value is readonly unknown[] {
+  return Array.isArray(value);
 }
 
 function requireString(record: Record<string, unknown>, field: string): string {
