@@ -117,7 +117,19 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
               const compactionBefore = compactionByTurn.get(i);
               const scrollTarget = deepLinkTurn === turn.uuid;
               return (
-                <div key={turn.uuid} data-turn-target={scrollTarget ? "1" : undefined}>
+                <div
+                  key={turn.uuid}
+                  data-turn-target={scrollTarget ? "1" : undefined}
+                  // Let the browser skip layout/paint for turns that are far
+                  // offscreen. `contain-intrinsic-size` is a rough reserved
+                  // height so the scrollbar stays stable before content paints.
+                  // Text remains discoverable by find-in-page, accessibility
+                  // tree, and anchor scrolling (unlike `visibility: hidden`).
+                  style={{
+                    contentVisibility: "auto",
+                    containIntrinsicSize: "1px 600px",
+                  }}
+                >
                   <TurnCard
                     turn={turn}
                     turnNumber={i + 1}

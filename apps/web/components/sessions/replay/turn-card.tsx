@@ -2,7 +2,7 @@
 
 import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { CompactionCard } from "./compaction-card";
@@ -39,9 +39,14 @@ type Props = {
   readonly toolResults: ToolResultLookup;
 };
 
-export function TurnCard(props: Props) {
+function TurnCardInner(props: Props) {
   return props.turn.type === "user" ? <UserTurn {...props} /> : <AssistantTurn {...props} />;
 }
+
+// Memoize so ancestor re-renders don't cascade through hundreds of turns. Keyed
+// by `turn.uuid` in the parent; shallow-equal on `turn`/`toolResults` reference
+// is sufficient because `replay` is produced once on the server per request.
+export const TurnCard = memo(TurnCardInner);
 
 function UserTurn({ turn, compactionBefore, toolResults }: Props) {
   return (
