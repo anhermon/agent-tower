@@ -55,6 +55,9 @@ export const coverageExclude = [
 ];
 
 export default defineConfig({
+  esbuild: {
+    jsx: "automatic",
+  },
   resolve: {
     alias: sharedAlias,
   },
@@ -140,6 +143,7 @@ export default defineConfig({
       {
         extends: true,
         resolve: { alias: sharedAlias },
+        esbuild: { jsx: "automatic", jsxImportSource: "react" },
         test: {
           name: "web",
           include: [
