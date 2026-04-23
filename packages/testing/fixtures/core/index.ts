@@ -1,11 +1,9 @@
-import type {
-  AgentDescriptor,
-  AgentState,
-  ChannelMessage,
-  SessionDescriptor,
-  SessionTurn,
-} from "@control-plane/core";
 import {
+  type AgentDescriptor,
+  type AgentState,
+  type ChannelMessage,
+  type SessionDescriptor,
+  type SessionTurn,
   AGENT_KINDS,
   AGENT_RUNTIMES,
   AGENT_STATUSES,

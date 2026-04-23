@@ -18,5 +18,6 @@ export { runSessionsShow } from "./commands/sessions-show.js";
 export { runSessionsTop } from "./commands/sessions-top.js";
 export { runSessionsWaste } from "./commands/sessions-waste.js";
 export { runSkillsEfficacy } from "./commands/skills-efficacy.js";
+export { runSkillsHousekeep } from "./commands/skills-housekeep.js";
 export { runSkillsTop } from "./commands/skills-top.js";
 export { runSkillsUsage } from "./commands/skills-usage.js";

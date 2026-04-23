@@ -53,6 +53,20 @@ export {
   computeSkillsEfficacy,
 } from "./skills/efficacy.js";
 export type {
+  ColdGiantSkill,
+  DeadWeightSkill,
+  NegativeEfficacySkill,
+  SkillsHygieneInput,
+  SkillsHygieneReport,
+} from "./skills/hygiene.js";
+export {
+  COLD_GIANT_MAX_INVOCATIONS,
+  COLD_GIANT_SIZE_THRESHOLD_BYTES,
+  computeSkillsHygiene,
+  NEGATIVE_EFFICACY_DELTA_THRESHOLD,
+  NEGATIVE_EFFICACY_MIN_SESSIONS,
+} from "./skills/hygiene.js";
+export type {
   ListSkillsResult,
   LoadSkillResult,
   ResolvedSkillsRoot,

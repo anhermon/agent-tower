@@ -8,6 +8,7 @@ import { sessionsShowTool } from "./tools/sessions-show.js";
 import { sessionsTopTool } from "./tools/sessions-top.js";
 import { sessionsWasteTool } from "./tools/sessions-waste.js";
 import { skillsEfficacyTool } from "./tools/skills-efficacy.js";
+import { skillsHousekeepTool } from "./tools/skills-housekeep.js";
 import { skillsTopTool } from "./tools/skills-top.js";
 import { skillsUsageTool } from "./tools/skills-usage.js";
 
@@ -21,6 +22,7 @@ export const REGISTERED_TOOLS: readonly ToolDefinition[] = [
   skillsTopTool,
   skillsUsageTool,
   skillsEfficacyTool,
+  skillsHousekeepTool,
   agentsListTool,
   controlPlaneAuditTool,
 ];
@@ -105,6 +107,7 @@ export { sessionsShowTool } from "./tools/sessions-show.js";
 export { sessionsTopTool } from "./tools/sessions-top.js";
 export { sessionsWasteTool } from "./tools/sessions-waste.js";
 export { skillsEfficacyTool } from "./tools/skills-efficacy.js";
+export { skillsHousekeepTool } from "./tools/skills-housekeep.js";
 export { skillsTopTool } from "./tools/skills-top.js";
 export { skillsUsageTool } from "./tools/skills-usage.js";
 export type { JsonSchemaObject, ToolDefinition, ToolResult } from "./tools/types.js";

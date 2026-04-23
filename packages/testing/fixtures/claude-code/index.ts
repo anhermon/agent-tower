@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Shared Claude Code JSONL fixtures. Intentionally tiny — each covers one
 // distinct scenario the analytics folds must handle:
