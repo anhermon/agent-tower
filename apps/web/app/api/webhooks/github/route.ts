@@ -1,3 +1,11 @@
+import { randomUUID } from "node:crypto";
+
+import {
+  ControlPlaneEventType,
+  EVENT_ENVELOPE_VERSION,
+  EventSourceKind,
+} from "@control-plane/events";
+
 import {
   type GithubWebhookHeaders,
   getConfiguredGithubWebhookSecret,
@@ -6,6 +14,7 @@ import {
   validateGithubWebhookHeaders,
   verifyGithubWebhookSignature,
 } from "@/lib/github-webhooks";
+import { eventBus } from "@/lib/event-bus";
 import { withAudit } from "@/lib/with-audit";
 
 export const dynamic = "force-dynamic";
@@ -84,6 +93,19 @@ async function persistDelivery(
 
   try {
     const entry = await persistGithubWebhookDelivery({ headers, payload, signatureVerified });
+
+    await eventBus.publish({
+      id: randomUUID(),
+      type: ControlPlaneEventType.WebhookReceived,
+      version: EVENT_ENVELOPE_VERSION,
+      occurredAt: new Date().toISOString(),
+      source: {
+        kind: EventSourceKind.Webhook,
+        id: headers.delivery,
+      },
+      payload,
+    });
+
     return Response.json(
       { ok: true, eventId: entry.id, deliveryId: entry.payload.id },
       { status: 202 }

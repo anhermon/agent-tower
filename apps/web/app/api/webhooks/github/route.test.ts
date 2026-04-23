@@ -3,8 +3,9 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ControlPlaneEventType } from "@control-plane/events";
 import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
 
 import {
@@ -12,6 +13,7 @@ import {
   GITHUB_WEBHOOK_SECRET_ENV,
   type GithubWebhookDeliveryLogEntry,
 } from "@/lib/github-webhooks";
+import { eventBus } from "@/lib/event-bus";
 
 import { POST } from "./route.js";
 
@@ -30,6 +32,7 @@ describe("/api/webhooks/github POST", () => {
   afterEach(async () => {
     restoreEnv(GITHUB_WEBHOOK_SECRET_ENV, originalSecret);
     restoreEnv(GITHUB_WEBHOOK_DELIVERIES_FILE_ENV, originalDeliveriesFile);
+    vi.restoreAllMocks();
 
     while (tempDirs.length > 0) {
       const dir = tempDirs.pop();
@@ -38,6 +41,7 @@ describe("/api/webhooks/github POST", () => {
   });
 
   it("given_valid_signed_github_payload__when_posted__then_delivery_is_accepted_and_persisted", async () => {
+    const publishSpy = vi.spyOn(eventBus, "publish").mockResolvedValue(undefined);
     const deliveriesFile = await createDeliveriesFilePath("success");
     const secret = "github-webhook-secret";
     process.env[GITHUB_WEBHOOK_DELIVERIES_FILE_ENV] = deliveriesFile;
@@ -91,6 +95,19 @@ describe("/api/webhooks/github POST", () => {
       action: "opened",
       repositoryFullName: "octo/hello-world",
       senderLogin: "octocat",
+    });
+
+    expect(publishSpy).toHaveBeenCalledTimes(1);
+    const publishedEvent = publishSpy.mock.calls[0][0];
+    expect(publishedEvent.type).toBe(ControlPlaneEventType.WebhookReceived);
+    expect(publishedEvent.source).toMatchObject({
+      kind: "webhook",
+      id: "delivery-success",
+    });
+    expect(publishedEvent.payload).toMatchObject({
+      action: "opened",
+      repository: { full_name: "octo/hello-world" },
+      sender: { login: "octocat" },
     });
   });
 
