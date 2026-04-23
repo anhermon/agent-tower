@@ -137,7 +137,7 @@ export function AgentGrid({ agents }: AgentGridProps) {
       {filtered.length === 0 ? (
         <EmptyMatch query={query} />
       ) : (
-        <ul role="list" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((agent) => (
             <li key={agent.descriptor.id}>
               <AgentCard agent={agent} />

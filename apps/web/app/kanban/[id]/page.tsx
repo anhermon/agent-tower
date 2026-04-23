@@ -150,7 +150,7 @@ function AuditEntries({ ticket }: { readonly ticket: TicketRecord }) {
           No audit entries attached to this ticket.
         </div>
       ) : (
-        <ul role="list" className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
+        <ul className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
           {entries.map((entry, index) => (
             <li key={`${entry.at}-${index}`} className="flex items-start gap-4 px-4 py-3">
               <div className="min-w-[140px] font-mono text-xs text-muted">{entry.at}</div>

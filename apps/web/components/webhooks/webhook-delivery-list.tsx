@@ -29,7 +29,7 @@ export function WebhookDeliveryList({ deliveries }: WebhookDeliveryListProps) {
 
   return (
     <div className="glass-panel overflow-hidden rounded-md">
-      <ul role="list" className="divide-y divide-line/60">
+      <ul className="divide-y divide-line/60">
         {deliveries.map((delivery) => (
           <li key={delivery.id} className="flex items-center gap-4 px-4 py-3">
             <div className="min-w-0 flex-1">

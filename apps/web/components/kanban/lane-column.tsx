@@ -24,7 +24,7 @@ export function LaneColumn({ status, label, tickets }: LaneColumnProps) {
           No tickets
         </div>
       ) : (
-        <ul role="list" className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-3">
           {tickets.map((ticket) => (
             <li key={ticket.id}>
               <TicketCard ticket={ticket} />
