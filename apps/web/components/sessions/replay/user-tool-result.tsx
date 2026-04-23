@@ -11,11 +11,11 @@ export type ParsedToolResult =
   | { readonly kind: "web_fetch"; readonly text: string }
   | { readonly kind: "plain"; readonly text: string };
 
-type Props = {
+interface Props {
   readonly content: string;
   readonly isError: boolean;
   readonly toolName?: string;
-};
+}
 
 /**
  * Best-effort parse of a Claude Code tool-result body. Recognises the common
@@ -28,14 +28,13 @@ export function parseToolResultMessage(raw: string, toolName?: string): ParsedTo
   if (!s) return { kind: "plain", text: raw };
 
   const prefix = "The file ";
-  const phrasings: Array<{ needle: string; kind: "file_updated" | "file_written" | "file_read" }> =
-    [
-      { needle: " has been updated successfully", kind: "file_updated" },
-      { needle: " has been written successfully", kind: "file_written" },
-      { needle: " has been written.", kind: "file_written" },
-      { needle: " was read successfully", kind: "file_read" },
-      { needle: " has been read.", kind: "file_read" },
-    ];
+  const phrasings: { needle: string; kind: "file_updated" | "file_written" | "file_read" }[] = [
+    { needle: " has been updated successfully", kind: "file_updated" },
+    { needle: " has been written successfully", kind: "file_written" },
+    { needle: " has been written.", kind: "file_written" },
+    { needle: " was read successfully", kind: "file_read" },
+    { needle: " has been read.", kind: "file_read" },
+  ];
 
   if (s.startsWith(prefix)) {
     for (const { needle, kind } of phrasings) {
@@ -63,33 +62,42 @@ function shortenPath(pathStr: string, max = 100): string {
   return `${head}/…/${file}`;
 }
 
+function ErrorResult({ content }: { content: string }) {
+  return (
+    <div className="flex gap-2 rounded-md border border-danger/30 bg-danger/10 px-3 py-2">
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-danger">tool error</p>
+        <pre className="mt-1 whitespace-pre-wrap break-all font-mono text-[12px] leading-relaxed text-danger/80">
+          {content}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+function PlainResult({ text }: { text: string }) {
+  const long = text.length > 320;
+  return (
+    <div className="rounded-md border border-line/60 bg-white/[0.03] px-3 py-2 text-[13px] leading-relaxed text-ink/85">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted/70">result</p>
+      <p className={cn("mt-1 whitespace-pre-wrap break-all", long && "line-clamp-6")}>{text}</p>
+      {long ? (
+        <p className="mt-2 text-[10px] text-muted/60">
+          … {text.length.toLocaleString()} characters total
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function UserToolResult({ content, isError, toolName }: Props) {
+  if (isError) return <ErrorResult content={content} />;
+
   const parsed = parseToolResultMessage(content, toolName);
 
-  if (isError) {
-    return (
-      <div className="flex gap-2 rounded-md border border-danger/30 bg-danger/10 px-3 py-2">
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-danger">
-            tool error
-          </p>
-          <pre className="mt-1 whitespace-pre-wrap break-all font-mono text-[12px] leading-relaxed text-danger/80">
-            {content}
-          </pre>
-        </div>
-      </div>
-    );
-  }
-
-  if (parsed.kind === "file_updated") {
-    return <FileCard variant="updated" path={parsed.path} />;
-  }
-  if (parsed.kind === "file_written") {
-    return <FileCard variant="written" path={parsed.path} />;
-  }
-  if (parsed.kind === "file_read") {
-    return <FileCard variant="read" path={parsed.path} />;
-  }
+  if (parsed.kind === "file_updated") return <FileCard variant="updated" path={parsed.path} />;
+  if (parsed.kind === "file_written") return <FileCard variant="written" path={parsed.path} />;
+  if (parsed.kind === "file_read") return <FileCard variant="read" path={parsed.path} />;
   if (parsed.kind === "bash") {
     return (
       <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-all rounded-md border border-line/60 bg-black/40 px-3 py-2 font-mono text-[12px] leading-relaxed text-ink/90">
@@ -106,23 +114,7 @@ export function UserToolResult({ content, isError, toolName }: Props) {
     );
   }
 
-  const text = parsed.text;
-  const long = text.length > 320;
-  return (
-    <div
-      className={cn(
-        "rounded-md border border-line/60 bg-white/[0.03] px-3 py-2 text-[13px] leading-relaxed text-ink/85"
-      )}
-    >
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted/70">result</p>
-      <p className={cn("mt-1 whitespace-pre-wrap break-all", long && "line-clamp-6")}>{text}</p>
-      {long ? (
-        <p className="mt-2 text-[10px] text-muted/60">
-          … {text.length.toLocaleString()} characters total
-        </p>
-      ) : null}
-    </div>
-  );
+  return <PlainResult text={parsed.text} />;
 }
 
 function FileCard({ variant, path }: { variant: "updated" | "written" | "read"; path: string }) {
@@ -147,7 +139,7 @@ function FileCard({ variant, path }: { variant: "updated" | "written" | "read"; 
 }
 
 function extractFirstUrl(text: string): string | null {
-  const match = text.match(/https?:\/\/[^\s"'>]+/);
+  const match = /https?:\/\/[^\s"'>]+/.exec(text);
   return match ? match[0] : null;
 }
 

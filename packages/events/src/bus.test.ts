@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { InMemoryEventBus } from "./bus.js";
 import { createMockEventEnvelope } from "./mock-stream.js";
 import { ControlPlaneEventType, EventSourceKind } from "./types.js";

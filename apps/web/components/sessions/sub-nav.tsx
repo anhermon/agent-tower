@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import { cn } from "@/lib/utils";
 
-type NavItem = {
+interface NavItem {
   readonly label: string;
   readonly href: string;
   readonly match: (pathname: string) => boolean;
-};
+}
 
 const ITEMS: readonly NavItem[] = [
   {

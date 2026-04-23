@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import {
   assistantEntrySchema,
   parseTranscriptEntries,
@@ -59,9 +60,8 @@ describe("transcript entry validators", () => {
     const result = userEntrySchema.safeParse(raw);
     expect(result.success).toBe(true);
     if (result.success) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((result.data as any).extraTopLevel).toBe(true);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       expect((result.data.message as any).customField).toBe(42);
     }
   });
@@ -106,7 +106,6 @@ describe("transcript entry validators", () => {
     const result = resultEntrySchema.safeParse(raw);
     expect(result.success).toBe(true);
     if (result.success) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((result.data as any).exitCode).toBe(0);
     }
   });

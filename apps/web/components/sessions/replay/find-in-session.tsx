@@ -1,18 +1,58 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
-type Props = {
+interface Props {
   /** Only captures ⌘F/Ctrl+F when true — the caller toggles this when the
    *  replay panel has focus so we don't hijack the global browser find. */
   readonly enabled?: boolean;
   /** Selector of the scrollable element whose text we'll search. */
   readonly targetSelector?: string;
-};
+}
 
 const HIGHLIGHT_CLASS = "cp-find-hit";
 const ACTIVE_CLASS = "cp-find-active";
+
+function isAcceptableTextNode(node: Node): boolean {
+  if (!node.nodeValue) return false;
+  if (!(node.parentElement instanceof HTMLElement)) return false;
+  const tag = node.parentElement.tagName;
+  return tag !== "SCRIPT" && tag !== "STYLE";
+}
+
+function collectTextNodes(scope: Element): Text[] {
+  const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      return isAcceptableTextNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    },
+  });
+  const nodes: Text[] = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+  return nodes;
+}
+
+function highlightTextNode(tn: Text, re: RegExp, hits: HTMLElement[]): void {
+  const text = tn.nodeValue ?? "";
+  if (!re.test(text)) return;
+  re.lastIndex = 0;
+  const frag = document.createDocumentFragment();
+  let last = 0;
+  let m: RegExpExecArray | null = re.exec(text);
+  while (m !== null) {
+    if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const mark = document.createElement("mark");
+    mark.className = HIGHLIGHT_CLASS;
+    mark.textContent = m[0];
+    frag.appendChild(mark);
+    hits.push(mark);
+    last = m.index + m[0].length;
+    m = re.exec(text);
+  }
+  if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+  tn.parentNode?.replaceChild(frag, tn);
+}
 
 /**
  * In-page find overlay. Activates on ⌘F / Ctrl+F and hijacks the default
@@ -42,37 +82,10 @@ export function FindInSession({ enabled = true, targetSelector = "[data-find-sco
       const scope = document.querySelector(targetSelector);
       if (!scope) return [];
       const re = new RegExp(escapeRegExp(q), "gi");
-      const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
-        acceptNode(node) {
-          if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
-          if (!(node.parentElement instanceof HTMLElement)) return NodeFilter.FILTER_REJECT;
-          const tag = node.parentElement.tagName;
-          if (tag === "SCRIPT" || tag === "STYLE") return NodeFilter.FILTER_REJECT;
-          return NodeFilter.FILTER_ACCEPT;
-        },
-      });
+      const textNodes = collectTextNodes(scope);
       const hits: HTMLElement[] = [];
-      const textNodes: Text[] = [];
-      while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
       for (const tn of textNodes) {
-        const text = tn.nodeValue ?? "";
-        if (!re.test(text)) continue;
-        re.lastIndex = 0;
-        const frag = document.createDocumentFragment();
-        let last = 0;
-        let m: RegExpExecArray | null = re.exec(text);
-        while (m !== null) {
-          if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
-          const mark = document.createElement("mark");
-          mark.className = HIGHLIGHT_CLASS;
-          mark.textContent = m[0];
-          frag.appendChild(mark);
-          hits.push(mark);
-          last = m.index + m[0].length;
-          m = re.exec(text);
-        }
-        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
-        tn.parentNode?.replaceChild(frag, tn);
+        highlightTextNode(tn, re, hits);
       }
       return hits;
     },

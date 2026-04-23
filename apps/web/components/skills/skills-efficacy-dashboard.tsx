@@ -1,11 +1,12 @@
 "use client";
 
-import type { JSX } from "react";
-import type { SkillsEfficacyReport } from "@/lib/skills-efficacy-source";
 import { SkillsEfficacyInsufficient } from "./skills-efficacy-insufficient";
 import { SkillsEfficacyNarratives } from "./skills-efficacy-narratives";
 import { SkillsEfficacySummary } from "./skills-efficacy-summary";
 import { SkillsEfficacyTable } from "./skills-efficacy-table";
+
+import type { SkillsEfficacyReport } from "@/lib/skills-efficacy-source";
+import type { JSX } from "react";
 
 /**
  * Composition shell for the Skill Efficacy view. Orders the four

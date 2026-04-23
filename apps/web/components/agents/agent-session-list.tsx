@@ -1,10 +1,12 @@
-import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
 import Link from "next/link";
+
+import type { ClaudeSessionFile } from "@control-plane/adapter-claude-code";
+
 import { formatBytes, formatRelative, truncateMiddle } from "@/lib/format";
 
-type AgentSessionListProps = {
+interface AgentSessionListProps {
   readonly sessions: readonly ClaudeSessionFile[];
-};
+}
 
 export function AgentSessionList({ sessions }: AgentSessionListProps) {
   if (sessions.length === 0) {
@@ -17,7 +19,7 @@ export function AgentSessionList({ sessions }: AgentSessionListProps) {
 
   return (
     <div className="glass-panel overflow-hidden rounded-md">
-      <ul role="list" className="divide-y divide-line/60">
+      <ul className="divide-y divide-line/60">
         {sessions.map((session) => (
           <li key={session.filePath}>
             <Link

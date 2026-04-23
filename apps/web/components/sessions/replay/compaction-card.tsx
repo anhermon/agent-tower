@@ -1,9 +1,10 @@
 import type { ReplayCompactionEvent } from "@control-plane/core";
+
 import { formatTokens } from "@/lib/format";
 
-type Props = {
+interface Props {
   readonly event: ReplayCompactionEvent;
-};
+}
 
 export function CompactionCard({ event }: Props) {
   return (

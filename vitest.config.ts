@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
 const fromRoot = (relative: string) => fileURLToPath(new URL(relative, import.meta.url));
@@ -51,9 +52,19 @@ export const coverageExclude = [
   "packages/testing/**",
   "e2e/**",
   "test/shims/**",
+  // Next.js server-rendered entry points have no meaningful unit-test surface;
+  // they are integration-tested via Playwright.
+  "apps/web/app/**/page.tsx",
+  "apps/web/app/**/layout.tsx",
+  "apps/web/app/**/loading.tsx",
+  "apps/web/app/**/error.tsx",
+  "apps/web/app/**/not-found.tsx",
 ];
 
 export default defineConfig({
+  esbuild: {
+    jsx: "automatic",
+  },
   resolve: {
     alias: sharedAlias,
   },
@@ -139,6 +150,7 @@ export default defineConfig({
       {
         extends: true,
         resolve: { alias: sharedAlias },
+        esbuild: { jsx: "automatic", jsxImportSource: "react" },
         test: {
           name: "web",
           include: [

@@ -1,4 +1,5 @@
 import { readFile, stat } from "node:fs/promises";
+
 import {
   WEBHOOK_EVENT_TYPES,
   type WebhookDelivery,
@@ -10,6 +11,7 @@ import {
   type WebhookRecord,
   WebhookStatus,
 } from "@control-plane/storage";
+
 import {
   getGithubWebhookDeliveriesFileCacheKey,
   readGithubWebhookDeliveriesFromFile,
@@ -125,7 +127,7 @@ async function buildSnapshot(file: string): Promise<WebhooksSnapshot> {
   const deliveriesCacheKey = await getGithubWebhookDeliveriesFileCacheKey();
   const cacheKey = `${file}:${info.mtime.toISOString()}:${info.size}:${deliveriesCacheKey}`;
   const cached = snapshotCache.get(file);
-  if (cached && cached.key === cacheKey) {
+  if (cached?.key === cacheKey) {
     return cached.snapshot;
   }
 
@@ -178,8 +180,32 @@ function coerceSubscription(value: unknown, index: number, file: string): Webhoo
   if (!isPlainObject(value)) {
     throw new Error(`Entry ${index} in ${file} is not an object.`);
   }
-  const { id, url, eventTypes, enabled, createdAt, secretRef, displayName, metadata } =
-    value as Record<string, unknown>;
+  const { id, url, enabled, createdAt } = requireSubscriptionCore(value, index, file);
+  const normalizedEventTypes = coerceEventTypes(value.eventTypes, id, file);
+  const extras = collectSubscriptionExtras(value);
+  return {
+    id,
+    url,
+    enabled,
+    createdAt,
+    eventTypes: normalizedEventTypes,
+    ...extras,
+  };
+}
+
+interface SubscriptionCore {
+  readonly id: string;
+  readonly url: string;
+  readonly enabled: boolean;
+  readonly createdAt: string;
+}
+
+function requireSubscriptionCore(
+  value: Record<string, unknown>,
+  index: number,
+  file: string
+): SubscriptionCore {
+  const { id, url, enabled, createdAt } = value;
   if (typeof id !== "string" || id.length === 0) {
     throw new Error(`Entry ${index} in ${file} is missing a string \`id\`.`);
   }
@@ -192,16 +218,21 @@ function coerceSubscription(value: unknown, index: number, file: string): Webhoo
   if (typeof createdAt !== "string" || createdAt.length === 0) {
     throw new Error(`Entry ${id} in ${file} is missing a string \`createdAt\`.`);
   }
-  const normalizedEventTypes = coerceEventTypes(eventTypes, id, file);
+  return { id, url, enabled, createdAt };
+}
 
+interface SubscriptionExtras {
+  displayName?: string;
+  secretRef?: string;
+  metadata?: WebhookSubscription["metadata"];
+}
+
+function collectSubscriptionExtras(value: Record<string, unknown>): SubscriptionExtras {
   // Build up only the optional fields that were actually present so the
   // resulting value stays compatible with `exactOptionalPropertyTypes` in
   // core.
-  const extras: {
-    displayName?: string;
-    secretRef?: string;
-    metadata?: WebhookSubscription["metadata"];
-  } = {};
+  const extras: SubscriptionExtras = {};
+  const { displayName, secretRef, metadata } = value;
   if (typeof displayName === "string" && displayName.trim().length > 0) {
     extras.displayName = displayName.trim();
   }
@@ -211,15 +242,7 @@ function coerceSubscription(value: unknown, index: number, file: string): Webhoo
   if (isPlainObject(metadata)) {
     extras.metadata = metadata as WebhookSubscription["metadata"];
   }
-
-  return {
-    id,
-    url,
-    enabled,
-    createdAt,
-    eventTypes: normalizedEventTypes,
-    ...extras,
-  };
+  return extras;
 }
 
 function coerceEventTypes(value: unknown, id: string, file: string): readonly WebhookEventType[] {

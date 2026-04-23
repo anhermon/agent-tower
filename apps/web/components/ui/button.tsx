@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: ReactNode;

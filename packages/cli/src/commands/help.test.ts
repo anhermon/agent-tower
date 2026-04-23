@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+
 import { captureOutput } from "../test-helpers.js";
+
 import { COMMANDS, runHelp } from "./help.js";
 
 describe("runHelp", () => {

@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import { WebhookDeliveryList } from "@/components/webhooks/webhook-delivery-list";
 import { WebhookTable } from "@/components/webhooks/webhook-table";
 import { getModuleByKey } from "@/lib/modules";
 import {
@@ -14,7 +15,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function WebhooksPage() {
-  const module = getModuleByKey("webhooks");
+  const mod = getModuleByKey("webhooks");
   const configuredFile = getConfiguredWebhooksFile();
   const result = await listWebhooksOrEmpty();
 
@@ -31,14 +32,14 @@ export default async function WebhooksPage() {
         <div className="min-w-0">
           <p className="eyebrow">Module</p>
           <div className="mt-1 flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Webhook subscriptions configured for this control plane instance. Read-only for Phase 2
-            v1: no CRUD yet. An inbound GitHub receiver at <code>/api/webhooks/github</code>
-            validates signatures and appends accepted deliveries to the local event log; delivery
-            history will surface here once the store is wired in.
+            Webhook subscriptions configured for this control plane instance. Read-only for this
+            slice: no CRUD yet. The inbound GitHub receiver at <code>/api/webhooks/github</code>
+            validates signatures and appends accepted deliveries to the local event log. Invocation
+            history is shown below and links to sessions when a session id is present.
           </p>
           {configuredFile ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={configuredFile}>
@@ -75,7 +76,7 @@ function WebhooksBody({ result }: { result: ListWebhooksResult }) {
     );
   }
 
-  const { subscriptions } = result.snapshot;
+  const { subscriptions, deliveries } = result.snapshot;
   if (subscriptions.length === 0) {
     return (
       <EmptyState
@@ -89,6 +90,20 @@ function WebhooksBody({ result }: { result: ListWebhooksResult }) {
     <div className="flex flex-col gap-5">
       <SummaryStrip listings={subscriptions} />
       <WebhookTable listings={subscriptions} />
+      <section className="space-y-3">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="eyebrow">Invocation log</p>
+            <h2 className="text-base font-semibold text-ink">Recent webhook deliveries</h2>
+          </div>
+          <p className="text-xs text-muted">Showing {deliveries.length} recorded invocation(s).</p>
+        </div>
+        <WebhookDeliveryList
+          deliveries={[...deliveries].sort((a, b) =>
+            a.attemptedAt < b.attemptedAt ? 1 : a.attemptedAt > b.attemptedAt ? -1 : 0
+          )}
+        />
+      </section>
     </div>
   );
 }

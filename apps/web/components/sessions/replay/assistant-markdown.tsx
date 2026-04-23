@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
 import { cn } from "@/lib/utils";
 
 // Dynamically load the CodeBlock (Prism + one-dark theme) only when an
@@ -13,10 +14,10 @@ const CodeBlock = dynamic(() => import("./code-block").then((m) => m.CodeBlock),
   loading: () => <pre aria-busy="true" className="whitespace-pre-wrap" />,
 });
 
-type Props = {
+interface Props {
   readonly content: string;
   readonly className?: string;
-};
+}
 
 /**
  * Renders Claude assistant text as GitHub-flavored markdown. Fenced code
@@ -86,14 +87,14 @@ export function AssistantMarkdown({ content, className }: Props) {
   );
 }
 
-type CodeProps = {
+interface CodeProps {
   readonly className?: string;
   readonly children?: React.ReactNode;
-};
+}
 
 function CodeRenderer({ className, children }: CodeProps) {
   const languageMatch = /language-(\w+)/.exec(className ?? "");
-  const raw = String(children ?? "");
+  const raw = stringifyChildren(children);
   const isBlock = !!languageMatch || raw.includes("\n");
   if (!isBlock) {
     return (
@@ -105,4 +106,18 @@ function CodeRenderer({ className, children }: CodeProps) {
   const language = languageMatch?.[1] ?? "text";
   const stripped = raw.replace(/\n$/, "");
   return <CodeBlock code={stripped} language={language} />;
+}
+
+function stringifyChildren(children: React.ReactNode): string {
+  if (children == null) return "";
+  if (typeof children === "string") return children;
+  if (typeof children === "number" || typeof children === "boolean") return String(children);
+  if (Array.isArray(children)) return children.map(stringifyChildren).join("");
+  // Objects / React elements: walk their `props.children` if present;
+  // otherwise stringify to an empty marker rather than `[object Object]`.
+  if (typeof children === "object" && "props" in children) {
+    const kids = (children as { props?: { children?: React.ReactNode } }).props?.children;
+    return kids == null ? "" : stringifyChildren(kids);
+  }
+  return "";
 }

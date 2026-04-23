@@ -1,5 +1,6 @@
 import { existsSync, statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+
 import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,
@@ -112,8 +113,8 @@ function parseTicketsFile(raw: string): readonly unknown[] {
 
   // JSON array if the first non-whitespace character is `[`.
   if (trimmed.startsWith("[")) {
-    const parsed = JSON.parse(trimmed);
-    if (!Array.isArray(parsed)) {
+    const parsed: unknown = JSON.parse(trimmed);
+    if (!isUnknownArray(parsed)) {
       throw new Error("Tickets JSON must be an array of TicketRecord objects.");
     }
     return parsed;
@@ -167,16 +168,16 @@ function validateTicket(input: unknown): TicketRecord {
     createdAt,
     updatedAt,
     ...(optionalString(input, "description") !== null
-      ? { description: optionalString(input, "description") as string }
+      ? { description: optionalString(input, "description")! }
       : {}),
     ...(optionalString(input, "assigneeAgentId") !== null
-      ? { assigneeAgentId: optionalString(input, "assigneeAgentId") as string }
+      ? { assigneeAgentId: optionalString(input, "assigneeAgentId")! }
       : {}),
     ...(optionalString(input, "sessionId") !== null
-      ? { sessionId: optionalString(input, "sessionId") as string }
+      ? { sessionId: optionalString(input, "sessionId")! }
       : {}),
     ...(optionalString(input, "externalUrl") !== null
-      ? { externalUrl: optionalString(input, "externalUrl") as string }
+      ? { externalUrl: optionalString(input, "externalUrl")! }
       : {}),
     ...(isRecord(input.metadata) ? { metadata: input.metadata as TicketRecord["metadata"] } : {}),
   };
@@ -185,6 +186,10 @@ function validateTicket(input: unknown): TicketRecord {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isUnknownArray(value: unknown): value is readonly unknown[] {
+  return Array.isArray(value);
 }
 
 function requireString(record: Record<string, unknown>, field: string): string {
@@ -245,5 +250,5 @@ export function groupTicketsByStatus(
       return a.id.localeCompare(b.id);
     });
   }
-  return buckets as Record<TicketStatus, readonly TicketRecord[]>;
+  return buckets;
 }

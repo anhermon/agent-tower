@@ -60,7 +60,7 @@ export function getConfiguredAnalyticsSource(): ClaudeCodeAnalyticsSource | null
     analyticsCache = null;
     return null;
   }
-  if (analyticsCache && analyticsCache.directory === resolved.directory) {
+  if (analyticsCache?.directory === resolved.directory) {
     return analyticsCache.source;
   }
   const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
@@ -114,7 +114,11 @@ async function enrichWithPreviews(
   files: readonly ClaudeSessionFile[]
 ): Promise<readonly SessionListing[]> {
   const concurrency = 24;
-  const results: SessionListing[] = new Array(files.length);
+  // Allocate a sparse slot per input file. `new Array(n)` types as `any[]`,
+  // which defeats type-aware lint rules — construct the slot array as
+  // `SessionListing[]` directly.
+  const results: SessionListing[] = [];
+  results.length = files.length;
   let cursor = 0;
 
   const worker = async (): Promise<void> => {
@@ -122,7 +126,7 @@ async function enrichWithPreviews(
       const index = cursor;
       cursor += 1;
       if (index >= files.length) return;
-      const file = files[index]!;
+      const file = files[index];
       const cacheKey = `${file.filePath}:${file.modifiedAt}`;
       let preview = previewCache.get(cacheKey);
       if (!preview) {
@@ -226,9 +230,19 @@ function errorMessage(error: unknown): string {
 // without importing the adapter directly. No UI file changes in Wave 0 —
 // these exist for Wave 1 to call.
 
-type Unconfigured = { readonly ok: false; readonly reason: "unconfigured" };
-type ErrResult = { readonly ok: false; readonly reason: "error"; readonly message: string };
-type Ok<T> = { readonly ok: true; readonly value: T };
+interface Unconfigured {
+  readonly ok: false;
+  readonly reason: "unconfigured";
+}
+interface ErrResult {
+  readonly ok: false;
+  readonly reason: "error";
+  readonly message: string;
+}
+interface Ok<T> {
+  readonly ok: true;
+  readonly value: T;
+}
 type Result<T> = Ok<T> | Unconfigured | ErrResult;
 
 function errResult(error: unknown): ErrResult {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { WebhookDeliveryList } from "@/components/webhooks/webhook-delivery-list";
 import { WebhookSecretBanner } from "@/components/webhooks/webhook-secret-banner";
@@ -8,9 +9,9 @@ import { loadWebhookOrUndefined, WEBHOOKS_FILE_ENV } from "@/lib/webhooks-source
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
-};
+}
 
 export default async function WebhookDetailPage({ params }: PageProps) {
   const { id } = await params;
@@ -113,9 +114,7 @@ export default async function WebhookDetailPage({ params }: PageProps) {
             <p className="eyebrow">Deliveries</p>
             <h2 className="text-base font-semibold text-ink">Recent attempts</h2>
           </div>
-          <p className="text-xs text-muted">
-            Inbound receiver deferred — deliveries are empty until Phase 3.
-          </p>
+          <p className="text-xs text-muted">Invocation log from the inbound GitHub receiver.</p>
         </div>
         <WebhookDeliveryList deliveries={deliveries} />
       </div>

@@ -1,7 +1,6 @@
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { SkillGrid, SkillsEfficacyDashboard } from "@/components/skills/_lazy";
-import type { SkillGridItem } from "@/components/skills/skill-grid";
 import { SkillsDashboard } from "@/components/skills/skills-dashboard";
 import { ViewportMount } from "@/components/skills/viewport-mount";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +17,14 @@ import {
 } from "@/lib/skills-source";
 import { computeSkillsUsage, type ListSkillsUsageResult } from "@/lib/skills-usage-source";
 
+import type { SkillGridItem } from "@/components/skills/skill-grid";
+
 export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function SkillsPage({ searchParams }: { searchParams: SearchParams }) {
-  const module = getModuleByKey("skills");
+  const mod = getModuleByKey("skills");
   const sp = await searchParams;
   const range = resolveRangeFromSearchParams(sp);
   const [result, usage, efficacy] = await Promise.all([
@@ -40,7 +41,7 @@ export default async function SkillsPage({ searchParams }: { searchParams: Searc
           <p className="eyebrow">Module</p>
           <div className="mt-1 flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink md:text-[34px]">
-              {module.label}
+              {mod.label}
             </h1>
             <Badge state={status} />
           </div>

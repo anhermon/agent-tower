@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ModelUsage, TurnUsage } from "../domain/costs.js";
+
 import {
   cacheEfficiency,
   EMPTY_CACHE_EFFICIENCY,
@@ -9,6 +9,8 @@ import {
   PRICING,
   PRICING_FALLBACK_KEY,
 } from "./pricing.js";
+
+import type { ModelUsage, TurnUsage } from "../domain/costs.js";
 
 describe("pricing", () => {
   it("given_every_known_model__when_snapshotting_prices__then_rates_match_the_public_rate_card_divided_per_token", () => {

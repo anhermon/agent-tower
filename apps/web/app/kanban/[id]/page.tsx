@@ -1,5 +1,7 @@
-import type { TicketRecord } from "@control-plane/core";
 import Link from "next/link";
+
+import type { TicketRecord } from "@control-plane/core";
+
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/kanban/ticket-status-badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { formatRelative } from "@/lib/format";
@@ -7,9 +9,9 @@ import { loadTicketOrUndefined, TICKETS_FILE_ENV } from "@/lib/kanban-source";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
-};
+}
 
 export default async function TicketDetailPage({ params }: PageProps) {
   const { id } = await params;
@@ -150,7 +152,7 @@ function AuditEntries({ ticket }: { readonly ticket: TicketRecord }) {
           No audit entries attached to this ticket.
         </div>
       ) : (
-        <ul role="list" className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
+        <ul className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
           {entries.map((entry, index) => (
             <li key={`${entry.at}-${index}`} className="flex items-start gap-4 px-4 py-3">
               <div className="min-w-[140px] font-mono text-xs text-muted">{entry.at}</div>

@@ -1,9 +1,11 @@
 "use client";
 
-import type { SessionSearchHit } from "@control-plane/core";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import type { SessionSearchHit } from "@control-plane/core";
+
 import { truncateMiddle } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -113,6 +115,11 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   if (!open) return null;
 
   return (
+    // Reason: role="dialog" is a non-interactive ARIA role, but this is the
+    // backdrop overlay for a modal. Click-to-close + Escape are the standard
+    // dismiss affordances; mouse/keyboard listeners are required here even
+    // though the rule flags non-interactive roles.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       role="dialog"
       aria-modal="true"
@@ -120,6 +127,9 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
       className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-[10vh]"
       onClick={(event) => {
         if (event.target === event.currentTarget) onOpenChange(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") onOpenChange(false);
       }}
     >
       <Command
@@ -134,6 +144,9 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
             ⌕
           </span>
           <Command.Input
+            // Reason: modal-open focus trap — focus the search input when
+            // the palette opens so keyboard users can start typing immediately.
+            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
             value={query}
             onValueChange={setQuery}

@@ -7,6 +7,7 @@ import {
   scoreSessionsWaste,
 } from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary, WasteVerdict } from "@control-plane/core";
+
 import { resolveOrExplain } from "../data-root.js";
 import { parseFlags, readDateFlag, readIntFlag } from "../flags.js";
 import { bold, renderTable, resolveOutputMode, writeJson, writeLine } from "../output.js";

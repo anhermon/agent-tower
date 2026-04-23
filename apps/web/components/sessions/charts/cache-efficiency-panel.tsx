@@ -1,7 +1,9 @@
 "use client";
 
-import type { CacheEfficiency, ModelCostBreakdown } from "@control-plane/core";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import type { CacheEfficiency, ModelCostBreakdown } from "@control-plane/core";
+
 import { formatCost, formatPercent, formatTokens } from "@/lib/format";
 
 interface Props {
@@ -69,8 +71,8 @@ export function CacheEfficiencyPanel({ models, overall, totalCostUsd }: Props) {
               dataKey="value"
               strokeWidth={0}
             >
-              {pieData.map((entry, i) => (
-                <Cell key={i} fill={entry.color} aria-label={entry.name} />
+              {pieData.map((entry) => (
+                <Cell key={entry.name} fill={entry.color} aria-label={entry.name} />
               ))}
             </Pie>
             <Tooltip
@@ -83,7 +85,7 @@ export function CacheEfficiencyPanel({ models, overall, totalCostUsd }: Props) {
               formatter={
                 ((val: unknown, name: unknown) => [
                   formatTokens(Number(val ?? 0)),
-                  String(name ?? ""),
+                  typeof name === "string" || typeof name === "number" ? String(name) : "",
                 ]) as never
               }
             />

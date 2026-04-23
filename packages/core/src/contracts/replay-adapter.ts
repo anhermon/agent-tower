@@ -1,6 +1,6 @@
+import type { AdapterContext, AdapterLifecycle, Subscription } from "./common.js";
 import type { DomainEventEnvelope } from "../domain/events.js";
 import type { ReplayFrame, ReplayRequest, ReplayResult } from "../domain/replay.js";
-import type { AdapterContext, AdapterLifecycle, Subscription } from "./common.js";
 
 export interface ReplayAdapter extends AdapterLifecycle {
   readonly prepare: (

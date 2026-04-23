@@ -1,8 +1,10 @@
 "use client";
 
 import { type JSX, useMemo } from "react";
-import type { SkillEfficacyRow } from "@/lib/skills-efficacy-source";
+
 import { formatDelta } from "./format-efficacy";
+
+import type { SkillEfficacyRow } from "@/lib/skills-efficacy-source";
 
 const MAX_CARDS = 8;
 

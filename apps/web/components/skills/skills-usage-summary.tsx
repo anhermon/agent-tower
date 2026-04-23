@@ -1,8 +1,9 @@
 "use client";
 
-import type { JSX } from "react";
-import type { SkillsUsageReport } from "@/lib/skills-usage-source";
 import { formatShortDate, formatTokens } from "./format-usage";
+
+import type { SkillsUsageReport } from "@/lib/skills-usage-source";
+import type { JSX } from "react";
 
 /**
  * Stat-card strip for the Skills usage dashboard. Mirrors the
@@ -21,11 +22,11 @@ export function SkillsUsageSummary({
       ? `${formatShortDate(totals.firstInvokedAt)} → ${formatShortDate(totals.lastInvokedAt)}`
       : "—";
 
-  const items: ReadonlyArray<{
+  const items: readonly {
     readonly label: string;
     readonly value: string;
     readonly hint?: string;
-  }> = [
+  }[] = [
     {
       label: "Total invocations",
       value: totals.totalInvocations.toLocaleString(),

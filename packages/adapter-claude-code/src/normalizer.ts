@@ -1,25 +1,23 @@
-import type {
-  JsonObject,
-  JsonValue,
-  SessionActor,
-  SessionContent,
-  SessionDescriptor,
-  SessionIngestBatch,
-  SessionState,
-  SessionTurn,
-  ToolCall,
-  ToolResult,
-} from "@control-plane/core";
 import {
+  type JsonObject,
+  type JsonValue,
+  type SessionActor,
+  type SessionContent,
+  type SessionDescriptor,
+  type SessionIngestBatch,
+  type SessionState,
+  type SessionTurn,
+  type ToolCall,
+  type ToolResult,
   AGENT_RUNTIMES,
   SESSION_ACTOR_ROLES,
   SESSION_STATES,
   TOOL_CALL_STATUSES,
 } from "@control-plane/core";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
-  ClaudeRawRecord,
   ClaudeRawValue,
   ClaudeSystemEntry,
   ClaudeTranscriptEntry,
@@ -49,7 +47,41 @@ export interface NormalizedTranscript {
   readonly batch: SessionIngestBatch;
 }
 
-const DEFAULT_AGENT_ID = "claude-code";
+const CLAUDE_CODE_SOURCE = "claude-code";
+const DEFAULT_AGENT_ID = CLAUDE_CODE_SOURCE;
+
+interface AccumulatedEntries {
+  readonly turns: SessionTurn[];
+  readonly toolCalls: ToolCall[];
+  readonly toolResults: ToolResult[];
+  readonly skipped: number;
+}
+
+function accumulateNormalizedEntries(
+  entries: readonly ClaudeTranscriptEntry[],
+  sessionId: string
+): AccumulatedEntries {
+  const turns: SessionTurn[] = [];
+  const toolCalls: ToolCall[] = [];
+  const toolResults: ToolResult[] = [];
+  let sequence = 0;
+  let skipped = 0;
+  const nextSequence = (): number => ++sequence;
+
+  for (const entry of entries) {
+    const normalizedTurns = normalizeEntry(entry, sessionId, nextSequence);
+    if (normalizedTurns === null) {
+      skipped += 1;
+      continue;
+    }
+    for (const item of normalizedTurns) {
+      turns.push(item.turn);
+      if (item.toolCall) toolCalls.push(item.toolCall);
+      if (item.toolResult) toolResults.push(item.toolResult);
+    }
+  }
+  return { turns, toolCalls, toolResults, skipped };
+}
 
 export function normalizeTranscript(
   entries: readonly ClaudeTranscriptEntry[],
@@ -67,29 +99,10 @@ export function normalizeTranscript(
   const createdAt = firstDefined(entries, (entry) => entry.timestamp) ?? new Date(0).toISOString();
   const updatedAt = lastDefined(entries, (entry) => entry.timestamp) ?? createdAt;
 
-  const turns: SessionTurn[] = [];
-  const toolCalls: ToolCall[] = [];
-  const toolResults: ToolResult[] = [];
-  let sequence = 0;
-  let skipped = 0;
-
-  for (const entry of entries) {
-    const normalizedTurns = normalizeEntry(entry, sessionId, () => ++sequence);
-    if (normalizedTurns === null) {
-      skipped += 1;
-      continue;
-    }
-
-    for (const item of normalizedTurns) {
-      turns.push(item.turn);
-      if (item.toolCall) {
-        toolCalls.push(item.toolCall);
-      }
-      if (item.toolResult) {
-        toolResults.push(item.toolResult);
-      }
-    }
-  }
+  const { turns, toolCalls, toolResults, skipped } = accumulateNormalizedEntries(
+    entries,
+    sessionId
+  );
 
   const derivedTitle = deriveSessionTitle(entries);
   const title = options.title ?? derivedTitle;
@@ -210,7 +223,7 @@ function normalizeBlockAsUser(
       output: resultContent,
       completedAt: createdAt,
       metadata: {
-        source: "claude-code",
+        source: CLAUDE_CODE_SOURCE,
         ...(entry.uuid ? { entryUuid: entry.uuid } : {}),
       },
     };
@@ -320,7 +333,7 @@ function normalizeBlockAsAssistant(
       requestedAt: createdAt,
       startedAt: createdAt,
       metadata: {
-        source: "claude-code",
+        source: CLAUDE_CODE_SOURCE,
         ...(entry.uuid ? { entryUuid: entry.uuid } : {}),
       },
     };
@@ -384,7 +397,7 @@ interface BuildTurnInput {
 
 function buildTurn(input: BuildTurnInput): SessionTurn {
   const metadata: JsonObject = {
-    source: "claude-code",
+    source: CLAUDE_CODE_SOURCE,
     ...(input.entry.uuid ? { entryUuid: input.entry.uuid } : {}),
     ...(input.entry.parentUuid ? { parentUuid: input.entry.parentUuid } : {}),
     ...(input.entry.cwd ? { cwd: input.entry.cwd } : {}),
@@ -408,7 +421,7 @@ function buildTurn(input: BuildTurnInput): SessionTurn {
 
 function collectSessionMetadata(entries: readonly ClaudeTranscriptEntry[]): JsonObject {
   const first = entries[0];
-  const metadata: Record<string, JsonValue> = { source: "claude-code" };
+  const metadata: Record<string, JsonValue> = { source: CLAUDE_CODE_SOURCE };
 
   if (first?.cwd) metadata.cwd = first.cwd;
   if (first?.version) metadata.claudeVersion = first.version;
@@ -425,33 +438,47 @@ function collectSessionMetadata(entries: readonly ClaudeTranscriptEntry[]): Json
 }
 
 function deriveSessionTitle(entries: readonly ClaudeTranscriptEntry[]): string | undefined {
+  const fromSummary = titleFromSummaryEntries(entries);
+  if (fromSummary !== undefined) return fromSummary;
+  return titleFromUserEntries(entries);
+}
+
+function titleFromSummaryEntries(entries: readonly ClaudeTranscriptEntry[]): string | undefined {
   for (const entry of entries) {
-    if (entry.type === "summary") {
-      const summary = (entry as { readonly summary?: string }).summary;
-      if (typeof summary === "string" && summary.trim().length > 0) {
-        return truncateTitle(summary);
-      }
+    if (entry.type !== "summary") continue;
+    const summary = (entry as { readonly summary?: string }).summary;
+    if (typeof summary === "string" && summary.trim().length > 0) {
+      return truncateTitle(summary);
     }
   }
+  return undefined;
+}
+
+function titleFromUserEntries(entries: readonly ClaudeTranscriptEntry[]): string | undefined {
   for (const entry of entries) {
     if (entry.type !== "user") continue;
-    const content = (entry as ClaudeUserEntry).message?.content;
-    const candidates: string[] = [];
-    if (typeof content === "string") {
-      candidates.push(content);
-    } else if (Array.isArray(content)) {
-      for (const block of content) {
-        if (block.type === "text" && typeof block.text === "string") {
-          candidates.push(block.text);
-        }
-      }
-    }
+    const candidates = collectUserTextCandidates((entry as ClaudeUserEntry).message?.content);
     for (const raw of candidates) {
       const cleaned = sanitizeTitleCandidate(raw);
       if (cleaned) return truncateTitle(cleaned);
     }
   }
   return undefined;
+}
+
+function collectUserTextCandidates(
+  content: string | readonly ClaudeContentBlock[] | undefined
+): readonly string[] {
+  if (typeof content === "string") return [content];
+  if (!Array.isArray(content)) return [];
+  // Re-assert readonly element type: `Array.isArray` narrows to `any[]` and
+  // collapses the `readonly ClaudeContentBlock[]` shape, defeating the guard.
+  const blocks: readonly ClaudeContentBlock[] = content;
+  const candidates: string[] = [];
+  for (const block of blocks) {
+    if (isClaudeTextBlock(block)) candidates.push(block.text);
+  }
+  return candidates;
 }
 
 // Claude Code injects wrappers like <local-command-caveat>, <command-name>,
@@ -541,7 +568,7 @@ function toJsonValue(raw: ClaudeRawValue): JsonValue {
     return raw.map((item) => toJsonValue(item));
   }
   const entries: [string, JsonValue][] = [];
-  for (const [key, value] of Object.entries(raw as ClaudeRawRecord)) {
+  for (const [key, value] of Object.entries(raw)) {
     if (value === undefined) continue;
     entries.push([key, toJsonValue(value)]);
   }

@@ -1,6 +1,5 @@
 "use client";
 
-import type { JSX } from "react";
 import {
   Bar,
   BarChart,
@@ -11,8 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { SkillUsageStats } from "@/lib/skills-usage-source";
+
 import { formatShortDate } from "./format-usage";
+
+import type { SkillUsageStats } from "@/lib/skills-usage-source";
+import type { JSX } from "react";
 
 const PALETTE = [
   "#38bdf8",
@@ -71,6 +73,96 @@ function BreakdownTooltip({ active, payload, label }: TooltipProps): JSX.Element
   );
 }
 
+interface BreakdownModel {
+  readonly rows: readonly Row[];
+  readonly series: readonly Series[];
+}
+
+function resolveBucketKey(
+  skillId: string,
+  topIds: ReadonlySet<string>,
+  hasOther: boolean
+): string | null {
+  if (topIds.has(skillId)) return skillId;
+  return hasOther ? OTHER_KEY : null;
+}
+
+function emptyRow(date: string, top: readonly SkillUsageStats[], hasOther: boolean): Row {
+  const row: Row = { date };
+  for (const t of top) row[t.skillId] = 0;
+  if (hasOther) row[OTHER_KEY] = 0;
+  return row;
+}
+
+function getOrCreateRow(
+  rowByDate: Map<string, Row>,
+  date: string,
+  top: readonly SkillUsageStats[],
+  hasOther: boolean
+): Row {
+  const existing = rowByDate.get(date);
+  if (existing) return existing;
+  const created = emptyRow(date, top, hasOther);
+  rowByDate.set(date, created);
+  return created;
+}
+
+/**
+ * Build the chart rows (date→per-skill counts) in a single pass over `perSkill`.
+ * Skills outside the top-N bucket are collapsed into the "other" series when
+ * present. Avoids the O(dates × skills × perDay) `find` scan that locks the
+ * render thread for thousands of invocations.
+ */
+function buildRowsByDate(
+  perSkill: readonly SkillUsageStats[],
+  top: readonly SkillUsageStats[],
+  hasOther: boolean
+): Map<string, Row> {
+  const topIds = new Set(top.map((s) => s.skillId));
+  const rowByDate = new Map<string, Row>();
+  for (const skill of perSkill) {
+    const bucketKey = resolveBucketKey(skill.skillId, topIds, hasOther);
+    if (bucketKey === null) continue;
+    for (const point of skill.perDay) {
+      const row = getOrCreateRow(rowByDate, point.date, top, hasOther);
+      row[bucketKey] = ((row[bucketKey] as number) ?? 0) + point.count;
+    }
+  }
+  return rowByDate;
+}
+
+function buildSeries(top: readonly SkillUsageStats[], hasOther: boolean): Series[] {
+  const series: Series[] = top.map((skill, idx) => ({
+    key: skill.skillId,
+    name: skill.displayName,
+    color: PALETTE[idx % PALETTE.length] ?? "#38bdf8",
+  }));
+  if (hasOther) series.push({ key: OTHER_KEY, name: "other", color: OTHER_COLOR });
+  return series;
+}
+
+function buildBreakdownModel(
+  perSkill: readonly SkillUsageStats[],
+  topN: number
+): BreakdownModel | null {
+  const sorted = [...perSkill].sort((a, b) => b.invocationCount - a.invocationCount);
+  const top = sorted.slice(0, topN);
+  const hasOther = sorted.length > topN;
+  const rowByDate = buildRowsByDate(perSkill, top, hasOther);
+  if (rowByDate.size === 0) return null;
+  const rows: Row[] = [...rowByDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+  const series = buildSeries(top, hasOther);
+  return { rows, series };
+}
+
+function EmptyBreakdown(): JSX.Element {
+  return (
+    <div className="glass-panel-soft rounded-sm p-6 text-center text-sm text-muted">
+      Not enough history to plot a breakdown yet.
+    </div>
+  );
+}
+
 export function SkillsBreakdownChart({
   perSkill,
   topN = 6,
@@ -78,56 +170,10 @@ export function SkillsBreakdownChart({
   readonly perSkill: readonly SkillUsageStats[];
   readonly topN?: number;
 }): JSX.Element {
-  if (perSkill.length === 0) {
-    return (
-      <div className="glass-panel-soft rounded-sm p-6 text-center text-sm text-muted">
-        Not enough history to plot a breakdown yet.
-      </div>
-    );
-  }
-
-  const sorted = [...perSkill].sort((a, b) => b.invocationCount - a.invocationCount);
-  const top = sorted.slice(0, topN);
-  const hasOther = sorted.length > topN;
-  const topIds = new Set(top.map((s) => s.skillId));
-
-  // Single pass: build the date→row index while walking each skill's perDay
-  // exactly once. Avoids the O(dates × skills × perDay) `find` scan that locks
-  // the render thread for thousands of invocations.
-  const rowByDate = new Map<string, Row>();
-  for (const skill of perSkill) {
-    const bucketKey = topIds.has(skill.skillId) ? skill.skillId : hasOther ? OTHER_KEY : null;
-    if (bucketKey === null) continue;
-    for (const point of skill.perDay) {
-      let row = rowByDate.get(point.date);
-      if (!row) {
-        row = { date: point.date };
-        for (const t of top) row[t.skillId] = 0;
-        if (hasOther) row[OTHER_KEY] = 0;
-        rowByDate.set(point.date, row);
-      }
-      row[bucketKey] = ((row[bucketKey] as number) ?? 0) + point.count;
-    }
-  }
-
-  if (rowByDate.size === 0) {
-    return (
-      <div className="glass-panel-soft rounded-sm p-6 text-center text-sm text-muted">
-        Not enough history to plot a breakdown yet.
-      </div>
-    );
-  }
-
-  const rows: Row[] = [...rowByDate.values()].sort((a, b) => a.date.localeCompare(b.date));
-
-  const series: Series[] = top.map((skill, idx) => ({
-    key: skill.skillId,
-    name: skill.displayName,
-    color: PALETTE[idx % PALETTE.length] ?? "#38bdf8",
-  }));
-  if (hasOther) {
-    series.push({ key: OTHER_KEY, name: "other", color: OTHER_COLOR });
-  }
+  if (perSkill.length === 0) return <EmptyBreakdown />;
+  const model = buildBreakdownModel(perSkill, topN);
+  if (model === null) return <EmptyBreakdown />;
+  const { rows, series } = model;
 
   return (
     <div role="img" aria-label="Invocations per day by skill" className="w-full">

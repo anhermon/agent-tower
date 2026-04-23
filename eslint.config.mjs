@@ -35,16 +35,23 @@ export default tseslint.config(
       "**/node_modules/**",
       "**/dist/**",
       "**/.next/**",
+      "**/.next.perf/**",
       "**/build/**",
       "**/coverage/**",
       "**/.coverage-reports/**",
       "**/.lighthouseci/**",
       "**/.ci/**",
+      // Git worktrees live under .claude/ — never lint them alongside the main tree.
+      "**/.claude/**",
       "**/*.tsbuildinfo",
       "**/playwright-report/**",
       "**/test-results/**",
       // Session JSONL fixtures — data, not source code.
       "packages/testing/fixtures/**",
+      // Next.js-generated ambient declarations; re-written on every build
+      // (including `NEXT_DIST_DIR=.next.perf next build`), so lint rules on it
+      // are not actionable.
+      "apps/web/next-env.d.ts",
     ],
   },
 
@@ -255,6 +262,30 @@ export default tseslint.config(
   // ------------------------------------------------------------------
   {
     files: ["**/*.config.{ts,mts,cts,mjs,cjs,js}", "eslint.config.mjs"],
+    languageOptions: {
+      parserOptions: { projectService: false, project: null },
+    },
+    ...tseslint.configs.disableTypeChecked,
+  },
+
+  // ------------------------------------------------------------------
+  // Out-of-project-graph TypeScript files:
+  //   - E2E Playwright specs (not in any tsconfig).
+  //   - Package test files (package tsconfigs exclude `*.test.ts`).
+  //   - Build / CI / GitHub scripts (no tsconfig covers them).
+  //   - Test shims (outside package source trees).
+  // For these the `projectService` parser can't type-check, so we
+  // disable type-aware linting (mirrors the config-files override
+  // above). Structural rules still apply via the tests block.
+  // ------------------------------------------------------------------
+  {
+    files: [
+      "e2e/**/*.{ts,tsx}",
+      "packages/*/src/**/*.test.{ts,tsx}",
+      "packages/*/src/test-helpers.{ts,tsx}",
+      "scripts/**/*.{ts,mts,cts,mjs,cjs,js}",
+      "test/**/*.{ts,tsx}",
+    ],
     languageOptions: {
       parserOptions: { projectService: false, project: null },
     },

@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ProjectCard } from "@/components/sessions/project-card";
 import { ProjectSwitcher } from "@/components/sessions/project-switcher";
 import { Badge } from "@/components/ui/badge";
@@ -83,7 +84,7 @@ function Body({ result }: { result: ListResult }) {
   }
 
   return (
-    <ul role="list" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {result.value.map((project) => (
         <li key={project.id}>
           <ProjectCard project={project} />

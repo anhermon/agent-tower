@@ -57,16 +57,24 @@ export function resolveLoggerConfig(input: ResolveInput = {}): LoggerConfig {
   const pretty = parseTristate(env.LOG_PRETTY, isTTY);
   const writeFiles = parseBoolean(env.LOG_FILES, !isProduction);
   const writeRequests = parseBoolean(env.LOG_REQUESTS, true);
-
-  const logDirRaw = env.LOG_DIR && env.LOG_DIR.length > 0 ? env.LOG_DIR : path.join(cwd, "logs");
-  const logDir = path.isAbsolute(logDirRaw) ? logDirRaw : path.join(cwd, logDirRaw);
-
-  const service =
-    env.LOG_SERVICE && env.LOG_SERVICE.length > 0
-      ? env.LOG_SERVICE
-      : (input.defaultService ?? "@control-plane/unknown");
+  const logDir = resolveLogDir(env.LOG_DIR, cwd);
+  const service = resolveService(env.LOG_SERVICE, input.defaultService);
 
   return { level, pretty, writeFiles, writeRequests, logDir, service };
+}
+
+function resolveLogDir(logDirEnv: string | undefined, cwd: string): string {
+  const raw = logDirEnv && logDirEnv.length > 0 ? logDirEnv : path.join(cwd, "logs");
+  return path.isAbsolute(raw) ? raw : path.join(cwd, raw);
+}
+
+function resolveService(
+  logServiceEnv: string | undefined,
+  defaultService: string | undefined
+): string {
+  return logServiceEnv && logServiceEnv.length > 0
+    ? logServiceEnv
+    : (defaultService ?? "@control-plane/unknown");
 }
 
 function parseLevel(raw: string | undefined): LogLevel | null {

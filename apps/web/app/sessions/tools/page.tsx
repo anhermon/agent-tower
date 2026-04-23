@@ -12,32 +12,7 @@ export const dynamic = "force-dynamic";
 export default async function SessionsToolsPage() {
   const [toolsResult, overview] = await Promise.all([getToolAnalytics(), getOverview()]);
 
-  if (toolsResult.ok === false && toolsResult.reason === "unconfigured") {
-    return (
-      <section>
-        <PageHeader title="Tools & Features" />
-        <EmptyState
-          title="No analytics source configured"
-          description={`Set ${CLAUDE_DATA_ROOT_ENV} to your Claude Code projects directory to populate tool analytics.`}
-        />
-      </section>
-    );
-  }
-  if (toolsResult.ok === false) {
-    return (
-      <section>
-        <PageHeader title="Tools & Features" />
-        <ErrorState
-          title="Could not compute tool analytics"
-          description={
-            toolsResult.reason === "error"
-              ? toolsResult.message
-              : "Analytics source not configured."
-          }
-        />
-      </section>
-    );
-  }
+  if (toolsResult.ok === false) return renderToolsError(toolsResult);
   const value = toolsResult.value;
   const sessionCount = overview.ok ? overview.value.sessionCount : 0;
 
@@ -112,6 +87,33 @@ export default async function SessionsToolsPage() {
           <BranchLeaderboard branches={value.branches} />
         </Card>
       ) : null}
+    </section>
+  );
+}
+
+function renderToolsError(
+  toolsResult: Awaited<ReturnType<typeof getToolAnalytics>> & { ok: false }
+) {
+  if (toolsResult.reason === "unconfigured") {
+    return (
+      <section>
+        <PageHeader title="Tools & Features" />
+        <EmptyState
+          title="No analytics source configured"
+          description={`Set ${CLAUDE_DATA_ROOT_ENV} to your Claude Code projects directory to populate tool analytics.`}
+        />
+      </section>
+    );
+  }
+  return (
+    <section>
+      <PageHeader title="Tools & Features" />
+      <ErrorState
+        title="Could not compute tool analytics"
+        description={
+          toolsResult.reason === "error" ? toolsResult.message : "Analytics source not configured."
+        }
+      />
     </section>
   );
 }

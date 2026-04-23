@@ -9,6 +9,7 @@ import type {
   Timeseries,
   ToolAnalytics,
 } from "@control-plane/core";
+
 import { getConfiguredAnalyticsSource } from "./sessions-source";
 
 /**
@@ -19,9 +20,19 @@ import { getConfiguredAnalyticsSource } from "./sessions-source";
  * This file is pure wiring — no business logic. Folds live in the adapter.
  */
 
-type Unconfigured = { readonly ok: false; readonly reason: "unconfigured" };
-type ErrResult = { readonly ok: false; readonly reason: "error"; readonly message: string };
-type Ok<T> = { readonly ok: true; readonly value: T };
+interface Unconfigured {
+  readonly ok: false;
+  readonly reason: "unconfigured";
+}
+interface ErrResult {
+  readonly ok: false;
+  readonly reason: "error";
+  readonly message: string;
+}
+interface Ok<T> {
+  readonly ok: true;
+  readonly value: T;
+}
 export type Result<T> = Ok<T> | Unconfigured | ErrResult;
 
 export interface AnalyticsOverview {

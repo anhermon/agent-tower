@@ -2,9 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { DateRange as DayPickerRange } from "react-day-picker";
+import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
+
+import type { DateRange as DayPickerRange } from "react-day-picker";
 
 // Lazy boundary: `react-day-picker` (~25-30 kB gz) is only needed when the
 // popover opens. `ssr: false` is legal here because the file is `"use client"`.
@@ -56,6 +58,160 @@ function formatShort(d: Date): string {
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+/** Closes the popover when the user clicks outside `ref` or presses Escape. */
+function useOutsideClose(
+  open: boolean,
+  ref: RefObject<HTMLElement | null>,
+  onClose: () => void
+): void {
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) onClose();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, ref, onClose]);
+}
+
+function resolveCurrentPreset(
+  fromParam: Date | null,
+  toParam: Date | null,
+  params: { get(key: string): string | null } | null | undefined
+): Preset {
+  if (fromParam && toParam) return "custom";
+  const explicit = params?.get("preset") as Preset | null;
+  if (explicit === "7d" || explicit === "30d" || explicit === "90d") return explicit;
+  return "30d";
+}
+
+interface PresetBarProps {
+  currentPreset: Preset;
+  onSelect: (preset: Exclude<Preset, "custom">) => void;
+}
+
+function PresetBar({ currentPreset, onSelect }: PresetBarProps) {
+  const btn = (preset: Exclude<Preset, "custom">) => (
+    <button
+      key={preset}
+      type="button"
+      onClick={() => onSelect(preset)}
+      aria-pressed={currentPreset === preset}
+      className={cn(
+        "rounded-xs px-2.5 py-1 text-xs font-semibold transition-colors",
+        currentPreset === preset ? "bg-accent/15 text-ink" : "text-muted hover:text-ink"
+      )}
+    >
+      {preset}
+    </button>
+  );
+  return (
+    <div className="inline-flex items-center gap-1 rounded-xs border border-line/60 bg-panel/40 p-1">
+      {btn("7d")}
+      {btn("30d")}
+      {btn("90d")}
+    </div>
+  );
+}
+
+interface CalendarPopoverProps {
+  open: boolean;
+  onToggle: () => void;
+  currentPreset: Preset;
+  label: string;
+  range: DayPickerRange | undefined;
+  onSelect: (next: DayPickerRange | undefined) => void;
+}
+
+function CalendarPopover({
+  open,
+  onToggle,
+  currentPreset,
+  label,
+  range,
+  onSelect,
+}: CalendarPopoverProps) {
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        className={cn(
+          "inline-flex items-center gap-2 rounded-xs border px-2.5 py-1 text-xs font-semibold transition-colors",
+          currentPreset === "custom"
+            ? "border-accent/40 bg-accent/10 text-ink"
+            : "border-line/60 text-muted hover:text-ink"
+        )}
+      >
+        <svg
+          aria-hidden
+          className="h-3.5 w-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        {label}
+      </button>
+      {open ? (
+        <div
+          role="dialog"
+          aria-label="Select date range"
+          className="absolute right-0 top-full z-50 mt-2 rounded-md border border-line/70 bg-panel p-2 shadow-glass"
+        >
+          <LazyDayPicker
+            mode="range"
+            selected={range}
+            onSelect={onSelect}
+            disabled={{ after: new Date() }}
+            defaultMonth={range?.from ?? daysAgo(30)}
+            classNames={{
+              today: "rdp-today",
+              selected: "rdp-selected",
+              range_start: "rdp-range_start",
+              range_middle: "rdp-range_middle",
+              range_end: "rdp-range_end",
+            }}
+            styles={{
+              caption: { color: "rgb(var(--color-ink))" },
+              head: { color: "rgb(var(--color-muted))" },
+            }}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function parseRangeParams(params: ReturnType<typeof useSearchParams>): {
+  from: Date | null;
+  to: Date | null;
+} {
+  return {
+    from: parseIsoDate(params?.get("from") ?? null),
+    to: parseIsoDate(params?.get("to") ?? null),
+  };
+}
+
+function computeRangeLabel(preset: Preset, range: DayPickerRange | undefined): string {
+  if (preset === "custom" && range?.from && range.to) {
+    return `${formatShort(range.from)} – ${formatShort(range.to)}`;
+  }
+  return "Pick dates";
+}
+
 /**
  * URL-driven date-range control. Updates `?from=YYYY-MM-DD&to=YYYY-MM-DD` on
  * every change; the server component reads them and re-fetches. Never uses
@@ -66,15 +222,12 @@ export function DateRangePicker() {
   const pathname = usePathname() ?? "";
   const params = useSearchParams();
 
-  const fromParam = parseIsoDate(params?.get("from") ?? null);
-  const toParam = parseIsoDate(params?.get("to") ?? null);
+  const { from: fromParam, to: toParam } = parseRangeParams(params);
 
-  const currentPreset: Preset = useMemo(() => {
-    if (fromParam && toParam) return "custom";
-    const explicit = params?.get("preset") as Preset | null;
-    if (explicit === "7d" || explicit === "30d" || explicit === "90d") return explicit;
-    return "30d";
-  }, [fromParam, toParam, params]);
+  const currentPreset: Preset = useMemo(
+    () => resolveCurrentPreset(fromParam, toParam, params),
+    [fromParam, toParam, params]
+  );
 
   const [open, setOpen] = useState(false);
   const [range, setRange] = useState<DayPickerRange | undefined>(
@@ -94,22 +247,7 @@ export function DateRangePicker() {
   }, [open]);
 
   // Close the popover on outside click / Esc.
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (event: MouseEvent) => {
-      if (!rootRef.current) return;
-      if (!rootRef.current.contains(event.target as Node)) setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("mousedown", onDown);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("mousedown", onDown);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  useOutsideClose(open, rootRef, () => setOpen(false));
 
   function applyPreset(preset: Exclude<Preset, "custom">) {
     const next = new URLSearchParams(params?.toString() ?? "");
@@ -128,92 +266,27 @@ export function DateRangePicker() {
     router.push(`${pathname}?${next.toString()}`);
   }
 
-  const presetButton = (preset: Exclude<Preset, "custom">) => (
-    <button
-      key={preset}
-      type="button"
-      onClick={() => applyPreset(preset)}
-      aria-pressed={currentPreset === preset}
-      className={cn(
-        "rounded-xs px-2.5 py-1 text-xs font-semibold transition-colors",
-        currentPreset === preset ? "bg-accent/15 text-ink" : "text-muted hover:text-ink"
-      )}
-    >
-      {preset}
-    </button>
-  );
+  const label = computeRangeLabel(currentPreset, range);
 
-  const label =
-    currentPreset === "custom" && range?.from && range.to
-      ? `${formatShort(range.from)} – ${formatShort(range.to)}`
-      : "Pick dates";
+  function handleRangeSelect(next: DayPickerRange | undefined) {
+    setRange(next);
+    if (next?.from && next.to) {
+      applyCustomRange(next.from, next.to);
+      setOpen(false);
+    }
+  }
 
   return (
     <div className="flex items-center gap-2" ref={rootRef}>
-      <div className="inline-flex items-center gap-1 rounded-xs border border-line/60 bg-panel/40 p-1">
-        {presetButton("7d")}
-        {presetButton("30d")}
-        {presetButton("90d")}
-      </div>
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-haspopup="dialog"
-          aria-expanded={open}
-          className={cn(
-            "inline-flex items-center gap-2 rounded-xs border px-2.5 py-1 text-xs font-semibold transition-colors",
-            currentPreset === "custom"
-              ? "border-accent/40 bg-accent/10 text-ink"
-              : "border-line/60 text-muted hover:text-ink"
-          )}
-        >
-          <svg
-            aria-hidden
-            className="h-3.5 w-3.5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <rect x="3" y="4" width="18" height="18" rx="2" />
-            <path d="M16 2v4M8 2v4M3 10h18" />
-          </svg>
-          {label}
-        </button>
-        {open ? (
-          <div
-            role="dialog"
-            aria-label="Select date range"
-            className="absolute right-0 top-full z-50 mt-2 rounded-md border border-line/70 bg-panel p-2 shadow-glass"
-          >
-            <LazyDayPicker
-              mode="range"
-              selected={range}
-              onSelect={(next) => {
-                setRange(next);
-                if (next?.from && next.to) {
-                  applyCustomRange(next.from, next.to);
-                  setOpen(false);
-                }
-              }}
-              disabled={{ after: new Date() }}
-              defaultMonth={range?.from ?? daysAgo(30)}
-              classNames={{
-                today: "rdp-today",
-                selected: "rdp-selected",
-                range_start: "rdp-range_start",
-                range_middle: "rdp-range_middle",
-                range_end: "rdp-range_end",
-              }}
-              styles={{
-                caption: { color: "rgb(var(--color-ink))" },
-                head: { color: "rgb(var(--color-muted))" },
-              }}
-            />
-          </div>
-        ) : null}
-      </div>
+      <PresetBar currentPreset={currentPreset} onSelect={applyPreset} />
+      <CalendarPopover
+        open={open}
+        onToggle={() => setOpen((v) => !v)}
+        currentPreset={currentPreset}
+        label={label}
+        range={range}
+        onSelect={handleRangeSelect}
+      />
     </div>
   );
 }

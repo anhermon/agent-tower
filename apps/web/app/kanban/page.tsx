@@ -1,4 +1,5 @@
-import { TICKET_STATUSES, type TicketStatus } from "@control-plane/core";
+import { TICKET_STATUSES, type TicketRecord, type TicketStatus } from "@control-plane/core";
+
 import { KanbanBoard } from "@/components/kanban/kanban-board";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -13,7 +14,7 @@ import { getModuleByKey } from "@/lib/modules";
 export const dynamic = "force-dynamic";
 
 export default async function KanbanPage() {
-  const module = getModuleByKey("kanban");
+  const mod = getModuleByKey("kanban");
   const configuredFile = getConfiguredTicketsFile();
   const result = await listTicketsOrEmpty();
 
@@ -24,7 +25,7 @@ export default async function KanbanPage() {
       <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
@@ -83,11 +84,7 @@ function KanbanBody({ result }: { result: ListTicketsResult }) {
   );
 }
 
-function SummaryStrip({
-  tickets,
-}: {
-  readonly tickets: readonly import("@control-plane/core").TicketRecord[];
-}) {
+function SummaryStrip({ tickets }: { readonly tickets: readonly TicketRecord[] }) {
   const counts = countByStatus(tickets);
   const items: readonly { readonly label: string; readonly value: number }[] = [
     { label: "Total", value: tickets.length },
@@ -108,9 +105,7 @@ function SummaryStrip({
   );
 }
 
-function countByStatus(
-  tickets: readonly import("@control-plane/core").TicketRecord[]
-): Record<TicketStatus, number> {
+function countByStatus(tickets: readonly TicketRecord[]): Record<TicketStatus, number> {
   const counts: Record<TicketStatus, number> = {
     [TICKET_STATUSES.Open]: 0,
     [TICKET_STATUSES.InProgress]: 0,

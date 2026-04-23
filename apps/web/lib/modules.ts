@@ -109,11 +109,11 @@ export function getModuleByHref(pathname: string): ModuleDefinition {
 export function getModuleByKey<Key extends ModuleDefinition["key"]>(
   key: Key
 ): ModuleDefinition & { key: Key } {
-  const module = modules.find((item) => item.key === key);
+  const moduleDef = modules.find((item) => item.key === key);
 
-  if (!module) {
+  if (!moduleDef) {
     throw new Error(`Unknown module: ${key}`);
   }
 
-  return module as ModuleDefinition & { key: Key };
+  return moduleDef as ModuleDefinition & { key: Key };
 }

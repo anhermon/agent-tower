@@ -2,8 +2,13 @@ import { createWriteStream, mkdirSync, type WriteStream } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { Writable } from "node:stream";
+
 import pino, { type StreamEntry } from "pino";
+
 import type { LoggerConfig } from "./config.js";
+// pino-pretty uses `export =` so we use an import-equals type alias
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import type PinoPrettyModule = require("pino-pretty");
 
 /**
  * Pino "warn" numeric level. Anything >= 40 is treated as stderr-worthy
@@ -15,8 +20,7 @@ export const STDERR_LEVEL_FLOOR = 40;
 /** Components whose output is routed to requests.log instead of stdout.log. */
 const REQUEST_COMPONENT = "request";
 const require = createRequire(import.meta.url);
-
-type PrettyFactory = typeof import("pino-pretty");
+type PrettyFactory = typeof PinoPrettyModule;
 
 export interface FanoutSinks {
   readonly stdoutStream: NodeJS.WritableStream;
@@ -41,7 +45,7 @@ export function createFanoutWriter(sinks: FanoutSinks): Writable {
       callback();
     },
     final(callback) {
-      const pending: Array<Promise<void>> = [];
+      const pending: Promise<void>[] = [];
       for (const stream of [sinks.stdoutStream, sinks.stderrStream, sinks.requestsStream]) {
         if (stream && "end" in stream && typeof stream.end === "function") {
           pending.push(

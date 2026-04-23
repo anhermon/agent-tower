@@ -13,7 +13,7 @@ export function formatRelative(iso: string, now: Date = new Date()): string {
   const abs = Math.abs(deltaSeconds);
   if (abs < 1) return "just now";
   const past = deltaSeconds >= 0;
-  const buckets: Array<{ limit: number; divisor: number; unit: string }> = [
+  const buckets: { limit: number; divisor: number; unit: string }[] = [
     { limit: 60, divisor: 1, unit: "s" },
     { limit: 3600, divisor: 60, unit: "m" },
     { limit: 86400, divisor: 3600, unit: "h" },

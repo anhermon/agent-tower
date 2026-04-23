@@ -31,6 +31,41 @@ function daysAgo(n: number): Date {
   return d;
 }
 
+function presetDays(preset: "7d" | "30d" | "90d"): number {
+  if (preset === "7d") return 7;
+  if (preset === "30d") return 30;
+  return 90;
+}
+
+function resolvePresetRange(preset: "7d" | "30d" | "90d"): {
+  readonly from: string;
+  readonly to: string;
+} {
+  const today = startOfDay(new Date());
+  const start = daysAgo(presetDays(preset));
+  return { from: toIsoDate(start), to: toIsoDate(today) };
+}
+
+type Preset = "7d" | "30d" | "90d";
+const VALID_PRESETS: readonly string[] = ["7d", "30d", "90d"];
+
+function getStringParam(
+  sp: Readonly<Record<string, string | string[] | undefined>>,
+  key: string
+): string | undefined {
+  const v = sp[key];
+  return typeof v === "string" ? v : undefined;
+}
+
+function resolveExplicitRange(
+  sp: Readonly<Record<string, string | string[] | undefined>>
+): { readonly from: string; readonly to: string } | undefined {
+  const from = parseIsoDate(getStringParam(sp, "from") ?? null);
+  const to = parseIsoDate(getStringParam(sp, "to") ?? null);
+  if (from && to) return { from: toIsoDate(from), to: toIsoDate(to) };
+  return undefined;
+}
+
 /**
  * Resolve `?from=YYYY-MM-DD&to=YYYY-MM-DD` or `?preset=7d|30d|90d` into a
  * canonical `DateRange`. Returns `undefined` when nothing matches.
@@ -38,18 +73,12 @@ function daysAgo(n: number): Date {
 export function resolveRangeFromSearchParams(
   sp: Readonly<Record<string, string | string[] | undefined>>
 ): { readonly from: string; readonly to: string } | undefined {
-  const fromRaw = typeof sp.from === "string" ? sp.from : undefined;
-  const toRaw = typeof sp.to === "string" ? sp.to : undefined;
-  const from = parseIsoDate(fromRaw ?? null);
-  const to = parseIsoDate(toRaw ?? null);
-  if (from && to) return { from: toIsoDate(from), to: toIsoDate(to) };
+  const explicit = resolveExplicitRange(sp);
+  if (explicit) return explicit;
 
-  const preset = typeof sp.preset === "string" ? sp.preset : undefined;
-  if (preset === "7d" || preset === "30d" || preset === "90d") {
-    const days = preset === "7d" ? 7 : preset === "30d" ? 30 : 90;
-    const today = startOfDay(new Date());
-    const start = daysAgo(days);
-    return { from: toIsoDate(start), to: toIsoDate(today) };
+  const preset = getStringParam(sp, "preset");
+  if (preset && VALID_PRESETS.includes(preset)) {
+    return resolvePresetRange(preset as Preset);
   }
   return undefined;
 }

@@ -1,5 +1,7 @@
-import type { ProjectSummary } from "@control-plane/core";
 import Link from "next/link";
+
+import type { ProjectSummary } from "@control-plane/core";
+
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { formatCost, formatDuration, formatRelative, truncateMiddle } from "@/lib/format";
 
@@ -22,8 +24,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const topTools = topEntries(project.toolCounts, 4);
   const maxToolCount = topTools[0]?.[1] ?? 1;
   const href = `/sessions/projects/${encodeURIComponent(project.id)}`;
-  const totalMessages = project.totalMessages;
-  const branchPreview = project.branches.slice(0, 3);
 
   return (
     <Link
@@ -81,54 +81,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </dl>
 
-      {topTools.length > 0 ? (
-        <div className="relative mt-3 space-y-1">
-          {topTools.map(([tool, count]) => {
-            const width = Math.max(6, Math.round((count / maxToolCount) * 100));
-            return (
-              <div key={tool} className="flex items-center gap-2 text-[11px]">
-                <span className="w-16 shrink-0 truncate font-mono text-muted/70" title={tool}>
-                  {tool}
-                </span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.05]">
-                  <div className="h-full rounded-full bg-info/60" style={{ width: `${width}%` }} />
-                </div>
-                <span className="w-8 shrink-0 text-right font-mono tabular-nums text-muted/60">
-                  {count}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
-
-      <div className="relative mt-3 flex flex-wrap items-center gap-1.5 text-[11px] text-muted">
-        <span className="font-mono">{totalMessages.toLocaleString()} msgs</span>
-        {project.branches.length > 0 ? (
-          <>
-            <span aria-hidden="true" className="text-muted/40">
-              ·
-            </span>
-            <span className="font-mono">
-              {project.branches.length} {project.branches.length === 1 ? "branch" : "branches"}
-            </span>
-            {branchPreview.map((branch) => (
-              <span
-                key={branch}
-                title={branch}
-                className="max-w-[9rem] truncate rounded-sm border border-line/70 bg-white/[0.03] px-1.5 py-px font-mono text-[10px] text-muted/80"
-              >
-                {branch}
-              </span>
-            ))}
-            {project.branches.length > branchPreview.length ? (
-              <span className="font-mono text-muted/60">
-                +{project.branches.length - branchPreview.length}
-              </span>
-            ) : null}
-          </>
-        ) : null}
-      </div>
+      <ToolBar topTools={topTools} maxToolCount={maxToolCount} />
+      <BranchFooter totalMessages={project.totalMessages} branches={project.branches} />
     </Link>
   );
 }
@@ -136,8 +90,77 @@ export function ProjectCard({ project }: ProjectCardProps) {
 function topEntries(
   counts: Readonly<Record<string, number>>,
   limit: number
-): ReadonlyArray<readonly [string, number]> {
+): readonly (readonly [string, number])[] {
   return Object.entries(counts)
     .sort(([, a], [, b]) => b - a)
     .slice(0, limit);
+}
+
+function ToolBar({
+  topTools,
+  maxToolCount,
+}: {
+  topTools: readonly (readonly [string, number])[];
+  maxToolCount: number;
+}) {
+  if (topTools.length === 0) return null;
+  return (
+    <div className="relative mt-3 space-y-1">
+      {topTools.map(([tool, count]) => {
+        const width = Math.max(6, Math.round((count / maxToolCount) * 100));
+        return (
+          <div key={tool} className="flex items-center gap-2 text-[11px]">
+            <span className="w-16 shrink-0 truncate font-mono text-muted/70" title={tool}>
+              {tool}
+            </span>
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.05]">
+              <div className="h-full rounded-full bg-info/60" style={{ width: `${width}%` }} />
+            </div>
+            <span className="w-8 shrink-0 text-right font-mono tabular-nums text-muted/60">
+              {count}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function BranchFooter({
+  totalMessages,
+  branches,
+}: {
+  totalMessages: number;
+  branches: readonly string[];
+}) {
+  const branchPreview = branches.slice(0, 3);
+  return (
+    <div className="relative mt-3 flex flex-wrap items-center gap-1.5 text-[11px] text-muted">
+      <span className="font-mono">{totalMessages.toLocaleString()} msgs</span>
+      {branches.length > 0 ? (
+        <>
+          <span aria-hidden="true" className="text-muted/40">
+            ·
+          </span>
+          <span className="font-mono">
+            {branches.length} {branches.length === 1 ? "branch" : "branches"}
+          </span>
+          {branchPreview.map((branch) => (
+            <span
+              key={branch}
+              title={branch}
+              className="max-w-[9rem] truncate rounded-sm border border-line/70 bg-white/[0.03] px-1.5 py-px font-mono text-[10px] text-muted/80"
+            >
+              {branch}
+            </span>
+          ))}
+          {branches.length > branchPreview.length ? (
+            <span className="font-mono text-muted/60">
+              +{branches.length - branchPreview.length}
+            </span>
+          ) : null}
+        </>
+      ) : null}
+    </div>
+  );
 }

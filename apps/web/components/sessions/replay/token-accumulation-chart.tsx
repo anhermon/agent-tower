@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
 import { useMemo } from "react";
 import {
   CartesianGrid,
@@ -12,18 +11,21 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
+
 import { formatCost, formatTokens } from "@/lib/format";
 
-type Props = {
+interface Props {
   readonly turns: readonly ReplayTurn[];
   readonly compactions: readonly ReplayCompactionEvent[];
-};
+}
 
-type Point = {
+interface Point {
   readonly turn: number;
   readonly tokens: number;
   readonly cost: number;
-};
+}
 
 export function TokenAccumulationChart({ turns, compactions }: Props) {
   const data = useMemo<Point[]>(() => {

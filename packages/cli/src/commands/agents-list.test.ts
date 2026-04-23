@@ -1,9 +1,13 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import path from "node:path";
-import { CLAUDE_DATA_ROOT_ENV } from "@control-plane/adapter-claude-code";
+
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { CLAUDE_DATA_ROOT_ENV } from "@control-plane/adapter-claude-code";
+
 import { captureOutput } from "../test-helpers.js";
+
 import { runAgentsList } from "./agents-list.js";
 
 describe("runAgentsList", () => {

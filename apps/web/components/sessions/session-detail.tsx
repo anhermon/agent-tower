@@ -1,6 +1,7 @@
-import type { ReplayCompactionEvent, ReplayData, SessionDerivedFlags } from "@control-plane/core";
 import Link from "next/link";
-import type { ReactNode } from "react";
+
+import type { ReplayCompactionEvent, ReplayData, SessionDerivedFlags } from "@control-plane/core";
+
 import { ExportButton } from "@/components/sessions/export-button";
 import { AgentTree } from "@/components/sessions/replay/agent-tree";
 import { ExplorerPanel } from "@/components/sessions/replay/explorer-panel";
@@ -12,17 +13,32 @@ import { TurnCard } from "@/components/sessions/replay/turn-card";
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 
+import type { ReactNode } from "react";
+
 type ToolResultLookup = ReadonlyMap<
   string,
   { readonly content: string; readonly isError: boolean; readonly toolName?: string }
 >;
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
   readonly flags?: SessionDerivedFlags;
   readonly durationMs?: number;
   readonly deepLinkTurn?: string;
-};
+}
+
+function computeTotalTokens(replay: ReplayData): number {
+  let total = 0;
+  for (const t of replay.turns) {
+    if (!t.usage) continue;
+    total +=
+      t.usage.inputTokens +
+      t.usage.outputTokens +
+      t.usage.cacheReadInputTokens +
+      t.usage.cacheCreationInputTokens;
+  }
+  return total;
+}
 
 export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props): ReactNode {
   const assistantCount = replay.turns.filter((t) => t.type === "assistant").length;
@@ -30,18 +46,7 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
   const compactionByTurn = new Map<number, ReplayCompactionEvent>();
   for (const c of replay.compactions) compactionByTurn.set(c.turnIndex, c);
 
-  let inputTokens = 0,
-    outputTokens = 0,
-    cacheRead = 0,
-    cacheWrite = 0;
-  for (const t of replay.turns) {
-    if (!t.usage) continue;
-    inputTokens += t.usage.inputTokens;
-    outputTokens += t.usage.outputTokens;
-    cacheRead += t.usage.cacheReadInputTokens;
-    cacheWrite += t.usage.cacheCreationInputTokens;
-  }
-  const totalTokens = inputTokens + outputTokens + cacheRead + cacheWrite;
+  const totalTokens = computeTotalTokens(replay);
 
   let assistantIndex = 0;
 
@@ -158,7 +163,6 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
         // Minimal inline script to smoothly scroll the target turn into view on
         // first paint. Falls back silently when the id is unknown.
         <script
-          // eslint-disable-next-line react/no-danger
           // biome-ignore lint/security/noDangerouslySetInnerHtml: escaped id, used to smooth-scroll deep-link target
           dangerouslySetInnerHTML={{
             __html: `window.requestAnimationFrame(function(){var el=document.getElementById('turn-${escapeJs(

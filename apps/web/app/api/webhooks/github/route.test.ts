@@ -2,13 +2,17 @@ import { createHmac } from "node:crypto";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
+
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
+import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
+
 import {
   GITHUB_WEBHOOK_DELIVERIES_FILE_ENV,
   GITHUB_WEBHOOK_SECRET_ENV,
   type GithubWebhookDeliveryLogEntry,
 } from "@/lib/github-webhooks";
+
 import { POST } from "./route.js";
 
 const ROUTE_URL = "http://127.0.0.1/api/webhooks/github";
@@ -43,6 +47,7 @@ describe("/api/webhooks/github POST", () => {
       action: "opened",
       repository: { full_name: "octo/hello-world" },
       sender: { login: "octocat" },
+      client_payload: { sessionId: "session-123" },
     });
     const response = await POST(
       new Request(ROUTE_URL, {

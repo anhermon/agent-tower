@@ -34,47 +34,9 @@ export default async function SessionsOverviewPage({
   const unconfigured =
     (overview.ok === false && overview.reason === "unconfigured") ||
     (costs.ok === false && costs.reason === "unconfigured");
-  if (unconfigured) {
-    return (
-      <section>
-        <PageHeader
-          title="Overview"
-          subtitle="Aggregate activity across your Claude Code transcripts."
-        />
-        <EmptyState
-          title="No analytics source configured"
-          description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory to populate this dashboard.`}
-        />
-      </section>
-    );
-  }
-
-  if (overview.ok === false) {
-    return (
-      <section>
-        <PageHeader title="Overview" />
-        <ErrorState
-          title="Could not compute overview"
-          description={
-            overview.reason === "error" ? overview.message : "Analytics source not configured."
-          }
-        />
-      </section>
-    );
-  }
-  if (costs.ok === false) {
-    return (
-      <section>
-        <PageHeader title="Overview" />
-        <ErrorState
-          title="Could not compute cost breakdown"
-          description={
-            costs.reason === "error" ? costs.message : "Analytics source not configured."
-          }
-        />
-      </section>
-    );
-  }
+  if (unconfigured) return renderUnconfigured();
+  if (overview.ok === false) return renderOverviewError(overview);
+  if (costs.ok === false) return renderCostsError(costs);
 
   const projects = projectsResult.ok ? projectsResult.value : [];
   const { value } = overview;
@@ -243,6 +205,47 @@ function StatCard({
       <p className="text-xs text-muted">{detail}</p>
       <Sparkline data={spark} color={color} height={36} ariaLabel={ariaLabel} />
     </article>
+  );
+}
+
+function renderUnconfigured() {
+  return (
+    <section>
+      <PageHeader
+        title="Overview"
+        subtitle="Aggregate activity across your Claude Code transcripts."
+      />
+      <EmptyState
+        title="No analytics source configured"
+        description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory to populate this dashboard.`}
+      />
+    </section>
+  );
+}
+
+function renderOverviewError(overview: Awaited<ReturnType<typeof getOverview>> & { ok: false }) {
+  return (
+    <section>
+      <PageHeader title="Overview" />
+      <ErrorState
+        title="Could not compute overview"
+        description={
+          overview.reason === "error" ? overview.message : "Analytics source not configured."
+        }
+      />
+    </section>
+  );
+}
+
+function renderCostsError(costs: Awaited<ReturnType<typeof getCostBreakdown>> & { ok: false }) {
+  return (
+    <section>
+      <PageHeader title="Overview" />
+      <ErrorState
+        title="Could not compute cost breakdown"
+        description={costs.reason === "error" ? costs.message : "Analytics source not configured."}
+      />
+    </section>
   );
 }
 

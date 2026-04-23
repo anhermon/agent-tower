@@ -1,4 +1,5 @@
 import type { JsonValue, SessionActorRole, SessionTurn } from "@control-plane/core";
+
 import { Collapsible } from "@/components/sessions/collapsible";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +12,9 @@ const ROLE_TONE: Record<SessionActorRole, string> = {
 
 const PREVIEW_CHARS = 800;
 
-type TurnBlockProps = {
+interface TurnBlockProps {
   turn: SessionTurn;
-};
+}
 
 export function TurnBlock({ turn }: TurnBlockProps) {
   return (
@@ -90,6 +91,9 @@ function prettyJson(value: JsonValue): string {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
-    return String(value);
+    // Preserve prior behavior: stringify primitives directly; fall back to a
+    // marker for unserializable objects/arrays rather than `[object Object]`.
+    if (value === null || typeof value !== "object") return String(value);
+    return "[unserializable value]";
   }
 }

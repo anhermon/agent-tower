@@ -1,6 +1,6 @@
 import type { HealthState } from "@/types/control-plane";
 
-export function cn(...classes: Array<string | false | null | undefined>): string {
+export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 

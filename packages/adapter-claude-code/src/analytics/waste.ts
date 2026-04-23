@@ -160,50 +160,63 @@ function computeScores(w: SessionWasteSignals): WasteScores {
 
 function buildFlags(w: SessionWasteSignals, s: WasteScores): readonly string[] {
   const flags: string[] = [];
+  const f1 = cacheThrashFlag(w, s);
+  if (f1) flags.push(f1);
+  const f2 = toolPollutionFlag(w, s);
+  if (f2) flags.push(f2);
+  const f3 = sequentialToolsFlag(w, s);
+  if (f3) flags.push(f3);
+  const f4 = toolHammeringFlag(w, s);
+  if (f4) flags.push(f4);
+  const f5 = contextOrCompactionFlag(w, s);
+  if (f5) flags.push(f5);
+  return flags;
+}
 
-  if (s.cacheThrash > FLAG_THRESHOLD) {
-    const pct = (w.cacheThrashRatio * 100).toFixed(1);
-    flags.push(`Cache thrash: ${pct}% (ratio ${w.cacheThrashRatio.toFixed(3)})`);
+function cacheThrashFlag(w: SessionWasteSignals, s: WasteScores): string | null {
+  if (s.cacheThrash <= FLAG_THRESHOLD) return null;
+  const pct = (w.cacheThrashRatio * 100).toFixed(1);
+  return `Cache thrash: ${pct}% (ratio ${w.cacheThrashRatio.toFixed(3)})`;
+}
+
+function toolPollutionFlag(w: SessionWasteSignals, s: WasteScores): string | null {
+  if (s.toolPollution <= FLAG_THRESHOLD) return null;
+  const mcpPct = Math.round(w.mcpToolCallPct * 100);
+  return `Tool pollution: ${w.distinctToolCount} distinct tools, ${mcpPct}% MCP`;
+}
+
+function sequentialToolsFlag(w: SessionWasteSignals, s: WasteScores): string | null {
+  if (s.sequentialTools <= FLAG_THRESHOLD) return null;
+  const pct = (w.sequentialToolTurnPct * 100).toFixed(1);
+  const useBlocks = w.totalToolUseBlocks;
+  const singleTurnApprox = Math.round(w.sequentialToolTurnPct * useBlocks);
+  return `Single-tool turns: ${pct}% (${singleTurnApprox} / ${useBlocks})`;
+}
+
+function toolHammeringFlag(w: SessionWasteSignals, s: WasteScores): string | null {
+  if (s.toolHammering <= FLAG_THRESHOLD) return null;
+  const top = w.repeatReads[0];
+  const failureTerm = saturate(w.toolFailurePct, TOOL_FAILURE_LO, TOOL_FAILURE_HI);
+  const repeatTerm = saturate(top?.count ?? 0, REPEAT_READ_LO, REPEAT_READ_HI);
+  if (repeatTerm >= failureTerm && top) {
+    return `Repeat reads: Read(${top.filePath}) ×${top.count}`;
   }
+  const pct = (w.toolFailurePct * 100).toFixed(1);
+  return `Tool failure rate: ${pct}%`;
+}
 
-  if (s.toolPollution > FLAG_THRESHOLD) {
-    const mcpPct = Math.round(w.mcpToolCallPct * 100);
-    flags.push(`Tool pollution: ${w.distinctToolCount} distinct tools, ${mcpPct}% MCP`);
-  }
-
-  if (s.sequentialTools > FLAG_THRESHOLD) {
-    const pct = (w.sequentialToolTurnPct * 100).toFixed(1);
-    // Estimate turn counts from the pct and the tool_use block total for context.
-    const useBlocks = w.totalToolUseBlocks;
-    const singleTurnApprox = Math.round(w.sequentialToolTurnPct * useBlocks);
-    flags.push(`Single-tool turns: ${pct}% (${singleTurnApprox} / ${useBlocks})`);
-  }
-
-  if (s.toolHammering > FLAG_THRESHOLD) {
-    const top = w.repeatReads[0];
-    const failureTerm = saturate(w.toolFailurePct, TOOL_FAILURE_LO, TOOL_FAILURE_HI);
-    const repeatTerm = saturate(top?.count ?? 0, REPEAT_READ_LO, REPEAT_READ_HI);
-    if (repeatTerm >= failureTerm && top) {
-      flags.push(`Repeat reads: Read(${top.filePath}) ×${top.count}`);
-    } else {
-      const pct = (w.toolFailurePct * 100).toFixed(1);
-      flags.push(`Tool failure rate: ${pct}%`);
-    }
-  }
-
+function contextOrCompactionFlag(w: SessionWasteSignals, s: WasteScores): string | null {
+  const peakK = Math.round(w.peakInputTokensBetweenCompactions / 1000);
   if (s.contextBloat > FLAG_THRESHOLD) {
-    const peakK = Math.round(w.peakInputTokensBetweenCompactions / 1000);
     if (w.bloatWithoutCompaction) {
-      flags.push(`Long session without /compact: ${peakK}k peak input`);
-    } else {
-      flags.push(`Context bloat: ${peakK}k peak input between compactions`);
+      return `Long session without /compact: ${peakK}k peak input`;
     }
-  } else if (s.compactionAbsence > FLAG_THRESHOLD) {
+    return `Context bloat: ${peakK}k peak input between compactions`;
+  }
+  if (s.compactionAbsence > FLAG_THRESHOLD) {
     // compactionAbsence stands alone when the bloat score didn't cross the
     // threshold but the binary signal still fired (e.g. just under 80k peak).
-    const peakK = Math.round(w.peakInputTokensBetweenCompactions / 1000);
-    flags.push(`Long session without /compact: ${peakK}k peak input`);
+    return `Long session without /compact: ${peakK}k peak input`;
   }
-
-  return flags;
+  return null;
 }

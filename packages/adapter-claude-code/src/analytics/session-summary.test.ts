@@ -1,7 +1,10 @@
-import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
 import { describe, expect, it } from "vitest";
-import type { ClaudeTranscriptEntry } from "../types.js";
+
+import { claudeCodeFixture } from "@control-plane/testing/fixtures/claude-code";
+
 import { foldSessionSummary } from "./session-summary.js";
+
+import type { ClaudeTranscriptEntry } from "../types.js";
 
 function entriesOf(
   name: Parameters<typeof claudeCodeFixture>[0]

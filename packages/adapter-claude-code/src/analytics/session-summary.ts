@@ -14,6 +14,9 @@ import {
   type SessionWasteSignals,
   type TurnUsage,
 } from "@control-plane/core";
+
+import { isToolResultBlock, isToolUseBlock } from "../content-blocks.js";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
@@ -48,6 +51,98 @@ export const REPEAT_READ_MIN_COUNT = 3;
 /** Upper bound on how many repeat-read entries we surface (top-N by count). */
 export const REPEAT_READ_TOP_N = 10;
 
+type Mutable<T> = { -readonly [K in keyof T]: T[K] };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Accumulator state. Kept as a single mutable record so helpers can update
+// subsets of it without a 20-argument signature.
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface FoldState {
+  readonly sessionId: string;
+  readonly toolCounts: Record<string, number>;
+  readonly usage: Mutable<ModelUsage>;
+  readonly flags: Mutable<SessionDerivedFlags>;
+  readonly compactions: SessionCompactionEvent[];
+  readonly turnsOut: SessionTurnUsage[];
+  readonly turnDurations: Map<string, number>;
+  readonly distinctToolNames: Set<string>;
+  readonly readFileCounts: Map<string, number>;
+  readonly toolUseIdToName: Map<string, string>;
+  readonly toolErrorSink: Map<string, number> | undefined;
+  readonly includeTurns: boolean;
+  firstModel: string | null;
+  latestModel: string | null;
+  estimatedCostUsd: number;
+  userMessageCount: number;
+  assistantMessageCount: number;
+  startTime: string | undefined;
+  endTime: string | undefined;
+  gitBranch: string | undefined;
+  version: string | undefined;
+  cwd: string | undefined;
+  turnIndex: number;
+  totalToolUseBlocks: number;
+  totalToolResults: number;
+  toolFailures: number;
+  mcpToolCalls: number;
+  singleToolTurns: number;
+  turnsWithTools: number;
+  peakInputTokensBetweenCompactions: number;
+  runningInputPeak: number;
+}
+
+function createFoldState(
+  entries: readonly ClaudeTranscriptEntry[],
+  options: FoldSessionOptions
+): FoldState {
+  return {
+    sessionId: options.sessionId ?? firstDefined(entries, (e) => e.sessionId) ?? "unknown",
+    toolCounts: {},
+    usage: {
+      inputTokens: 0,
+      outputTokens: 0,
+      cacheReadInputTokens: 0,
+      cacheCreationInputTokens: 0,
+    },
+    flags: {
+      hasCompaction: false,
+      hasThinking: false,
+      usesTaskAgent: false,
+      usesMcp: false,
+      usesWebSearch: false,
+      usesWebFetch: false,
+    },
+    compactions: [],
+    turnsOut: [],
+    turnDurations: new Map(),
+    distinctToolNames: new Set(),
+    readFileCounts: new Map(),
+    toolUseIdToName: new Map(),
+    toolErrorSink: options.toolErrorSink,
+    includeTurns: options.includeTurns ?? false,
+    firstModel: null,
+    latestModel: null,
+    estimatedCostUsd: 0,
+    userMessageCount: 0,
+    assistantMessageCount: 0,
+    startTime: undefined,
+    endTime: undefined,
+    gitBranch: undefined,
+    version: undefined,
+    cwd: options.cwd,
+    turnIndex: 0,
+    totalToolUseBlocks: 0,
+    totalToolResults: 0,
+    toolFailures: 0,
+    mcpToolCalls: 0,
+    singleToolTurns: 0,
+    turnsWithTools: 0,
+    peakInputTokensBetweenCompactions: 0,
+    runningInputPeak: 0,
+  };
+}
+
 /**
  * Derive a canonical `SessionUsageSummary` from raw Claude Code JSONL entries.
  * The returned object is always populated (zero-valued fields when the input
@@ -57,274 +152,284 @@ export function foldSessionSummary(
   entries: readonly ClaudeTranscriptEntry[],
   options: FoldSessionOptions = {}
 ): SessionUsageSummary {
-  const sessionId = options.sessionId ?? firstDefined(entries, (e) => e.sessionId) ?? "unknown";
+  const state = createFoldState(entries, options);
 
-  const toolCounts: Record<string, number> = {};
-  const usage: Mutable<ModelUsage> = {
-    inputTokens: 0,
-    outputTokens: 0,
-    cacheReadInputTokens: 0,
-    cacheCreationInputTokens: 0,
-  };
-  const flags: Mutable<SessionDerivedFlags> = {
-    hasCompaction: false,
-    hasThinking: false,
-    usesTaskAgent: false,
-    usesMcp: false,
-    usesWebSearch: false,
-    usesWebFetch: false,
-  };
-  const compactions: SessionCompactionEvent[] = [];
-  const turnsOut: SessionTurnUsage[] = [];
-  const turnDurations = new Map<string, number>();
+  // Pass 1: collect turn_duration system events keyed by parentUuid.
+  collectTurnDurations(entries, state.turnDurations);
 
-  let firstModel: string | null = null;
-  let latestModel: string | null = null;
-  let estimatedCostUsd = 0;
-  let userMessageCount = 0;
-  let assistantMessageCount = 0;
-  let startTime: string | undefined;
-  let endTime: string | undefined;
-  let gitBranch: string | undefined;
-  let version: string | undefined;
-  let cwd: string | undefined = options.cwd;
-  let turnIndex = 0;
-
-  // Waste-signal accumulators. All updated in the same pass as the base fold.
-  let totalToolUseBlocks = 0;
-  let totalToolResults = 0;
-  let toolFailures = 0;
-  let mcpToolCalls = 0;
-  let singleToolTurns = 0;
-  let turnsWithTools = 0;
-  let peakInputTokensBetweenCompactions = 0;
-  let runningInputPeak = 0;
-  const distinctToolNames = new Set<string>();
-  const readFileCounts = new Map<string, number>();
-  const toolErrorSink = options.toolErrorSink;
-  // Track tool_use_id -> tool name so we can attribute tool_result errors back
-  // to the originating tool even when the result arrives in a later user turn.
-  const toolUseIdToName = new Map<string, string>();
-
-  // Pass 1: collect turn_duration system events (keyed by parentUuid) so we
-  // can attach them to their assistant turn in pass 2.
+  // Pass 2: accumulate everything else in a single walk.
   for (const entry of entries) {
-    if (entry.type === "system") {
-      const sys = entry as ClaudeSystemEntry;
-      const subtype = (sys as unknown as { subtype?: string }).subtype;
-      const parent = sys.parentUuid ?? undefined;
-      const durationMs = (sys as unknown as { durationMs?: number }).durationMs;
-      if (subtype === "turn_duration" && parent && typeof durationMs === "number") {
-        turnDurations.set(parent, durationMs);
-      }
-    }
-  }
-
-  for (const entry of entries) {
-    if (!startTime && entry.timestamp) startTime = entry.timestamp;
-    if (entry.timestamp) endTime = entry.timestamp;
-    if (!gitBranch && entry.gitBranch && entry.gitBranch !== "HEAD") {
-      gitBranch = entry.gitBranch;
-    }
-    if (!version && entry.version) version = entry.version;
-    if (!cwd && entry.cwd) cwd = entry.cwd;
+    updateCommonFields(state, entry);
 
     if (entry.type === "user") {
-      userMessageCount += 1;
-      turnIndex += 1;
-      // Walk user content for tool_result blocks — this is where Claude Code
-      // emits tool outcomes (not on the assistant turn). `is_error === true`
-      // signals a tool failure we attribute to the originating tool name.
-      const userBlocks = (entry as ClaudeUserEntry).message?.content;
-      if (Array.isArray(userBlocks)) {
-        for (const block of userBlocks) {
-          if (block.type === "tool_result") {
-            totalToolResults += 1;
-            if (block.is_error === true) {
-              toolFailures += 1;
-              if (toolErrorSink) {
-                const id = typeof block.tool_use_id === "string" ? block.tool_use_id : undefined;
-                const toolName = id ? toolUseIdToName.get(id) : undefined;
-                if (toolName) {
-                  toolErrorSink.set(toolName, (toolErrorSink.get(toolName) ?? 0) + 1);
-                }
-              }
-            }
-          }
-        }
-      }
-      if (options.includeTurns) {
-        const uuid = entry.uuid;
-        if (uuid) {
-          turnsOut.push({ turnId: uuid });
-        }
-      }
+      processUserEntry(state, entry as ClaudeUserEntry);
       continue;
     }
-
     if (entry.type === "assistant") {
-      assistantMessageCount += 1;
-      const assistant = entry as ClaudeAssistantEntry;
-      const model = assistant.message?.model;
-      if (model) {
-        if (!firstModel) firstModel = model;
-        latestModel = model;
-      }
-
-      const turnUsage = normalizeTurnUsage(assistant.message?.usage);
-      if (turnUsage) {
-        usage.inputTokens += turnUsage.inputTokens;
-        usage.outputTokens += turnUsage.outputTokens;
-        usage.cacheReadInputTokens += turnUsage.cacheReadInputTokens;
-        usage.cacheCreationInputTokens += turnUsage.cacheCreationInputTokens;
-        // Running input-token peak reflects how large the prompt grew at this
-        // assistant turn; reset on compact_boundary below. Peak across the
-        // session is the max observed in any single inter-compaction window.
-        const windowInput =
-          turnUsage.inputTokens +
-          turnUsage.cacheReadInputTokens +
-          turnUsage.cacheCreationInputTokens;
-        if (windowInput > runningInputPeak) runningInputPeak = windowInput;
-        if (runningInputPeak > peakInputTokensBetweenCompactions) {
-          peakInputTokensBetweenCompactions = runningInputPeak;
-        }
-      }
-
-      const turnCost = model && turnUsage ? estimateCostFromUsage(model, turnUsage) : 0;
-      estimatedCostUsd += turnCost;
-
-      const turnId = assistant.uuid;
-      if (options.includeTurns && turnId) {
-        const durationMs = turnDurations.get(turnId);
-        turnsOut.push({
-          turnId,
-          ...(model ? { model } : {}),
-          ...(turnUsage ? { usage: turnUsage } : {}),
-          ...(turnCost ? { estimatedCostUsd: turnCost } : {}),
-          ...(typeof durationMs === "number" ? { turnDurationMs: durationMs } : {}),
-        });
-      }
-
-      const blocks = assistant.message?.content;
-      let toolUsesThisTurn = 0;
-      if (Array.isArray(blocks)) {
-        for (const block of blocks) {
-          classifyBlock(block, toolCounts, flags);
-          if (block.type === "tool_use") {
-            const name = typeof block.name === "string" ? block.name : "";
-            if (!name) continue;
-            toolUsesThisTurn += 1;
-            totalToolUseBlocks += 1;
-            distinctToolNames.add(name);
-            if (isMcpTool(name)) mcpToolCalls += 1;
-            // Remember the tool_use id so a later tool_result with is_error
-            // can be attributed back to this tool name.
-            const id = typeof block.id === "string" ? block.id : undefined;
-            if (id) toolUseIdToName.set(id, name);
-            if (name === "Read") {
-              const input = block.input as { readonly file_path?: unknown } | undefined;
-              const filePath = typeof input?.file_path === "string" ? input.file_path : undefined;
-              if (filePath) {
-                readFileCounts.set(filePath, (readFileCounts.get(filePath) ?? 0) + 1);
-              }
-            }
-          }
-        }
-      }
-      if (toolUsesThisTurn >= 1) {
-        turnsWithTools += 1;
-        if (toolUsesThisTurn === 1) singleToolTurns += 1;
-      }
-      turnIndex += 1;
+      processAssistantEntry(state, entry as ClaudeAssistantEntry);
       continue;
     }
-
     if (entry.type === "system") {
-      const sys = entry as ClaudeSystemEntry;
-      const subtype = (sys as unknown as { subtype?: string }).subtype;
-      if (subtype === "compact_boundary") {
-        flags.hasCompaction = true;
-        const meta =
-          (
-            sys as unknown as {
-              compactMetadata?: { trigger?: string; preTokens?: number };
-            }
-          ).compactMetadata ?? {};
-        const trigger =
-          meta.trigger === "auto" ? "auto" : meta.trigger === "manual" ? "manual" : "unknown";
-        compactions.push({
-          sessionId,
-          uuid: sys.uuid ?? "",
-          timestamp: sys.timestamp ?? "",
-          trigger,
-          preTokens: meta.preTokens ?? 0,
-          turnIndex,
-        });
-        // New inter-compaction window begins here; reset running peak but
-        // keep `peakInputTokensBetweenCompactions` (max across windows).
-        runningInputPeak = 0;
+      processSystemEntry(state, entry as ClaudeSystemEntry);
+    }
+  }
+
+  return buildSummary(state);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pass helpers.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function collectTurnDurations(
+  entries: readonly ClaudeTranscriptEntry[],
+  durations: Map<string, number>
+): void {
+  for (const entry of entries) {
+    if (entry.type !== "system") continue;
+    const sys = entry as ClaudeSystemEntry;
+    const subtype = (sys as unknown as { subtype?: string }).subtype;
+    const parent = sys.parentUuid ?? undefined;
+    const durationMs = (sys as unknown as { durationMs?: number }).durationMs;
+    if (subtype === "turn_duration" && parent && typeof durationMs === "number") {
+      durations.set(parent, durationMs);
+    }
+  }
+}
+
+function updateCommonFields(state: FoldState, entry: ClaudeTranscriptEntry): void {
+  state.startTime ??= entry.timestamp;
+  if (entry.timestamp) state.endTime = entry.timestamp;
+  if (!state.gitBranch && entry.gitBranch && entry.gitBranch !== "HEAD") {
+    state.gitBranch = entry.gitBranch;
+  }
+  state.version ??= entry.version;
+  state.cwd ??= entry.cwd;
+}
+
+function processUserEntry(state: FoldState, entry: ClaudeUserEntry): void {
+  state.userMessageCount += 1;
+  state.turnIndex += 1;
+
+  const userBlocks = entry.message?.content;
+  if (Array.isArray(userBlocks)) {
+    const blocks: readonly ClaudeContentBlock[] = userBlocks;
+    for (const block of blocks) {
+      if (!isToolResultBlock(block)) continue;
+      state.totalToolResults += 1;
+      if (block.is_error === true) {
+        state.toolFailures += 1;
+        recordToolError(state, block.tool_use_id);
       }
     }
   }
 
-  const model = latestModel ?? firstModel;
+  if (state.includeTurns && entry.uuid) {
+    state.turnsOut.push({ turnId: entry.uuid });
+  }
+}
+
+function recordToolError(state: FoldState, toolUseId: string): void {
+  if (!state.toolErrorSink) return;
+  const toolName = state.toolUseIdToName.get(toolUseId);
+  if (!toolName) return;
+  state.toolErrorSink.set(toolName, (state.toolErrorSink.get(toolName) ?? 0) + 1);
+}
+
+function processAssistantEntry(state: FoldState, assistant: ClaudeAssistantEntry): void {
+  state.assistantMessageCount += 1;
+
+  const model = assistant.message?.model;
+  recordAssistantModel(state, model);
+
+  const turnUsage = normalizeTurnUsage(assistant.message?.usage);
+  if (turnUsage) accumulateUsage(state, turnUsage);
+
+  const turnCost = model && turnUsage ? estimateCostFromUsage(model, turnUsage) : 0;
+  state.estimatedCostUsd += turnCost;
+
+  emitTurnUsage(state, assistant.uuid, model, turnUsage, turnCost);
+
+  const blocks = assistant.message?.content;
+  const toolUsesThisTurn = Array.isArray(blocks) ? processAssistantBlocks(state, blocks) : 0;
+  if (toolUsesThisTurn >= 1) {
+    state.turnsWithTools += 1;
+    if (toolUsesThisTurn === 1) state.singleToolTurns += 1;
+  }
+  state.turnIndex += 1;
+}
+
+function recordAssistantModel(state: FoldState, model: string | undefined): void {
+  if (!model) return;
+  state.firstModel ??= model;
+  state.latestModel = model;
+}
+
+function emitTurnUsage(
+  state: FoldState,
+  turnId: string | undefined,
+  model: string | undefined,
+  turnUsage: TurnUsage | undefined,
+  turnCost: number
+): void {
+  if (!state.includeTurns || !turnId) return;
+  const durationMs = state.turnDurations.get(turnId);
+  state.turnsOut.push({
+    turnId,
+    ...(model ? { model } : {}),
+    ...(turnUsage ? { usage: turnUsage } : {}),
+    ...(turnCost ? { estimatedCostUsd: turnCost } : {}),
+    ...(typeof durationMs === "number" ? { turnDurationMs: durationMs } : {}),
+  });
+}
+
+function accumulateUsage(state: FoldState, turnUsage: TurnUsage): void {
+  state.usage.inputTokens += turnUsage.inputTokens;
+  state.usage.outputTokens += turnUsage.outputTokens;
+  state.usage.cacheReadInputTokens += turnUsage.cacheReadInputTokens;
+  state.usage.cacheCreationInputTokens += turnUsage.cacheCreationInputTokens;
+  // Running input-token peak reflects how large the prompt grew at this
+  // assistant turn; reset on compact_boundary in processSystemEntry. Peak
+  // across the session is the max observed in any single inter-compaction
+  // window.
+  const windowInput =
+    turnUsage.inputTokens + turnUsage.cacheReadInputTokens + turnUsage.cacheCreationInputTokens;
+  if (windowInput > state.runningInputPeak) state.runningInputPeak = windowInput;
+  if (state.runningInputPeak > state.peakInputTokensBetweenCompactions) {
+    state.peakInputTokensBetweenCompactions = state.runningInputPeak;
+  }
+}
+
+function processAssistantBlocks(state: FoldState, blocks: readonly ClaudeContentBlock[]): number {
+  let toolUsesThisTurn = 0;
+  for (const block of blocks) {
+    classifyBlock(block, state.toolCounts, state.flags);
+    if (!isToolUseBlock(block)) continue;
+    const name = block.name;
+    if (!name) continue;
+    toolUsesThisTurn += 1;
+    state.totalToolUseBlocks += 1;
+    state.distinctToolNames.add(name);
+    if (isMcpTool(name)) state.mcpToolCalls += 1;
+    // Remember the tool_use id so a later tool_result with is_error can be
+    // attributed back to this tool name.
+    state.toolUseIdToName.set(block.id, name);
+    if (name === "Read") recordReadFilePath(state, block.input);
+  }
+  return toolUsesThisTurn;
+}
+
+function recordReadFilePath(state: FoldState, input: ClaudeRawValue): void {
+  if (typeof input !== "object" || input === null || Array.isArray(input)) return;
+  const filePath = (input as { readonly file_path?: ClaudeRawValue }).file_path;
+  if (typeof filePath !== "string") return;
+  state.readFileCounts.set(filePath, (state.readFileCounts.get(filePath) ?? 0) + 1);
+}
+
+function processSystemEntry(state: FoldState, sys: ClaudeSystemEntry): void {
+  const subtype = (sys as unknown as { subtype?: string }).subtype;
+  if (subtype !== "compact_boundary") return;
+
+  state.flags.hasCompaction = true;
+  const meta =
+    (
+      sys as unknown as {
+        compactMetadata?: { trigger?: string; preTokens?: number };
+      }
+    ).compactMetadata ?? {};
+  const trigger =
+    meta.trigger === "auto" ? "auto" : meta.trigger === "manual" ? "manual" : "unknown";
+  state.compactions.push({
+    sessionId: state.sessionId,
+    uuid: sys.uuid ?? "",
+    timestamp: sys.timestamp ?? "",
+    trigger,
+    preTokens: meta.preTokens ?? 0,
+    turnIndex: state.turnIndex,
+  });
+  // New inter-compaction window begins here; reset running peak but keep
+  // `peakInputTokensBetweenCompactions` (max across windows).
+  state.runningInputPeak = 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Final projection.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildSummary(state: FoldState): SessionUsageSummary {
+  const model = state.latestModel ?? state.firstModel;
   const efficiency: CacheEfficiency = model
-    ? cacheEfficiency(model, usage)
+    ? cacheEfficiency(model, state.usage)
     : EMPTY_CACHE_EFFICIENCY;
 
-  const durationMs = startTime && endTime ? Math.max(0, isoDelta(startTime, endTime)) : undefined;
+  const durationMs =
+    state.startTime && state.endTime
+      ? Math.max(0, isoDelta(state.startTime, state.endTime))
+      : undefined;
 
-  const cacheDenominator = usage.cacheCreationInputTokens + usage.cacheReadInputTokens;
+  return {
+    sessionId: state.sessionId,
+    model,
+    usage: state.usage,
+    estimatedCostUsd: state.estimatedCostUsd,
+    cacheEfficiency: efficiency,
+    toolCounts: state.toolCounts,
+    flags: state.flags,
+    compactions: state.compactions,
+    userMessageCount: state.userMessageCount,
+    assistantMessageCount: state.assistantMessageCount,
+    ...buildSummaryOptionalFields(state, durationMs),
+    waste: buildWasteSignals(state),
+  };
+}
+
+function buildSummaryOptionalFields(
+  state: FoldState,
+  durationMs: number | undefined
+): Partial<SessionUsageSummary> {
+  return {
+    ...(state.startTime ? { startTime: state.startTime } : {}),
+    ...(state.endTime ? { endTime: state.endTime } : {}),
+    ...(typeof durationMs === "number" ? { durationMs } : {}),
+    ...(state.gitBranch ? { gitBranch: state.gitBranch } : {}),
+    ...(state.version ? { version: state.version } : {}),
+    ...(state.cwd ? { cwd: state.cwd } : {}),
+    ...(state.includeTurns ? { turns: state.turnsOut } : {}),
+  };
+}
+
+function buildWasteSignals(state: FoldState): SessionWasteSignals {
+  const cacheDenominator = state.usage.cacheCreationInputTokens + state.usage.cacheReadInputTokens;
   const cacheThrashRatio =
-    cacheDenominator > 0 ? usage.cacheCreationInputTokens / cacheDenominator : 0;
-  const mcpToolCallPct = totalToolUseBlocks > 0 ? mcpToolCalls / totalToolUseBlocks : 0;
-  const sequentialToolTurnPct = turnsWithTools > 0 ? singleToolTurns / turnsWithTools : 0;
-  const toolFailurePct = totalToolResults > 0 ? toolFailures / totalToolResults : 0;
+    cacheDenominator > 0 ? state.usage.cacheCreationInputTokens / cacheDenominator : 0;
+  const mcpToolCallPct =
+    state.totalToolUseBlocks > 0 ? state.mcpToolCalls / state.totalToolUseBlocks : 0;
+  const sequentialToolTurnPct =
+    state.turnsWithTools > 0 ? state.singleToolTurns / state.turnsWithTools : 0;
+  const toolFailurePct =
+    state.totalToolResults > 0 ? state.toolFailures / state.totalToolResults : 0;
 
-  const repeatReads: RepeatReadEntry[] = [...readFileCounts.entries()]
+  const repeatReads: RepeatReadEntry[] = [...state.readFileCounts.entries()]
     .filter(([, count]) => count >= REPEAT_READ_MIN_COUNT)
     .map(([filePath, count]) => ({ filePath, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, REPEAT_READ_TOP_N);
 
-  const waste: SessionWasteSignals = {
+  return {
     cacheThrashRatio,
-    distinctToolCount: distinctToolNames.size,
+    distinctToolCount: state.distinctToolNames.size,
     mcpToolCallPct,
     sequentialToolTurnPct,
     toolFailurePct,
-    peakInputTokensBetweenCompactions,
+    peakInputTokensBetweenCompactions: state.peakInputTokensBetweenCompactions,
     bloatWithoutCompaction:
-      peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
-      compactions.length === 0,
+      state.peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
+      state.compactions.length === 0,
     repeatReads,
-    totalToolUseBlocks,
-    totalToolResults,
-  };
-
-  return {
-    sessionId,
-    model,
-    usage,
-    estimatedCostUsd,
-    cacheEfficiency: efficiency,
-    toolCounts,
-    flags,
-    compactions,
-    userMessageCount,
-    assistantMessageCount,
-    ...(startTime ? { startTime } : {}),
-    ...(endTime ? { endTime } : {}),
-    ...(typeof durationMs === "number" ? { durationMs } : {}),
-    ...(gitBranch ? { gitBranch } : {}),
-    ...(version ? { version } : {}),
-    ...(cwd ? { cwd } : {}),
-    ...(options.includeTurns ? { turns: turnsOut } : {}),
-    waste,
+    totalToolUseBlocks: state.totalToolUseBlocks,
+    totalToolResults: state.totalToolResults,
   };
 }
-
-type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
 function classifyBlock(
   block: ClaudeContentBlock,
@@ -335,16 +440,15 @@ function classifyBlock(
     flags.hasThinking = true;
     return;
   }
-  if (block.type === "tool_use") {
-    const name = typeof block.name === "string" ? (block.name as string) : "";
-    if (!name) return;
-    toolCounts[name] = (toolCounts[name] ?? 0) + 1;
-    const category = categorizeTool(name);
-    if (category === "agent") flags.usesTaskAgent = true;
-    if (category === "mcp") flags.usesMcp = true;
-    if (name === "WebSearch") flags.usesWebSearch = true;
-    if (name === "WebFetch") flags.usesWebFetch = true;
-  }
+  if (!isToolUseBlock(block)) return;
+  const name = block.name;
+  if (!name) return;
+  toolCounts[name] = (toolCounts[name] ?? 0) + 1;
+  const category = categorizeTool(name);
+  if (category === "agent") flags.usesTaskAgent = true;
+  if (category === "mcp") flags.usesMcp = true;
+  if (name === "WebSearch") flags.usesWebSearch = true;
+  if (name === "WebFetch") flags.usesWebFetch = true;
 }
 
 export function normalizeTurnUsage(raw: ClaudeMessageUsage | undefined): TurnUsage | undefined {
@@ -362,12 +466,29 @@ export function normalizeTurnUsage(raw: ClaudeMessageUsage | undefined): TurnUsa
     outputTokens: raw.output_tokens ?? 0,
     cacheCreationInputTokens: raw.cache_creation_input_tokens ?? 0,
     cacheReadInputTokens: raw.cache_read_input_tokens ?? 0,
-    ...(ext.cache_creation?.ephemeral_5m_input_tokens !== undefined
-      ? { ephemeral5mInputTokens: ext.cache_creation.ephemeral_5m_input_tokens }
-      : {}),
-    ...(ext.cache_creation?.ephemeral_1h_input_tokens !== undefined
-      ? { ephemeral1hInputTokens: ext.cache_creation.ephemeral_1h_input_tokens }
-      : {}),
+    ...extractEphemeralTokens(ext.cache_creation),
+    ...extractUsageTags(ext),
+  };
+}
+
+function extractEphemeralTokens(
+  cacheCreation:
+    | { ephemeral_5m_input_tokens?: number; ephemeral_1h_input_tokens?: number }
+    | undefined
+): Partial<Pick<TurnUsage, "ephemeral5mInputTokens" | "ephemeral1hInputTokens">> {
+  const ephemeral5m = cacheCreation?.ephemeral_5m_input_tokens;
+  const ephemeral1h = cacheCreation?.ephemeral_1h_input_tokens;
+  return {
+    ...(ephemeral5m !== undefined ? { ephemeral5mInputTokens: ephemeral5m } : {}),
+    ...(ephemeral1h !== undefined ? { ephemeral1hInputTokens: ephemeral1h } : {}),
+  };
+}
+
+function extractUsageTags(ext: {
+  service_tier?: string;
+  inference_geo?: string;
+}): Partial<Pick<TurnUsage, "serviceTier" | "inferenceGeo">> {
+  return {
     ...(ext.service_tier ? { serviceTier: ext.service_tier } : {}),
     ...(ext.inference_geo ? { inferenceGeo: ext.inference_geo } : {}),
   };

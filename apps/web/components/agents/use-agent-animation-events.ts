@@ -1,7 +1,8 @@
 "use client";
 
-import type { AgentAnimationSnapshot } from "@control-plane/core";
 import { useEffect, useState } from "react";
+
+import type { AgentAnimationSnapshot } from "@control-plane/core";
 
 const AGENT_EVENTS_URL = "/api/agents/events";
 
@@ -16,7 +17,7 @@ export function useAgentAnimationEvents(): ReadonlyMap<string, AgentAnimationSna
     const source = new EventSource(AGENT_EVENTS_URL);
 
     source.addEventListener("message", (event) => {
-      const snapshot = parseSnapshot(event.data);
+      const snapshot = parseSnapshot(String(event.data));
       if (!snapshot) return;
       setSnapshots((current) => {
         const next = new Map(current);

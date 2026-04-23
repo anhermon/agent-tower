@@ -10,6 +10,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
+    "test:e2e:perf": "playwright test --project=perf",
     "lint": "pnpm typecheck",
     "cp": "node packages/cli/dist/cli.js",
     "mcp-server": "node packages/mcp-server/dist/server.js"

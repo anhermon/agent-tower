@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { AgentSessionList } from "@/components/agents/agent-session-list";
 import { AgentStatusBadge } from "@/components/agents/agent-status-badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -8,9 +9,9 @@ import { CLAUDE_DATA_ROOT_ENV } from "@/lib/sessions-source";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
-};
+}
 
 export default async function AgentDetailPage({ params }: PageProps) {
   const { id } = await params;

@@ -1,6 +1,5 @@
 "use client";
 
-import type { HourBin } from "@control-plane/core";
 import {
   Bar,
   BarChart,
@@ -12,22 +11,26 @@ import {
   YAxis,
 } from "recharts";
 
+import type { HourBin } from "@control-plane/core";
+
+import type { ChartTooltipProps } from "./_types";
+
 interface Props {
   readonly data: readonly HourBin[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null;
+function CustomTooltip({ active, payload, label }: ChartTooltipProps<number, string>) {
+  if (!active || !payload || payload.length === 0) return null;
   const hour = Number(label);
   const period = hour < 12 ? "AM" : "PM";
   const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const value = typeof payload[0]?.value === "number" ? payload[0].value : 0;
   return (
     <div className="rounded-sm border border-line/70 bg-panel/95 px-3 py-2 text-xs shadow-glass">
       <p className="text-muted">
         {h12}:00 {period}
       </p>
-      <p className="font-semibold text-ink">{payload[0].value.toLocaleString()} messages</p>
+      <p className="font-semibold text-ink">{value.toLocaleString()} messages</p>
     </div>
   );
 }

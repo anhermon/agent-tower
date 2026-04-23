@@ -17,22 +17,9 @@ const STATUS_ICON = { pass: "✓", fail: "✗", skipped: "–" };
 const STATUS_COLOR = { pass: "\x1b[32m", fail: "\x1b[31m", skipped: "\x1b[90m" };
 const RESET = "\x1b[0m";
 
-async function main() {
-  if (!existsSync(REPORTS_DIR)) {
-    console.error(`no reports directory at ${REPORTS_DIR} — run a ci:* task first`);
-    process.exit(2);
-  }
-
-  const entries = await readdir(REPORTS_DIR);
-  const jsonFiles = entries.filter((name) => name.endsWith(".json") && name !== "latest.json");
-
-  if (jsonFiles.length === 0) {
-    console.error(`no tool reports found in ${REPORTS_DIR}`);
-    process.exit(2);
-  }
-
+async function loadReports(jsonFiles) {
   const reports = [];
-  for (const file of jsonFiles.sort()) {
+  for (const file of jsonFiles) {
     try {
       const raw = await readFile(resolve(REPORTS_DIR, file), "utf8");
       reports.push(JSON.parse(raw));
@@ -48,13 +35,11 @@ async function main() {
       });
     }
   }
+  return reports;
+}
 
-  const failed = reports.filter((r) => r.status === "fail");
-  const skipped = reports.filter((r) => r.status === "skipped");
-  const passed = reports.filter((r) => r.status === "pass");
-  const overall = failed.length > 0 ? "fail" : "pass";
-
-  const latest = {
+function buildLatest(reports, failed, passed, skipped, overall) {
+  return {
     generatedAt: new Date().toISOString(),
     overall,
     counts: {
@@ -78,15 +63,11 @@ async function main() {
       summary: r.summary,
     })),
   };
+}
 
-  await writeFile(
-    resolve(REPORTS_DIR, "latest.json"),
-    `${JSON.stringify(latest, null, 2)}\n`,
-    "utf8"
-  );
-
-  // Pretty-print the board.
-  const width = Math.max(...reports.map((r) => r.tool.length), 6);
+function printBoard(latest, passed, failed, skipped) {
+  const overall = latest.overall;
+  const width = Math.max(...latest.tools.map((r) => r.tool.length), 6);
   console.log("");
   console.log(
     `  CI health board — ${overall === "pass" ? "\x1b[32mHEALTHY\x1b[0m" : "\x1b[31mUNHEALTHY\x1b[0m"}`
@@ -105,6 +86,37 @@ async function main() {
     `  ${passed.length} pass · ${failed.length} fail · ${skipped.length} skipped · report: .ci/reports/latest.json`
   );
   console.log("");
+}
+
+async function main() {
+  if (!existsSync(REPORTS_DIR)) {
+    console.error(`no reports directory at ${REPORTS_DIR} — run a ci:* task first`);
+    process.exit(2);
+  }
+
+  const entries = await readdir(REPORTS_DIR);
+  const jsonFiles = entries.filter((name) => name.endsWith(".json") && name !== "latest.json");
+
+  if (jsonFiles.length === 0) {
+    console.error(`no tool reports found in ${REPORTS_DIR}`);
+    process.exit(2);
+  }
+
+  const reports = await loadReports(jsonFiles.sort());
+  const failed = reports.filter((r) => r.status === "fail");
+  const skipped = reports.filter((r) => r.status === "skipped");
+  const passed = reports.filter((r) => r.status === "pass");
+  const overall = failed.length > 0 ? "fail" : "pass";
+
+  const latest = buildLatest(reports, failed, passed, skipped, overall);
+
+  await writeFile(
+    resolve(REPORTS_DIR, "latest.json"),
+    `${JSON.stringify(latest, null, 2)}\n`,
+    "utf8"
+  );
+
+  printBoard(latest, passed, failed, skipped);
 
   process.exit(overall === "pass" ? 0 : 1);
 }

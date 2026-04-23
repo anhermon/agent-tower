@@ -2,6 +2,7 @@
 // Runs `pnpm audit` and writes a machine-readable summary.
 // Exits non-zero iff advisories exist at `high` or `critical` severity.
 import { spawn } from "node:child_process";
+
 import { paths, writeReport } from "./lib/report.mjs";
 
 const TOOL = "audit";
@@ -36,52 +37,66 @@ function emptyCounts() {
   return Object.fromEntries(SEVERITIES.map((s) => [s, 0]));
 }
 
-/** Normalize pnpm audit JSON across shapes into severity counts. */
-function parseAudit(stdout) {
-  const counts = emptyCounts();
-  const trimmed = stdout.trim();
-  if (!trimmed) return { counts, advisoryCount: 0, raw: null };
-
-  let parsed;
+/** Try to parse JSON from stdout, falling back to NDJSON last-line scan. */
+function parseJson(trimmed) {
   try {
-    parsed = JSON.parse(trimmed);
+    return JSON.parse(trimmed);
   } catch {
     // Some versions emit NDJSON — try last JSON object on a line.
     const lines = trimmed.split(/\r?\n/).filter(Boolean);
     for (const line of lines.reverse()) {
       try {
-        parsed = JSON.parse(line);
-        break;
+        return JSON.parse(line);
       } catch {
         /* keep looking */
       }
     }
-    if (!parsed) return { counts, advisoryCount: 0, raw: trimmed.slice(0, 2000) };
+    return null;
   }
+}
 
-  // Shape A: { metadata: { vulnerabilities: { info, low, ... } } }
+/** Shape A: { metadata: { vulnerabilities: { info, low, ... } } } — returns the vulns object or null. */
+function extractMetaVulns(parsed, counts) {
   const metaVulns = parsed?.metadata?.vulnerabilities;
   if (metaVulns && typeof metaVulns === "object") {
     for (const sev of SEVERITIES) {
       if (typeof metaVulns[sev] === "number") counts[sev] = metaVulns[sev];
     }
+    return metaVulns;
   }
+  return null;
+}
 
-  // Shape B: { advisories: { id: { severity } } }
-  let advisoryCount = 0;
+/** Shape B: { advisories: { id: { severity } } } — returns advisory count. */
+function countAdvisories(parsed, counts, metaVulns) {
   const advisories = parsed?.advisories;
   if (advisories && typeof advisories === "object") {
     const entries = Object.values(advisories);
-    advisoryCount = entries.length;
     if (!metaVulns) {
       for (const adv of entries) {
         const sev = String(adv?.severity ?? "").toLowerCase();
         if (sev in counts) counts[sev] += 1;
       }
     }
-  } else if (metaVulns) {
-    advisoryCount = SEVERITIES.reduce((acc, s) => acc + (counts[s] || 0), 0);
+    return entries.length;
   }
+  if (metaVulns) {
+    return SEVERITIES.reduce((acc, s) => acc + (counts[s] || 0), 0);
+  }
+  return 0;
+}
+
+/** Normalize pnpm audit JSON across shapes into severity counts. */
+function parseAudit(stdout) {
+  const counts = emptyCounts();
+  const trimmed = stdout.trim();
+  if (!trimmed) return { counts, advisoryCount: 0, raw: null };
+
+  const parsed = parseJson(trimmed);
+  if (!parsed) return { counts, advisoryCount: 0, raw: trimmed.slice(0, 2000) };
+
+  const metaVulns = extractMetaVulns(parsed, counts);
+  const advisoryCount = countAdvisories(parsed, counts, metaVulns);
 
   return { counts, advisoryCount, raw: null };
 }

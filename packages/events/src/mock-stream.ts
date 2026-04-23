@@ -63,12 +63,23 @@ function withOptionalEventFields<
   };
 }
 
-export async function* createMockEventStream<TEvent extends EventEnvelope>(
+export function createMockEventStream<TEvent extends EventEnvelope>(
   events: readonly TEvent[]
 ): EventStream<TEvent> {
-  for (const event of events) {
-    yield event;
-  }
+  // Reason: preserve the AsyncIterable contract without `async function*`
+  // (which would require an `await` the body doesn't need). A plain sync
+  // iterator is wrapped into an AsyncIterable via an inline adapter.
+  const iter = events[Symbol.iterator]();
+  const asyncIter: AsyncIterator<TEvent> = {
+    next(): Promise<IteratorResult<TEvent>> {
+      return Promise.resolve(iter.next());
+    },
+  };
+  return {
+    [Symbol.asyncIterator]() {
+      return asyncIter;
+    },
+  };
 }
 
 export async function collectEventStream<TEvent>(

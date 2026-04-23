@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { appendFile, mkdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
+
 import {
   DOMAIN_EVENT_TYPES,
   type JsonObject,
@@ -259,6 +260,15 @@ function toDeliveryMetadata(input: PersistGithubWebhookDeliveryInput): JsonObjec
   const senderLogin = getNestedString(input.payload, ["sender", "login"]);
   if (senderLogin) metadata.senderLogin = senderLogin;
 
+  const sessionId =
+    getNestedString(input.payload, ["sessionId"]) ??
+    getNestedString(input.payload, ["session_id"]) ??
+    getNestedString(input.payload, ["session", "id"]) ??
+    getNestedString(input.payload, ["client_payload", "sessionId"]) ??
+    getNestedString(input.payload, ["client_payload", "session_id"]) ??
+    getNestedString(input.payload, ["check_run", "external_id"]);
+  if (sessionId) metadata.sessionId = sessionId;
+
   return metadata;
 }
 
@@ -290,59 +300,84 @@ function coerceWebhookDelivery(value: unknown, file: string, lineNumber: number)
     throw new Error(`GitHub webhook delivery payload at ${file}:${lineNumber} is not an object.`);
   }
 
-  const {
+  const { id, subscriptionId, eventType, attemptedAt, status } = value;
+  validateRequiredDeliveryFields(
+    value,
     id,
     subscriptionId,
     eventType,
     attemptedAt,
     status,
-    responseStatus,
-    responseBody,
-    requestHeaders,
-    metadata,
-  } = value;
+    file,
+    lineNumber
+  );
 
+  // After validateRequiredDeliveryFields, these are guaranteed to be the right types.
+  const optional = buildOptionalDeliveryFields(value);
+
+  return {
+    id: id as string,
+    subscriptionId: subscriptionId as string,
+    eventType: eventType as WebhookEventType,
+    attemptedAt: attemptedAt as string,
+    status: status as WebhookDelivery["status"],
+    ...optional,
+  };
+}
+
+function validateRequiredDeliveryFields(
+  _value: Record<string, unknown>,
+  id: unknown,
+  subscriptionId: unknown,
+  eventType: unknown,
+  attemptedAt: unknown,
+  status: unknown,
+  file: string,
+  lineNumber: number
+): void {
   if (typeof id !== "string" || id.length === 0) {
     throw new Error(`GitHub webhook delivery at ${file}:${lineNumber} is missing an id.`);
   }
   if (typeof subscriptionId !== "string" || subscriptionId.length === 0) {
     throw new Error(
-      `GitHub webhook delivery ${id} at ${file}:${lineNumber} is missing a subscriptionId.`
+      `GitHub webhook delivery ${String(id)} at ${file}:${lineNumber} is missing a subscriptionId.`
     );
   }
   if (!isWebhookEventType(eventType)) {
-    throw new Error(`GitHub webhook delivery ${id} at ${file}:${lineNumber} has an eventType.`);
+    throw new Error(
+      `GitHub webhook delivery ${String(id)} at ${file}:${lineNumber} has an eventType.`
+    );
   }
   if (typeof attemptedAt !== "string" || attemptedAt.length === 0) {
     throw new Error(
-      `GitHub webhook delivery ${id} at ${file}:${lineNumber} is missing attemptedAt.`
+      `GitHub webhook delivery ${String(id)} at ${file}:${lineNumber} is missing attemptedAt.`
     );
   }
   if (!isWebhookDeliveryStatus(status)) {
     throw new Error(
-      `GitHub webhook delivery ${id} at ${file}:${lineNumber} has an invalid status.`
+      `GitHub webhook delivery ${String(id)} at ${file}:${lineNumber} has an invalid status.`
     );
   }
+}
 
+function buildOptionalDeliveryFields(value: Record<string, unknown>): {
+  responseStatus?: number;
+  responseBody?: string;
+  requestHeaders?: JsonObject;
+  metadata?: JsonObject;
+} {
   const optional: {
     responseStatus?: number;
     responseBody?: string;
     requestHeaders?: JsonObject;
     metadata?: JsonObject;
   } = {};
+  const { responseStatus, responseBody, requestHeaders, metadata } = value;
   if (typeof responseStatus === "number") optional.responseStatus = responseStatus;
   if (typeof responseBody === "string") optional.responseBody = responseBody;
   if (isPlainObject(requestHeaders)) optional.requestHeaders = requestHeaders as JsonObject;
   if (isPlainObject(metadata)) optional.metadata = metadata as JsonObject;
-
-  return {
-    id,
-    subscriptionId,
-    eventType,
-    attemptedAt,
-    status,
-    ...optional,
-  };
+  return optional;
 }
 
 function isWebhookEventType(value: unknown): value is WebhookEventType {

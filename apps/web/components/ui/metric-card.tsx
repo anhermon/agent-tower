@@ -1,10 +1,11 @@
 import { Icon } from "@/components/ui/icon";
+
 import type { Metric } from "@/types/control-plane";
 
-type MetricCardProps = {
+interface MetricCardProps {
   metric: Metric;
   hero?: boolean;
-};
+}
 
 export function MetricCard({ metric, hero = false }: MetricCardProps) {
   const trendIcon =

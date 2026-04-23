@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-type CollapsibleProps = {
+interface CollapsibleProps {
   readonly preview: string;
   readonly full: string;
   readonly previewLabel?: string;
-};
+}
 
 export function Collapsible({ preview, full, previewLabel = "Show more" }: CollapsibleProps) {
   const [expanded, setExpanded] = useState(false);

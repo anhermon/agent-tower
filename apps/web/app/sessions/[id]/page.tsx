@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import type { SessionUsageSummary } from "@control-plane/core";
+
 import { SessionDetail } from "@/components/sessions/session-detail";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { loadReplay } from "@/lib/sessions-analytics";
@@ -7,17 +10,15 @@ import { CLAUDE_DATA_ROOT_ENV, loadSessionUsageOrEmpty } from "@/lib/sessions-so
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ id: string }>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
-};
+}
 
 export default async function SessionDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;
   const qs = (await searchParams) ?? {};
-  const rawTurn = qs.turn;
-  const deepLinkTurn =
-    typeof rawTurn === "string" ? rawTurn : Array.isArray(rawTurn) ? rawTurn[0] : undefined;
+  const deepLinkTurn = resolveDeepLinkTurn(qs.turn);
 
   const [replayResult, usageResult] = await Promise.all([
     loadReplay(id),
@@ -25,26 +26,7 @@ export default async function SessionDetailPage({ params, searchParams }: PagePr
   ]);
 
   if (!replayResult.ok) {
-    return (
-      <section className="space-y-5">
-        <Link href="/sessions" className="text-sm text-accent hover:underline">
-          ← Back to sessions
-        </Link>
-        {replayResult.reason === "unconfigured" ? (
-          <EmptyState
-            title="No session records"
-            description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory.`}
-          />
-        ) : (
-          <ErrorState
-            title="Could not load session"
-            description={
-              replayResult.message ?? "An unknown error occurred reading the transcript."
-            }
-          />
-        )}
-      </section>
-    );
+    return renderReplayError(replayResult);
   }
 
   if (!replayResult.value) {
@@ -52,13 +34,7 @@ export default async function SessionDetailPage({ params, searchParams }: PagePr
     notFound();
   }
 
-  const usage = usageResult.ok ? usageResult.value : undefined;
-  // Non-blocking banner when we can render the replay but usage (flags,
-  // duration) failed to load for a real reason — previously swallowed silently.
-  const usageError =
-    !usageResult.ok && usageResult.reason === "error"
-      ? (usageResult.message ?? "Could not load usage summary.")
-      : null;
+  const { usage, usageError } = resolveUsage(usageResult);
 
   return (
     <>
@@ -77,5 +53,46 @@ export default async function SessionDetailPage({ params, searchParams }: PagePr
         deepLinkTurn={deepLinkTurn}
       />
     </>
+  );
+}
+
+function resolveUsage(usageResult: Awaited<ReturnType<typeof loadSessionUsageOrEmpty>>): {
+  usage: SessionUsageSummary | undefined;
+  usageError: string | null;
+} {
+  const usage = usageResult.ok ? usageResult.value : undefined;
+  // Non-blocking banner when we can render the replay but usage (flags,
+  // duration) failed to load for a real reason — previously swallowed silently.
+  const usageError =
+    !usageResult.ok && usageResult.reason === "error"
+      ? (usageResult.message ?? "Could not load usage summary.")
+      : null;
+  return { usage, usageError };
+}
+
+function resolveDeepLinkTurn(rawTurn: string | string[] | undefined): string | undefined {
+  if (typeof rawTurn === "string") return rawTurn;
+  if (Array.isArray(rawTurn)) return rawTurn[0];
+  return undefined;
+}
+
+function renderReplayError(replayResult: Awaited<ReturnType<typeof loadReplay>> & { ok: false }) {
+  return (
+    <section className="space-y-5">
+      <Link href="/sessions" className="text-sm text-accent hover:underline">
+        ← Back to sessions
+      </Link>
+      {replayResult.reason === "unconfigured" ? (
+        <EmptyState
+          title="No session records"
+          description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory.`}
+        />
+      ) : (
+        <ErrorState
+          title="Could not load session"
+          description={replayResult.message ?? "An unknown error occurred reading the transcript."}
+        />
+      )}
+    </section>
   );
 }

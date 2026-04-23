@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
 import { KeyboardNavProvider } from "@/components/sessions/keyboard-nav-provider";
 import { SessionsSubNav } from "@/components/sessions/sub-nav";
+
+import type { ReactNode } from "react";
 
 /**
  * Shared layout for every `/sessions/**` route. Renders the sub-nav strip

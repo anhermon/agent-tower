@@ -1,41 +1,60 @@
 "use client";
 
-import type { JsonValue } from "@control-plane/core";
 import { useState } from "react";
+
+import type { JsonValue } from "@control-plane/core";
+
 import { cn } from "@/lib/utils";
 
-type TodoItem = {
+interface TodoItem {
   readonly content: string;
-  readonly status: "pending" | "in_progress" | "completed" | string;
+  readonly status: "pending" | "in_progress" | "completed";
   readonly activeForm?: string;
-};
+}
 
-type Props = {
+const TODO_STATUSES = ["pending", "in_progress", "completed"] as const;
+
+function isTodoStatus(value: string): value is TodoItem["status"] {
+  return (TODO_STATUSES as readonly string[]).includes(value);
+}
+
+interface Props {
   readonly input: JsonValue;
-};
+}
 
-function parseTodos(input: JsonValue): readonly TodoItem[] | null {
+function extractTodosArray(input: JsonValue): JsonValue[] | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
   const obj = input as Record<string, JsonValue>;
   const todos = obj.todos;
-  if (!Array.isArray(todos)) return null;
+  return Array.isArray(todos) ? todos : null;
+}
+
+function parseSingleTodo(raw: JsonValue): TodoItem | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const r = raw as Record<string, JsonValue>;
+  const content = r.content;
+  const status = r.status;
+  if (typeof content !== "string" || typeof status !== "string" || !isTodoStatus(status))
+    return null;
+  return {
+    content,
+    status,
+    activeForm: typeof r.activeForm === "string" ? r.activeForm : undefined,
+  };
+}
+
+function parseTodos(input: JsonValue): readonly TodoItem[] | null {
+  const todosArray = extractTodosArray(input);
+  if (!todosArray) return null;
   const parsed: TodoItem[] = [];
-  for (const raw of todos) {
-    if (!raw || typeof raw !== "object" || Array.isArray(raw)) continue;
-    const r = raw as Record<string, JsonValue>;
-    const content = r.content;
-    const status = r.status;
-    if (typeof content !== "string" || typeof status !== "string") continue;
-    parsed.push({
-      content,
-      status,
-      activeForm: typeof r.activeForm === "string" ? r.activeForm : undefined,
-    });
+  for (const raw of todosArray) {
+    const item = parseSingleTodo(raw);
+    if (item) parsed.push(item);
   }
   return parsed.length > 0 ? parsed : null;
 }
 
-const STATUS_TONE: Record<string, { icon: string; text: string }> = {
+const STATUS_TONE: Record<TodoItem["status"], { icon: string; text: string }> = {
   completed: { icon: "✓", text: "text-ok" },
   in_progress: { icon: "◐", text: "text-info" },
   pending: { icon: "◯", text: "text-muted" },
@@ -71,10 +90,10 @@ export function TodoWritePanel({ input }: Props) {
       </button>
       {open ? (
         <ul className="space-y-1 border-t border-line/60 px-3 py-2">
-          {todos.map((todo, i) => {
-            const tone = STATUS_TONE[todo.status] ?? STATUS_TONE.pending!;
+          {todos.map((todo) => {
+            const tone = STATUS_TONE[todo.status] ?? STATUS_TONE.pending;
             return (
-              <li key={i} className="flex items-start gap-2 text-sm">
+              <li key={`${todo.status}-${todo.content}`} className="flex items-start gap-2 text-sm">
                 <span className={cn("mt-0.5 font-mono text-xs", tone.text)} aria-hidden>
                   {tone.icon}
                 </span>

@@ -1,5 +1,7 @@
-import type { SessionUsageSummary, SessionWasteSignals } from "@control-plane/core";
 import { describe, expect, it } from "vitest";
+
+import type { SessionUsageSummary, SessionWasteSignals } from "@control-plane/core";
+
 import { scoreSessionsWaste, scoreSessionWaste } from "./waste.js";
 
 function makeSummary(

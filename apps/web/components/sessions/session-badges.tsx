@@ -1,6 +1,8 @@
 import type { SessionDerivedFlags } from "@control-plane/core";
-import type { ReactNode } from "react";
+
 import { cn } from "@/lib/utils";
+
+import type { ReactNode } from "react";
 
 /**
  * Session-level feature chips. Rendered from the canonical

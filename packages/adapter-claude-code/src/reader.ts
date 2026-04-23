@@ -2,6 +2,7 @@ import { createReadStream } from "node:fs";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { createInterface } from "node:readline";
+
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
@@ -119,6 +120,78 @@ export interface TranscriptPreview {
   readonly turnCountLowerBound: number;
 }
 
+interface PreviewState {
+  firstUserText: string | null;
+  summary: string | null;
+  model: string | null;
+  firstTimestamp: string | null;
+  turnCountLowerBound: number;
+}
+
+function parsePreviewLine(trimmed: string): ClaudeTranscriptEntry | null {
+  try {
+    return JSON.parse(trimmed) as ClaudeTranscriptEntry;
+  } catch {
+    return null;
+  }
+}
+
+function updatePreviewState(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  updateTurnCount(state, parsed);
+  updateFirstTimestamp(state, parsed);
+  updateModel(state, parsed);
+  updateSummary(state, parsed);
+  updateFirstUserText(state, parsed);
+}
+
+function updateTurnCount(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  if (parsed.type === "user" || parsed.type === "assistant") {
+    state.turnCountLowerBound += 1;
+  }
+}
+
+function updateFirstTimestamp(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  if (!state.firstTimestamp && typeof parsed.timestamp === "string") {
+    state.firstTimestamp = parsed.timestamp;
+  }
+}
+
+function updateModel(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  if (!state.model && parsed.type === "assistant") {
+    const m = (parsed as ClaudeAssistantEntry).message?.model;
+    if (typeof m === "string" && m.length > 0) state.model = m;
+  }
+}
+
+function updateSummary(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  if (!state.summary && parsed.type === "summary") {
+    const s = (parsed as ClaudeSummaryEntry).summary;
+    if (typeof s === "string" && s.trim().length > 0) state.summary = s.trim();
+  }
+}
+
+function updateFirstUserText(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
+  if (!state.firstUserText && parsed.type === "user") {
+    state.firstUserText = extractFirstUserText((parsed as ClaudeUserEntry).message?.content);
+  }
+}
+
+/** Returns true if the caller should break (stop reading). */
+function processPreviewLine(
+  rawLine: string,
+  lineNumber: number,
+  maxLines: number,
+  state: PreviewState
+): boolean {
+  if (lineNumber > maxLines && state.firstUserText !== null) return true;
+  const trimmed = rawLine.trim();
+  if (trimmed.length === 0) return false;
+  const parsed = parsePreviewLine(trimmed);
+  if (!parsed) return false;
+  updatePreviewState(state, parsed);
+  return !!(state.firstUserText && state.summary && state.model && lineNumber >= 8);
+}
+
 /**
  * Peeks at the head of a transcript to extract a human-friendly title without
  * reading the full file. Stops after finding a title or after `maxLines`.
@@ -128,11 +201,13 @@ export async function readTranscriptPreview(
   options: { readonly maxLines?: number } = {}
 ): Promise<TranscriptPreview> {
   const maxLines = Math.max(1, options.maxLines ?? 40);
-  let firstUserText: string | null = null;
-  let summary: string | null = null;
-  let model: string | null = null;
-  let firstTimestamp: string | null = null;
-  let turnCountLowerBound = 0;
+  const state: PreviewState = {
+    firstUserText: null,
+    summary: null,
+    model: null,
+    firstTimestamp: null,
+    turnCountLowerBound: 0,
+  };
 
   const stream = createReadStream(filePath, { encoding: "utf8" });
   const reader = createInterface({ input: stream, crlfDelay: Infinity });
@@ -141,50 +216,21 @@ export async function readTranscriptPreview(
   try {
     for await (const rawLine of reader) {
       lineNumber += 1;
-      if (lineNumber > maxLines && firstUserText !== null) break;
-      const trimmed = rawLine.trim();
-      if (trimmed.length === 0) continue;
-
-      let parsed: ClaudeTranscriptEntry;
-      try {
-        parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
-      } catch {
-        continue;
-      }
-
-      if (parsed.type === "user" || parsed.type === "assistant") {
-        turnCountLowerBound += 1;
-      }
-      if (!firstTimestamp && typeof parsed.timestamp === "string") {
-        firstTimestamp = parsed.timestamp;
-      }
-      if (!model && parsed.type === "assistant") {
-        const m = (parsed as ClaudeAssistantEntry).message?.model;
-        if (typeof m === "string" && m.length > 0) model = m;
-      }
-      if (!summary && parsed.type === "summary") {
-        const s = (parsed as ClaudeSummaryEntry).summary;
-        if (typeof s === "string" && s.trim().length > 0) summary = s.trim();
-      }
-      if (!firstUserText && parsed.type === "user") {
-        firstUserText = extractFirstUserText((parsed as ClaudeUserEntry).message?.content);
-      }
-
-      if (firstUserText && summary && model && lineNumber >= 8) break;
+      if (processPreviewLine(rawLine, lineNumber, maxLines, state)) break;
     }
   } finally {
     reader.close();
     stream.close();
   }
 
-  const title = summary ?? firstUserText ?? null;
+  const title = state.summary ?? state.firstUserText ?? null;
   return {
     title,
-    firstUserText,
-    summary,
-    model,
-    firstTimestamp,
-    turnCountLowerBound,
+    firstUserText: state.firstUserText,
+    summary: state.summary,
+    model: state.model,
+    firstTimestamp: state.firstTimestamp,
+    turnCountLowerBound: state.turnCountLowerBound,
   };
 }
 
@@ -195,7 +241,7 @@ function extractFirstUserText(
   if (typeof content === "string") {
     candidates.push(content);
   } else if (Array.isArray(content)) {
-    for (const block of content) {
+    for (const block of content as ClaudeContentBlock[]) {
       const text = pickText(block);
       if (text) candidates.push(text);
     }

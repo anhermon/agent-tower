@@ -1,6 +1,5 @@
 "use client";
 
-import type { DailyCostPoint } from "@control-plane/core";
 import { useMemo } from "react";
 import {
   Area,
@@ -11,6 +10,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import type { DailyCostPoint } from "@control-plane/core";
+
 import { formatCost } from "@/lib/format";
 
 interface Props {
@@ -101,7 +103,9 @@ export function CostOverTimeChart({ daily }: Props) {
             formatter={
               ((val: unknown, name: unknown) => [
                 formatCost(Number(val ?? 0)),
-                shortModel(String(name ?? "")),
+                shortModel(
+                  typeof name === "string" || typeof name === "number" ? String(name) : ""
+                ),
               ]) as never
             }
           />

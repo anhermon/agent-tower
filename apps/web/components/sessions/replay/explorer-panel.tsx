@@ -1,13 +1,13 @@
 import type { JsonValue, ReplayData } from "@control-plane/core";
 
-type Props = {
+interface Props {
   readonly replay: ReplayData;
-};
+}
 
-type FileTouch = {
+interface FileTouch {
   readonly path: string;
   readonly counts: { read: number; write: number; edit: number };
-};
+}
 
 /**
  * Summarises distinct file paths touched in this session. Derives the list

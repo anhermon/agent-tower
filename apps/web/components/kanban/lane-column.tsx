@@ -1,11 +1,12 @@
 import type { TicketRecord, TicketStatus } from "@control-plane/core";
+
 import { TicketCard } from "@/components/kanban/ticket-card";
 
-type LaneColumnProps = {
+interface LaneColumnProps {
   readonly status: TicketStatus;
   readonly label: string;
   readonly tickets: readonly TicketRecord[];
-};
+}
 
 export function LaneColumn({ status, label, tickets }: LaneColumnProps) {
   return (
@@ -24,7 +25,7 @@ export function LaneColumn({ status, label, tickets }: LaneColumnProps) {
           No tickets
         </div>
       ) : (
-        <ul role="list" className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-3">
           {tickets.map((ticket) => (
             <li key={ticket.id}>
               <TicketCard ticket={ticket} />

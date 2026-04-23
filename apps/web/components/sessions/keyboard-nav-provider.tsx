@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+
 import { GlobalSearch } from "@/components/sessions/global-search";
 
 /**
@@ -46,6 +47,53 @@ function isEditableTarget(target: EventTarget | null): boolean {
   return false;
 }
 
+function handleEscape(event: KeyboardEvent, searchOpen: boolean, closeSearch: () => void): boolean {
+  if (event.key !== "Escape" || !searchOpen) return false;
+  event.preventDefault();
+  closeSearch();
+  return true;
+}
+
+function handleCommandK(
+  event: KeyboardEvent,
+  setSearchOpen: (fn: (prev: boolean) => boolean) => void
+): boolean {
+  if (!((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k")) return false;
+  event.preventDefault();
+  setSearchOpen((prev) => !prev);
+  return true;
+}
+
+function handleSlash(event: KeyboardEvent, editable: boolean, openSearch: () => void): boolean {
+  if (event.key !== "/" || editable || event.metaKey || event.ctrlKey || event.altKey) return false;
+  event.preventDefault();
+  openSearch();
+  return true;
+}
+
+function handleLeader(event: KeyboardEvent, leaderAtRef: { current: number | null }): boolean {
+  if (event.key !== LEADER_KEY || event.metaKey || event.ctrlKey || event.altKey) return false;
+  leaderAtRef.current = Date.now();
+  return true;
+}
+
+function handleChord(
+  event: KeyboardEvent,
+  leaderAtRef: { current: number | null },
+  router: ReturnType<typeof useRouter>
+): void {
+  const primedAt = leaderAtRef.current;
+  if (primedAt === null) return;
+  if (Date.now() - primedAt <= CHORD_WINDOW_MS) {
+    const target = CHORD_MAP[event.key.toLowerCase()];
+    if (target) {
+      event.preventDefault();
+      router.push(target);
+    }
+  }
+  leaderAtRef.current = null;
+}
+
 export function KeyboardNavProvider({ children }: { readonly children: ReactNode }) {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -56,52 +104,13 @@ export function KeyboardNavProvider({ children }: { readonly children: ReactNode
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (handleEscape(event, searchOpen, closeSearch)) return;
+      if (handleCommandK(event, setSearchOpen)) return;
       const editable = isEditableTarget(event.target);
-
-      // Always handle Escape — even when the dialog has focus, we want to
-      // close cleanly. But do not preempt a native "clear input on Esc".
-      if (event.key === "Escape" && searchOpen) {
-        event.preventDefault();
-        closeSearch();
-        return;
-      }
-
-      // ⌘K / Ctrl+K opens search regardless of editable state — it's a
-      // well-known command palette shortcut.
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setSearchOpen((prev) => !prev);
-        return;
-      }
-
-      // `/` opens search only when not in an input field.
-      if (event.key === "/" && !editable && !event.metaKey && !event.ctrlKey && !event.altKey) {
-        event.preventDefault();
-        openSearch();
-        return;
-      }
-
-      // Leader / chord keys are off-limits in editable contexts.
+      if (handleSlash(event, editable, openSearch)) return;
       if (editable) return;
-
-      // Leader: record the timestamp and wait for a follow-up key.
-      if (event.key === LEADER_KEY && !event.metaKey && !event.ctrlKey && !event.altKey) {
-        leaderAtRef.current = Date.now();
-        return;
-      }
-
-      // Follow-up chord candidate — only fire when recently primed.
-      const primedAt = leaderAtRef.current;
-      if (primedAt !== null) {
-        if (Date.now() - primedAt <= CHORD_WINDOW_MS) {
-          const target = CHORD_MAP[event.key.toLowerCase()];
-          if (target) {
-            event.preventDefault();
-            router.push(target);
-          }
-        }
-        leaderAtRef.current = null;
-      }
+      if (handleLeader(event, leaderAtRef)) return;
+      handleChord(event, leaderAtRef, router);
     };
 
     window.addEventListener("keydown", onKeyDown);

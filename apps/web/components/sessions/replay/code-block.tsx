@@ -2,34 +2,19 @@
 
 import { useState } from "react";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import diff from "react-syntax-highlighter/dist/esm/languages/prism/diff";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import go from "react-syntax-highlighter/dist/esm/languages/prism/go";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import markup from "react-syntax-highlighter/dist/esm/languages/prism/markup";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import tsx from "react-syntax-highlighter/dist/esm/languages/prism/tsx";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import yaml from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
-// Use a dark theme that reads well against our panel backgrounds.
-// eslint-disable-next-line import/no-unresolved -- subpath exports
 import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
 
 // Register only the subset of Prism languages we actually render in session
@@ -56,10 +41,10 @@ SyntaxHighlighter.registerLanguage("html", markup);
 SyntaxHighlighter.registerLanguage("xml", markup);
 SyntaxHighlighter.registerLanguage("css", css);
 
-type Props = {
+interface Props {
   readonly code: string;
   readonly language: string;
-};
+}
 
 export function CodeBlock({ code, language }: Props) {
   const [copied, setCopied] = useState(false);
@@ -91,7 +76,7 @@ export function CodeBlock({ code, language }: Props) {
       </div>
       <SyntaxHighlighter
         language={language}
-        style={oneDark as { [key: string]: React.CSSProperties }}
+        style={oneDark}
         customStyle={{
           margin: 0,
           padding: "0.75rem",

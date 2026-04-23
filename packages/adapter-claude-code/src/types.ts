@@ -14,7 +14,7 @@ export type ClaudeRawValue =
   | ClaudeRawValue[]
   | { [key: string]: ClaudeRawValue };
 
-export type ClaudeRawRecord = { readonly [key: string]: ClaudeRawValue };
+export type ClaudeRawRecord = Readonly<Record<string, ClaudeRawValue>>;
 
 export interface ClaudeMessageUsage {
   readonly input_tokens?: number;

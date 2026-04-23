@@ -1,11 +1,14 @@
+import { describe, expect, it } from "vitest";
+
 import {
   AGENT_RUNTIMES,
   SESSION_ACTOR_ROLES,
   SESSION_STATES,
   TOOL_CALL_STATUSES,
 } from "@control-plane/core";
-import { describe, expect, it } from "vitest";
+
 import { normalizeTranscript } from "./normalizer.js";
+
 import type { ClaudeTranscriptEntry } from "./types.js";
 
 const SESSION_ID = "session-abc";

@@ -1,5 +1,9 @@
 # UI perf improvement map — /skills
 
+**Update (2026-04-23):** Full 14-route LHCI sweep (`task lhci:perf`, isolated `:3100` server, 3 runs each) completed; **`pnpm lhci assert --config=lighthouserc.perf.json` passes** after fixing `lighthouserc*.json` for `@lhci/cli@0.14.0` (see `2026-04-23-lhci-full-sweep.md`). `/skills` and all other routed URLs meet the explicit performance assertions.
+
+---
+
 Single offender from `2026-04-23-baseline.md`. Goal: get `/skills` within budget:
 
 | Metric | Current | Budget | Required Δ |
@@ -60,13 +64,6 @@ Single offender from `2026-04-23-baseline.md`. Goal: get `/skills` within budget
 - **Chunk `7826-*.js` itself.** On green routes it fits within the TTI budget. Trimming it would help `/skills` but is a higher-risk refactor (it's a shared chunk) — revisit only if Enhancements 1+2 don't get `/skills` into budget.
 - **LHCI CI-time tightening** (`numberOfRuns: 1`, `onlyCategories: performance` during the perf loop). Not a runtime perf enhancement; it's a CI ergonomics change. File separately.
 
-## Phase 6 dispatch plan
+## Phase 6 — verified
 
-One implementation subagent. All three enhancements touch the same two files (`apps/web/app/skills/page.tsx`, `apps/web/components/skills/_lazy.tsx`) plus one new helper. Parallelising would conflict — running serially is correct.
-
-Subagent must:
-- Apply Enhancements 1, 2, 3.
-- Rebuild the isolated test server (`task test-server:up` picks up new `.next.perf`).
-- Re-run LHCI against `/skills` only: `pnpm lhci autorun --config=lighthouserc.perf.json --collect.url=http://127.0.0.1:3100/skills --collect.numberOfRuns=3`.
-- Paste before/after for score, LCP, TBT, DOM, bootup-time on `7826-*.js`.
-- Not mark complete until TBT ≤ 200 ms.
+Runtime fixes (`ViewportMount`, chart gating, catalogue `content-visibility`) are in the tree. **Full-route LHCI:** see `2026-04-23-lhci-full-sweep.md` (median `/skills`: perf 1.00, TBT 0 ms, DOM 291). Historical “current” table above describes the pre-fix baseline only.
