@@ -6,6 +6,7 @@ import { createInterface } from "node:readline";
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
+  ClaudeMessageContent,
   ClaudeSummaryEntry,
   ClaudeTranscriptEntry,
   ClaudeUserEntry,
@@ -258,27 +259,9 @@ export async function readTranscriptTail(
   try {
     handle = await open(filePath, "r");
     const st = await handle.stat();
-    const size = st.size;
-    if (size === 0) return null;
-    const readLen = Math.min(size, windowBytes);
-    const start = size - readLen;
-    const buf = Buffer.alloc(readLen);
-    await handle.read(buf, 0, readLen, start);
-    const text = buf.toString("utf8");
-    const lines = (start === 0 ? text : text.slice(text.indexOf("\n") + 1)).split("\n");
-    for (let i = lines.length - 1; i >= 0; i -= 1) {
-      const trimmed = lines[i]!.trim();
-      if (trimmed.length === 0) continue;
-      let parsed: ClaudeTranscriptEntry;
-      try {
-        parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
-      } catch {
-        continue;
-      }
-      const tail = pickTailFromEntry(parsed, maxChars);
-      if (tail) return tail;
-    }
-    return null;
+    if (st.size === 0) return null;
+    const lines = await readTailLines(handle, st.size, windowBytes);
+    return scanLinesForTail(lines, maxChars);
   } catch {
     return null;
   } finally {
@@ -292,45 +275,57 @@ export async function readTranscriptTail(
   }
 }
 
+async function readTailLines(
+  handle: Awaited<ReturnType<typeof open>>,
+  size: number,
+  windowBytes: number
+): Promise<string[]> {
+  const readLen = Math.min(size, windowBytes);
+  const start = size - readLen;
+  const buf = Buffer.alloc(readLen);
+  await handle.read(buf, 0, readLen, start);
+  const text = buf.toString("utf8");
+  return (start === 0 ? text : text.slice(text.indexOf("\n") + 1)).split("\n");
+}
+
+function scanLinesForTail(lines: string[], maxChars: number): TranscriptTail | null {
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    const trimmed = lines[i]!.trim();
+    if (trimmed.length === 0) continue;
+    let parsed: ClaudeTranscriptEntry;
+    try {
+      parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
+    } catch {
+      continue;
+    }
+    const tail = pickTailFromEntry(parsed, maxChars);
+    if (tail) return tail;
+  }
+  return null;
+}
+
 function pickTailFromEntry(entry: ClaudeTranscriptEntry, maxChars: number): TranscriptTail | null {
   if (entry.type === "user") {
     const content = (entry as ClaudeUserEntry).message?.content;
-    const text = extractLastUserText(content);
+    const text = extractLastTextFromContent(content);
     if (text) return { role: "user", text: truncateTail(text, maxChars) };
     return null;
   }
   if (entry.type === "assistant") {
     const content = (entry as ClaudeAssistantEntry).message?.content;
-    const text = extractAssistantText(content);
+    const text = extractLastTextFromContent(content);
     if (text) return { role: "assistant", text: truncateTail(text, maxChars) };
     return null;
   }
   return null;
 }
 
-function extractLastUserText(
-  content: ClaudeUserEntry["message"]["content"] | undefined
-): string | null {
+function extractLastTextFromContent(content: ClaudeMessageContent | undefined): string | null {
   if (typeof content === "string") return sanitizeTailText(content);
   if (!Array.isArray(content)) return null;
-  for (let i = content.length - 1; i >= 0; i -= 1) {
-    const block = content[i]!;
-    const text = pickText(block);
-    if (text) {
-      const cleaned = sanitizeTailText(text);
-      if (cleaned) return cleaned;
-    }
-  }
-  return null;
-}
-
-function extractAssistantText(
-  content: ClaudeAssistantEntry["message"]["content"] | undefined
-): string | null {
-  if (typeof content === "string") return sanitizeTailText(content);
-  if (!Array.isArray(content)) return null;
-  for (let i = content.length - 1; i >= 0; i -= 1) {
-    const block = content[i]!;
+  const blocks = content as ClaudeContentBlock[];
+  for (let i = blocks.length - 1; i >= 0; i -= 1) {
+    const block = blocks[i]!;
     const text = pickText(block);
     if (text) {
       const cleaned = sanitizeTailText(text);

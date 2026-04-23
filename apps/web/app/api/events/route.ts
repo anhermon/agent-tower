@@ -112,7 +112,7 @@ async function startWatchers(
   // whose filename is the new directory. Re-attach a per-project watcher
   // when that happens.
   try {
-    const rootWatcher = watch(dataRoot, { persistent: false }, (eventType, filename) => {
+    const rootWatcher = watch(dataRoot, { persistent: false }, (_eventType, filename) => {
       if (closed || !filename) return;
       const name = filename.toString();
       // Only non-dotfile entries; the adapter ignores them anyway.
@@ -217,9 +217,9 @@ function buildEnvelope(event: SessionLiveEvent & { readonly snapshot?: SessionLi
 } {
   if (!event.snapshot) {
     const { snapshot: _discarded, ...rest } = event;
-    return { event: rest as SessionLiveEvent };
+    return { event: rest };
   }
-  return { event: event as SessionLiveEvent };
+  return { event };
 }
 
 const SNAPSHOT_TIMEOUT_MS = 1_500;

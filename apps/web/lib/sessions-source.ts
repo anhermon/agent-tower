@@ -357,13 +357,28 @@ export async function buildLiveSnapshot(
   ]);
 
   if (!summary && !tail && !preview) return null;
+  return assembleSnapshot(summary, tail, preview);
+}
 
-  const snapshot: SessionLiveSnapshot = {
-    model: summary?.model ?? preview?.model ?? null,
+function assembleSnapshotTokens(
+  summary: SessionUsageSummary | undefined
+): Pick<
+  SessionLiveSnapshot,
+  "inputTokens" | "outputTokens" | "cacheReadTokens" | "cacheCreationTokens"
+> {
+  return {
     inputTokens: summary?.usage.inputTokens,
     outputTokens: summary?.usage.outputTokens,
     cacheReadTokens: summary?.usage.cacheReadInputTokens,
     cacheCreationTokens: summary?.usage.cacheCreationInputTokens,
+  };
+}
+
+function assembleSnapshotCounts(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): Pick<SessionLiveSnapshot, "turns" | "toolCallCount" | "subagentCount" | "peakInputTokens"> {
+  return {
     turns: summary
       ? summary.userMessageCount + summary.assistantMessageCount
       : preview?.turnCountLowerBound,
@@ -372,14 +387,50 @@ export async function buildLiveSnapshot(
       : undefined,
     subagentCount: summary?.toolCounts.Task,
     peakInputTokens: summary?.waste?.peakInputTokensBetweenCompactions,
+  };
+}
+
+function resolveModel(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): string | null {
+  if (summary?.model) return summary.model;
+  return preview?.model ?? null;
+}
+
+function resolveTitle(preview: TranscriptPreview | null): string | null {
+  if (preview?.title) return preview.title;
+  return preview?.firstUserText ?? null;
+}
+
+function assembleSnapshotMeta(
+  summary: SessionUsageSummary | undefined,
+  preview: TranscriptPreview | null
+): Pick<
+  SessionLiveSnapshot,
+  "model" | "contextPercent" | "estimatedCostUsd" | "durationMs" | "flags" | "title"
+> {
+  return {
+    model: resolveModel(summary, preview),
     contextPercent: computeContextPercent(summary),
     estimatedCostUsd: summary?.estimatedCostUsd,
     durationMs: summary?.durationMs,
     flags: summary?.flags,
-    title: preview?.title ?? preview?.firstUserText ?? null,
+    title: resolveTitle(preview),
+  };
+}
+
+function assembleSnapshot(
+  summary: SessionUsageSummary | undefined,
+  tail: Awaited<ReturnType<typeof readTranscriptTail>>,
+  preview: TranscriptPreview | null
+): SessionLiveSnapshot {
+  return {
+    ...assembleSnapshotMeta(summary, preview),
+    ...assembleSnapshotTokens(summary),
+    ...assembleSnapshotCounts(summary, preview),
     tail: tail ?? null,
   };
-  return snapshot;
 }
 
 function computeContextPercent(summary: SessionUsageSummary | undefined): number | undefined {

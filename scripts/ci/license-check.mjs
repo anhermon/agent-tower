@@ -147,7 +147,7 @@ async function checkCheckerAvailability(error, stderr, code, start) {
   }
 }
 
-async function parseLicenseOutput(stdout, stderr, start) {
+async function parseLicenseOutput(stdout, _stderr, start) {
   try {
     return JSON.parse(stdout);
   } catch (err) {

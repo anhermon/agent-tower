@@ -1,12 +1,14 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import type {
   SessionDerivedFlags,
   SessionLiveEvent,
   SessionLiveSnapshot,
 } from "@control-plane/core";
-import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+
 import { EmptyState } from "@/components/ui/state";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -119,13 +121,20 @@ function ConnectionPill({ state }: { readonly state: ConnectionState }) {
   );
 }
 
+function liveEventBadgeClass(type: SessionLiveEvent["type"]): string {
+  return type === "session-created" ? "bg-ok/15 text-ok" : "bg-info/15 text-info";
+}
+
+function liveEventTypeLabel(type: SessionLiveEvent["type"]): string {
+  return type === "session-created" ? "created" : "appended";
+}
+
 function LiveEventRow({ event }: { readonly event: SessionLiveEvent }) {
   const snapshot = event.snapshot;
   const href = `/sessions/${encodeURIComponent(event.sessionId)}`;
   const timeLabel = formatUtcClock(event.occurredAt);
-  const typeClass = event.type === "session-created" ? "bg-ok/15 text-ok" : "bg-info/15 text-info";
-  const typeLabel = event.type === "session-created" ? "created" : "appended";
-  const titleFallback = event.sessionId;
+  const typeClass = liveEventBadgeClass(event.type);
+  const typeLabel = liveEventTypeLabel(event.type);
 
   return (
     <Link
@@ -151,22 +160,34 @@ function LiveEventRow({ event }: { readonly event: SessionLiveEvent }) {
           {event.projectSlug}
         </span>
       </div>
+      <SnapshotDetails snapshot={snapshot} fallbackId={event.sessionId} />
+    </Link>
+  );
+}
 
+function SnapshotDetails({
+  snapshot,
+  fallbackId,
+}: {
+  readonly snapshot: SessionLiveSnapshot | undefined;
+  readonly fallbackId: string;
+}) {
+  return (
+    <>
       <p
         className={cn(
           "mt-1.5 truncate text-sm",
           snapshot?.title ? "text-ink" : "font-mono text-muted"
         )}
       >
-        {snapshot?.title ?? titleFallback}
+        {snapshot?.title ?? fallbackId}
       </p>
-
       {snapshot ? <MetricsRow snapshot={snapshot} /> : null}
       {snapshot ? (
         <FlagChips flags={snapshot.flags} subagentCount={snapshot.subagentCount} />
       ) : null}
       {snapshot?.tail ? <TailExcerpt tail={snapshot.tail} /> : null}
-    </Link>
+    </>
   );
 }
 
@@ -190,8 +211,7 @@ interface MetricEntry {
   readonly value: string;
 }
 
-function buildMetricEntries(snapshot: SessionLiveSnapshot): readonly MetricEntry[] {
-  const entries: MetricEntry[] = [];
+function addTokenMetric(entries: MetricEntry[], snapshot: SessionLiveSnapshot): void {
   const tokensIn =
     (snapshot.inputTokens ?? 0) +
     (snapshot.cacheReadTokens ?? 0) +
@@ -203,21 +223,29 @@ function buildMetricEntries(snapshot: SessionLiveSnapshot): readonly MetricEntry
       value: `${formatTokens(tokensIn)} → ${formatTokens(tokensOut)}`,
     });
   }
-  if (typeof snapshot.turns === "number" && snapshot.turns > 0) {
-    entries.push({ label: "turns", value: snapshot.turns.toLocaleString() });
+}
+
+function addNumericMetric(
+  entries: MetricEntry[],
+  value: number | undefined,
+  label: string,
+  format: (n: number) => string
+): void {
+  if (typeof value === "number" && value > 0) {
+    entries.push({ label, value: format(value) });
   }
-  if (typeof snapshot.toolCallCount === "number" && snapshot.toolCallCount > 0) {
-    entries.push({ label: "tools", value: snapshot.toolCallCount.toLocaleString() });
-  }
+}
+
+function buildMetricEntries(snapshot: SessionLiveSnapshot): readonly MetricEntry[] {
+  const entries: MetricEntry[] = [];
+  addTokenMetric(entries, snapshot);
+  addNumericMetric(entries, snapshot.turns, "turns", (n) => n.toLocaleString());
+  addNumericMetric(entries, snapshot.toolCallCount, "tools", (n) => n.toLocaleString());
   if (typeof snapshot.contextPercent === "number" && snapshot.contextPercent > 0) {
     entries.push({ label: "ctx", value: `${Math.round(snapshot.contextPercent * 100)}%` });
   }
-  if (typeof snapshot.estimatedCostUsd === "number" && snapshot.estimatedCostUsd > 0) {
-    entries.push({ label: "cost", value: formatCost(snapshot.estimatedCostUsd) });
-  }
-  if (typeof snapshot.durationMs === "number" && snapshot.durationMs > 0) {
-    entries.push({ label: "dur", value: formatDuration(snapshot.durationMs) });
-  }
+  addNumericMetric(entries, snapshot.estimatedCostUsd, "cost", formatCost);
+  addNumericMetric(entries, snapshot.durationMs, "dur", formatDuration);
   return entries;
 }
 
@@ -323,12 +351,9 @@ function safeParseEventEnvelope(raw: unknown): SessionLiveEvent | null {
 }
 
 function isLiveEventEnvelope(value: unknown): value is EventEnvelope {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "event" in value &&
-    typeof (value as { event: unknown }).event === "object"
-  );
+  if (typeof value !== "object" || value === null || !("event" in value)) return false;
+  const rec = value as Record<string, unknown>;
+  return typeof rec.event === "object";
 }
 
 function isSessionLiveEvent(value: unknown): value is SessionLiveEvent {
