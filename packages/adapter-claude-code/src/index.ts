@@ -32,8 +32,14 @@ export type {
   ClaudeSessionFile,
   ReadTranscriptResult,
   TranscriptPreview,
+  TranscriptTail,
 } from "./reader.js";
-export { listSessionFiles, readTranscriptFile, readTranscriptPreview } from "./reader.js";
+export {
+  listSessionFiles,
+  readTranscriptFile,
+  readTranscriptPreview,
+  readTranscriptTail,
+} from "./reader.js";
 export type {
   EfficacyBaseline,
   ListSkillsEfficacyResult,

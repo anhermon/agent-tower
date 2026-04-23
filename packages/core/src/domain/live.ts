@@ -14,6 +14,48 @@ import type {
   SessionUsageSummary,
 } from "./sessions.js";
 
+// ─── Live session snapshot ────────────────────────────────────────────────────
+
+/**
+ * Lightweight top-level view of a session, computed server-side at the moment
+ * a live event fires. Designed for one-line-per-event dashboards — every
+ * field is optional because enrichment is best-effort (a broken session file
+ * still emits the bare event). Consumers must tolerate partial snapshots.
+ *
+ * Shapes carry only primitives and flags so the envelope stays JSON-friendly
+ * and small enough for SSE fan-out.
+ */
+export interface SessionLiveSnapshot {
+  readonly model?: string | null;
+  readonly inputTokens?: number;
+  readonly outputTokens?: number;
+  readonly cacheReadTokens?: number;
+  readonly cacheCreationTokens?: number;
+  /** Sum of user + assistant message counts. */
+  readonly turns?: number;
+  /** Sum over toolCounts. */
+  readonly toolCallCount?: number;
+  /** Count of `Task` tool invocations = subagent dispatches observed. */
+  readonly subagentCount?: number;
+  /** Peak observed input tokens between compactions. */
+  readonly peakInputTokens?: number;
+  /** 0..1 — peakInputTokens / assumed model context window (200k default). */
+  readonly contextPercent?: number;
+  readonly estimatedCostUsd?: number;
+  readonly durationMs?: number;
+  readonly flags?: SessionDerivedFlags;
+  /** Human-friendly session label (summary → first user text). */
+  readonly title?: string | null;
+  /**
+   * Short excerpt of the most recent user or assistant message observed in
+   * the transcript tail. `role` is the speaker; `text` is already truncated.
+   */
+  readonly tail?: {
+    readonly role: "user" | "assistant";
+    readonly text: string;
+  } | null;
+}
+
 // ─── Full-text search ─────────────────────────────────────────────────────────
 
 /**
@@ -51,12 +93,14 @@ export type SessionLiveEvent =
       readonly sessionId: string;
       readonly projectSlug: string;
       readonly occurredAt: string;
+      readonly snapshot?: SessionLiveSnapshot;
     }
   | {
       readonly type: "session-appended";
       readonly sessionId: string;
       readonly projectSlug: string;
       readonly occurredAt: string;
+      readonly snapshot?: SessionLiveSnapshot;
     };
 
 // ─── Canonical export bundle ──────────────────────────────────────────────────
