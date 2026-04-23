@@ -8,6 +8,7 @@ import { BranchLeaderboard } from "@/components/sessions/charts/branch-leaderboa
 import { StreakCard } from "@/components/sessions/charts/streak-card";
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
+import { SystemInfoPanel } from "@/components/sessions/system-info-panel";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getActivity, getToolAnalytics } from "@/lib/sessions-analytics";
 import { CLAUDE_DATA_ROOT_ENV } from "@/lib/sessions-source";
@@ -87,6 +88,8 @@ export default async function SessionsActivityPage({
           <BranchLeaderboard branches={branches} />
         </Card>
       ) : null}
+
+      <SystemInfoPanel versions={tools.ok ? tools.value.versions : undefined} />
     </section>
   );
 }

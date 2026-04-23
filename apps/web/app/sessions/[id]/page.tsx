@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { SessionDetail } from "@/components/sessions/session-detail";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { loadReplay } from "@/lib/sessions-analytics";
@@ -31,7 +32,7 @@ export default async function SessionDetailPage({ params, searchParams }: PagePr
         </Link>
         {replayResult.reason === "unconfigured" ? (
           <EmptyState
-            title="No sessions records"
+            title="No session records"
             description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory.`}
           />
         ) : (
@@ -47,27 +48,34 @@ export default async function SessionDetailPage({ params, searchParams }: PagePr
   }
 
   if (!replayResult.value) {
-    return (
-      <section className="space-y-5">
-        <Link href="/sessions" className="text-sm text-accent hover:underline">
-          ← Back to sessions
-        </Link>
-        <EmptyState
-          title="Session not found"
-          description={`No transcript with id ${id} was found under the configured data root.`}
-        />
-      </section>
-    );
+    // Real 404 for unknown session ids (parallels /agents/[id]).
+    notFound();
   }
 
   const usage = usageResult.ok ? usageResult.value : undefined;
+  // Non-blocking banner when we can render the replay but usage (flags,
+  // duration) failed to load for a real reason — previously swallowed silently.
+  const usageError =
+    !usageResult.ok && usageResult.reason === "error"
+      ? (usageResult.message ?? "Could not load usage summary.")
+      : null;
 
   return (
-    <SessionDetail
-      replay={replayResult.value}
-      flags={usage?.flags}
-      durationMs={usage?.durationMs}
-      deepLinkTurn={deepLinkTurn}
-    />
+    <>
+      {usageError ? (
+        <div
+          role="status"
+          className="mb-4 rounded-sm border border-warn/40 bg-warn/10 px-4 py-2 text-xs text-warn"
+        >
+          Usage summary unavailable: {usageError}
+        </div>
+      ) : null}
+      <SessionDetail
+        replay={replayResult.value}
+        flags={usage?.flags}
+        durationMs={usage?.durationMs}
+        deepLinkTurn={deepLinkTurn}
+      />
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { SessionList } from "@/components/sessions/session-list";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getModuleByKey } from "@/lib/modules";
 import {
@@ -40,7 +40,7 @@ export default async function SessionsPage() {
           ) : null}
         </div>
         <div className="flex h-10 shrink-0 items-center gap-2">
-          <Button>Refresh</Button>
+          <RefreshButton />
         </div>
       </div>
 
@@ -55,7 +55,7 @@ function SessionsBody({ result }: { result: ListResult }) {
   if (!result.ok && result.reason === "unconfigured") {
     return (
       <EmptyState
-        title="No sessions records"
+        title="No session records"
         description={`Set ${CLAUDE_DATA_ROOT_ENV} to point at your Claude Code projects directory to populate this module.`}
       />
     );
@@ -75,7 +75,7 @@ function SessionsBody({ result }: { result: ListResult }) {
   if (result.sessions.length === 0) {
     return (
       <EmptyState
-        title="No sessions records"
+        title="No session records"
         description="The configured data root contains no Claude Code transcripts yet."
       />
     );

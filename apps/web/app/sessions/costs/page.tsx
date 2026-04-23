@@ -65,7 +65,7 @@ export default async function SessionsCostsPage({ searchParams }: { searchParams
         <StatTile
           label="Total estimated cost"
           value={formatCost(value.totalUsd)}
-          detail="all models, range applied"
+          detail={range ? "all models, in selected range" : "all models, all time"}
           color="#d97706"
         />
         <StatTile

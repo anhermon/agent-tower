@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ProjectCard } from "@/components/sessions/project-card";
 import { ProjectSwitcher } from "@/components/sessions/project-switcher";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { listProjects } from "@/lib/sessions-analytics";
 import { CLAUDE_DATA_ROOT_ENV, getConfiguredDataRoot } from "@/lib/sessions-source";
@@ -41,7 +41,7 @@ export default async function SessionsProjectsPage() {
           {result.ok && result.value.length > 0 ? (
             <ProjectSwitcher projects={result.value} />
           ) : null}
-          <Button>Refresh</Button>
+          <RefreshButton />
         </div>
       </div>
 

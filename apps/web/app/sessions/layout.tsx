@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { KeyboardNavProvider } from "@/components/sessions/keyboard-nav-provider";
 import { SessionsSubNav } from "@/components/sessions/sub-nav";
 
 /**
@@ -7,12 +8,15 @@ import { SessionsSubNav } from "@/components/sessions/sub-nav";
  * Activity stay one click apart. The root sidebar entry for "Sessions" still
  * points at `/sessions` (the list view); this layout lights the matching tab
  * based on pathname.
+ *
+ * Wrapped in `KeyboardNavProvider` so the Wave-5 `g s` / `g p` / … chords and
+ * the ⌘K / `/` global-search palette work on every sessions surface.
  */
 export default function SessionsLayout({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <KeyboardNavProvider>
       <SessionsSubNav />
       {children}
-    </div>
+    </KeyboardNavProvider>
   );
 }

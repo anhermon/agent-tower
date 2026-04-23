@@ -83,15 +83,10 @@ export default async function SessionsOverviewPage({
   const sessionSpark = value.timeseries.daily.slice(-14).map((d) => d.sessionCount);
   const msgSpark = value.timeseries.daily.slice(-14).map((d) => d.messageCount);
   const costSpark = value.timeseries.daily.slice(-14).map((d) => d.estimatedCostUsd);
-  const tokenSpark = value.timeseries.daily
-    .slice(-14)
-    .map(
-      () =>
-        value.totalInputTokens +
-        value.totalOutputTokens +
-        value.totalCacheReadTokens +
-        value.totalCacheCreationTokens
-    );
+  // The timeseries fold does not yet carry per-day token counts, so we cannot
+  // plot a truthful per-day token sparkline. Leaving empty renders nothing
+  // instead of a misleading flat aggregate line.
+  const tokenSpark: readonly number[] = [];
 
   const messageTotal = value.messageCount;
   const sessionCount = value.sessionCount;
@@ -160,7 +155,7 @@ export default async function SessionsOverviewPage({
 
       {/* Peak hours + Project activity */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <Card title="Peak hours" description="Activity by hour of day (UTC offset: local)">
+        <Card title="Peak hours" description="Activity by hour of day (UTC)">
           <PeakHoursChart data={value.timeseries.peakHours} />
         </Card>
         <Card title="Project activity" description="Top projects by token usage">
@@ -169,7 +164,10 @@ export default async function SessionsOverviewPage({
       </div>
 
       {/* Token breakdown */}
-      <Card title="Token breakdown" description="Distribution across token types (all time)">
+      <Card
+        title="Token breakdown"
+        description={`Distribution across token types (${range ? "in selected range" : "all time"})`}
+      >
         <TokenBreakdownBars
           inputTokens={value.totalInputTokens}
           outputTokens={value.totalOutputTokens}
