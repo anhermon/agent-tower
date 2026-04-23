@@ -65,12 +65,15 @@ interface ScanResult {
   readonly filesScanned: number;
 }
 
-interface CacheEntry {
-  readonly key: string;
-  readonly scan: ScanResult;
+interface FileCacheEntry {
+  readonly mtime: string;
+  readonly invocations: readonly RawInvocation[];
 }
 
-let scanCache: CacheEntry | null = null;
+// Per-file memoization keyed on `(filePath, modifiedAt)`. Turns an N-file
+// rescan into re-reads of only the files whose mtime changed — the typical
+// case in dev (one new session file appended while the others are unchanged).
+const fileCache = new Map<string, FileCacheEntry>();
 
 export async function computeSkillsUsage(options?: {
   readonly skills?: readonly SkillManifest[];
@@ -113,24 +116,30 @@ function filterScanByRange(scan: ScanResult, range: DateRange): ScanResult {
 }
 
 async function scanWithCache(files: readonly ClaudeSessionFile[]): Promise<ScanResult> {
-  const sortedKeyParts = files.map((file) => `${file.filePath}:${file.modifiedAt}`).sort();
-  const cacheKey = sortedKeyParts.join("|");
-
-  if (scanCache && scanCache.key === cacheKey) {
-    return scanCache.scan;
-  }
-
   const invocations: RawInvocation[] = [];
-  let filesScanned = 0;
+  const seen = new Set<string>();
+
   for (const file of files) {
-    filesScanned += 1;
-    const fromFile = await readInvocationsFromFile(file.filePath);
-    for (const inv of fromFile) invocations.push(inv);
+    seen.add(file.filePath);
+    const cached = fileCache.get(file.filePath);
+    let entry: FileCacheEntry;
+    if (cached && cached.mtime === file.modifiedAt) {
+      entry = cached;
+    } else {
+      const parsed = await readInvocationsFromFile(file.filePath);
+      entry = { mtime: file.modifiedAt, invocations: parsed };
+      fileCache.set(file.filePath, entry);
+    }
+    for (const inv of entry.invocations) invocations.push(inv);
   }
 
-  const scan: ScanResult = { invocations, filesScanned };
-  scanCache = { key: cacheKey, scan };
-  return scan;
+  // Evict entries for files that no longer exist in the scan (session
+  // transcript deletions shouldn't leak memory over long-running dev sessions).
+  for (const key of fileCache.keys()) {
+    if (!seen.has(key)) fileCache.delete(key);
+  }
+
+  return { invocations, filesScanned: files.length };
 }
 
 async function readInvocationsFromFile(filePath: string): Promise<readonly RawInvocation[]> {
@@ -353,5 +362,5 @@ function errorMessage(error: unknown): string {
 
 /** Test-only hook: clears the in-process scan cache. */
 export function __clearSkillsUsageCacheForTests(): void {
-  scanCache = null;
+  fileCache.clear();
 }

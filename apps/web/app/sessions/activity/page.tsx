@@ -1,9 +1,11 @@
+import {
+  DayOfWeekChart,
+  PeakHoursChart,
+  UsageOverTimeChart,
+} from "@/components/sessions/charts/_lazy";
 import { ActivityHeatmap } from "@/components/sessions/charts/activity-heatmap";
 import { BranchLeaderboard } from "@/components/sessions/charts/branch-leaderboard";
-import { DayOfWeekChart } from "@/components/sessions/charts/day-of-week-chart";
-import { PeakHoursChart } from "@/components/sessions/charts/peak-hours-chart";
 import { StreakCard } from "@/components/sessions/charts/streak-card";
-import { UsageOverTimeChart } from "@/components/sessions/charts/usage-over-time-chart";
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { EmptyState, ErrorState } from "@/components/ui/state";

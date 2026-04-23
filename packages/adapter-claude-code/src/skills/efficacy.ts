@@ -90,12 +90,15 @@ interface EnrichedSummary {
   readonly invocationsBySkillKey: ReadonlyMap<string, number>;
 }
 
-interface CacheEntry {
-  readonly key: string;
-  readonly enriched: readonly EnrichedSummary[];
+interface FileCacheEntry {
+  readonly mtime: string;
+  readonly enriched: EnrichedSummary | null;
 }
 
-let summaryCache: CacheEntry | null = null;
+// Per-file memoization keyed on `(filePath, modifiedAt)`. An incremental scan
+// (e.g., one new session transcript since last request) re-summarizes only the
+// changed file instead of all N.
+const fileCache = new Map<string, FileCacheEntry>();
 
 export async function computeSkillsEfficacy(options?: {
   readonly skills?: readonly SkillManifest[];
@@ -145,20 +148,24 @@ function filterEnrichedByRange(
 async function summarizeWithCache(
   files: readonly ClaudeSessionFile[]
 ): Promise<readonly EnrichedSummary[]> {
-  const sortedKeyParts = files.map((file) => `${file.filePath}:${file.modifiedAt}`).sort();
-  const cacheKey = sortedKeyParts.join("|");
-
-  if (summaryCache && summaryCache.key === cacheKey) {
-    return summaryCache.enriched;
-  }
-
   const enriched: EnrichedSummary[] = [];
+  const seen = new Set<string>();
   for (const file of files) {
-    const one = await summarizeFile(file);
-    if (one) enriched.push(one);
+    seen.add(file.filePath);
+    const cached = fileCache.get(file.filePath);
+    let entry: FileCacheEntry;
+    if (cached && cached.mtime === file.modifiedAt) {
+      entry = cached;
+    } else {
+      const fresh = await summarizeFile(file);
+      entry = { mtime: file.modifiedAt, enriched: fresh };
+      fileCache.set(file.filePath, entry);
+    }
+    if (entry.enriched) enriched.push(entry.enriched);
   }
-
-  summaryCache = { key: cacheKey, enriched };
+  for (const key of fileCache.keys()) {
+    if (!seen.has(key)) fileCache.delete(key);
+  }
   return enriched;
 }
 
@@ -684,5 +691,5 @@ function errorMessage(error: unknown): string {
 
 /** Test-only hook: clears the in-process session-summary cache. */
 export function __clearSkillsEfficacyCacheForTests(): void {
-  summaryCache = null;
+  fileCache.clear();
 }

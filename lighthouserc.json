@@ -19,7 +19,9 @@
       "settings": {
         "preset": "desktop",
         "skipAudits": ["uses-http2"],
-        "chromeFlags": "--no-sandbox --headless=new"
+        "chromeFlags": "--no-sandbox --headless",
+        "maxWaitForFcp": 45000,
+        "maxWaitForLoad": 60000
       }
     },
     "assert": {

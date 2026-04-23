@@ -1,11 +1,24 @@
 "use client";
 
 import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { AssistantMarkdown } from "./assistant-markdown";
 import { CompactionCard } from "./compaction-card";
+
+// Dynamically load the markdown renderer so react-markdown + remark-gfm land
+// in a lazy chunk rather than the initial session-detail bundle.
+const AssistantMarkdown = dynamic(
+  () => import("./assistant-markdown").then((m) => m.AssistantMarkdown),
+  {
+    ssr: false,
+    loading: () => (
+      <pre aria-busy="true" className="whitespace-pre-wrap text-sm leading-6 text-ink" />
+    ),
+  }
+);
+
 import { RawToggle } from "./raw-toggle";
 import { TodoWritePanel } from "./todo-write-panel";
 import { ToolCallBadge } from "./tool-call-badge";

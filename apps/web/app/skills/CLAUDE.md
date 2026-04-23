@@ -22,6 +22,21 @@ listSkillsOrEmpty() (SKILL.md catalogue) ─────────────
 
 All three sources are called in parallel from `page.tsx` with `Promise.all`.
 
+## Date-range filtering
+- Both pages accept `searchParams` and resolve a `DateRange` via `resolveRangeFromSearchParams` from `@/components/sessions/date-range` (server-safe helper) before calling the data sources.
+- `<DateRangePicker>` (from `@/components/sessions/date-range-picker`, `"use client"`) lives in each page's header and drives `?from=&to=` / `?preset=7d|30d|90d` URL params.
+- `computeSkillsUsage({ range })` and `computeSkillsEfficacy({ range })` filter post-cache — scan/summary caches are NOT invalidated when range changes.
+- Usage filter: drop invocations whose UTC day-slice is outside `[from, to]`.
+- Efficacy filter: drop sessions whose `firstAt` UTC day-slice is outside the range; sessions with `firstAt === null` are excluded when a range is present.
+
+## Chart components (all `"use client"`, Recharts)
+- `skills-timeline.tsx` — daily total invocations as a bar chart with a custom dark tooltip.
+- `skills-breakdown-chart.tsx` — stacked daily bars: top-N skills + "other" segment.
+- `hour-breakdown-chart.tsx` — stacked bars across 24 UTC hours: top-N skills + "other".
+- `skills-heatmap.tsx` — HSL intensity grid (no library) with native `title` hover.
+- `skills-bar-chart.tsx` — horizontal Tailwind bars with a metric toggle.
+- Palette for stacked series is fixed inside each component; callers pass `perSkill` and the top-N is derived internally by `invocationCount` desc.
+
 ## Local Conventions
 - **Server-only lib, client-only components.** `lib/*-source.ts` files touch `node:fs`; `components/skills/*.tsx` are `"use client"` and receive serializable props only.
 - **Strip `body`/`frontmatter` before the client boundary.** `SkillGridItem` is the narrow shape passed to `<SkillGrid>`. Never pass a full `SkillManifest` into a client component — a single SKILL.md body can be multi-MB and bloat the RSC flight payload past the browser's ability to render. Use `toGridItem()` in `page.tsx`.

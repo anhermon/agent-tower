@@ -88,19 +88,29 @@ export function SkillsBreakdownChart({
 
   const sorted = [...perSkill].sort((a, b) => b.invocationCount - a.invocationCount);
   const top = sorted.slice(0, topN);
-  const rest = sorted.slice(topN);
-  const hasOther = rest.length > 0;
-
+  const hasOther = sorted.length > topN;
   const topIds = new Set(top.map((s) => s.skillId));
-  const dateSet = new Set<string>();
+
+  // Single pass: build the date→row index while walking each skill's perDay
+  // exactly once. Avoids the O(dates × skills × perDay) `find` scan that locks
+  // the render thread for thousands of invocations.
+  const rowByDate = new Map<string, Row>();
   for (const skill of perSkill) {
+    const bucketKey = topIds.has(skill.skillId) ? skill.skillId : hasOther ? OTHER_KEY : null;
+    if (bucketKey === null) continue;
     for (const point of skill.perDay) {
-      dateSet.add(point.date);
+      let row = rowByDate.get(point.date);
+      if (!row) {
+        row = { date: point.date };
+        for (const t of top) row[t.skillId] = 0;
+        if (hasOther) row[OTHER_KEY] = 0;
+        rowByDate.set(point.date, row);
+      }
+      row[bucketKey] = ((row[bucketKey] as number) ?? 0) + point.count;
     }
   }
-  const dates = [...dateSet].sort();
 
-  if (dates.length === 0) {
+  if (rowByDate.size === 0) {
     return (
       <div className="glass-panel-soft rounded-sm p-6 text-center text-sm text-muted">
         Not enough history to plot a breakdown yet.
@@ -108,23 +118,7 @@ export function SkillsBreakdownChart({
     );
   }
 
-  const rows: Row[] = dates.map((date) => {
-    const row: Row = { date };
-    for (const skill of top) {
-      row[skill.skillId] = 0;
-    }
-    if (hasOther) row[OTHER_KEY] = 0;
-    for (const skill of perSkill) {
-      const hit = skill.perDay.find((p) => p.date === date);
-      if (!hit) continue;
-      if (topIds.has(skill.skillId)) {
-        row[skill.skillId] = ((row[skill.skillId] as number) ?? 0) + hit.count;
-      } else if (hasOther) {
-        row[OTHER_KEY] = ((row[OTHER_KEY] as number) ?? 0) + hit.count;
-      }
-    }
-    return row;
-  });
+  const rows: Row[] = [...rowByDate.values()].sort((a, b) => a.date.localeCompare(b.date));
 
   const series: Series[] = top.map((skill, idx) => ({
     key: skill.skillId,

@@ -1,10 +1,26 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DayPicker, type DateRange as DayPickerRange } from "react-day-picker";
-import "react-day-picker/style.css";
+import type { DateRange as DayPickerRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
+
+// Lazy boundary: `react-day-picker` (~25-30 kB gz) is only needed when the
+// popover opens. `ssr: false` is legal here because the file is `"use client"`.
+// The stylesheet is loaded via a side-effect dynamic import inside a
+// `useEffect` on first open (option "b"), so neither the JS nor the CSS ships
+// on First-Load for any route that renders this control.
+const LazyDayPicker = dynamic(() => import("react-day-picker").then((m) => m.DayPicker), {
+  ssr: false,
+  loading: () => (
+    <div
+      aria-busy="true"
+      aria-label="Calendar loading"
+      className="h-72 w-72 animate-pulse rounded bg-white/[0.03]"
+    />
+  ),
+});
 
 type Preset = "7d" | "30d" | "90d" | "custom";
 
@@ -66,6 +82,16 @@ export function DateRangePicker() {
   );
 
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const cssLoadedRef = useRef(false);
+
+  // Load `react-day-picker`'s stylesheet only once, the first time the popover
+  // is opened. Keeps the ~few-KB CSS out of the initial document for pages
+  // that never use the custom range.
+  useEffect(() => {
+    if (!open || cssLoadedRef.current) return;
+    cssLoadedRef.current = true;
+    void import("react-day-picker/style.css");
+  }, [open]);
 
   // Close the popover on outside click / Esc.
   useEffect(() => {
@@ -161,7 +187,7 @@ export function DateRangePicker() {
             aria-label="Select date range"
             className="absolute right-0 top-full z-50 mt-2 rounded-md border border-line/70 bg-panel p-2 shadow-glass"
           >
-            <DayPicker
+            <LazyDayPicker
               mode="range"
               selected={range}
               onSelect={(next) => {

@@ -1,7 +1,9 @@
 import { PRICING } from "@control-plane/core";
-import { CacheEfficiencyPanel } from "@/components/sessions/charts/cache-efficiency-panel";
-import { CostByProjectChart } from "@/components/sessions/charts/cost-by-project-chart";
-import { CostOverTimeChart } from "@/components/sessions/charts/cost-over-time-chart";
+import {
+  CacheEfficiencyPanel,
+  CostByProjectChart,
+  CostOverTimeChart,
+} from "@/components/sessions/charts/_lazy";
 import { ModelTokenTable } from "@/components/sessions/charts/model-token-table";
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";

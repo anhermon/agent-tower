@@ -11,25 +11,54 @@ import { runSkillsUsage } from "./commands/skills-usage.js";
 import { UsageError } from "./flags.js";
 import { writeError } from "./output.js";
 
-export async function runCli(argv: readonly string[]): Promise<number> {
-  const [command, subOrFirst, ...rest] = argv;
+const GLOBAL_FLAGS = new Set(["--json", "--pretty", "--help", "-h"]);
 
-  if (!command || command === "help" || command === "--help" || command === "-h") {
+function partitionGlobalFlags(argv: readonly string[]): {
+  readonly positional: readonly string[];
+  readonly globals: readonly string[];
+  readonly wantsHelp: boolean;
+} {
+  const positional: string[] = [];
+  const globals: string[] = [];
+  let wantsHelp = false;
+  for (const token of argv) {
+    if (token === "--help" || token === "-h") {
+      wantsHelp = true;
+      continue;
+    }
+    if (GLOBAL_FLAGS.has(token) || token.startsWith("--json=") || token.startsWith("--pretty=")) {
+      globals.push(token);
+      continue;
+    }
+    positional.push(token);
+  }
+  return { positional, globals, wantsHelp };
+}
+
+export async function runCli(argv: readonly string[]): Promise<number> {
+  const { positional, globals, wantsHelp } = partitionGlobalFlags(argv);
+  const [command, subOrFirst, ...rest] = positional;
+
+  if (wantsHelp || !command || command === "help") {
     return runHelp();
   }
+
+  // Global flags (--pretty, --json) may appear anywhere on the command line.
+  // We strip them during dispatch so each subcommand sees them in its own argv.
+  const restWithGlobals = [...rest, ...globals];
 
   try {
     switch (command) {
       case "health":
-        return await runHealth([subOrFirst, ...rest].filter(isDefined));
+        return await runHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
       case "mcp":
         return runMcpStub();
       case "sessions":
-        return await runSessions(subOrFirst, rest);
+        return await runSessions(subOrFirst, restWithGlobals);
       case "skills":
-        return await runSkills(subOrFirst, rest);
+        return await runSkills(subOrFirst, restWithGlobals);
       case "agents":
-        return await runAgents(subOrFirst, rest);
+        return await runAgents(subOrFirst, restWithGlobals);
       default:
         throw new UsageError(`Unknown command: ${command}`);
     }

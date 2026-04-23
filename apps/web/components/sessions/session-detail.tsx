@@ -6,7 +6,7 @@ import { ExplorerPanel } from "@/components/sessions/replay/explorer-panel";
 import { FindInSession } from "@/components/sessions/replay/find-in-session";
 import { PrLinkCard } from "@/components/sessions/replay/pr-link-card";
 import { SessionSidebar } from "@/components/sessions/replay/session-sidebar";
-import { TokenAccumulationChart } from "@/components/sessions/replay/token-accumulation-chart";
+import { TokenAccumulationChartLazy } from "@/components/sessions/replay/token-accumulation-chart-lazy";
 import { TurnCard } from "@/components/sessions/replay/turn-card";
 import { SessionBadges } from "@/components/sessions/session-badges";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
@@ -129,7 +129,7 @@ export function SessionDetail({ replay, flags, durationMs, deepLinkTurn }: Props
               );
             })
           )}
-          <TokenAccumulationChart turns={replay.turns} compactions={replay.compactions} />
+          <TokenAccumulationChartLazy turns={replay.turns} compactions={replay.compactions} />
         </div>
 
         <aside className="space-y-4">

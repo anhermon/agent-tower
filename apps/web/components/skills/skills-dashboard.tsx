@@ -2,11 +2,9 @@
 
 import type { JSX } from "react";
 import type { SkillsUsageReport } from "@/lib/skills-usage-source";
-import { HourBreakdownChart } from "./hour-breakdown-chart";
+import { HourBreakdownChart, SkillsBreakdownChart, SkillsTimeline } from "./_lazy";
 import { SkillsBarChart } from "./skills-bar-chart";
-import { SkillsBreakdownChart } from "./skills-breakdown-chart";
 import { SkillsHeatmap } from "./skills-heatmap";
-import { SkillsTimeline } from "./skills-timeline";
 import { SkillsUsageSummary } from "./skills-usage-summary";
 
 /**

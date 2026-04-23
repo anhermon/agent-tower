@@ -1,7 +1,7 @@
+import { ToolRankingChart } from "@/components/sessions/charts/_lazy";
 import { BranchLeaderboard } from "@/components/sessions/charts/branch-leaderboard";
 import { FeatureAdoptionTable } from "@/components/sessions/charts/feature-adoption-table";
 import { McpServerPanel } from "@/components/sessions/charts/mcp-server-panel";
-import { ToolRankingChart } from "@/components/sessions/charts/tool-ranking-chart";
 import { VersionHistoryTable } from "@/components/sessions/charts/version-history-table";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getOverview, getToolAnalytics } from "@/lib/sessions-analytics";

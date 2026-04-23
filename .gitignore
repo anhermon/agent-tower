@@ -17,7 +17,8 @@ test-results/
 !.env.example
 
 /.tmp/
-/.claude/
+/.claude/*
+!/.claude/skills/
 /docs/scratch/
 
 /test.sh

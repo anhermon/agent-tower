@@ -10,7 +10,9 @@
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
-    "lint": "pnpm typecheck"
+    "lint": "pnpm typecheck",
+    "cp": "node packages/cli/dist/cli.js",
+    "mcp-server": "node packages/mcp-server/dist/server.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",

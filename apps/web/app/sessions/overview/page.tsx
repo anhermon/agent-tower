@@ -1,9 +1,11 @@
-import { ModelBreakdownDonut } from "@/components/sessions/charts/model-breakdown-donut";
-import { PeakHoursChart } from "@/components/sessions/charts/peak-hours-chart";
-import { ProjectActivityDonut } from "@/components/sessions/charts/project-activity-donut";
+import {
+  ModelBreakdownDonut,
+  PeakHoursChart,
+  ProjectActivityDonut,
+  UsageOverTimeChart,
+} from "@/components/sessions/charts/_lazy";
 import { Sparkline } from "@/components/sessions/charts/sparkline";
 import { TokenBreakdownBars } from "@/components/sessions/charts/token-breakdown-bars";
-import { UsageOverTimeChart } from "@/components/sessions/charts/usage-over-time-chart";
 import { resolveRangeFromSearchParams } from "@/components/sessions/date-range";
 import { DateRangePicker } from "@/components/sessions/date-range-picker";
 import { EmptyState, ErrorState } from "@/components/ui/state";

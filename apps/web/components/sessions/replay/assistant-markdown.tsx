@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// Use a dark theme that reads well against our panel backgrounds.
-// eslint-disable-next-line import/no-unresolved -- subpath exports
-import oneDark from "react-syntax-highlighter/dist/esm/styles/prism/one-dark";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
+
+// Dynamically load the CodeBlock (Prism + one-dark theme) only when an
+// assistant message actually contains a fenced code block. Keeps
+// react-syntax-highlighter out of the initial session-detail chunk.
+const CodeBlock = dynamic(() => import("./code-block").then((m) => m.CodeBlock), {
+  ssr: false,
+  loading: () => <pre aria-busy="true" className="whitespace-pre-wrap" />,
+});
 
 type Props = {
   readonly content: string;
@@ -101,51 +105,4 @@ function CodeRenderer({ className, children }: CodeProps) {
   const language = languageMatch?.[1] ?? "text";
   const stripped = raw.replace(/\n$/, "");
   return <CodeBlock code={stripped} language={language} />;
-}
-
-function CodeBlock({ code, language }: { code: string; language: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async (): Promise<void> => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
-    } catch {
-      // Clipboard is best-effort; swallow.
-    }
-  };
-
-  return (
-    <div className="group relative my-3">
-      <div className="absolute right-2 top-2 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-        <span className="rounded-xs border border-line/60 bg-black/50 px-1.5 py-0.5 font-mono text-[10px] uppercase text-muted">
-          {language}
-        </span>
-        <button
-          type="button"
-          onClick={onCopy}
-          className="rounded-xs border border-line/60 bg-black/50 px-2 py-0.5 font-mono text-[10px] uppercase text-muted hover:bg-black/70"
-          aria-label="Copy code"
-        >
-          {copied ? "copied" : "copy"}
-        </button>
-      </div>
-      <SyntaxHighlighter
-        language={language}
-        style={oneDark as { [key: string]: React.CSSProperties }}
-        customStyle={{
-          margin: 0,
-          padding: "0.75rem",
-          borderRadius: "0.5rem",
-          background: "rgba(0,0,0,0.5)",
-          fontSize: "12.5px",
-          lineHeight: "1.55",
-        }}
-        wrapLongLines
-      >
-        {code}
-      </SyntaxHighlighter>
-    </div>
-  );
 }
