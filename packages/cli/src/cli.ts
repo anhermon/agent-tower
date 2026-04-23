@@ -50,32 +50,44 @@ export async function runCli(argv: readonly string[]): Promise<number> {
   const restWithGlobals = [...rest, ...globals];
 
   try {
-    switch (command) {
-      case "health":
-        return await runHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
-      case "mcp":
-        return runMcpStub();
-      case "sessions":
-        return await runSessions(subOrFirst, restWithGlobals);
-      case "skills":
-        return await runSkills(subOrFirst, restWithGlobals);
-      case "agents":
-        return await runAgents(subOrFirst, restWithGlobals);
-      case "audit":
-        return await runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
-      default:
-        throw new UsageError(`Unknown command: ${command}`);
-    }
+    return await dispatchCommand(command, subOrFirst, restWithGlobals);
   } catch (error) {
-    if (error instanceof UsageError) {
-      writeError(`usage error: ${error.message}`);
-      writeError("Run `cp help` for the list of commands.");
-      return 2;
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    writeError(`error: ${message}`);
-    return 1;
+    return handleCliError(error);
   }
+}
+
+async function dispatchCommand(
+  command: string,
+  subOrFirst: string | undefined,
+  restWithGlobals: readonly string[]
+): Promise<number> {
+  switch (command) {
+    case "health":
+      return runHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
+    case "mcp":
+      return runMcpStub();
+    case "sessions":
+      return runSessions(subOrFirst, restWithGlobals);
+    case "skills":
+      return runSkills(subOrFirst, restWithGlobals);
+    case "agents":
+      return runAgents(subOrFirst, restWithGlobals);
+    case "audit":
+      return runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
+    default:
+      throw new UsageError(`Unknown command: ${command}`);
+  }
+}
+
+function handleCliError(error: unknown): number {
+  if (error instanceof UsageError) {
+    writeError(`usage error: ${error.message}`);
+    writeError("Run `cp help` for the list of commands.");
+    return 2;
+  }
+  const message = error instanceof Error ? error.message : String(error);
+  writeError(`error: ${message}`);
+  return 1;
 }
 
 async function runSessions(sub: string | undefined, rest: readonly string[]): Promise<number> {

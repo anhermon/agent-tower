@@ -42,6 +42,11 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     return 0;
   }
 
+  printSessionPretty(summary);
+  return 0;
+}
+
+function printSessionPretty(summary: SessionUsageSummary): void {
   writeLine(bold(`Session ${summary.sessionId}`));
   writeLine("");
   writeLine(`Model:            ${summary.model ?? "-"}`);
@@ -56,25 +61,26 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
   writeLine(`Cache hit rate:   ${(summary.cacheEfficiency.hitRate * 100).toFixed(1)}%`);
   writeLine(`Estimated cost:   $${summary.estimatedCostUsd.toFixed(4)}`);
   writeLine(`Cwd:              ${summary.cwd ?? "-"}`);
+  printWasteSection(summary);
+}
 
+function printWasteSection(summary: SessionUsageSummary): void {
   // Waste signals were added in Phase 1 of the waste-analytics rollout and are
   // populated on every summary emitted by the current analytics fold. When the
   // adapter decides to omit them (older fixture, partial fold), skip quietly.
-  if (summary.waste) {
-    const verdict = scoreSessionWaste(summary);
-    const topFlags = verdict.flags.slice(0, 3);
-    writeLine("");
-    writeLine(`Waste score:      ${verdict.overall.toFixed(3)} (overall, 0..1)`);
-    if (topFlags.length === 0) {
-      writeLine("No waste flags above threshold.");
-    } else {
-      writeLine(bold("Top waste flags:"));
-      for (const flag of topFlags) {
-        writeLine(`  - ${flag}`);
-      }
+  if (!summary.waste) return;
+  const verdict = scoreSessionWaste(summary);
+  const topFlags = verdict.flags.slice(0, 3);
+  writeLine("");
+  writeLine(`Waste score:      ${verdict.overall.toFixed(3)} (overall, 0..1)`);
+  if (topFlags.length === 0) {
+    writeLine("No waste flags above threshold.");
+  } else {
+    writeLine(bold("Top waste flags:"));
+    for (const flag of topFlags) {
+      writeLine(`  - ${flag}`);
     }
   }
-  return 0;
 }
 
 function projectSummary(summary: SessionUsageSummary, includeTurns: boolean): unknown {

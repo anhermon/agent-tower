@@ -45,43 +45,12 @@ const MAX_HITS_PER_FILE = 3;
 // any downstream path surprises.
 const FORBIDDEN_CHARS = /[\s/\\]|\.{2,}/;
 
-interface ValidatedParams {
-  readonly q: string;
-  readonly limit: number;
-}
-type ParamsResult =
-  | { readonly ok: true; readonly params: ValidatedParams }
-  | { readonly ok: false; readonly response: Response };
-
-function validateParams(url: URL): ParamsResult {
-  const q = (url.searchParams.get("q") ?? "").trim();
-  if (q.length === 0) {
-    return { ok: false, response: json({ error: "Missing required query parameter 'q'." }, 400) };
-  }
-  if (q.length > MAX_QUERY_LEN) {
-    return {
-      ok: false,
-      response: json({ error: `Query too long (>${MAX_QUERY_LEN} chars).` }, 400),
-    };
-  }
-  if (FORBIDDEN_CHARS.test(q)) {
-    return { ok: false, response: json({ error: "Query contains forbidden characters." }, 400) };
-  }
-
-  const limitParam = url.searchParams.get("limit");
-  if (limitParam === null) return { ok: true, params: { q, limit: DEFAULT_LIMIT } };
-  const parsed = Number.parseInt(limitParam, 10);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    return { ok: false, response: json({ error: "Invalid 'limit' parameter." }, 400) };
-  }
-  return { ok: true, params: { q, limit: Math.min(MAX_LIMIT, parsed) } };
-}
-
 async function searchHandler(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const validation = validateParams(url);
-  if (!validation.ok) return validation.response;
-  const { q, limit } = validation.params;
+  const queryValidation = validateSearchQuery(url);
+  if (!queryValidation.ok) return queryValidation.error;
+
+  const { q, limit } = queryValidation;
 
   const dataRoot = getConfiguredDataRoot();
   if (!dataRoot) {
@@ -110,6 +79,37 @@ async function searchHandler(request: Request): Promise<Response> {
   // `listSessionFiles`, which already orders newest-first).
   const ordered = [...hits].sort((a, b) => b.score - a.score);
   return json(ordered.slice(0, limit), 200);
+}
+
+type QueryValidation =
+  | { readonly ok: true; readonly q: string; readonly limit: number }
+  | { readonly ok: false; readonly error: Response };
+
+function validateSearchQuery(url: URL): QueryValidation {
+  const rawQuery = url.searchParams.get("q") ?? "";
+  const limitParam = url.searchParams.get("limit");
+
+  const q = rawQuery.trim();
+  if (q.length === 0) {
+    return { ok: false, error: json({ error: "Missing required query parameter 'q'." }, 400) };
+  }
+  if (q.length > MAX_QUERY_LEN) {
+    return { ok: false, error: json({ error: `Query too long (>${MAX_QUERY_LEN} chars).` }, 400) };
+  }
+  if (FORBIDDEN_CHARS.test(q)) {
+    return { ok: false, error: json({ error: "Query contains forbidden characters." }, 400) };
+  }
+
+  let limit = DEFAULT_LIMIT;
+  if (limitParam !== null) {
+    const parsed = Number.parseInt(limitParam, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return { ok: false, error: json({ error: "Invalid 'limit' parameter." }, 400) };
+    }
+    limit = Math.min(MAX_LIMIT, parsed);
+  }
+
+  return { ok: true, q, limit };
 }
 
 export const GET = withAudit("api.sessions.search", searchHandler);
@@ -155,14 +155,14 @@ async function scanFile(
   cache: Map<string, CachedResult>,
   signal: AbortSignal
 ): Promise<readonly SessionSearchHit[]> {
-  const stats = await statOrNull(file.filePath);
-  if (!stats) return [];
-  const { mtimeMs, sizeBytes } = stats;
+  const fileInfo = await statFile(file.filePath);
+  if (!fileInfo) return [];
 
+  const { mtimeMs, sizeBytes } = fileInfo;
   const cached = cache.get(file.filePath);
   if (isCacheFresh(cached, mtimeMs, sizeBytes)) return cached.hits;
 
-  const hits = await streamHits(file, rawQuery, needle, signal);
+  const hits = await readFileHits(file, rawQuery, needle, signal);
   cache.set(file.filePath, { mtimeMs, sizeBytes, hits });
   return hits;
 }
@@ -175,9 +175,7 @@ function isCacheFresh(
   return cached?.mtimeMs === mtimeMs && cached.sizeBytes === sizeBytes;
 }
 
-async function statOrNull(
-  filePath: string
-): Promise<{ mtimeMs: number; sizeBytes: number } | null> {
+async function statFile(filePath: string): Promise<{ mtimeMs: number; sizeBytes: number } | null> {
   try {
     const stats: Stats = await stat(filePath);
     return { mtimeMs: stats.mtimeMs, sizeBytes: stats.size };
@@ -186,7 +184,7 @@ async function statOrNull(
   }
 }
 
-async function streamHits(
+async function readFileHits(
   file: ClaudeSessionFile,
   rawQuery: string,
   needle: string,
@@ -286,6 +284,7 @@ function hitFromEntry(
 ): SessionSearchHit | null {
   const text = entryText(entry);
   if (!text) return null;
+
   const lower = text.toLowerCase();
   const idx = lower.indexOf(needle);
   if (idx === -1) return null;

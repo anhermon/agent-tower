@@ -71,50 +71,52 @@ export const sessionsWasteTool: ToolDefinition = {
   },
   handler: async (raw): Promise<ToolResult> => {
     try {
-      const input = parseInput(raw);
-      const resolved = resolveDataRoot();
-      if (!resolved) {
-        return { ok: false, reason: "unconfigured" };
-      }
-
-      const limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT)));
-      const minScore = input.minScore ?? DEFAULT_MIN_SCORE;
-
-      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-
-      let range: DateRange | null = null;
-      if (input.since && input.until) {
-        range = { from: input.since, to: input.until };
-      } else if (input.since) {
-        range = { from: input.since, to: input.since };
-      } else if (input.until) {
-        range = { from: input.until, to: input.until };
-      }
-
-      const filter: SessionAnalyticsFilter = {
-        ...(range ? { range } : {}),
-        ...(input.project ? { projectId: input.project } : {}),
-      };
-
-      const summaries = await source.listSessionSummaries(filter);
-      const verdicts = summaries
-        .map((summary) => scoreSessionWaste(summary))
-        .filter((verdict) => verdict.overall >= minScore)
-        .sort((a, b) => b.overall - a.overall)
-        .slice(0, limit);
-
-      return {
-        ok: true,
-        limit,
-        minScore,
-        ...(input.project ? { project: input.project } : {}),
-        ...(input.since ? { since: input.since } : {}),
-        ...(input.until ? { until: input.until } : {}),
-        total: summaries.length,
-        results: verdicts,
-      };
+      return await runSessionsWasteHandler(raw);
     } catch (error) {
       return errorResult(error);
     }
   },
 };
+
+async function runSessionsWasteHandler(raw: unknown): Promise<ToolResult> {
+  const input = parseInput(raw);
+  const resolved = resolveDataRoot();
+  if (!resolved) {
+    return { ok: false, reason: "unconfigured" };
+  }
+
+  const limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT)));
+  const minScore = input.minScore ?? DEFAULT_MIN_SCORE;
+  const range = buildDateRange(input.since, input.until);
+
+  const filter: SessionAnalyticsFilter = {
+    ...(range ? { range } : {}),
+    ...(input.project ? { projectId: input.project } : {}),
+  };
+
+  const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
+  const summaries = await source.listSessionSummaries(filter);
+  const verdicts = summaries
+    .map((summary) => scoreSessionWaste(summary))
+    .filter((verdict) => verdict.overall >= minScore)
+    .sort((a, b) => b.overall - a.overall)
+    .slice(0, limit);
+
+  return {
+    ok: true,
+    limit,
+    minScore,
+    ...(input.project ? { project: input.project } : {}),
+    ...(input.since ? { since: input.since } : {}),
+    ...(input.until ? { until: input.until } : {}),
+    total: summaries.length,
+    results: verdicts,
+  };
+}
+
+function buildDateRange(since: string | null, until: string | null): DateRange | null {
+  if (since && until) return { from: since, to: until };
+  if (since) return { from: since, to: since };
+  if (until) return { from: until, to: until };
+  return null;
+}

@@ -80,36 +80,39 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const next = argv[i + 1];
-    if (arg === "--repo" && next) {
-      parsed.repo = next;
-      i += 1;
-      continue;
-    }
-    if (arg === "--url" && next) {
-      parsed.url = next;
-      i += 1;
-      continue;
-    }
-    if (arg === "--secret-env" && next) {
-      parsed.secretEnv = next;
-      i += 1;
-      continue;
-    }
-    if (arg === "--events" && next) {
-      parsed.events = next
-        .split(",")
-        .map((event) => event.trim())
-        .filter(Boolean);
-      i += 1;
-      continue;
-    }
-    if (arg === "--help" || arg === "-h") {
-      printHelp();
-      process.exit(0);
-    }
-    fail(`Unknown argument: ${arg}`);
+    const consumed = parseArg(parsed, arg, next);
+    if (consumed < 0) fail(`Unknown argument: ${arg}`);
+    i += consumed;
   }
   return parsed;
+}
+
+/** Returns the number of extra tokens consumed (0 or 1), or -1 on unknown arg. */
+function parseArg(parsed, arg, next) {
+  if (arg === "--help" || arg === "-h") {
+    printHelp();
+    process.exit(0);
+  }
+  if (arg === "--repo" && next) {
+    parsed.repo = next;
+    return 1;
+  }
+  if (arg === "--url" && next) {
+    parsed.url = next;
+    return 1;
+  }
+  if (arg === "--secret-env" && next) {
+    parsed.secretEnv = next;
+    return 1;
+  }
+  if (arg === "--events" && next) {
+    parsed.events = next
+      .split(",")
+      .map((event) => event.trim())
+      .filter(Boolean);
+    return 1;
+  }
+  return -1;
 }
 
 function normalizeCallbackUrl(raw) {

@@ -140,7 +140,9 @@ function renderTurn(
   toolResults: ToolResultMap
 ): string {
   const parts: string[] = [];
-  if (compactionBefore) parts.push(renderCompaction(compactionBefore));
+  if (compactionBefore) {
+    parts.push(renderCompaction(compactionBefore));
+  }
   if (turn.type === "user") {
     parts.push(renderUserTurn(turn));
   } else {
@@ -183,12 +185,16 @@ function renderAssistantTurn(turn: ReplayTurn, index: number, toolResults: ToolR
     );
   }
   if (turn.toolCalls) {
-    for (const tc of turn.toolCalls) parts.push(renderToolCall(tc, toolResults.get(tc.id)));
+    for (const tc of turn.toolCalls) {
+      parts.push(renderToolCall(tc, toolResults.get(tc.id)));
+    }
   }
   if (turn.text) {
     parts.push(`<div class="bubble assistant-bubble"><pre>${escapeHtml(turn.text)}</pre></div>`);
   }
-  if (turn.usage) parts.push(renderUsage(turn));
+  if (turn.usage) {
+    parts.push(renderUsage(turn));
+  }
   parts.push("</section>");
   return parts.join("");
 }
