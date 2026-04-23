@@ -27,8 +27,6 @@ import tseslint from "typescript-eslint";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
 export default tseslint.config(
   // ------------------------------------------------------------------
   // Global ignores (top-level `ignores` object — must be the only key).
@@ -218,19 +216,14 @@ export default tseslint.config(
 
   // ------------------------------------------------------------------
   // Next.js — only the dashboard app.
-  // FlatCompat bridges the legacy `core-web-vitals` preset until
-  // @next/eslint-plugin-next ships first-class flat config.
+  // Rules come straight from @next/eslint-plugin-next (flat config).
+  // The legacy `next/core-web-vitals` preset requires `eslint-config-next`
+  // which we intentionally don't install — the plugin rules below cover it.
   // ------------------------------------------------------------------
-  ...compat.extends("next/core-web-vitals").map((cfg) => ({
-    ...cfg,
-    files: ["apps/web/**/*.{ts,tsx}"],
-  })),
   {
     files: ["apps/web/**/*.{ts,tsx}"],
     plugins: { "@next/next": nextPlugin },
     rules: {
-      // Defensive: ensure the rules are on even if the compat preset
-      // shape changes in a future @next/eslint-plugin-next release.
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
     },

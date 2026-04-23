@@ -1,8 +1,12 @@
 import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = 3000;
+// Default to the dev server on 3000. Override to 3100 to run e2e/perf specs
+// against the isolated, pre-built test server started by `task test-server:up`
+// (no hot reload, immune to agent edits during the run).
+const PORT = process.env.TEST_SERVER_PORT ? Number(process.env.TEST_SERVER_PORT) : 3000;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
+const USE_EXTERNAL_SERVER = process.env.TEST_SERVER_PORT !== undefined;
 
 /**
  * Fixture root for the Claude Code sessions adapter during e2e. The directory
@@ -27,16 +31,22 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: "on-first-retry",
   },
-  webServer: {
-    command: "pnpm dev",
-    url: BASE_URL,
-    reuseExistingServer: true,
-    timeout: 120_000,
-    env: {
-      CLAUDE_CONTROL_PLANE_DATA_ROOT: SESSIONS_FIXTURE_ROOT,
-      CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT,
-    },
-  },
+  // When TEST_SERVER_PORT is set, assume the isolated test server is already
+  // running (via `task test-server:up`) and skip Playwright's server manager.
+  ...(USE_EXTERNAL_SERVER
+    ? {}
+    : {
+        webServer: {
+          command: "pnpm dev",
+          url: BASE_URL,
+          reuseExistingServer: true,
+          timeout: 120_000,
+          env: {
+            CLAUDE_CONTROL_PLANE_DATA_ROOT: SESSIONS_FIXTURE_ROOT,
+            CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT,
+          },
+        },
+      }),
   projects: [
     {
       name: "chromium",

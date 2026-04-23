@@ -1,24 +1,21 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "pnpm --filter @control-plane/web start",
-      "startServerReadyPattern": "started server on|Local:\\s*http|Ready in",
-      "startServerReadyTimeout": 60000,
       "url": [
-        "http://127.0.0.1:3000/",
-        "http://127.0.0.1:3000/agents",
-        "http://127.0.0.1:3000/sessions",
-        "http://127.0.0.1:3000/sessions/overview",
-        "http://127.0.0.1:3000/sessions/costs",
-        "http://127.0.0.1:3000/sessions/activity",
-        "http://127.0.0.1:3000/sessions/tools",
-        "http://127.0.0.1:3000/sessions/projects",
-        "http://127.0.0.1:3000/kanban",
-        "http://127.0.0.1:3000/mcps",
-        "http://127.0.0.1:3000/channels",
-        "http://127.0.0.1:3000/replay",
-        "http://127.0.0.1:3000/webhooks",
-        "http://127.0.0.1:3000/skills"
+        "http://127.0.0.1:3100/",
+        "http://127.0.0.1:3100/agents",
+        "http://127.0.0.1:3100/sessions",
+        "http://127.0.0.1:3100/sessions/overview",
+        "http://127.0.0.1:3100/sessions/costs",
+        "http://127.0.0.1:3100/sessions/activity",
+        "http://127.0.0.1:3100/sessions/tools",
+        "http://127.0.0.1:3100/sessions/projects",
+        "http://127.0.0.1:3100/kanban",
+        "http://127.0.0.1:3100/mcps",
+        "http://127.0.0.1:3100/channels",
+        "http://127.0.0.1:3100/replay",
+        "http://127.0.0.1:3100/webhooks",
+        "http://127.0.0.1:3100/skills"
       ],
       "numberOfRuns": 3,
       "settings": {
