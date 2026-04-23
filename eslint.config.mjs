@@ -45,6 +45,10 @@ export default tseslint.config(
       "**/test-results/**",
       // Session JSONL fixtures — data, not source code.
       "packages/testing/fixtures/**",
+      // Next.js-generated ambient declarations; re-written on every build
+      // (including `NEXT_DIST_DIR=.next.perf next build`), so lint rules on it
+      // are not actionable.
+      "apps/web/next-env.d.ts",
     ],
   },
 
