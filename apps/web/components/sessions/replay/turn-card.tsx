@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReplayCompactionEvent, ReplayTurn } from "@control-plane/core";
+import type { ReplayCompactionEvent, ReplayToolCall, ReplayTurn } from "@control-plane/core";
 import dynamic from "next/dynamic";
 import { memo, useState } from "react";
 import { formatCost, formatDuration, formatTokens } from "@/lib/format";
@@ -98,108 +98,25 @@ function shortenModel(model?: string): string {
 }
 
 function AssistantTurn({ turn, assistantNumber, compactionBefore, toolResults }: Props) {
-  const [thinkingOpen, setThinkingOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
   const text = turn.text ?? "";
-  const needsExpand = text.length > ASSISTANT_COLLAPSE_THRESHOLD;
 
   return (
     <div id={`turn-${turn.uuid}`} data-find-scope className="mb-6 flex flex-col gap-1.5">
       {compactionBefore ? <CompactionCard event={compactionBefore} /> : null}
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-1.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full border border-accent/40 bg-accent/20">
-            <span className="text-[10px] font-bold text-accent">C</span>
-          </div>
-          <span className="text-xs font-semibold text-accent/80">Claude</span>
-        </div>
-        <span className="rounded-xs border border-line/60 px-1.5 py-0.5 font-mono text-[10px] text-ink">
-          {shortenModel(turn.model)}
-        </span>
-        {assistantNumber ? (
-          <span className="font-mono text-[10px] text-muted/50">#{assistantNumber}</span>
-        ) : null}
-        {turn.turnDurationMs ? (
-          <span className="font-mono text-[10px] text-muted/60">
-            ⌛ {formatDuration(turn.turnDurationMs)}
-          </span>
-        ) : null}
-      </div>
+      <AssistantHeader
+        model={turn.model}
+        assistantNumber={assistantNumber}
+        turnDurationMs={turn.turnDurationMs}
+      />
 
-      {turn.hasThinking ? (
-        <div className="ml-8">
-          <button
-            type="button"
-            onClick={() => setThinkingOpen((v) => !v)}
-            className="inline-flex items-center gap-1.5 rounded-xs px-2 py-1 text-xs font-medium text-cyan hover:bg-cyan/10"
-          >
-            <span aria-hidden>◉</span>
-            Extended thinking
-            <span className={cn("text-[10px] transition-transform", thinkingOpen && "rotate-180")}>
-              ▾
-            </span>
-          </button>
-          {thinkingOpen && turn.thinkingText ? (
-            <pre className="mt-1 max-h-56 overflow-auto whitespace-pre-wrap rounded-md border border-cyan/30 bg-cyan/5 px-4 py-3 text-xs leading-relaxed text-cyan/80">
-              {turn.thinkingText.slice(0, 3000)}
-              {turn.thinkingText.length > 3000 ? (
-                <span className="text-cyan/40">
-                  {" "}
-                  …[{(turn.thinkingText.length - 3000).toLocaleString()} more chars]
-                </span>
-              ) : null}
-            </pre>
-          ) : null}
-        </div>
-      ) : null}
+      {turn.hasThinking ? <ThinkingPanel thinkingText={turn.thinkingText} /> : null}
 
       {turn.toolCalls && turn.toolCalls.length > 0 ? (
-        <div className="ml-8 space-y-1">
-          {turn.toolCalls.map((tc) => {
-            const result = toolResults.get(tc.id);
-            const resultForBadge = result
-              ? { content: result.content, isError: result.isError }
-              : undefined;
-            return (
-              <div key={tc.id}>
-                <ToolCallBadge tool={tc} result={resultForBadge} />
-                {tc.name === "TodoWrite" ? <TodoWritePanel input={tc.input} /> : null}
-              </div>
-            );
-          })}
-        </div>
+        <ToolCallsList toolCalls={turn.toolCalls} toolResults={toolResults} />
       ) : null}
 
-      {text ? (
-        <div className="ml-8">
-          <div className="rounded-2xl rounded-tl-sm border border-line/60 bg-panel px-4 py-3">
-            <div
-              className={cn(
-                "relative",
-                needsExpand && !expanded && "max-h-[28rem] overflow-hidden"
-              )}
-            >
-              <AssistantMarkdown content={text} />
-              {needsExpand && !expanded ? (
-                <div
-                  className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-panel to-transparent"
-                  aria-hidden
-                />
-              ) : null}
-            </div>
-            {needsExpand ? (
-              <button
-                type="button"
-                onClick={() => setExpanded((v) => !v)}
-                className="mt-2 inline-flex items-center gap-1 text-xs text-muted hover:text-cyan"
-              >
-                {expanded ? "▴ Show less" : "▾ Show full response"}
-              </button>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
+      {text ? <AssistantText text={text} /> : null}
 
       {turn.usage ? (
         <div className="ml-8 mt-0.5">
@@ -209,6 +126,124 @@ function AssistantTurn({ turn, assistantNumber, compactionBefore, toolResults }:
 
       <div className="ml-8">
         <RawToggle turn={turn} />
+      </div>
+    </div>
+  );
+}
+
+interface AssistantHeaderProps {
+  readonly model: string | undefined;
+  readonly assistantNumber: number | undefined;
+  readonly turnDurationMs: number | undefined;
+}
+
+function AssistantHeader({ model, assistantNumber, turnDurationMs }: AssistantHeaderProps) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-1.5">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-accent/40 bg-accent/20">
+          <span className="text-[10px] font-bold text-accent">C</span>
+        </div>
+        <span className="text-xs font-semibold text-accent/80">Claude</span>
+      </div>
+      <span className="rounded-xs border border-line/60 px-1.5 py-0.5 font-mono text-[10px] text-ink">
+        {shortenModel(model)}
+      </span>
+      {assistantNumber ? (
+        <span className="font-mono text-[10px] text-muted/50">#{assistantNumber}</span>
+      ) : null}
+      {turnDurationMs ? (
+        <span className="font-mono text-[10px] text-muted/60">
+          ⌛ {formatDuration(turnDurationMs)}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+const THINKING_CLAMP = 3000;
+
+function ThinkingPanel({ thinkingText }: { readonly thinkingText: string | undefined }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="ml-8">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1.5 rounded-xs px-2 py-1 text-xs font-medium text-cyan hover:bg-cyan/10"
+      >
+        <span aria-hidden>◉</span>
+        Extended thinking
+        <span className={cn("text-[10px] transition-transform", open && "rotate-180")}>▾</span>
+      </button>
+      {open && thinkingText ? <ThinkingBody text={thinkingText} /> : null}
+    </div>
+  );
+}
+
+function ThinkingBody({ text }: { readonly text: string }) {
+  const head = text.slice(0, THINKING_CLAMP);
+  const rest = text.length - THINKING_CLAMP;
+  return (
+    <pre className="mt-1 max-h-56 overflow-auto whitespace-pre-wrap rounded-md border border-cyan/30 bg-cyan/5 px-4 py-3 text-xs leading-relaxed text-cyan/80">
+      {head}
+      {rest > 0 ? (
+        <span className="text-cyan/40"> …[{rest.toLocaleString()} more chars]</span>
+      ) : null}
+    </pre>
+  );
+}
+
+interface ToolCallsListProps {
+  readonly toolCalls: readonly ReplayToolCall[];
+  readonly toolResults: ToolResultLookup;
+}
+
+function ToolCallsList({ toolCalls, toolResults }: ToolCallsListProps) {
+  return (
+    <div className="ml-8 space-y-1">
+      {toolCalls.map((tc) => {
+        const result = toolResults.get(tc.id);
+        const resultForBadge = result
+          ? { content: result.content, isError: result.isError }
+          : undefined;
+        return (
+          <div key={tc.id}>
+            <ToolCallBadge tool={tc} result={resultForBadge} />
+            {tc.name === "TodoWrite" ? <TodoWritePanel input={tc.input} /> : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function AssistantText({ text }: { readonly text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsExpand = text.length > ASSISTANT_COLLAPSE_THRESHOLD;
+  return (
+    <div className="ml-8">
+      <div className="rounded-2xl rounded-tl-sm border border-line/60 bg-panel px-4 py-3">
+        <div
+          className={cn("relative", needsExpand && !expanded && "max-h-[28rem] overflow-hidden")}
+        >
+          <AssistantMarkdown content={text} />
+          {needsExpand && !expanded ? (
+            <div
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-panel to-transparent"
+              aria-hidden
+            />
+          ) : null}
+        </div>
+        {needsExpand ? (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="mt-2 inline-flex items-center gap-1 text-xs text-muted hover:text-cyan"
+          >
+            {expanded ? "▴ Show less" : "▾ Show full response"}
+          </button>
+        ) : null}
       </div>
     </div>
   );
