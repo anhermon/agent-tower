@@ -48,11 +48,7 @@ describe("runCli global-flag handling", () => {
         usage: { input_tokens: 3, output_tokens: 4 },
       },
     };
-    await writeFile(
-      path.join(project, "test-session.jsonl"),
-      JSON.stringify(assistant),
-      "utf8"
-    );
+    await writeFile(path.join(project, "test-session.jsonl"), JSON.stringify(assistant), "utf8");
     process.env[CLAUDE_DATA_ROOT_ENV] = root;
     return root;
   }
