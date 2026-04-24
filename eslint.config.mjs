@@ -43,6 +43,10 @@ export default tseslint.config(
       "**/.ci/**",
       // Git worktrees live under .claude/ — never lint them alongside the main tree.
       "**/.claude/**",
+      // git worktree directories created by `git worktree add .worktree/<name>`.
+      // Each worktree has its own node_modules, massively inflating ESLint scope.
+      ".worktree/**",
+      "**/.worktree/**",
       "**/*.tsbuildinfo",
       "**/playwright-report/**",
       "**/test-results/**",
