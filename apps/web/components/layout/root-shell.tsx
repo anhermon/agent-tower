@@ -1,14 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-
+import type { ReactNode } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 
-import type { ReactNode } from "react";
-
-interface RootShellProps {
+type RootShellProps = {
   readonly children: ReactNode;
-}
+};
 
 const STANDALONE_PREFIXES = ["/webhooks/standalone"] as const;
 

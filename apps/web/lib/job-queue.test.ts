@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { EventSourceKind } from "@control-plane/events";
+
 import { JobQueue, type WorkflowJob, type WorkflowJobPayload } from "./job-queue";
 
 function createMockJobPayload(overrides?: Partial<WorkflowJobPayload>): WorkflowJobPayload {
@@ -37,7 +39,7 @@ function createMockJob(id: string, payload?: Partial<WorkflowJobPayload>): Workf
     type: "workflow.job_created",
     version: 1,
     occurredAt: new Date().toISOString(),
-    source: { kind: "system", id: "test" },
+    source: { kind: EventSourceKind.System, id: "test" },
     payload: createMockJobPayload(payload),
   };
 }
