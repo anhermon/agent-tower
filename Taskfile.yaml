@@ -73,7 +73,7 @@ tasks:
   fmt:check:
     desc: Biome format + lint (check only, no writes)
     cmds:
-      - pnpm biome check .
+      - pnpm biome check . --diagnostic-level error
 
   lint:
     desc: ESLint (deep semantic lint — React, hooks, a11y, imports, complexity)

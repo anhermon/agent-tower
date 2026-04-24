@@ -112,7 +112,7 @@ async function startWatchers(
   // whose filename is the new directory. Re-attach a per-project watcher
   // when that happens.
   try {
-    const rootWatcher = watch(dataRoot, { persistent: false }, (eventType, filename) => {
+    const rootWatcher = watch(dataRoot, { persistent: false }, (_eventType, filename) => {
       if (closed || !filename) return;
       const name = filename.toString();
       // Only non-dotfile entries; the adapter ignores them anyway.
