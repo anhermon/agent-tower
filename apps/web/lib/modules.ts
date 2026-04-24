@@ -79,6 +79,18 @@ export const modules: ModuleDefinition[] = [
     docs: "docs/modules/mcps.md",
   },
   {
+    key: "token-optimizer",
+    label: "Token Optimizer",
+    href: "/token-optimizer",
+    icon: "bolt",
+    description:
+      "Token optimization tool fleet — toggle tools, inspect session attribution, and track savings.",
+    status: "degraded",
+    phase: "active",
+    owner: "",
+    docs: "docs/modules/token-optimizer.md",
+  },
+  {
     key: "channels",
     label: "Channels",
     href: "/channels",
