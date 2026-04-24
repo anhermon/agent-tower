@@ -85,6 +85,48 @@ describe("sessions_show tool", () => {
     expect(result.reason).toBe("not_found");
   });
 
+  it("includes timeline and skillAttribution when includeTimeline=true", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "cp-mcp-show-tl-"));
+    tempDirs.push(root);
+    const project = path.join(root, "proj-tl");
+    await mkdir(project, { recursive: true });
+
+    const sessionId = "cccccccc-cccc-cccc-cccc-cccccccccccc";
+    const lines: Record<string, unknown>[] = [
+      {
+        type: "assistant",
+        sessionId,
+        uuid: "u-1",
+        timestamp: "2026-04-10T12:00:00.000Z",
+        cwd: "/repo/tl",
+        message: {
+          role: "assistant",
+          model: "claude-sonnet-4-5",
+          usage: { input_tokens: 10, output_tokens: 4 },
+          content: [{ type: "tool_use", id: "t1", name: "Skill", input: { skill: "commit" } }],
+        },
+      },
+    ];
+    await writeFile(
+      path.join(project, `${sessionId}.jsonl`),
+      lines.map((l) => JSON.stringify(l)).join("\n"),
+      "utf8"
+    );
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+
+    const result = await sessionsShowTool.handler({ sessionId, includeTimeline: true });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.includeTimeline).toBe(true);
+    const session = result.session as Record<string, unknown>;
+    const timeline = session.timeline as { entries: { toolsUsed: string[] }[] };
+    expect(timeline.entries[0]?.toolsUsed).toEqual(["Skill"]);
+    const attribution = session.skillAttribution as {
+      entries: { skillsActivatedOnThisTurn: string[] }[];
+    };
+    expect(attribution.entries[0]?.skillsActivatedOnThisTurn).toEqual(["commit"]);
+  });
+
   it("returns the session summary without turns by default", async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), "cp-mcp-show-session-"));
     tempDirs.push(root);

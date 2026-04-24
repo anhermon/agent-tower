@@ -11,9 +11,21 @@ export { foldReplay } from "./analytics/replay.js";
 export type { FoldSessionOptions } from "./analytics/session-summary.js";
 // Phase 1 Wave 0: analytics folds + optional enrichment sources.
 export { foldSessionSummary } from "./analytics/session-summary.js";
+export type {
+  SkillAttributionEntry,
+  SkillTurnAttribution,
+  SkillTurnAttributionFoldOptions,
+} from "./analytics/skill-turn-attribution.js";
+export { computeSkillTurnAttribution } from "./analytics/skill-turn-attribution.js";
 export type { TimeseriesFoldOptions } from "./analytics/timeseries.js";
 export { computeStreaks, foldTimeseries } from "./analytics/timeseries.js";
 export { foldToolAnalytics } from "./analytics/tools.js";
+export type {
+  TurnTimeline,
+  TurnTimelineEntry,
+  TurnTimelineFoldOptions,
+} from "./analytics/turn-timeline.js";
+export { computeTurnTimeline } from "./analytics/turn-timeline.js";
 export { scoreSessionsWaste, scoreSessionWaste } from "./analytics/waste.js";
 export type { DataRootOrigin, ResolvedDataRoot } from "./data-root.js";
 // Phase 1 Wave 1: data-root resolution + skill catalogue/analytics (shared by
@@ -40,6 +52,7 @@ export {
   readTranscriptPreview,
   readTranscriptTail,
 } from "./reader.js";
+export { detectSkillFromBlock, detectSkillsFromEntry } from "./skills/detect.js";
 export type {
   EfficacyBaseline,
   ListSkillsEfficacyResult,
