@@ -7,7 +7,6 @@ const TIER = "T3";
 const TOOL = "knip";
 // Phase 1 skeleton ships many exported-but-not-yet-consumed APIs; only fail on
 // structural issues (unused files, missing deps) until the API surface matures.
-const FAIL_TYPES = ["files", "dependencies", "unlisted"];
 
 function runKnip() {
   return new Promise((resolve) => {
@@ -94,7 +93,7 @@ function countIssues(report) {
   return counts;
 }
 
-function hasFailingIssues(report, counts) {
+function hasFailingIssues(_report, counts) {
   if (
     counts.unusedFiles > 0 ||
     counts.unusedDeps > 0 ||
