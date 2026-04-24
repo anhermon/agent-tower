@@ -3,7 +3,7 @@ import {
   resolveDataRoot,
   scoreSessionWaste,
 } from "@control-plane/adapter-claude-code";
-import type { DateRange, SessionAnalyticsFilter } from "@control-plane/core";
+import type { DateRange, SessionAnalyticsFilter, SessionUsageSummary } from "@control-plane/core";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
@@ -19,20 +19,43 @@ const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 50;
 const DEFAULT_MIN_SCORE = 0.3;
 
+function parseFiniteNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function parseNonEmptyString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
 function parseInput(raw: unknown): ParsedSessionsWasteInput {
   const r = asRecord(raw);
-  const limit = r.limit;
-  const minScore = r.minScore;
-  const project = r.project;
-  const since = r.since;
-  const until = r.until;
   return {
-    limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
-    minScore: typeof minScore === "number" && Number.isFinite(minScore) ? minScore : null,
-    project: typeof project === "string" && project.length > 0 ? project : null,
-    since: typeof since === "string" && since.length > 0 ? since : null,
-    until: typeof until === "string" && until.length > 0 ? until : null,
+    limit: parseFiniteNumber(r.limit),
+    minScore: parseFiniteNumber(r.minScore),
+    project: parseNonEmptyString(r.project),
+    since: parseNonEmptyString(r.since),
+    until: parseNonEmptyString(r.until),
   };
+}
+
+function resolveWasteDateRange(since: string | null, until: string | null): DateRange | null {
+  if (since && until) return { from: since, to: until };
+  if (since) return { from: since, to: since };
+  if (until) return { from: until, to: until };
+  return null;
+}
+
+async function loadWasteSummaries(
+  directory: string,
+  input: ParsedSessionsWasteInput
+): Promise<readonly SessionUsageSummary[]> {
+  const source = new ClaudeCodeAnalyticsSource({ directory });
+  const range = resolveWasteDateRange(input.since, input.until);
+  const filter: SessionAnalyticsFilter = {
+    ...(range ? { range } : {}),
+    ...(input.project ? { projectId: input.project } : {}),
+  };
+  return source.listSessionSummaries(filter);
 }
 
 export const sessionsWasteTool: ToolDefinition = {
@@ -76,33 +99,14 @@ export const sessionsWasteTool: ToolDefinition = {
       if (!resolved) {
         return { ok: false, reason: "unconfigured" };
       }
-
       const limit = Math.min(MAX_LIMIT, Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT)));
       const minScore = input.minScore ?? DEFAULT_MIN_SCORE;
-
-      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-
-      let range: DateRange | null = null;
-      if (input.since && input.until) {
-        range = { from: input.since, to: input.until };
-      } else if (input.since) {
-        range = { from: input.since, to: input.since };
-      } else if (input.until) {
-        range = { from: input.until, to: input.until };
-      }
-
-      const filter: SessionAnalyticsFilter = {
-        ...(range ? { range } : {}),
-        ...(input.project ? { projectId: input.project } : {}),
-      };
-
-      const summaries = await source.listSessionSummaries(filter);
+      const summaries = await loadWasteSummaries(resolved.directory, input);
       const verdicts = summaries
         .map((summary) => scoreSessionWaste(summary))
         .filter((verdict) => verdict.overall >= minScore)
         .sort((a, b) => b.overall - a.overall)
         .slice(0, limit);
-
       return {
         ok: true,
         limit,

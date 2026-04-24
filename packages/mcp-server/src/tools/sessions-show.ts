@@ -1,10 +1,16 @@
-import { ClaudeCodeAnalyticsSource, resolveDataRoot } from "@control-plane/adapter-claude-code";
+import {
+  ClaudeCodeAnalyticsSource,
+  computeSkillTurnAttribution,
+  computeTurnTimeline,
+  resolveDataRoot,
+} from "@control-plane/adapter-claude-code";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 interface ParsedSessionsShowInput {
   readonly sessionId: string;
   readonly includeTurns: boolean;
+  readonly includeTimeline: boolean;
 }
 
 function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: string } {
@@ -14,9 +20,11 @@ function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: s
     return { error: "sessionId is required and must be a non-empty string" };
   }
   const includeTurns = r.includeTurns;
+  const includeTimeline = r.includeTimeline;
   return {
     sessionId,
     includeTurns: typeof includeTurns === "boolean" ? includeTurns : false,
+    includeTimeline: typeof includeTimeline === "boolean" ? includeTimeline : false,
   };
 }
 
@@ -34,6 +42,11 @@ export const sessionsShowTool: ToolDefinition = {
       includeTurns: {
         type: "boolean",
         description: "When true, include the per-turn usage breakdown. Defaults to false.",
+      },
+      includeTimeline: {
+        type: "boolean",
+        description:
+          "When true, attach per-turn tool/token rollup (timeline) and skill-to-turn attribution (skillAttribution). Defaults to false.",
       },
     },
     required: ["sessionId"],
@@ -65,6 +78,21 @@ export const sessionsShowTool: ToolDefinition = {
             void _turns;
             return rest;
           })();
+      if (parsed.includeTimeline) {
+        const parsed2 = await source.loadSessionEntries(parsed.sessionId);
+        const entries = parsed2?.entries ?? [];
+        const timeline = computeTurnTimeline(entries, { sessionId: parsed.sessionId });
+        const skillAttribution = computeSkillTurnAttribution(entries, {
+          sessionId: parsed.sessionId,
+        });
+        return {
+          ok: true,
+          sessionId: parsed.sessionId,
+          includeTurns: parsed.includeTurns,
+          includeTimeline: true,
+          session: { ...(projected as object), timeline, skillAttribution },
+        };
+      }
       return {
         ok: true,
         sessionId: parsed.sessionId,

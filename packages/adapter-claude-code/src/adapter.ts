@@ -132,6 +132,12 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
     return this.summaryFor(file);
   }
 
+  async loadSessionEntries(sessionId: string): Promise<ReadTranscriptResult | undefined> {
+    const file = await this.findSessionFile(sessionId);
+    if (!file) return undefined;
+    return this.parseFile(file);
+  }
+
   async loadSessionReplay(sessionId: string): Promise<ReplayData | undefined> {
     const file = await this.findSessionFile(sessionId);
     if (!file) return undefined;

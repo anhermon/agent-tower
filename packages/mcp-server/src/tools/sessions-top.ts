@@ -16,19 +16,18 @@ interface ParsedSessionsTopInput {
 const DEFAULT_BY: SessionsTopBy = "tokens";
 const DEFAULT_LIMIT = 10;
 
+function parseTopBy(raw: unknown): SessionsTopBy | null {
+  return raw === "cost" || raw === "turns" || raw === "tokens" ? raw : null;
+}
+
 function parseInput(raw: unknown): ParsedSessionsTopInput {
   const r = asRecord(raw);
-  const by = r.by;
-  const limit = r.limit;
-  const projectId = r.projectId;
-  const since = r.since;
-  const until = r.until;
   return {
-    by: by === "cost" || by === "turns" || by === "tokens" ? by : null,
-    limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
-    projectId: typeof projectId === "string" && projectId.length > 0 ? projectId : null,
-    since: typeof since === "string" && since.length > 0 ? since : null,
-    until: typeof until === "string" && until.length > 0 ? until : null,
+    by: parseTopBy(r.by),
+    limit: typeof r.limit === "number" && Number.isFinite(r.limit) ? r.limit : null,
+    projectId: typeof r.projectId === "string" && r.projectId.length > 0 ? r.projectId : null,
+    since: typeof r.since === "string" && r.since.length > 0 ? r.since : null,
+    until: typeof r.until === "string" && r.until.length > 0 ? r.until : null,
   };
 }
 
@@ -44,6 +43,46 @@ function rank(summary: SessionUsageSummary, by: SessionsTopBy): number {
     usage.cacheReadInputTokens +
     usage.cacheCreationInputTokens
   );
+}
+
+function resolveDateRange(since: string | null, until: string | null): DateRange | null {
+  if (since && until) return { from: since, to: until };
+  if (since) return { from: since, to: since };
+  if (until) return { from: until, to: until };
+  return null;
+}
+
+async function fetchSessions(
+  directory: string,
+  input: ParsedSessionsTopInput
+): Promise<readonly SessionUsageSummary[]> {
+  const source = new ClaudeCodeAnalyticsSource({ directory });
+  const range = resolveDateRange(input.since, input.until);
+  const filter: SessionAnalyticsFilter = {
+    ...(range ? { range } : {}),
+    ...(input.projectId ? { projectId: input.projectId } : {}),
+  };
+  return source.listSessionSummaries(filter);
+}
+
+function buildTopResult(
+  input: ParsedSessionsTopInput,
+  summaries: readonly SessionUsageSummary[],
+  by: SessionsTopBy,
+  limit: number
+): ToolResult {
+  const sorted = [...summaries].sort((a, b) => rank(b, by) - rank(a, by));
+  const sliced = sorted.slice(0, limit);
+  return {
+    ok: true,
+    by,
+    limit,
+    ...(input.projectId ? { projectId: input.projectId } : {}),
+    ...(input.since ? { since: input.since } : {}),
+    ...(input.until ? { until: input.until } : {}),
+    total: summaries.length,
+    sessions: sliced,
+  };
 }
 
 export const sessionsTopTool: ToolDefinition = {
@@ -87,37 +126,8 @@ export const sessionsTopTool: ToolDefinition = {
       }
       const by = input.by ?? DEFAULT_BY;
       const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
-
-      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-
-      let range: DateRange | null = null;
-      if (input.since && input.until) {
-        range = { from: input.since, to: input.until };
-      } else if (input.since) {
-        range = { from: input.since, to: input.since };
-      } else if (input.until) {
-        range = { from: input.until, to: input.until };
-      }
-
-      const filter: SessionAnalyticsFilter = {
-        ...(range ? { range } : {}),
-        ...(input.projectId ? { projectId: input.projectId } : {}),
-      };
-
-      const summaries = await source.listSessionSummaries(filter);
-      const sorted = [...summaries].sort((a, b) => rank(b, by) - rank(a, by));
-      const sliced = sorted.slice(0, limit);
-
-      return {
-        ok: true,
-        by,
-        limit,
-        ...(input.projectId ? { projectId: input.projectId } : {}),
-        ...(input.since ? { since: input.since } : {}),
-        ...(input.until ? { until: input.until } : {}),
-        total: summaries.length,
-        sessions: sliced,
-      };
+      const summaries = await fetchSessions(resolved.directory, input);
+      return buildTopResult(input, summaries, by, limit);
     } catch (error) {
       return errorResult(error);
     }

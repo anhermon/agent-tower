@@ -1,4 +1,9 @@
-import { ClaudeCodeAnalyticsSource, scoreSessionWaste } from "@control-plane/adapter-claude-code";
+import {
+  ClaudeCodeAnalyticsSource,
+  computeSkillTurnAttribution,
+  computeTurnTimeline,
+  scoreSessionWaste,
+} from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
 import { resolveOrExplain } from "../data-root.js";
@@ -10,10 +15,12 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     json?: boolean;
     pretty?: boolean;
     full?: boolean;
+    timeline?: boolean;
   }>(argv, {
     json: { type: "boolean" },
     pretty: { type: "boolean" },
     full: { type: "boolean" },
+    timeline: { type: "boolean" },
   });
 
   const sessionId = positionals[0];
@@ -25,6 +32,7 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
   const resolved = resolveOrExplain(mode);
   if (!resolved) return 1;
 
+  const includeTimeline = values.timeline === true;
   const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
   const summary = await source.loadSessionUsage(sessionId);
 
@@ -38,6 +46,15 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
   }
 
   if (mode.json) {
+    if (includeTimeline) {
+      const parsed = await source.loadSessionEntries(sessionId);
+      const entries = parsed?.entries ?? [];
+      const timeline = computeTurnTimeline(entries, { sessionId });
+      const skillAttribution = computeSkillTurnAttribution(entries, { sessionId });
+      const base = projectSummary(summary, values.full === true);
+      writeJson({ ok: true, session: { ...(base as object), timeline, skillAttribution } });
+      return 0;
+    }
     writeJson({ ok: true, session: projectSummary(summary, values.full === true) });
     return 0;
   }
