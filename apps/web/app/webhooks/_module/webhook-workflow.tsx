@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { Icon } from "@/components/ui/icon";
-import { cn } from "@/lib/utils";
 
 import { EventDetailPanel } from "./components/event-detail-panel";
 import { EventStreamTable } from "./components/event-stream-table";
@@ -31,6 +30,9 @@ import type {
 interface WebhookWorkflowProps {
   readonly initialSubscriptions?: RegisteredWebhookIntegration[];
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- placeholder for unimplemented callbacks
+const noop = (): void => {};
 
 const INITIAL_FILTERS: WebhookEventFilters = {
   providerId: "all",
@@ -180,7 +182,7 @@ export function WebhookWorkflow({ initialSubscriptions = [] }: WebhookWorkflowPr
             onSelectEvent={handleSelectEvent}
             selectedEventId={selectedEventId}
             totalCount={dlqEvents.length}
-            onLoadMore={() => {}}
+            onLoadMore={noop}
             hasMore={false}
           />
         </div>
@@ -215,7 +217,7 @@ export function WebhookWorkflow({ initialSubscriptions = [] }: WebhookWorkflowPr
           provider={selectedProvider}
           integration={selectedIntegration}
           events={integrationEvents}
-          onConfigure={() => {}}
+          onConfigure={noop}
           onTestWebhook={handleTestWebhook}
         />
 
@@ -243,7 +245,7 @@ export function WebhookWorkflow({ initialSubscriptions = [] }: WebhookWorkflowPr
             onSelectEvent={handleSelectEvent}
             selectedEventId={selectedEventId}
             totalCount={integrationEvents.length}
-            onLoadMore={() => {}}
+            onLoadMore={noop}
             hasMore={false}
           />
         </div>

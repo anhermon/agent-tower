@@ -24,7 +24,6 @@ const CATEGORY_ORDER: WebhookEventCategory[] = ["pull_requests", "issues", "ci",
 
 export function EventTypePanels({ events, onSelectEvent }: EventTypePanelsProps) {
   const [expandedCategory, setExpandedCategory] = useState<WebhookEventCategory | null>(null);
-
   const grouped = groupEventsByCategory(events);
 
   const handleToggleExpand = useCallback((category: WebhookEventCategory) => {
@@ -36,7 +35,6 @@ export function EventTypePanels({ events, onSelectEvent }: EventTypePanelsProps)
       {CATEGORY_ORDER.map((category) => (
         <EventTypePanel
           key={category}
-          category={category}
           label={CATEGORY_LABELS[category]}
           events={grouped[category]}
           isExpanded={expandedCategory === category}

@@ -8,6 +8,9 @@ pre-commit:
     biome:
       glob: "*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc}"
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+    eslint:
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs}"
+      run: NODE_OPTIONS=--max-old-space-size=4096 pnpm exec eslint --cache --cache-location .ci/.eslintcache {staged_files}
     gitleaks:
       run: gitleaks protect --staged --config .gitleaks.toml --no-banner --redact
 

@@ -16,6 +16,20 @@ export type WebhookRouteMode =
 
 export type WebhookObservedStatus = "accepted" | "routed" | "failed";
 
+export type WebhookEventStatus =
+  | "accepted"
+  | "routed"
+  | "triggered"
+  | "queued"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "dlq";
+
+export type WebhookEventCategory = "pull_requests" | "issues" | "ci" | "other";
+
+export type WebhookIntegrationStatus = "live" | "planned" | "setup";
+
 export interface WebhookProviderEventDefinition {
   readonly id: string;
   readonly label: string;
@@ -53,8 +67,11 @@ export interface RegisteredWebhookIntegration extends WebhookIntegrationDraft {
 
 export interface WebhookTimelineStep {
   readonly label: string;
-  readonly status: WebhookObservedStatus;
+  readonly status: "pending" | "completed" | "failed";
   readonly durationMs: number;
+  readonly step: string;
+  readonly timestamp?: string;
+  readonly error?: string;
 }
 
 export interface ObservedWebhookEvent {
@@ -69,16 +86,20 @@ export interface ObservedWebhookEvent {
   readonly receivedAt: string;
   readonly routeName: string;
   readonly routeMode: WebhookRouteMode;
-  readonly status: WebhookObservedStatus;
+  readonly status: WebhookEventStatus;
   readonly processingMs: number;
   readonly timeline: readonly WebhookTimelineStep[];
   readonly payload: Record<string, string>;
+  readonly repository: string;
 }
 
 export interface WebhookEventFilters {
   readonly providerId: WebhookProviderId | "all";
-  readonly status: WebhookObservedStatus | "all";
+  readonly status: WebhookEventStatus | "all";
   readonly query: string;
+  readonly repo?: string;
+  readonly timeFrom?: string;
+  readonly timeTo?: string;
 }
 
 export interface WebhookRegistrationValidation {

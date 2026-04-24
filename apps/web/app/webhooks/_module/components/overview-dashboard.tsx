@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useCallback } from "react";
 
-import { computeStats, filterObservedWebhookEvents, getProviderBreakdown } from "../state";
+import { computeStats, getProviderBreakdown } from "../state";
 
 import { EventStreamTable } from "./event-stream-table";
 import { ProviderBreakdown } from "./provider-breakdown";

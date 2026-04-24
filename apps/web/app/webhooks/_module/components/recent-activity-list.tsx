@@ -11,6 +11,8 @@ interface RecentActivityListProps {
 }
 
 const STATUS_DOT_COLORS: Record<ObservedWebhookEvent["status"], string> = {
+  accepted: "bg-sky-500",
+  routed: "bg-green-500",
   triggered: "bg-blue-500",
   queued: "bg-amber-500",
   processing: "bg-purple-500",

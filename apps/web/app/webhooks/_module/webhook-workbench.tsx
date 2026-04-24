@@ -1,8 +1,10 @@
 "use client";
 
-import React, { type ChangeEvent, useMemo, useState } from "react";
+import { useCallback, type ChangeEvent, type ReactNode, useMemo, useState } from "react";
+
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+
 import { WEBHOOK_PROVIDER_CATALOG, WEBHOOK_ROUTE_MODES } from "./catalog";
 import {
   countEnabledEvents,
@@ -17,19 +19,19 @@ import {
   toggleWebhookDraftEvent,
   validateWebhookDraft,
 } from "./state";
+
 import type {
   ObservedWebhookEvent,
   RegisteredWebhookIntegration,
   WebhookEventFilters,
+  WebhookEventStatus,
   WebhookIntegrationDraft,
   WebhookObservedStatus,
-  WebhookProviderId,
-  WebhookRouteMode,
 } from "./types";
 
-type WebhookWorkbenchProps = {
+interface WebhookWorkbenchProps {
   readonly variant?: "embedded" | "standalone";
-};
+}
 
 const INITIAL_FILTERS: WebhookEventFilters = {
   providerId: "all",
@@ -66,11 +68,11 @@ export function WebhookWorkbench({ variant = "embedded" }: WebhookWorkbenchProps
   );
   const selectedObservedEvent = filteredEvents[0] ?? observedEvents[0] ?? null;
 
-  function updateDraft(patch: Partial<WebhookIntegrationDraft>) {
+  const updateDraft = useCallback((patch: Partial<WebhookIntegrationDraft>) => {
     setDraft((current) => ({ ...current, ...patch }));
-  }
+  }, []);
 
-  function registerIntegration() {
+  const registerIntegration = useCallback(() => {
     if (!validation.ok) return;
     const integration = registerWebhookIntegration({
       draft,
@@ -80,9 +82,9 @@ export function WebhookWorkbench({ variant = "embedded" }: WebhookWorkbenchProps
     setIntegrations((current) => [integration, ...current]);
     setSelectedIntegrationId(integration.id);
     setSelectedEventId(integration.selectedEventIds[0] ?? null);
-  }
+  }, [draft, integrations.length, validation.ok]);
 
-  function triggerTestEvent() {
+  const triggerTestEvent = useCallback(() => {
     if (!selectedIntegration || !triggerEventId) return;
     const event = createObservedWebhookEvent({
       integration: selectedIntegration,
@@ -91,17 +93,94 @@ export function WebhookWorkbench({ variant = "embedded" }: WebhookWorkbenchProps
       now: new Date(),
     });
     setObservedEvents((current) => [event, ...current]);
-  }
+  }, [selectedIntegration, triggerEventId, observedEvents.length]);
 
-  async function copyEndpointPath() {
+  const copyEndpointPath = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(provider.endpointPath);
       setClipboardState("copied");
     } catch {
       setClipboardState("failed");
     }
-  }
+  }, [provider.endpointPath]);
 
+  const handleSelectIntegration = useCallback((integration: RegisteredWebhookIntegration) => {
+    setSelectedIntegrationId(integration.id);
+    setSelectedEventId(integration.selectedEventIds[0] ?? null);
+  }, []);
+
+  return (
+    <WorkbenchShell
+      variant={variant}
+      draft={draft}
+      setDraft={setDraft}
+      integrations={integrations}
+      observedEvents={observedEvents}
+      selectedIntegration={selectedIntegration}
+      _selectedEventId={selectedEventId}
+      setSelectedEventId={setSelectedEventId}
+      triggerEventId={triggerEventId}
+      filteredEvents={filteredEvents}
+      selectedObservedEvent={selectedObservedEvent}
+      filters={filters}
+      setFilters={setFilters}
+      clipboardState={clipboardState}
+      provider={provider}
+      validation={validation}
+      updateDraft={updateDraft}
+      registerIntegration={registerIntegration}
+      triggerTestEvent={triggerTestEvent}
+      copyEndpointPath={copyEndpointPath}
+      handleSelectIntegration={handleSelectIntegration}
+    />
+  );
+}
+
+function WorkbenchShell({
+  variant,
+  draft,
+  setDraft,
+  integrations,
+  observedEvents,
+  selectedIntegration,
+  _selectedEventId,
+  setSelectedEventId,
+  triggerEventId,
+  filteredEvents,
+  selectedObservedEvent,
+  filters,
+  setFilters,
+  clipboardState,
+  provider,
+  validation,
+  updateDraft,
+  registerIntegration,
+  triggerTestEvent,
+  copyEndpointPath,
+  handleSelectIntegration,
+}: {
+  readonly variant: "embedded" | "standalone";
+  readonly draft: WebhookIntegrationDraft;
+  readonly setDraft: (draft: WebhookIntegrationDraft) => void;
+  readonly integrations: RegisteredWebhookIntegration[];
+  readonly observedEvents: ObservedWebhookEvent[];
+  readonly selectedIntegration: RegisteredWebhookIntegration | null;
+  readonly _selectedEventId: string | null;
+  readonly setSelectedEventId: (eventId: string | null) => void;
+  readonly triggerEventId: string | null;
+  readonly filteredEvents: readonly ObservedWebhookEvent[];
+  readonly selectedObservedEvent: ObservedWebhookEvent | null;
+  readonly filters: WebhookEventFilters;
+  readonly setFilters: (filters: WebhookEventFilters) => void;
+  readonly clipboardState: "idle" | "copied" | "failed";
+  readonly provider: ReturnType<typeof getWebhookProvider>;
+  readonly validation: ReturnType<typeof validateWebhookDraft>;
+  readonly updateDraft: (patch: Partial<WebhookIntegrationDraft>) => void;
+  readonly registerIntegration: () => void;
+  readonly triggerTestEvent: () => void;
+  readonly copyEndpointPath: () => Promise<void>;
+  readonly handleSelectIntegration: (integration: RegisteredWebhookIntegration) => void;
+}) {
   const shellClass =
     variant === "standalone" ? "min-h-screen bg-canvas px-4 py-5 sm:px-6 lg:px-8" : "space-y-6";
 
@@ -134,10 +213,7 @@ export function WebhookWorkbench({ variant = "embedded" }: WebhookWorkbenchProps
               <IntegrationList
                 integrations={integrations}
                 selectedIntegrationId={selectedIntegration?.id ?? null}
-                onSelect={(integration) => {
-                  setSelectedIntegrationId(integration.id);
-                  setSelectedEventId(integration.selectedEventIds[0] ?? null);
-                }}
+                onSelect={handleSelectIntegration}
               />
               <RouteDesigner draft={draft} onDraftChange={updateDraft} />
             </section>
@@ -338,6 +414,7 @@ function RegistrationForm({
                     checked={checked}
                     className="mt-1 h-4 w-4 accent-[rgb(var(--color-cyan))]"
                     type="checkbox"
+                    aria-label={event.label}
                     onChange={() => onDraftChange(toggleWebhookDraftEvent(draft, event.id))}
                   />
                   <span className="min-w-0">
@@ -661,7 +738,7 @@ function EventExplorer({
             No observed events match the current filters.
           </div>
         ) : (
-          <ul className="grid gap-2" role="list">
+          <ul className="grid gap-2">
             {events.map((event) => (
               <li key={event.id} className="rounded-xs border border-line/80 bg-ink/[0.03] p-3">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -735,13 +812,7 @@ function EventDetail({ event }: { readonly event: ObservedWebhookEvent | null })
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  readonly label: string;
-  readonly children: React.ReactNode;
-}) {
+function Field({ label, children }: { readonly label: string; readonly children: ReactNode }) {
   return (
     <label className="block">
       <span className="eyebrow">{label}</span>
@@ -767,8 +838,14 @@ function PreviewPair({
   );
 }
 
-function StatusPill({ status }: { readonly status: WebhookObservedStatus }) {
+function StatusPill({ status }: { readonly status: WebhookEventStatus }) {
   const tone =
-    status === "failed" ? "text-danger" : status === "accepted" ? "text-info" : "text-ok";
+    status === "failed" || status === "dlq"
+      ? "text-danger"
+      : status === "accepted" || status === "triggered"
+        ? "text-info"
+        : status === "completed" || status === "routed"
+          ? "text-ok"
+          : "text-muted";
   return <span className={cn("pill px-2 py-1 text-[11px]", tone)}>{status}</span>;
 }

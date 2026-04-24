@@ -113,6 +113,28 @@ function getConnectorStyle(
   return "border-t-2 border-dashed border-muted/40";
 }
 
+const MUTED_CLASS = "text-muted";
+
+function renderDlqIcon(isGrayedOut: boolean) {
+  return <SkullIcon className={cn("h-5 w-5", isGrayedOut ? MUTED_CLASS : "text-red-700")} />;
+}
+
+function renderCompletedIcon(step: WebhookTimelineStep) {
+  return <CheckIcon className={cn("h-5 w-5", STEP_COLORS[step.step] ?? MUTED_CLASS)} />;
+}
+
+function renderActiveIcon(step: WebhookTimelineStep) {
+  return <DotIcon className={cn("h-5 w-5 animate-pulse", STEP_COLORS[step.step] ?? MUTED_CLASS)} />;
+}
+
+function renderPendingIcon(step: WebhookTimelineStep, isGrayedOut: boolean) {
+  return (
+    <DotIcon
+      className={cn("h-5 w-5", isGrayedOut ? MUTED_CLASS : (STEP_COLORS[step.step] ?? MUTED_CLASS))}
+    />
+  );
+}
+
 function StepIconComponent({
   step,
   isFailedTimeline,
@@ -125,32 +147,11 @@ function StepIconComponent({
   const isGrayedOut = isFailedTimeline && step.status === "pending";
   const isProcessingActive = step.step === "processing" && isActive && step.status === "pending";
 
-  if (step.step === "dlq") {
-    return <SkullIcon className={cn("h-5 w-5", isGrayedOut ? "text-muted" : "text-red-700")} />;
-  }
-
-  if (step.status === "failed") {
-    return <XIcon className="h-5 w-5 text-danger" />;
-  }
-
-  if (step.status === "completed") {
-    return <CheckIcon className={cn("h-5 w-5", STEP_COLORS[step.step] ?? "text-ok")} />;
-  }
-
-  if (isProcessingActive) {
-    return (
-      <DotIcon className={cn("h-5 w-5 animate-pulse", STEP_COLORS[step.step] ?? "text-muted")} />
-    );
-  }
-
-  return (
-    <DotIcon
-      className={cn(
-        "h-5 w-5",
-        isGrayedOut ? "text-muted" : (STEP_COLORS[step.step] ?? "text-muted")
-      )}
-    />
-  );
+  if (step.step === "dlq") return renderDlqIcon(isGrayedOut);
+  if (step.status === "failed") return <XIcon className="h-5 w-5 text-danger" />;
+  if (step.status === "completed") return renderCompletedIcon(step);
+  if (isProcessingActive) return renderActiveIcon(step);
+  return renderPendingIcon(step, isGrayedOut);
 }
 
 function getStepBorderColor(step: WebhookTimelineStep, isGrayedOut: boolean): string {

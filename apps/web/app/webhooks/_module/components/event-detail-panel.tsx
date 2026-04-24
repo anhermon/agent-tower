@@ -45,20 +45,95 @@ function StatusBadge({ status }: { readonly status: WebhookEventStatus }) {
   return <span className={cn("pill px-3 py-1.5 text-sm", tone)}>{status}</span>;
 }
 
-export function EventDetailPanel({ event, isOpen, onClose }: EventDetailPanelProps) {
+function EventPanelHeader({
+  event,
+  onClose,
+}: {
+  readonly event: ObservedWebhookEvent | null;
+  readonly onClose: () => void;
+}) {
+  return (
+    <header className="flex items-start justify-between gap-4 border-b border-line/80 p-5">
+      <div className="min-w-0">
+        <p className="eyebrow">Event</p>
+        <h2 className="mt-1 truncate text-lg font-semibold text-ink">
+          {event?.eventLabel ?? "Event Detail"}
+        </h2>
+        {event && (
+          <p className="mt-1 text-sm text-muted">
+            #{event.targetLabel} · {event.providerLabel} · {formatRelative(event.receivedAt)}
+          </p>
+        )}
+      </div>
+      <button
+        onClick={onClose}
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted hover:bg-ink/[0.05] hover:text-ink"
+        aria-label="Close panel"
+      >
+        <XIcon className="h-5 w-5" />
+      </button>
+    </header>
+  );
+}
+
+function EventPanelContent({ event }: { readonly event: ObservedWebhookEvent }) {
   const [showFullPayload, setShowFullPayload] = useState(false);
 
-  if (!isOpen) return null;
-
-  const payloadText = event ? JSON.stringify(event.payload, null, 2) : "";
+  const payloadText = JSON.stringify(event.payload, null, 2);
   const payloadLines = payloadText.split("\n");
   const previewLines = payloadLines.slice(0, 10);
   const isTruncated = payloadLines.length > 10;
 
   const isActive =
-    event?.status === "processing" ||
-    event?.timeline.some((s) => s.step === "processing" && s.status === "pending") ||
-    false;
+    event.status === "processing" ||
+    event.timeline.some((s) => s.step === "processing" && s.status === "pending");
+
+  return (
+    <div className="space-y-6">
+      {/* Status */}
+      <div className="flex items-center gap-3">
+        <StatusBadge status={event.status} />
+        <span className="text-sm text-muted">{event.providerLabel}</span>
+      </div>
+
+      {/* Processing Timeline */}
+      <section>
+        <h3 className="eyebrow mb-3">Processing Timeline</h3>
+        <div className="glass-panel rounded-lg p-4">
+          <ProcessingTimeline
+            steps={event.timeline}
+            isActive={isActive}
+            processingMs={event.processingMs}
+          />
+        </div>
+      </section>
+
+      {/* Payload Preview */}
+      <section>
+        <h3 className="eyebrow mb-3">Payload Preview</h3>
+        <div className="glass-panel rounded-lg p-4">
+          <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-ink">
+            <code>
+              {(showFullPayload ? payloadLines : previewLines).join("\n")}
+              {!showFullPayload && isTruncated && "\n..."}
+            </code>
+          </pre>
+          {isTruncated && (
+            <button
+              onClick={() => setShowFullPayload((prev) => !prev)}
+              className="mt-3 text-xs text-info hover:underline"
+            >
+              {showFullPayload ? "Show less" : "View full JSON"}
+            </button>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export function EventDetailPanel({ event, isOpen, onClose }: EventDetailPanelProps) {
+  if (!isOpen) return null;
 
   return (
     <>
@@ -79,27 +154,7 @@ export function EventDetailPanel({ event, isOpen, onClose }: EventDetailPanelPro
         role="dialog"
         aria-modal="true"
       >
-        {/* Header */}
-        <header className="flex items-start justify-between gap-4 border-b border-line/80 p-5">
-          <div className="min-w-0">
-            <p className="eyebrow">Event</p>
-            <h2 className="mt-1 truncate text-lg font-semibold text-ink">
-              {event?.eventLabel ?? "Event Detail"}
-            </h2>
-            {event && (
-              <p className="mt-1 text-sm text-muted">
-                #{event.targetLabel} · {event.provider} · {formatRelative(event.receivedAt)}
-              </p>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted hover:bg-ink/[0.05] hover:text-ink"
-            aria-label="Close panel"
-          >
-            <XIcon className="h-5 w-5" />
-          </button>
-        </header>
+        <EventPanelHeader event={event} onClose={onClose} />
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5">
@@ -108,46 +163,7 @@ export function EventDetailPanel({ event, isOpen, onClose }: EventDetailPanelPro
               Select an event to view details.
             </div>
           ) : (
-            <div className="space-y-6">
-              {/* Status */}
-              <div className="flex items-center gap-3">
-                <StatusBadge status={event.status} />
-                <span className="text-sm text-muted">{event.providerLabel}</span>
-              </div>
-
-              {/* Processing Timeline */}
-              <section>
-                <h3 className="eyebrow mb-3">Processing Timeline</h3>
-                <div className="glass-panel rounded-lg p-4">
-                  <ProcessingTimeline
-                    steps={event.timeline}
-                    isActive={isActive}
-                    processingMs={event.processingMs}
-                  />
-                </div>
-              </section>
-
-              {/* Payload Preview */}
-              <section>
-                <h3 className="eyebrow mb-3">Payload Preview</h3>
-                <div className="glass-panel rounded-lg p-4">
-                  <pre className="overflow-x-auto font-mono text-xs leading-relaxed text-ink">
-                    <code>
-                      {(showFullPayload ? payloadLines : previewLines).join("\n")}
-                      {!showFullPayload && isTruncated && "\n..."}
-                    </code>
-                  </pre>
-                  {isTruncated && (
-                    <button
-                      onClick={() => setShowFullPayload((prev) => !prev)}
-                      className="mt-3 text-xs text-info hover:underline"
-                    >
-                      {showFullPayload ? "Show less" : "View full JSON"}
-                    </button>
-                  )}
-                </div>
-              </section>
-            </div>
+            <EventPanelContent event={event} />
           )}
         </div>
       </aside>

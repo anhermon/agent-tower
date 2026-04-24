@@ -3,10 +3,9 @@
 import { formatRelative } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-import type { ObservedWebhookEvent, WebhookEventCategory } from "../types";
+import type { ObservedWebhookEvent } from "../types";
 
 interface EventTypePanelProps {
-  readonly category: WebhookEventCategory;
   readonly label: string;
   readonly events: readonly ObservedWebhookEvent[];
   readonly isExpanded: boolean;
@@ -15,6 +14,8 @@ interface EventTypePanelProps {
 }
 
 const STATUS_TONES: Record<ObservedWebhookEvent["status"], string> = {
+  accepted: "text-sky-500",
+  routed: "text-ok",
   triggered: "text-info",
   queued: "text-warn",
   processing: "text-[#8f7cff]",
@@ -24,6 +25,8 @@ const STATUS_TONES: Record<ObservedWebhookEvent["status"], string> = {
 };
 
 const STATUS_LABELS: Record<ObservedWebhookEvent["status"], string> = {
+  accepted: "Accepted",
+  routed: "Routed",
   triggered: "Triggered",
   queued: "Queued",
   processing: "Processing",
@@ -33,7 +36,6 @@ const STATUS_LABELS: Record<ObservedWebhookEvent["status"], string> = {
 };
 
 export function EventTypePanel({
-  category,
   label,
   events,
   isExpanded,
@@ -110,11 +112,12 @@ export function EventTypePanel({
         ) : (
           <ul className="flex flex-col gap-1">
             {previewEvents.map((event) => (
-              <li
+              <button
                 key={event.id}
+                type="button"
                 onClick={() => onSelectEvent(event.id)}
                 className={cn(
-                  "flex cursor-pointer items-center justify-between rounded-xs px-2.5 py-2 transition-colors hover:bg-white/[0.02]",
+                  "flex w-full cursor-pointer items-center justify-between rounded-xs px-2.5 py-2 text-left transition-colors hover:bg-white/[0.02]",
                   (event.status === "failed" || event.status === "dlq") &&
                     "border-l-2 border-l-red-500"
                 )}
@@ -123,7 +126,7 @@ export function EventTypePanel({
                 <span className={cn("pill shrink-0 text-[11px]", STATUS_TONES[event.status])}>
                   {STATUS_LABELS[event.status]}
                 </span>
-              </li>
+              </button>
             ))}
             {hasMore && (
               <li className="px-2.5 py-1 text-xs text-muted">+{events.length - 5} more</li>

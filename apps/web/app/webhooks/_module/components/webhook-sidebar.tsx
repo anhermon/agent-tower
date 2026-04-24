@@ -3,7 +3,6 @@
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
-import { WEBHOOK_PROVIDER_CATALOG } from "../catalog";
 import { getIntegrationStatus } from "../state";
 
 import type {
@@ -45,9 +44,11 @@ export function WebhookSidebar({
     <>
       {/* Mobile overlay backdrop */}
       {isOpen && (
-        <div
+        <button
+          type="button"
           className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
           onClick={onClose}
+          aria-label="Close sidebar"
         />
       )}
 
