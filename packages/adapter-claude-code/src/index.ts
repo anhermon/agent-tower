@@ -44,13 +44,11 @@ export type {
   ClaudeSessionFile,
   ReadTranscriptResult,
   TranscriptPreview,
-  TranscriptTail,
 } from "./reader.js";
 export {
   listSessionFiles,
   readTranscriptFile,
   readTranscriptPreview,
-  readTranscriptTail,
 } from "./reader.js";
 export { detectSkillFromBlock, detectSkillsFromEntry } from "./skills/detect.js";
 export type {

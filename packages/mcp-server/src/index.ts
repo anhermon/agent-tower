@@ -8,7 +8,6 @@ import { sessionsShowTool } from "./tools/sessions-show.js";
 import { sessionsTopTool } from "./tools/sessions-top.js";
 import { sessionsWasteTool } from "./tools/sessions-waste.js";
 import { skillsEfficacyTool } from "./tools/skills-efficacy.js";
-import { skillsHousekeepTool } from "./tools/skills-housekeep.js";
 import { skillsTopTool } from "./tools/skills-top.js";
 import { skillsUsageTool } from "./tools/skills-usage.js";
 
@@ -22,7 +21,6 @@ export const REGISTERED_TOOLS: readonly ToolDefinition[] = [
   skillsTopTool,
   skillsUsageTool,
   skillsEfficacyTool,
-  skillsHousekeepTool,
   agentsListTool,
   controlPlaneAuditTool,
 ];
@@ -55,15 +53,13 @@ export function createServer(options: CreateServerOptions = {}): Server {
   const byName = new Map<string, ToolDefinition>();
   for (const tool of REGISTERED_TOOLS) byName.set(tool.name, tool);
 
-  server.setRequestHandler(ListToolsRequestSchema, () =>
-    Promise.resolve({
-      tools: REGISTERED_TOOLS.map((tool) => ({
-        name: tool.name,
-        description: tool.description,
-        inputSchema: tool.inputSchema,
-      })),
-    })
-  );
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    tools: REGISTERED_TOOLS.map((tool) => ({
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool.inputSchema,
+    })),
+  }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
@@ -107,7 +103,6 @@ export { sessionsShowTool } from "./tools/sessions-show.js";
 export { sessionsTopTool } from "./tools/sessions-top.js";
 export { sessionsWasteTool } from "./tools/sessions-waste.js";
 export { skillsEfficacyTool } from "./tools/skills-efficacy.js";
-export { skillsHousekeepTool } from "./tools/skills-housekeep.js";
 export { skillsTopTool } from "./tools/skills-top.js";
 export { skillsUsageTool } from "./tools/skills-usage.js";
 export type { JsonSchemaObject, ToolDefinition, ToolResult } from "./tools/types.js";

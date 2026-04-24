@@ -108,31 +108,28 @@ describe("GET /api/sessions/search — matching", () => {
     process.env.CLAUDE_CONTROL_PLANE_DATA_ROOT = originalEnv;
   });
 
-  interface SearchHit {
-    sessionId: string;
-    turnId: string;
-    snippet: string;
-    score: number;
-    projectSlug: string;
-  }
-
   it("given_keyword_present__when_searching__then_returns_hit", async () => {
     const root = seedFixtureRoot();
     const res = await requestSearch(root, new URLSearchParams({ q: "mempalace" }));
     expect(res.status).toBe(200);
-    const hits = (await res.json()) as SearchHit[];
+    const hits = (await res.json()) as {
+      sessionId: string;
+      turnId: string;
+      snippet: string;
+      score: number;
+      projectSlug: string;
+    }[];
     expect(hits.length).toBeGreaterThan(0);
-    const first = hits[0];
-    expect(first.snippet.toLowerCase()).toContain("mempalace");
-    expect(first.sessionId).toMatch(/aaaaaaaa-/);
-    expect(first.projectSlug).toBe("-Users-w5-sample");
+    expect(hits[0].snippet.toLowerCase()).toContain("mempalace");
+    expect(hits[0].sessionId).toMatch(/aaaaaaaa-/);
+    expect(hits[0].projectSlug).toBe("-Users-w5-sample");
   });
 
   it("given_unmatched_query__when_searching__then_empty_array", async () => {
     const root = seedFixtureRoot();
     const res = await requestSearch(root, new URLSearchParams({ q: "nonexistentkeyword" }));
     expect(res.status).toBe(200);
-    const hits = (await res.json()) as unknown[];
+    const hits = await res.json();
     expect(hits).toEqual([]);
   });
 
@@ -156,7 +153,7 @@ describe("GET /api/sessions/search — matching", () => {
 
     const first = await requestSearch(root, new URLSearchParams({ q: "mempalace" }));
     expect(first.status).toBe(200);
-    const firstHits = (await first.json()) as unknown[];
+    const firstHits = await first.json();
 
     // Second call at the same mtime — result must be identical. We can't
     // easily assert "no file reads happened" without intercepting fs, so we
@@ -164,7 +161,7 @@ describe("GET /api/sessions/search — matching", () => {
     utimesSync(jsonlPath, fixedTime, fixedTime);
     const second = await requestSearch(root, new URLSearchParams({ q: "mempalace" }));
     expect(second.status).toBe(200);
-    const secondHits = (await second.json()) as unknown[];
+    const secondHits = await second.json();
     expect(secondHits).toEqual(firstHits);
   });
 });

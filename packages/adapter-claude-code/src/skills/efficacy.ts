@@ -181,416 +181,281 @@ interface RawEntry {
   readonly raw: Record<string, unknown>;
 }
 
-interface ParsedTranscript {
-  readonly entries: readonly RawEntry[];
-  readonly explicitSessionId: string | null;
-}
-
-/**
- * Stream-parse a Claude Code JSONL transcript into `RawEntry[]`. The line-
- * by-line read keeps peak heap O(longest line) and avoids Next.js 15's
- * React Flight debug tracing capturing a multi-MB transcript into the RSC
- * payload (see `readInvocationsFromFile` in usage.ts for full rationale).
- */
-async function parseTranscriptFile(filePath: string): Promise<ParsedTranscript | null> {
-  let stream: ReturnType<typeof createReadStream>;
-  try {
-    stream = createReadStream(filePath, { encoding: "utf8" });
-  } catch {
-    return null;
-  }
+async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary | null> {
+  // Stream line-by-line. See `readInvocationsFromFile` in usage.ts for the
+  // full rationale — awaiting multi-MB transcript strings inside a Server
+  // Component tree leaks the resolved values into the RSC flight payload in
+  // Next.js 15 + React 19 dev mode.
   const entries: RawEntry[] = [];
   let explicitSessionId: string | null = null;
   let lineIndex = -1;
+
+  let stream: ReturnType<typeof createReadStream>;
+  try {
+    stream = createReadStream(file.filePath, { encoding: "utf8" });
+  } catch {
+    return null;
+  }
   try {
     const rl = createInterface({ input: stream, crlfDelay: Infinity });
     for await (const line of rl) {
       lineIndex += 1;
-      const entry = parseEntry(line, lineIndex);
-      if (!entry) continue;
-      if (!explicitSessionId && entry.sessionId) explicitSessionId = entry.sessionId;
-      entries.push(entry);
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.length === 0) continue;
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        continue;
+      }
+      if (!parsed || typeof parsed !== "object") continue;
+      const entry = parsed as Record<string, unknown>;
+      const type = typeof entry.type === "string" ? entry.type : null;
+      if (!type) continue;
+      const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
+      const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
+      if (!explicitSessionId && sessionId) explicitSessionId = sessionId;
+      entries.push({ lineIndex, type, timestamp, sessionId, raw: entry });
     }
   } catch {
     if (entries.length === 0) return null;
   }
-  return { entries, explicitSessionId };
-}
 
-function parseEntry(line: string, lineIndex: number): RawEntry | null {
-  const trimmed = line.trim();
-  if (trimmed.length === 0) return null;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(trimmed);
-  } catch {
-    return null;
-  }
-  if (!parsed || typeof parsed !== "object") return null;
-  const entry = parsed as Record<string, unknown>;
-  const type = typeof entry.type === "string" ? entry.type : null;
-  if (!type) return null;
-  const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
-  const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
-  return { lineIndex, type, timestamp, sessionId, raw: entry };
-}
+  const sessionId = explicitSessionId ?? file.sessionId;
 
-/**
- * Mutable counters updated during the per-entry scan. Isolated so the outer
- * scan loop reads as straight-line "for each entry, apply handler".
- */
-interface ScanState {
-  toolUseCount: number;
-  toolErrorCount: number;
-  userInterruptCount: number;
-  correctionSignalCount: number;
-  positiveSignalCount: number;
-  turnCount: number;
-  firstAt: string | null;
-  lastAt: string | null;
-  readonly toolUseIds: Set<string>;
-  readonly toolResultIds: Set<string>;
-  readonly skillIdsOrdered: string[];
-  readonly skillIdSet: Set<string>;
-  readonly invocationsBySkillKey: Map<string, number>;
-  lastUserHasCorrection: boolean;
-  lastAssistantIndex: number;
-  lastEntryIndex: number;
-  readonly userEntryIndices: number[];
-}
+  let toolUseCount = 0;
+  let toolErrorCount = 0;
+  let userInterruptCount = 0;
+  let correctionSignalCount = 0;
+  let positiveSignalCount = 0;
+  let turnCount = 0;
+  let firstAt: string | null = null;
+  let lastAt: string | null = null;
+  const toolUseIds = new Set<string>();
+  const toolResultIds = new Set<string>();
+  const skillIdsOrdered: string[] = [];
+  const skillIdSet = new Set<string>();
+  const invocationsBySkillKey = new Map<string, number>();
+  let lastUserMessageText: string | null = null;
+  let lastUserHasCorrection = false;
+  let lastAssistantIndex = -1;
+  let lastEntryIndex = -1;
+  const userEntryIndices: number[] = [];
 
-function initialState(): ScanState {
-  return {
-    toolUseCount: 0,
-    toolErrorCount: 0,
-    userInterruptCount: 0,
-    correctionSignalCount: 0,
-    positiveSignalCount: 0,
-    turnCount: 0,
-    firstAt: null,
-    lastAt: null,
-    toolUseIds: new Set<string>(),
-    toolResultIds: new Set<string>(),
-    skillIdsOrdered: [],
-    skillIdSet: new Set<string>(),
-    invocationsBySkillKey: new Map<string, number>(),
-    lastUserHasCorrection: false,
-    lastAssistantIndex: -1,
-    lastEntryIndex: -1,
-    userEntryIndices: [],
-  };
-}
+  for (let idx = 0; idx < entries.length; idx += 1) {
+    const entry = entries[idx]!;
+    lastEntryIndex = idx;
+    if (entry.timestamp) {
+      if (!firstAt || entry.timestamp < firstAt) firstAt = entry.timestamp;
+      if (!lastAt || entry.timestamp > lastAt) lastAt = entry.timestamp;
+    }
+    if (entry.type === "user" || entry.type === "assistant") {
+      turnCount += 1;
+    }
+    if (entry.type === "user") {
+      userEntryIndices.push(idx);
+      const text = extractUserText(entry.raw);
+      lastUserMessageText = text;
+      if (text !== null) {
+        const isInterrupt = isInterruptMessage(text);
+        if (isInterrupt) {
+          userInterruptCount += 1;
+          lastUserHasCorrection = false;
+        } else {
+          const hasCorrection = matchesCorrection(text);
+          const hasPositive = matchesPositive(text);
+          if (hasCorrection) correctionSignalCount += 1;
+          if (hasPositive) positiveSignalCount += 1;
+          lastUserHasCorrection = hasCorrection;
+        }
+      } else {
+        lastUserHasCorrection = false;
+      }
+    } else if (entry.type === "assistant") {
+      lastAssistantIndex = idx;
+      const blocks = getAssistantContentBlocks(entry.raw);
+      for (const block of blocks) {
+        if (!block || typeof block !== "object") continue;
+        const b = block as Record<string, unknown>;
+        if (b.type === "tool_use") {
+          toolUseCount += 1;
+          const id = typeof b.id === "string" ? b.id : null;
+          if (id) toolUseIds.add(id);
+          if (b.name === "Skill") {
+            const input = b.input;
+            if (input && typeof input === "object") {
+              const skill = (input as Record<string, unknown>).skill;
+              if (typeof skill === "string") {
+                const s = skill.trim();
+                if (s.length > 0) {
+                  if (!skillIdSet.has(s)) {
+                    skillIdSet.add(s);
+                    skillIdsOrdered.push(s);
+                  }
+                  invocationsBySkillKey.set(s, (invocationsBySkillKey.get(s) ?? 0) + 1);
+                }
+              }
+            }
+          }
+        }
+      }
+    } else if (entry.type === "tool_result") {
+      const { id, isError } = extractToolResult(entry.raw);
+      if (id) toolResultIds.add(id);
+      if (isError) toolErrorCount += 1;
+    }
 
-function updateTimestampSpan(state: ScanState, ts: string | null): void {
-  if (!ts) return;
-  if (!state.firstAt || ts < state.firstAt) state.firstAt = ts;
-  if (!state.lastAt || ts > state.lastAt) state.lastAt = ts;
-}
-
-function classifyUserText(state: ScanState, text: string | null): void {
-  if (text === null) {
-    state.lastUserHasCorrection = false;
-    return;
-  }
-  if (isInterruptMessage(text)) {
-    state.userInterruptCount += 1;
-    state.lastUserHasCorrection = false;
-    return;
-  }
-  const hasCorrection = matchesCorrection(text);
-  const hasPositive = matchesPositive(text);
-  if (hasCorrection) state.correctionSignalCount += 1;
-  if (hasPositive) state.positiveSignalCount += 1;
-  state.lastUserHasCorrection = hasCorrection;
-}
-
-function recordSkillInvocation(state: ScanState, block: Record<string, unknown>): void {
-  const input = block.input;
-  if (!input || typeof input !== "object") return;
-  const skill = (input as Record<string, unknown>).skill;
-  if (typeof skill !== "string") return;
-  const s = skill.trim();
-  if (s.length === 0) return;
-  if (!state.skillIdSet.has(s)) {
-    state.skillIdSet.add(s);
-    state.skillIdsOrdered.push(s);
-  }
-  state.invocationsBySkillKey.set(s, (state.invocationsBySkillKey.get(s) ?? 0) + 1);
-}
-
-function handleAssistantBlock(state: ScanState, block: Record<string, unknown>): void {
-  if (block.type !== "tool_use") return;
-  state.toolUseCount += 1;
-  const id = typeof block.id === "string" ? block.id : null;
-  if (id) state.toolUseIds.add(id);
-  if (block.name === "Skill") recordSkillInvocation(state, block);
-}
-
-function handleUserToolResultBlock(state: ScanState, block: Record<string, unknown>): void {
-  if (block.type !== "tool_result") return;
-  const id = typeof block.tool_use_id === "string" ? block.tool_use_id : null;
-  if (id) state.toolResultIds.add(id);
-  if (isToolResultError(block)) state.toolErrorCount += 1;
-}
-
-function processUserEntry(state: ScanState, entry: RawEntry, idx: number): void {
-  state.userEntryIndices.push(idx);
-  classifyUserText(state, extractUserText(entry.raw));
-  for (const block of getUserContentBlocks(entry.raw)) {
-    if (isObjectBlock(block)) handleUserToolResultBlock(state, block);
-  }
-}
-
-function processAssistantEntry(state: ScanState, entry: RawEntry, idx: number): void {
-  state.lastAssistantIndex = idx;
-  for (const block of getAssistantContentBlocks(entry.raw)) {
-    if (isObjectBlock(block)) handleAssistantBlock(state, block);
-  }
-}
-
-function processToolResultEntry(state: ScanState, entry: RawEntry): void {
-  const { id, isError } = extractToolResult(entry.raw);
-  if (id) state.toolResultIds.add(id);
-  if (isError) state.toolErrorCount += 1;
-}
-
-function processEntry(state: ScanState, entry: RawEntry, idx: number): void {
-  state.lastEntryIndex = idx;
-  updateTimestampSpan(state, entry.timestamp);
-
-  if (entry.type === "user" || entry.type === "assistant") state.turnCount += 1;
-
-  if (entry.type === "user") processUserEntry(state, entry, idx);
-  else if (entry.type === "assistant") processAssistantEntry(state, entry, idx);
-  else if (entry.type === "tool_result") processToolResultEntry(state, entry);
-}
-
-function isObjectBlock(block: unknown): block is Record<string, unknown> {
-  return Boolean(block) && typeof block === "object";
-}
-
-/**
- * Determine whether the final assistant message contains a `tool_use` that
- * never received a matching `tool_result`. That's a strong "session ended
- * mid-flight" signal used by the outcome classifier.
- */
-function computeEndedWithOrphanToolUse(
-  entries: readonly RawEntry[],
-  lastAssistantIndex: number
-): boolean {
-  if (lastAssistantIndex < 0) return false;
-  const blocks = getAssistantContentBlocks(entries[lastAssistantIndex]?.raw ?? {});
-  const laterToolResultIds = collectToolResultIdsAfter(entries, lastAssistantIndex);
-  for (const block of blocks) {
-    if (!isObjectBlock(block)) continue;
-    if (block.type !== "tool_use") continue;
-    const id = typeof block.id === "string" ? block.id : null;
-    if (!id || !laterToolResultIds.has(id)) return true;
-  }
-  return false;
-}
-
-function collectUserToolResultIds(entry: Record<string, unknown>, out: Set<string>): void {
-  for (const block of getUserContentBlocks(entry)) {
-    if (!isObjectBlock(block)) continue;
-    if (block.type !== "tool_result") continue;
-    const id = typeof block.tool_use_id === "string" ? block.tool_use_id : null;
-    if (id) out.add(id);
-  }
-}
-
-function collectToolResultIdsAfter(
-  entries: readonly RawEntry[],
-  startIndex: number
-): ReadonlySet<string> {
-  const ids = new Set<string>();
-  for (let i = startIndex + 1; i < entries.length; i += 1) {
-    const e = entries[i]!;
-    if (e.type === "tool_result") {
-      const { id } = extractToolResult(e.raw);
-      if (id) ids.add(id);
-    } else if (e.type === "user") {
-      collectUserToolResultIds(e.raw, ids);
+    if (entry.type === "user") {
+      const blocks = getUserContentBlocks(entry.raw);
+      for (const block of blocks) {
+        if (!block || typeof block !== "object") continue;
+        const b = block as Record<string, unknown>;
+        if (b.type === "tool_result") {
+          const id = typeof b.tool_use_id === "string" ? b.tool_use_id : null;
+          if (id) toolResultIds.add(id);
+          if (isToolResultError(b)) toolErrorCount += 1;
+        }
+      }
     }
   }
-  return ids;
-}
 
-function countInterruptsInTail(
-  entries: readonly RawEntry[],
-  userEntryIndices: readonly number[]
-): number {
-  const lastTwentyPercentStart = Math.floor(entries.length * 0.8);
-  let count = 0;
-  for (const idx of userEntryIndices) {
-    if (idx < lastTwentyPercentStart) continue;
-    const text = extractUserText(entries[idx]?.raw ?? {});
-    if (text !== null && isInterruptMessage(text)) count += 1;
+  let endedWithOrphanToolUse = false;
+  if (lastAssistantIndex >= 0) {
+    const blocks = getAssistantContentBlocks(entries[lastAssistantIndex]?.raw ?? {});
+    const laterToolResultIds = new Set<string>();
+    for (let i = lastAssistantIndex + 1; i < entries.length; i += 1) {
+      const e = entries[i]!;
+      if (e.type === "tool_result") {
+        const { id } = extractToolResult(e.raw);
+        if (id) laterToolResultIds.add(id);
+      } else if (e.type === "user") {
+        const userBlocks = getUserContentBlocks(e.raw);
+        for (const block of userBlocks) {
+          if (!block || typeof block !== "object") continue;
+          const b = block as Record<string, unknown>;
+          if (b.type === "tool_result") {
+            const id = typeof b.tool_use_id === "string" ? b.tool_use_id : null;
+            if (id) laterToolResultIds.add(id);
+          }
+        }
+      }
+    }
+    for (const block of blocks) {
+      if (!block || typeof block !== "object") continue;
+      const b = block as Record<string, unknown>;
+      if (b.type === "tool_use") {
+        const id = typeof b.id === "string" ? b.id : null;
+        if (!id || !laterToolResultIds.has(id)) {
+          endedWithOrphanToolUse = true;
+          break;
+        }
+      }
+    }
   }
-  return count;
-}
 
-function computeDurationSeconds(firstAt: string | null, lastAt: string | null): number | null {
+  const totalEntries = entries.length;
+  const lastTwentyPercentStart = Math.floor(totalEntries * 0.8);
+  let interruptInTail = 0;
+  for (const idx of userEntryIndices) {
+    if (idx >= lastTwentyPercentStart) {
+      const text = extractUserText(entries[idx]?.raw ?? {});
+      if (text !== null && isInterruptMessage(text)) interruptInTail += 1;
+    }
+  }
+
   const firstMs = firstAt ? Date.parse(firstAt) : NaN;
   const lastMs = lastAt ? Date.parse(lastAt) : NaN;
-  if (!Number.isFinite(firstMs) || !Number.isFinite(lastMs)) return null;
-  if (lastMs < firstMs) return null;
-  return Math.round((lastMs - firstMs) / 1000);
-}
+  const durationSeconds =
+    Number.isFinite(firstMs) && Number.isFinite(lastMs) && lastMs >= firstMs
+      ? Math.round((lastMs - firstMs) / 1000)
+      : null;
 
-/**
- * Whether the final entry is an assistant message that ends with a text
- * block (not an orphan tool_use). Used to detect "clean completion".
- */
-function isLastEntryAssistantText(
-  entries: readonly RawEntry[],
-  lastEntryIndex: number,
-  endedWithOrphanToolUse: boolean
-): boolean {
-  if (lastEntryIndex < 0) return false;
-  if (entries[lastEntryIndex]?.type !== "assistant") return false;
-  if (endedWithOrphanToolUse) return false;
-  const blocks = getAssistantContentBlocks(entries[lastEntryIndex]?.raw ?? {});
-  return blocks.some((block) => isObjectBlock(block) && block.type === "text");
-}
-
-interface OutcomeInputs {
-  readonly turnCount: number;
-  readonly interruptInTail: number;
-  readonly lastEntryAgeMs: number;
-  readonly endedWithOrphanToolUse: boolean;
-  readonly toolErrorRate: number;
-  readonly lastUserIsCorrectionWithNoReply: boolean;
-  readonly lastIsAssistantText: boolean;
-}
-
-function classifyOutcome(inputs: OutcomeInputs): SessionOutcome {
-  if (
-    inputs.turnCount < 3 ||
-    inputs.interruptInTail >= 1 ||
-    (inputs.lastEntryAgeMs > SIX_HOURS_MS && inputs.endedWithOrphanToolUse)
-  ) {
-    return "abandoned";
-  }
-  if (
-    inputs.endedWithOrphanToolUse ||
-    inputs.toolErrorRate > 0.25 ||
-    inputs.lastUserIsCorrectionWithNoReply
-  ) {
-    return "partial";
-  }
-  if (inputs.lastIsAssistantText && inputs.toolErrorRate <= 0.1) {
-    return "completed";
-  }
-  return "unknown";
-}
-
-interface SatisfactionInputs {
-  readonly positiveSignalCount: number;
-  readonly correctionSignalCount: number;
-  readonly userInterruptCount: number;
-  readonly toolErrorRate: number;
-  readonly lastIsAssistantText: boolean;
-  readonly recentUserHasCorrection: boolean;
-}
-
-function computeSatisfactionScore(inputs: SatisfactionInputs): number {
-  let score = 0.6;
-  score += Math.min(0.2, 0.05 * inputs.positiveSignalCount);
-  score -= Math.min(0.3, 0.1 * inputs.correctionSignalCount);
-  score -= Math.min(0.3, 0.15 * inputs.userInterruptCount);
-  score -= 0.2 * inputs.toolErrorRate;
-  if (inputs.lastIsAssistantText && !inputs.recentUserHasCorrection) {
-    score += 0.05;
-  }
-  return Math.max(0, Math.min(1, score));
-}
-
-function recentUserHasCorrection(
-  entries: readonly RawEntry[],
-  userEntryIndices: readonly number[]
-): boolean {
-  for (const idx of userEntryIndices.slice(-3)) {
-    const text = extractUserText(entries[idx]?.raw ?? {});
-    if (text !== null && matchesCorrection(text)) return true;
-  }
-  return false;
-}
-
-async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary | null> {
-  const parsed = await parseTranscriptFile(file.filePath);
-  if (!parsed) return null;
-  const { entries, explicitSessionId } = parsed;
-
-  const state = initialState();
-  for (let idx = 0; idx < entries.length; idx += 1) {
-    processEntry(state, entries[idx]!, idx);
-  }
-
-  const endedWithOrphanToolUse = computeEndedWithOrphanToolUse(entries, state.lastAssistantIndex);
-  const interruptInTail = countInterruptsInTail(entries, state.userEntryIndices);
-  const durationSeconds = computeDurationSeconds(state.firstAt, state.lastAt);
-
-  const lastMs = state.lastAt ? Date.parse(state.lastAt) : NaN;
-  const lastEntryAgeMs = Number.isFinite(lastMs) ? Date.now() - lastMs : 0;
+  const nowMs = Date.now();
+  const lastEntryAgeMs = Number.isFinite(lastMs) ? nowMs - lastMs : 0;
 
   const lastUserIndex =
-    state.userEntryIndices.length > 0
-      ? state.userEntryIndices[state.userEntryIndices.length - 1]!
-      : -1;
+    userEntryIndices.length > 0 ? userEntryIndices[userEntryIndices.length - 1]! : -1;
   const lastUserIsCorrectionWithNoReply =
-    lastUserIndex >= 0 && lastUserIndex > state.lastAssistantIndex && state.lastUserHasCorrection;
+    lastUserIndex >= 0 && lastUserIndex > lastAssistantIndex && lastUserHasCorrection;
 
-  const lastIsAssistantText = isLastEntryAssistantText(
-    entries,
-    state.lastEntryIndex,
-    endedWithOrphanToolUse
-  );
+  let lastIsAssistantText = false;
+  if (
+    lastEntryIndex >= 0 &&
+    entries[lastEntryIndex]?.type === "assistant" &&
+    !endedWithOrphanToolUse
+  ) {
+    const blocks = getAssistantContentBlocks(entries[lastEntryIndex]?.raw ?? {});
+    lastIsAssistantText = blocks.some(
+      (block) =>
+        block && typeof block === "object" && (block as Record<string, unknown>).type === "text"
+    );
+  }
 
-  const toolErrorRate = state.toolErrorCount / Math.max(1, state.toolUseCount);
+  const toolErrorRate = toolErrorCount / Math.max(1, toolUseCount);
 
-  const outcome = classifyOutcome({
-    turnCount: state.turnCount,
-    interruptInTail,
-    lastEntryAgeMs,
-    endedWithOrphanToolUse,
-    toolErrorRate,
-    lastUserIsCorrectionWithNoReply,
-    lastIsAssistantText,
-  });
-
-  const satisfactionScore = computeSatisfactionScore({
-    positiveSignalCount: state.positiveSignalCount,
-    correctionSignalCount: state.correctionSignalCount,
-    userInterruptCount: state.userInterruptCount,
-    toolErrorRate,
-    lastIsAssistantText,
-    recentUserHasCorrection: recentUserHasCorrection(entries, state.userEntryIndices),
-  });
+  let outcome: SessionOutcome;
+  if (
+    turnCount < 3 ||
+    interruptInTail >= 1 ||
+    (lastEntryAgeMs > SIX_HOURS_MS && endedWithOrphanToolUse)
+  ) {
+    outcome = "abandoned";
+  } else if (endedWithOrphanToolUse || toolErrorRate > 0.25 || lastUserIsCorrectionWithNoReply) {
+    outcome = "partial";
+  } else if (lastIsAssistantText && toolErrorRate <= 0.1) {
+    outcome = "completed";
+  } else {
+    outcome = "unknown";
+  }
 
   const outcomeMultiplier = multiplierFor(outcome);
+
+  let score = 0.6;
+  score += Math.min(0.2, 0.05 * positiveSignalCount);
+  score -= Math.min(0.3, 0.1 * correctionSignalCount);
+  score -= Math.min(0.3, 0.15 * userInterruptCount);
+  score -= 0.2 * toolErrorRate;
+
+  if (lastIsAssistantText) {
+    const recentUserIndices = userEntryIndices.slice(-3);
+    let anyCorrection = false;
+    for (const idx of recentUserIndices) {
+      const text = extractUserText(entries[idx]?.raw ?? {});
+      if (text !== null && matchesCorrection(text)) {
+        anyCorrection = true;
+        break;
+      }
+    }
+    if (!anyCorrection) score += 0.05;
+  }
+
+  const satisfactionScore = Math.max(0, Math.min(1, score));
   const effectiveScore = satisfactionScore * outcomeMultiplier;
 
+  void lastUserMessageText;
+  void toolUseIds;
+  void toolResultIds;
+
   const summary: SessionSummary = {
-    sessionId: explicitSessionId ?? file.sessionId,
+    sessionId,
     filePath: file.filePath,
-    firstAt: state.firstAt,
-    lastAt: state.lastAt,
+    firstAt,
+    lastAt,
     durationSeconds,
-    turnCount: state.turnCount,
-    toolUseCount: state.toolUseCount,
-    toolErrorCount: state.toolErrorCount,
-    userInterruptCount: state.userInterruptCount,
-    correctionSignalCount: state.correctionSignalCount,
-    positiveSignalCount: state.positiveSignalCount,
+    turnCount,
+    toolUseCount,
+    toolErrorCount,
+    userInterruptCount,
+    correctionSignalCount,
+    positiveSignalCount,
     endedWithOrphanToolUse,
     outcome,
     outcomeMultiplier,
     satisfactionScore,
     effectiveScore,
-    skillIds: state.skillIdsOrdered,
+    skillIds: skillIdsOrdered,
   };
-  return { summary, invocationsBySkillKey: state.invocationsBySkillKey };
+  return { summary, invocationsBySkillKey };
 }
 
 function multiplierFor(outcome: SessionOutcome): number {
@@ -606,13 +471,7 @@ function multiplierFor(outcome: SessionOutcome): number {
   }
 }
 
-/**
- * Generic helper: return the `message.content` array from an entry, or `[]`.
- * User and assistant entries share the exact same shape — previously we had
- * two identical copies (`getAssistantContentBlocks` / `getUserContentBlocks`)
- * which tripped `sonarjs/no-identical-functions`.
- */
-function getMessageContentBlocks(entry: Record<string, unknown>): readonly unknown[] {
+function getAssistantContentBlocks(entry: Record<string, unknown>): readonly unknown[] {
   const message = entry.message;
   if (!message || typeof message !== "object") return [];
   const content = (message as Record<string, unknown>).content;
@@ -620,28 +479,12 @@ function getMessageContentBlocks(entry: Record<string, unknown>): readonly unkno
   return content;
 }
 
-function getAssistantContentBlocks(entry: Record<string, unknown>): readonly unknown[] {
-  return getMessageContentBlocks(entry);
-}
-
 function getUserContentBlocks(entry: Record<string, unknown>): readonly unknown[] {
-  return getMessageContentBlocks(entry);
-}
-
-function collectTextBlocks(content: readonly unknown[]): {
-  readonly parts: readonly string[];
-  readonly lastTextBlock: string | null;
-} {
-  const parts: string[] = [];
-  let lastTextBlock: string | null = null;
-  for (const block of content) {
-    if (!isObjectBlock(block)) continue;
-    if (block.type === "text" && typeof block.text === "string") {
-      parts.push(block.text);
-      lastTextBlock = block.text;
-    }
-  }
-  return { parts, lastTextBlock };
+  const message = entry.message;
+  if (!message || typeof message !== "object") return [];
+  const content = (message as Record<string, unknown>).content;
+  if (!Array.isArray(content)) return [];
+  return content;
 }
 
 function extractUserText(entry: Record<string, unknown>): string | null {
@@ -650,7 +493,17 @@ function extractUserText(entry: Record<string, unknown>): string | null {
   const content = (message as Record<string, unknown>).content;
   if (typeof content === "string") return content;
   if (!Array.isArray(content)) return null;
-  const { parts, lastTextBlock } = collectTextBlocks(content);
+  const parts: string[] = [];
+  let lastTextBlock: string | null = null;
+  for (const block of content) {
+    if (!block || typeof block !== "object") continue;
+    const b = block as Record<string, unknown>;
+    if (b.type === "text" && typeof b.text === "string") {
+      parts.push(b.text);
+      lastTextBlock = b.text;
+    } else if (b.type === "tool_result") {
+    }
+  }
   if (parts.length === 0) return null;
   return lastTextBlock ?? parts.join("\n");
 }
@@ -669,30 +522,24 @@ function extractToolResult(entry: Record<string, unknown>): {
   return { id, isError };
 }
 
-/**
- * A tool result is treated as an error when:
- *  1. its `is_error` flag is literally `true`, or
- *  2. its textual payload (top-level string or an inner text block) starts
- *     with "Error" or contains the substring `"error":true`.
- */
 function isToolResultError(source: Record<string, unknown>): boolean {
   if (source.is_error === true) return true;
-  return hasErrorSignalInContent(source.content);
-}
-
-function hasErrorSignalInContent(content: unknown): boolean {
-  if (typeof content === "string") return textLooksLikeError(content);
-  if (!Array.isArray(content)) return false;
-  for (const block of content) {
-    if (!isObjectBlock(block)) continue;
-    if (block.is_error === true) return true;
-    if (typeof block.text === "string" && textLooksLikeError(block.text)) return true;
+  const content = source.content;
+  if (typeof content === "string") {
+    if (content.startsWith("Error")) return true;
+    if (content.includes('"error":true')) return true;
+  } else if (Array.isArray(content)) {
+    for (const block of content) {
+      if (!block || typeof block !== "object") continue;
+      const b = block as Record<string, unknown>;
+      if (b.is_error === true) return true;
+      if (typeof b.text === "string") {
+        if (b.text.startsWith("Error")) return true;
+        if (b.text.includes('"error":true')) return true;
+      }
+    }
   }
   return false;
-}
-
-function textLooksLikeError(text: string): boolean {
-  return text.startsWith("Error") || text.includes('"error":true');
 }
 
 const INTERRUPT_PATTERNS = [/\[Request interrupted/i, /\[user interrupted/i];
@@ -730,12 +577,34 @@ interface Accumulator {
   outcomeBreakdown: { completed: number; partial: number; abandoned: number; unknown: number };
 }
 
-interface ManifestLookup {
-  readonly byId: ReadonlyMap<string, SkillManifest>;
-  readonly byName: ReadonlyMap<string, SkillManifest>;
-}
+function buildReport(
+  enriched: readonly EnrichedSummary[],
+  skills: readonly SkillManifest[],
+  minSessions: number
+): SkillsEfficacyReport {
+  const sessionsAnalyzed = enriched.length;
+  let baselineSatSum = 0;
+  let baselineMulSum = 0;
+  let baselineEffSum = 0;
+  const outcomeDistribution = { completed: 0, partial: 0, abandoned: 0, unknown: 0 };
 
-function indexManifests(skills: readonly SkillManifest[]): ManifestLookup {
+  for (const { summary: s } of enriched) {
+    baselineSatSum += s.satisfactionScore;
+    baselineMulSum += s.outcomeMultiplier;
+    baselineEffSum += s.effectiveScore;
+    outcomeDistribution[s.outcome] += 1;
+  }
+
+  const baseline: EfficacyBaseline =
+    sessionsAnalyzed === 0
+      ? { satisfaction: 0, outcomeMultiplier: 0, effectiveScore: 0, sessionsScored: 0 }
+      : {
+          satisfaction: baselineSatSum / sessionsAnalyzed,
+          outcomeMultiplier: baselineMulSum / sessionsAnalyzed,
+          effectiveScore: baselineEffSum / sessionsAnalyzed,
+          sessionsScored: sessionsAnalyzed,
+        };
+
   const byId = new Map<string, SkillManifest>();
   const byName = new Map<string, SkillManifest>();
   for (const m of skills) {
@@ -744,131 +613,65 @@ function indexManifests(skills: readonly SkillManifest[]): ManifestLookup {
       byName.set(m.name, m);
     }
   }
-  return { byId, byName };
-}
 
-interface BaselineAccumulator {
-  satSum: number;
-  mulSum: number;
-  effSum: number;
-  readonly outcomes: { completed: number; partial: number; abandoned: number; unknown: number };
-}
-
-function aggregateBaseline(enriched: readonly EnrichedSummary[]): BaselineAccumulator {
-  const acc: BaselineAccumulator = {
-    satSum: 0,
-    mulSum: 0,
-    effSum: 0,
-    outcomes: { completed: 0, partial: 0, abandoned: 0, unknown: 0 },
-  };
-  for (const { summary: s } of enriched) {
-    acc.satSum += s.satisfactionScore;
-    acc.mulSum += s.outcomeMultiplier;
-    acc.effSum += s.effectiveScore;
-    acc.outcomes[s.outcome] += 1;
-  }
-  return acc;
-}
-
-function buildBaseline(acc: BaselineAccumulator, sessionsAnalyzed: number): EfficacyBaseline {
-  if (sessionsAnalyzed === 0) {
-    return { satisfaction: 0, outcomeMultiplier: 0, effectiveScore: 0, sessionsScored: 0 };
-  }
-  return {
-    satisfaction: acc.satSum / sessionsAnalyzed,
-    outcomeMultiplier: acc.mulSum / sessionsAnalyzed,
-    effectiveScore: acc.effSum / sessionsAnalyzed,
-    sessionsScored: sessionsAnalyzed,
-  };
-}
-
-function createAccumulator(skillKey: string, manifest: SkillManifest | null): Accumulator {
-  return {
-    skillId: manifest ? manifest.id : skillKey,
-    displayName: manifest ? manifest.name : skillKey,
-    known: manifest !== null,
-    sessionsCount: 0,
-    invocationsCount: 0,
-    satisfactionSum: 0,
-    outcomeMultiplierSum: 0,
-    effectiveScoreSum: 0,
-    outcomeBreakdown: { completed: 0, partial: 0, abandoned: 0, unknown: 0 },
-  };
-}
-
-function accumulateSession(
-  acc: Map<string, Accumulator>,
-  lookup: ManifestLookup,
-  session: SessionSummary,
-  invocationsBySkillKey: ReadonlyMap<string, number>
-): void {
-  for (const rawSkillKey of session.skillIds) {
-    const manifest = lookup.byId.get(rawSkillKey) ?? lookup.byName.get(rawSkillKey) ?? null;
-    const bucketKey = manifest ? manifest.id : rawSkillKey;
-    let bucket = acc.get(bucketKey);
-    if (!bucket) {
-      bucket = createAccumulator(rawSkillKey, manifest);
-      acc.set(bucketKey, bucket);
-    }
-    bucket.sessionsCount += 1;
-    bucket.satisfactionSum += session.satisfactionScore;
-    bucket.outcomeMultiplierSum += session.outcomeMultiplier;
-    bucket.effectiveScoreSum += session.effectiveScore;
-    bucket.outcomeBreakdown[session.outcome] += 1;
-    bucket.invocationsCount += invocationsBySkillKey.get(rawSkillKey) ?? 1;
-  }
-}
-
-function accumulatorToRow(
-  bucket: Accumulator,
-  baselineEffective: number,
-  minSessions: number
-): SkillEfficacyRow {
-  const avgSatisfaction = bucket.satisfactionSum / bucket.sessionsCount;
-  const avgOutcomeMultiplier = bucket.outcomeMultiplierSum / bucket.sessionsCount;
-  const avgEffectiveScore = bucket.effectiveScoreSum / bucket.sessionsCount;
-  return {
-    skillId: bucket.skillId,
-    displayName: bucket.displayName,
-    known: bucket.known,
-    sessionsCount: bucket.sessionsCount,
-    invocationsCount: bucket.invocationsCount,
-    avgSatisfaction,
-    avgOutcomeMultiplier,
-    avgEffectiveScore,
-    delta: avgEffectiveScore - baselineEffective,
-    outcomeBreakdown: {
-      completed: bucket.outcomeBreakdown.completed,
-      partial: bucket.outcomeBreakdown.partial,
-      abandoned: bucket.outcomeBreakdown.abandoned,
-      unknown: bucket.outcomeBreakdown.unknown,
-    },
-    qualifying: bucket.sessionsCount >= minSessions,
-  };
-}
-
-function buildReport(
-  enriched: readonly EnrichedSummary[],
-  skills: readonly SkillManifest[],
-  minSessions: number
-): SkillsEfficacyReport {
-  const sessionsAnalyzed = enriched.length;
-  const baseAcc = aggregateBaseline(enriched);
-  const baseline = buildBaseline(baseAcc, sessionsAnalyzed);
-
-  const lookup = indexManifests(skills);
   const acc = new Map<string, Accumulator>();
   let sessionsWithSkill = 0;
 
   for (const { summary: session, invocationsBySkillKey } of enriched) {
     if (session.skillIds.length === 0) continue;
     sessionsWithSkill += 1;
-    accumulateSession(acc, lookup, session, invocationsBySkillKey);
+
+    for (const rawSkillKey of session.skillIds) {
+      const manifest = byId.get(rawSkillKey) ?? byName.get(rawSkillKey) ?? null;
+      const bucketKey = manifest ? manifest.id : rawSkillKey;
+      let bucket = acc.get(bucketKey);
+      if (!bucket) {
+        bucket = {
+          skillId: manifest ? manifest.id : rawSkillKey,
+          displayName: manifest ? manifest.name : rawSkillKey,
+          known: manifest !== null,
+          sessionsCount: 0,
+          invocationsCount: 0,
+          satisfactionSum: 0,
+          outcomeMultiplierSum: 0,
+          effectiveScoreSum: 0,
+          outcomeBreakdown: { completed: 0, partial: 0, abandoned: 0, unknown: 0 },
+        };
+        acc.set(bucketKey, bucket);
+      }
+      bucket.sessionsCount += 1;
+      bucket.satisfactionSum += session.satisfactionScore;
+      bucket.outcomeMultiplierSum += session.outcomeMultiplier;
+      bucket.effectiveScoreSum += session.effectiveScore;
+      bucket.outcomeBreakdown[session.outcome] += 1;
+      bucket.invocationsCount += invocationsBySkillKey.get(rawSkillKey) ?? 1;
+    }
   }
 
   const rows: SkillEfficacyRow[] = [];
   for (const bucket of acc.values()) {
-    rows.push(accumulatorToRow(bucket, baseline.effectiveScore, minSessions));
+    const avgSatisfaction = bucket.satisfactionSum / bucket.sessionsCount;
+    const avgOutcomeMultiplier = bucket.outcomeMultiplierSum / bucket.sessionsCount;
+    const avgEffectiveScore = bucket.effectiveScoreSum / bucket.sessionsCount;
+    const qualifying = bucket.sessionsCount >= minSessions;
+    rows.push({
+      skillId: bucket.skillId,
+      displayName: bucket.displayName,
+      known: bucket.known,
+      sessionsCount: bucket.sessionsCount,
+      invocationsCount: bucket.invocationsCount,
+      avgSatisfaction,
+      avgOutcomeMultiplier,
+      avgEffectiveScore,
+      delta: avgEffectiveScore - baseline.effectiveScore,
+      outcomeBreakdown: {
+        completed: bucket.outcomeBreakdown.completed,
+        partial: bucket.outcomeBreakdown.partial,
+        abandoned: bucket.outcomeBreakdown.abandoned,
+        unknown: bucket.outcomeBreakdown.unknown,
+      },
+      qualifying,
+    });
   }
 
   const qualifying = rows
@@ -889,7 +692,7 @@ function buildReport(
     skillsProfiled: qualifying.length + insufficientData.length,
     qualifying,
     insufficientData,
-    outcomeDistribution: baseAcc.outcomes,
+    outcomeDistribution,
     minSessionsForQualifying: minSessions,
   };
 }

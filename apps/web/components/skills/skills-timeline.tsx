@@ -65,7 +65,7 @@ export function SkillsTimeline({ series }: { readonly series: readonly Point[] }
   let last: string | null = null;
   for (const p of series) {
     if (p.count > max) max = p.count;
-    first ??= p.date;
+    if (first === null) first = p.date;
     last = p.date;
   }
 

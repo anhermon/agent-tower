@@ -16,26 +16,19 @@ interface ParsedSessionsTopInput {
 const DEFAULT_BY: SessionsTopBy = "tokens";
 const DEFAULT_LIMIT = 10;
 
-function parseBy(val: unknown): SessionsTopBy | null {
-  return val === "cost" || val === "turns" || val === "tokens" ? val : null;
-}
-
-function parseFiniteNumber(val: unknown): number | null {
-  return typeof val === "number" && Number.isFinite(val) ? val : null;
-}
-
-function parseNonEmptyString(val: unknown): string | null {
-  return typeof val === "string" && val.length > 0 ? val : null;
-}
-
 function parseInput(raw: unknown): ParsedSessionsTopInput {
   const r = asRecord(raw);
+  const by = r.by;
+  const limit = r.limit;
+  const projectId = r.projectId;
+  const since = r.since;
+  const until = r.until;
   return {
-    by: parseBy(r.by),
-    limit: parseFiniteNumber(r.limit),
-    projectId: parseNonEmptyString(r.projectId),
-    since: parseNonEmptyString(r.since),
-    until: parseNonEmptyString(r.until),
+    by: by === "cost" || by === "turns" || by === "tokens" ? by : null,
+    limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
+    projectId: typeof projectId === "string" && projectId.length > 0 ? projectId : null,
+    since: typeof since === "string" && since.length > 0 ? since : null,
+    until: typeof until === "string" && until.length > 0 ? until : null,
   };
 }
 
@@ -87,48 +80,46 @@ export const sessionsTopTool: ToolDefinition = {
   },
   handler: async (raw): Promise<ToolResult> => {
     try {
-      return await runSessionsTopHandler(raw);
+      const input = parseInput(raw);
+      const resolved = resolveDataRoot();
+      if (!resolved) {
+        return { ok: false, reason: "unconfigured" };
+      }
+      const by = input.by ?? DEFAULT_BY;
+      const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
+
+      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
+
+      let range: DateRange | null = null;
+      if (input.since && input.until) {
+        range = { from: input.since, to: input.until };
+      } else if (input.since) {
+        range = { from: input.since, to: input.since };
+      } else if (input.until) {
+        range = { from: input.until, to: input.until };
+      }
+
+      const filter: SessionAnalyticsFilter = {
+        ...(range ? { range } : {}),
+        ...(input.projectId ? { projectId: input.projectId } : {}),
+      };
+
+      const summaries = await source.listSessionSummaries(filter);
+      const sorted = [...summaries].sort((a, b) => rank(b, by) - rank(a, by));
+      const sliced = sorted.slice(0, limit);
+
+      return {
+        ok: true,
+        by,
+        limit,
+        ...(input.projectId ? { projectId: input.projectId } : {}),
+        ...(input.since ? { since: input.since } : {}),
+        ...(input.until ? { until: input.until } : {}),
+        total: summaries.length,
+        sessions: sliced,
+      };
     } catch (error) {
       return errorResult(error);
     }
   },
 };
-
-async function runSessionsTopHandler(raw: unknown): Promise<ToolResult> {
-  const input = parseInput(raw);
-  const resolved = resolveDataRoot();
-  if (!resolved) {
-    return { ok: false, reason: "unconfigured" };
-  }
-  const by = input.by ?? DEFAULT_BY;
-  const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
-  const range = buildDateRange(input.since, input.until);
-
-  const filter: SessionAnalyticsFilter = {
-    ...(range ? { range } : {}),
-    ...(input.projectId ? { projectId: input.projectId } : {}),
-  };
-
-  const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-  const summaries = await source.listSessionSummaries(filter);
-  const sorted = [...summaries].sort((a, b) => rank(b, by) - rank(a, by));
-  const sliced = sorted.slice(0, limit);
-
-  return {
-    ok: true,
-    by,
-    limit,
-    ...(input.projectId ? { projectId: input.projectId } : {}),
-    ...(input.since ? { since: input.since } : {}),
-    ...(input.until ? { until: input.until } : {}),
-    total: summaries.length,
-    sessions: sliced,
-  };
-}
-
-function buildDateRange(since: string | null, until: string | null): DateRange | null {
-  if (since && until) return { from: since, to: until };
-  if (since) return { from: since, to: since };
-  if (until) return { from: until, to: until };
-  return null;
-}

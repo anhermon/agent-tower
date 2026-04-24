@@ -13,8 +13,6 @@ import {
 
 import type { TimeseriesPoint } from "@control-plane/core";
 
-import type { ChartTooltipProps } from "./_types";
-
 interface Props {
   readonly data: readonly TimeseriesPoint[];
 }
@@ -30,22 +28,17 @@ function formatY(v: number): string {
   return String(v);
 }
 
-function CustomTooltip({ active, payload, label }: ChartTooltipProps<number, string>) {
-  if (!active || !payload || payload.length === 0) return null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
   return (
     <div className="rounded-sm border border-line/70 bg-panel/95 px-3 py-2 text-xs shadow-glass">
-      <p className="text-muted">
-        {typeof label === "string" || typeof label === "number" ? label : ""}
-      </p>
-      {payload.map((p) => {
-        const name = p.name ?? "";
-        const value = typeof p.value === "number" ? p.value : 0;
-        return (
-          <p key={String(name)} style={{ color: p.color }}>
-            {name}: <span className="font-semibold text-ink">{value.toLocaleString()}</span>
-          </p>
-        );
-      })}
+      <p className="text-muted">{label}</p>
+      {payload.map((p: { name: string; value: number; color: string }) => (
+        <p key={p.name} style={{ color: p.color }}>
+          {p.name}: <span className="font-semibold text-ink">{p.value.toLocaleString()}</span>
+        </p>
+      ))}
     </div>
   );
 }

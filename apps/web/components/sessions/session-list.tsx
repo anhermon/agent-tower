@@ -140,16 +140,54 @@ export function SessionList({
     }
   }, [focusIndex]);
 
-  useKeyboardNav({
-    focusIndex,
-    paginated,
-    moveFocus,
-    router,
-    filterInputRef,
-    queryLength: query.length,
-    clearFocus: () => setFocusIndex(null),
-    clearQuery: () => setQuery(""),
-  });
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const tag = target?.tagName;
+      // Keep focus-nav keys scoped: ignore if typing in an input (so `/` and
+      // text editing still work), *except* when the user is in the filter
+      // input and presses Esc, which is handled below.
+      const isEditable =
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        (target instanceof HTMLElement && target.isContentEditable);
+
+      if (event.key === "Escape") {
+        if (focusIndex !== null) {
+          event.preventDefault();
+          setFocusIndex(null);
+          filterInputRef.current?.focus();
+          return;
+        }
+        if (isEditable && target === filterInputRef.current && query.length > 0) {
+          event.preventDefault();
+          setQuery("");
+          return;
+        }
+      }
+
+      if (isEditable) return;
+
+      if (event.key === "j" || event.key === "ArrowDown") {
+        event.preventDefault();
+        moveFocus(+1);
+      } else if (event.key === "k" || event.key === "ArrowUp") {
+        event.preventDefault();
+        moveFocus(-1);
+      } else if (event.key === "Enter" && focusIndex !== null) {
+        const row = paginated[focusIndex];
+        if (row) {
+          event.preventDefault();
+          router.push(`/sessions/${encodeURIComponent(row.sessionId)}`);
+        }
+      } else if (event.key === "/" && !isEditable) {
+        event.preventDefault();
+        filterInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [focusIndex, paginated, moveFocus, query.length, router]);
 
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -160,7 +198,19 @@ export function SessionList({
     setSortDir(key === "title" || key === "project" ? "asc" : "desc");
   };
 
-  const filterCounts = useMemo(() => computeFilterCounts(sessions), [sessions]);
+  const filterCounts = useMemo(() => {
+    const counts: Partial<Record<SessionFilterKey, number>> = {};
+    for (const session of sessions) {
+      if (!session.flags) continue;
+      if (session.flags.hasCompaction) counts.hasCompaction = (counts.hasCompaction ?? 0) + 1;
+      if (session.flags.usesTaskAgent) counts.usesTaskAgent = (counts.usesTaskAgent ?? 0) + 1;
+      if (session.flags.usesMcp) counts.usesMcp = (counts.usesMcp ?? 0) + 1;
+      if (session.flags.usesWebSearch) counts.usesWebSearch = (counts.usesWebSearch ?? 0) + 1;
+      if (session.flags.usesWebFetch) counts.usesWebFetch = (counts.usesWebFetch ?? 0) + 1;
+      if (session.flags.hasThinking) counts.hasThinking = (counts.hasThinking ?? 0) + 1;
+    }
+    return counts;
+  }, [sessions]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -203,22 +253,158 @@ export function SessionList({
       <div className="glass-panel overflow-hidden rounded-md">
         <div className="overflow-x-auto">
           <table className="min-w-full table-fixed border-collapse text-left text-sm">
-            <TableHead
-              sortKey={sortKey}
-              sortDir={sortDir}
-              toggleSort={toggleSort}
-              hideProjectColumn={hideProjectColumn}
-              hasAnyFlags={hasAnyFlags}
-            />
-            <TableBody
-              paginated={paginated}
-              focusIndex={focusIndex}
-              query={query}
-              hideProjectColumn={hideProjectColumn}
-              hasAnyFlags={hasAnyFlags}
-              onFocus={setFocusIndex}
-              rowRefs={rowRefs}
-            />
+            <thead className="bg-white/[0.03] text-xs uppercase text-muted">
+              <tr>
+                <SortableTh
+                  label="Title"
+                  active={sortKey === "title"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("title")}
+                  className="min-w-64"
+                />
+                {hideProjectColumn ? null : (
+                  <SortableTh
+                    label="Project"
+                    active={sortKey === "project"}
+                    direction={sortDir}
+                    onClick={() => toggleSort("project")}
+                    className="min-w-48"
+                  />
+                )}
+                {hasAnyFlags ? (
+                  <th className="px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted w-48">
+                    Flags
+                  </th>
+                ) : null}
+                <SortableTh
+                  label="Msgs"
+                  active={sortKey === "messages"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("messages")}
+                  className="w-20 text-right"
+                  align="right"
+                />
+                <SortableTh
+                  label="Duration"
+                  active={sortKey === "duration"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("duration")}
+                  className="w-24 text-right"
+                  align="right"
+                />
+                <SortableTh
+                  label="Cost"
+                  active={sortKey === "cost"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("cost")}
+                  className="w-24 text-right"
+                  align="right"
+                />
+                <SortableTh
+                  label="Size"
+                  active={sortKey === "size"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("size")}
+                  className="w-24 text-right"
+                  align="right"
+                />
+                <SortableTh
+                  label="Last modified"
+                  active={sortKey === "modified"}
+                  direction={sortDir}
+                  onClick={() => toggleSort("modified")}
+                  className="w-48"
+                />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line/60">
+              {paginated.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={columnCount(hideProjectColumn, hasAnyFlags)}
+                    className="px-4 py-10 text-center text-sm text-muted"
+                  >
+                    {query.trim().length > 0 ? (
+                      <>
+                        No sessions match <code className="font-mono text-xs">{query}</code>.
+                      </>
+                    ) : (
+                      "No sessions match the current filters."
+                    )}
+                  </td>
+                </tr>
+              ) : (
+                paginated.map((session, index) => {
+                  const isFocused = focusIndex === index;
+                  return (
+                    <tr
+                      key={session.filePath}
+                      ref={(node) => {
+                        rowRefs.current[index] = node;
+                      }}
+                      tabIndex={isFocused ? 0 : -1}
+                      onClick={() => setFocusIndex(index)}
+                      className={cn(
+                        "transition-colors hover:bg-white/[0.03] focus:outline-none",
+                        isFocused ? "bg-white/[0.05]" : ""
+                      )}
+                    >
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/sessions/${encodeURIComponent(session.sessionId)}`}
+                          className="block group"
+                          title={session.title ?? session.sessionId}
+                        >
+                          <span className="block truncate text-sm font-medium text-ink group-hover:text-cyan">
+                            {session.title ?? <em className="text-muted">untitled</em>}
+                          </span>
+                          <span className="mt-1 block truncate font-mono text-xs text-muted">
+                            {truncateMiddle(session.sessionId, 18)}
+                          </span>
+                        </Link>
+                      </td>
+                      {hideProjectColumn ? null : (
+                        <td
+                          className="px-4 py-3 font-mono text-xs text-muted"
+                          title={session.projectId}
+                        >
+                          {truncateMiddle(session.projectId, 40)}
+                        </td>
+                      )}
+                      {hasAnyFlags ? (
+                        <td className="px-4 py-3">
+                          {session.flags ? <SessionBadges flags={session.flags} /> : null}
+                        </td>
+                      ) : null}
+                      <td className="px-4 py-3 text-right font-mono tabular-nums text-muted">
+                        {typeof session.messageCount === "number"
+                          ? session.messageCount.toLocaleString()
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono tabular-nums text-muted">
+                        {typeof session.durationMs === "number"
+                          ? formatDuration(session.durationMs)
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono tabular-nums text-cyan">
+                        {typeof session.estimatedCostUsd === "number"
+                          ? formatCost(session.estimatedCostUsd)
+                          : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right text-muted">
+                        {formatBytes(session.sizeBytes)}
+                      </td>
+                      <td className="px-4 py-3 text-muted">
+                        <span>{formatRelative(session.modifiedAt)}</span>
+                        <span className="ml-2 font-mono text-xs text-muted/70">
+                          {session.modifiedAt.slice(0, 10)}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
           </table>
         </div>
       </div>
@@ -343,415 +529,6 @@ function columnCount(hideProjectColumn: boolean, hasAnyFlags: boolean): number {
   return n;
 }
 
-interface TableHeadProps {
-  readonly sortKey: SortKey;
-  readonly sortDir: SortDirection;
-  readonly toggleSort: (key: SortKey) => void;
-  readonly hideProjectColumn: boolean;
-  readonly hasAnyFlags: boolean;
-}
-
-function TableHead({
-  sortKey,
-  sortDir,
-  toggleSort,
-  hideProjectColumn,
-  hasAnyFlags,
-}: TableHeadProps): ReactNode {
-  return (
-    <thead className="bg-white/[0.03] text-xs uppercase text-muted">
-      <tr>
-        <SortableTh
-          label="Title"
-          active={sortKey === "title"}
-          direction={sortDir}
-          onClick={() => toggleSort("title")}
-          className="min-w-64"
-        />
-        {hideProjectColumn ? null : (
-          <SortableTh
-            label="Project"
-            active={sortKey === "project"}
-            direction={sortDir}
-            onClick={() => toggleSort("project")}
-            className="min-w-48"
-          />
-        )}
-        {hasAnyFlags ? (
-          <th className="px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted w-48">
-            Flags
-          </th>
-        ) : null}
-        <SortableTh
-          label="Msgs"
-          active={sortKey === "messages"}
-          direction={sortDir}
-          onClick={() => toggleSort("messages")}
-          className="w-20 text-right"
-          align="right"
-        />
-        <SortableTh
-          label="Duration"
-          active={sortKey === "duration"}
-          direction={sortDir}
-          onClick={() => toggleSort("duration")}
-          className="w-24 text-right"
-          align="right"
-        />
-        <SortableTh
-          label="Cost"
-          active={sortKey === "cost"}
-          direction={sortDir}
-          onClick={() => toggleSort("cost")}
-          className="w-24 text-right"
-          align="right"
-        />
-        <SortableTh
-          label="Size"
-          active={sortKey === "size"}
-          direction={sortDir}
-          onClick={() => toggleSort("size")}
-          className="w-24 text-right"
-          align="right"
-        />
-        <SortableTh
-          label="Last modified"
-          active={sortKey === "modified"}
-          direction={sortDir}
-          onClick={() => toggleSort("modified")}
-          className="w-48"
-        />
-      </tr>
-    </thead>
-  );
-}
-
-interface TableBodyProps {
-  readonly paginated: readonly SessionListRow[];
-  readonly focusIndex: number | null;
-  readonly query: string;
-  readonly hideProjectColumn: boolean;
-  readonly hasAnyFlags: boolean;
-  readonly onFocus: (index: number) => void;
-  readonly rowRefs: React.MutableRefObject<(HTMLTableRowElement | null)[]>;
-}
-
-function TableBody({
-  paginated,
-  focusIndex,
-  query,
-  hideProjectColumn,
-  hasAnyFlags,
-  onFocus,
-  rowRefs,
-}: TableBodyProps): ReactNode {
-  if (paginated.length === 0) {
-    return (
-      <tbody className="divide-y divide-line/60">
-        <tr>
-          <td
-            colSpan={columnCount(hideProjectColumn, hasAnyFlags)}
-            className="px-4 py-10 text-center text-sm text-muted"
-          >
-            <EmptyBodyMessage query={query} />
-          </td>
-        </tr>
-      </tbody>
-    );
-  }
-  return (
-    <tbody className="divide-y divide-line/60">
-      {paginated.map((session, index) => (
-        <SessionRow
-          key={session.filePath}
-          session={session}
-          index={index}
-          isFocused={focusIndex === index}
-          hideProjectColumn={hideProjectColumn}
-          hasAnyFlags={hasAnyFlags}
-          onFocus={onFocus}
-          rowRef={(node) => {
-            rowRefs.current[index] = node;
-          }}
-        />
-      ))}
-    </tbody>
-  );
-}
-
-function EmptyBodyMessage({ query }: { readonly query: string }): ReactNode {
-  if (query.trim().length === 0) {
-    return <>No sessions match the current filters.</>;
-  }
-  return (
-    <>
-      No sessions match <code className="font-mono text-xs">{query}</code>.
-    </>
-  );
-}
-
-interface SessionRowProps {
-  readonly session: SessionListRow;
-  readonly index: number;
-  readonly isFocused: boolean;
-  readonly hideProjectColumn: boolean;
-  readonly hasAnyFlags: boolean;
-  readonly onFocus: (index: number) => void;
-  readonly rowRef: (node: HTMLTableRowElement | null) => void;
-}
-
-function SessionRow({
-  session,
-  index,
-  isFocused,
-  hideProjectColumn,
-  hasAnyFlags,
-  onFocus,
-  rowRef,
-}: SessionRowProps): ReactNode {
-  return (
-    <tr
-      ref={rowRef}
-      tabIndex={isFocused ? 0 : -1}
-      onClick={() => onFocus(index)}
-      className={cn(
-        "transition-colors hover:bg-white/[0.03] focus:outline-none",
-        isFocused ? "bg-white/[0.05]" : ""
-      )}
-    >
-      <TitleCell session={session} />
-      {hideProjectColumn ? null : <ProjectCell session={session} />}
-      {hasAnyFlags ? <FlagsCell session={session} /> : null}
-      <NumberCell value={session.messageCount} format={formatInteger} tone="muted" />
-      <NumberCell value={session.durationMs} format={formatDuration} tone="muted" />
-      <NumberCell value={session.estimatedCostUsd} format={formatCost} tone="cyan" />
-      <td className="px-4 py-3 text-right text-muted">{formatBytes(session.sizeBytes)}</td>
-      <ModifiedCell session={session} />
-    </tr>
-  );
-}
-
-function TitleCell({ session }: { readonly session: SessionListRow }): ReactNode {
-  return (
-    <td className="px-4 py-3">
-      <Link
-        href={`/sessions/${encodeURIComponent(session.sessionId)}`}
-        className="block group"
-        title={session.title ?? session.sessionId}
-      >
-        <span className="block truncate text-sm font-medium text-ink group-hover:text-cyan">
-          {session.title ?? <em className="text-muted">untitled</em>}
-        </span>
-        <span className="mt-1 block truncate font-mono text-xs text-muted">
-          {truncateMiddle(session.sessionId, 18)}
-        </span>
-      </Link>
-    </td>
-  );
-}
-
-function ProjectCell({ session }: { readonly session: SessionListRow }): ReactNode {
-  return (
-    <td className="px-4 py-3 font-mono text-xs text-muted" title={session.projectId}>
-      {truncateMiddle(session.projectId, 40)}
-    </td>
-  );
-}
-
-function FlagsCell({ session }: { readonly session: SessionListRow }): ReactNode {
-  return (
-    <td className="px-4 py-3">{session.flags ? <SessionBadges flags={session.flags} /> : null}</td>
-  );
-}
-
-function ModifiedCell({ session }: { readonly session: SessionListRow }): ReactNode {
-  return (
-    <td className="px-4 py-3 text-muted">
-      <span>{formatRelative(session.modifiedAt)}</span>
-      <span className="ml-2 font-mono text-xs text-muted/70">
-        {session.modifiedAt.slice(0, 10)}
-      </span>
-    </td>
-  );
-}
-
-interface NumberCellProps {
-  readonly value: number | undefined;
-  readonly format: (n: number) => string;
-  readonly tone: "muted" | "cyan";
-}
-
-function NumberCell({ value, format, tone }: NumberCellProps): ReactNode {
-  const toneClass = tone === "cyan" ? "text-cyan" : "text-muted";
-  return (
-    <td className={cn("px-4 py-3 text-right font-mono tabular-nums", toneClass)}>
-      {typeof value === "number" ? format(value) : "—"}
-    </td>
-  );
-}
-
-function formatInteger(n: number): string {
-  return n.toLocaleString();
-}
-
-interface KeyboardNavOptions {
-  readonly focusIndex: number | null;
-  readonly paginated: readonly SessionListRow[];
-  readonly moveFocus: (delta: number) => void;
-  readonly router: ReturnType<typeof useRouter>;
-  readonly filterInputRef: React.RefObject<HTMLInputElement | null>;
-  readonly queryLength: number;
-  readonly clearFocus: () => void;
-  readonly clearQuery: () => void;
-}
-
-function useKeyboardNav(options: KeyboardNavOptions): void {
-  const {
-    focusIndex,
-    paginated,
-    moveFocus,
-    router,
-    filterInputRef,
-    queryLength,
-    clearFocus,
-    clearQuery,
-  } = options;
-  useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isEditable = isEditableTarget(target);
-      const filterInput = filterInputRef.current;
-
-      if (
-        handleEscapeKey(event, {
-          isEditable,
-          target,
-          filterInput,
-          focusIndex,
-          hasQuery: queryLength > 0,
-          clearFocus,
-          clearQuery,
-        })
-      ) {
-        return;
-      }
-
-      if (isEditable) return;
-
-      handleNavKey(event, {
-        focusIndex,
-        paginated,
-        moveFocus,
-        router,
-        filterInput,
-      });
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [
-    focusIndex,
-    paginated,
-    moveFocus,
-    router,
-    filterInputRef,
-    queryLength,
-    clearFocus,
-    clearQuery,
-  ]);
-}
-
-function isEditableTarget(target: HTMLElement | null): boolean {
-  const tag = target?.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA") return true;
-  return target instanceof HTMLElement && target.isContentEditable;
-}
-
-interface EscapeHandlerContext {
-  readonly isEditable: boolean;
-  readonly target: HTMLElement | null;
-  readonly filterInput: HTMLInputElement | null;
-  readonly focusIndex: number | null;
-  readonly hasQuery: boolean;
-  readonly clearFocus: () => void;
-  readonly clearQuery: () => void;
-}
-
-// Returns true when the event has been handled and caller should stop.
-function handleEscapeKey(event: KeyboardEvent, ctx: EscapeHandlerContext): boolean {
-  if (event.key !== "Escape") return false;
-  if (ctx.focusIndex !== null) {
-    event.preventDefault();
-    ctx.clearFocus();
-    ctx.filterInput?.focus();
-    return true;
-  }
-  if (ctx.isEditable && ctx.target === ctx.filterInput && ctx.hasQuery) {
-    event.preventDefault();
-    ctx.clearQuery();
-    return true;
-  }
-  return false;
-}
-
-interface NavContext {
-  readonly focusIndex: number | null;
-  readonly paginated: readonly SessionListRow[];
-  readonly moveFocus: (delta: number) => void;
-  readonly router: ReturnType<typeof useRouter>;
-  readonly filterInput: HTMLInputElement | null;
-}
-
-const ARROW_DELTAS: Readonly<Record<string, number>> = {
-  j: +1,
-  ArrowDown: +1,
-  k: -1,
-  ArrowUp: -1,
-};
-
-function handleNavKey(event: KeyboardEvent, ctx: NavContext): void {
-  const delta = ARROW_DELTAS[event.key];
-  if (delta !== undefined) {
-    event.preventDefault();
-    ctx.moveFocus(delta);
-    return;
-  }
-  if (event.key === "Enter" && ctx.focusIndex !== null) {
-    const row = ctx.paginated[ctx.focusIndex];
-    if (row) {
-      event.preventDefault();
-      ctx.router.push(`/sessions/${encodeURIComponent(row.sessionId)}`);
-    }
-    return;
-  }
-  if (event.key === "/") {
-    event.preventDefault();
-    ctx.filterInput?.focus();
-  }
-}
-
-const FILTER_FLAG_KEYS: readonly SessionFilterKey[] = [
-  "hasCompaction",
-  "usesTaskAgent",
-  "usesMcp",
-  "usesWebSearch",
-  "usesWebFetch",
-  "hasThinking",
-];
-
-function computeFilterCounts(
-  sessions: readonly SessionListRow[]
-): Partial<Record<SessionFilterKey, number>> {
-  const counts: Partial<Record<SessionFilterKey, number>> = {};
-  for (const session of sessions) {
-    const flags = session.flags;
-    if (!flags) continue;
-    for (const key of FILTER_FLAG_KEYS) {
-      if (flags[key]) counts[key] = (counts[key] ?? 0) + 1;
-    }
-  }
-  return counts;
-}
-
 export function filterAndSort(
   sessions: readonly SessionListRow[],
   query: string,
@@ -791,26 +568,23 @@ function matchesQuery(session: SessionListRow, needle: string): boolean {
   return false;
 }
 
-const SORT_COMPARATORS: Readonly<
-  Record<SortKey, (a: SessionListRow, b: SessionListRow) => number>
-> = {
-  title: (a, b) => byString(a.title ?? a.sessionId, b.title ?? b.sessionId),
-  project: (a, b) => byString(a.projectId, b.projectId),
-  size: (a, b) => a.sizeBytes - b.sizeBytes,
-  modified: (a, b) => byModified(a.modifiedAt, b.modifiedAt),
-  cost: (a, b) => (a.estimatedCostUsd ?? 0) - (b.estimatedCostUsd ?? 0),
-  duration: (a, b) => (a.durationMs ?? 0) - (b.durationMs ?? 0),
-  messages: (a, b) => (a.messageCount ?? 0) - (b.messageCount ?? 0),
-};
-
 function compareBy(a: SessionListRow, b: SessionListRow, key: SortKey): number {
-  return SORT_COMPARATORS[key](a, b);
-}
-
-function byModified(a: string, b: string): number {
-  if (a < b) return -1;
-  if (a > b) return 1;
-  return 0;
+  switch (key) {
+    case "title":
+      return byString(a.title ?? a.sessionId, b.title ?? b.sessionId);
+    case "project":
+      return byString(a.projectId, b.projectId);
+    case "size":
+      return a.sizeBytes - b.sizeBytes;
+    case "modified":
+      return a.modifiedAt < b.modifiedAt ? -1 : a.modifiedAt > b.modifiedAt ? 1 : 0;
+    case "cost":
+      return (a.estimatedCostUsd ?? 0) - (b.estimatedCostUsd ?? 0);
+    case "duration":
+      return (a.durationMs ?? 0) - (b.durationMs ?? 0);
+    case "messages":
+      return (a.messageCount ?? 0) - (b.messageCount ?? 0);
+  }
 }
 
 function byString(a: string, b: string): number {

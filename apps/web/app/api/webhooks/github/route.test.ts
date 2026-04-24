@@ -47,7 +47,6 @@ describe("/api/webhooks/github POST", () => {
       action: "opened",
       repository: { full_name: "octo/hello-world" },
       sender: { login: "octocat" },
-      client_payload: { sessionId: "session-123" },
     });
     const response = await POST(
       new Request(ROUTE_URL, {

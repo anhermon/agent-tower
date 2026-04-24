@@ -26,37 +26,37 @@ export class InMemoryEntityRepository<TRecord extends { readonly id: string }>
 {
   protected readonly records = new Map<string, TRecord>();
 
-  create(record: TRecord): Promise<TRecord> {
+  async create(record: TRecord): Promise<TRecord> {
     if (this.records.has(record.id)) {
-      return Promise.reject(new Error(`Record already exists: ${record.id}`));
+      throw new Error(`Record already exists: ${record.id}`);
     }
 
     this.records.set(record.id, record);
-    return Promise.resolve(record);
+    return record;
   }
 
-  getById(id: string): Promise<TRecord | undefined> {
-    return Promise.resolve(this.records.get(id));
+  async getById(id: string): Promise<TRecord | undefined> {
+    return this.records.get(id);
   }
 
-  list(options: RepositoryListOptions = {}): Promise<readonly TRecord[]> {
-    return Promise.resolve(applyListOptions(Array.from(this.records.values()), options));
+  async list(options: RepositoryListOptions = {}): Promise<readonly TRecord[]> {
+    return applyListOptions(Array.from(this.records.values()), options);
   }
 
-  update(id: string, patch: Partial<TRecord>): Promise<TRecord> {
+  async update(id: string, patch: Partial<TRecord>): Promise<TRecord> {
     const current = this.records.get(id);
 
     if (!current) {
-      return Promise.reject(new Error(`Record does not exist: ${id}`));
+      throw new Error(`Record does not exist: ${id}`);
     }
 
     const updated = { ...current, ...patch, id };
     this.records.set(id, updated);
-    return Promise.resolve(updated);
+    return updated;
   }
 
-  delete(id: string): Promise<boolean> {
-    return Promise.resolve(this.records.delete(id));
+  async delete(id: string): Promise<boolean> {
+    return this.records.delete(id);
   }
 
   clear(): void {
@@ -68,10 +68,8 @@ export class InMemoryAgentRepository
   extends InMemoryEntityRepository<AgentRecord>
   implements AgentRepository
 {
-  listByStatus(status: AgentRecord["status"]): Promise<readonly AgentRecord[]> {
-    return Promise.resolve(
-      Array.from(this.records.values()).filter((record) => record.status === status)
-    );
+  async listByStatus(status: AgentRecord["status"]): Promise<readonly AgentRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.status === status);
   }
 }
 
@@ -79,10 +77,8 @@ export class InMemorySessionRepository
   extends InMemoryEntityRepository<SessionRecord>
   implements SessionRepository
 {
-  listByAgentId(agentId: string): Promise<readonly SessionRecord[]> {
-    return Promise.resolve(
-      Array.from(this.records.values()).filter((record) => record.agentId === agentId)
-    );
+  async listByAgentId(agentId: string): Promise<readonly SessionRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.agentId === agentId);
   }
 }
 
@@ -92,9 +88,9 @@ export class InMemoryEventRepository<TEvent extends PersistedEventEnvelope = Per
   private readonly records = new Map<string, EventRecord<TEvent>>();
   private sequence = 0;
 
-  append(event: TEvent): Promise<EventRecord<TEvent>> {
+  async append(event: TEvent): Promise<EventRecord<TEvent>> {
     if (this.records.has(event.id)) {
-      return Promise.reject(new Error(`Event already exists: ${event.id}`));
+      throw new Error(`Event already exists: ${event.id}`);
     }
 
     const record: EventRecord<TEvent> = {
@@ -105,22 +101,25 @@ export class InMemoryEventRepository<TEvent extends PersistedEventEnvelope = Per
     };
 
     this.records.set(record.id, record);
-    return Promise.resolve(record);
+    return record;
   }
 
-  getById(id: string): Promise<EventRecord<TEvent> | undefined> {
-    return Promise.resolve(this.records.get(id));
+  async getById(id: string): Promise<EventRecord<TEvent> | undefined> {
+    return this.records.get(id);
   }
 
-  list(options: RepositoryListOptions = {}): Promise<readonly EventRecord<TEvent>[]> {
-    return Promise.resolve(applyListOptions(Array.from(this.records.values()), options));
+  async list(options: RepositoryListOptions = {}): Promise<readonly EventRecord<TEvent>[]> {
+    return applyListOptions(Array.from(this.records.values()), options);
   }
 
-  listAfterSequence(sequence: number, limit?: number): Promise<readonly EventRecord<TEvent>[]> {
+  async listAfterSequence(
+    sequence: number,
+    limit?: number
+  ): Promise<readonly EventRecord<TEvent>[]> {
     const records = Array.from(this.records.values()).filter(
       (record) => record.sequence > sequence
     );
-    return Promise.resolve(typeof limit === "number" ? records.slice(0, limit) : records);
+    return typeof limit === "number" ? records.slice(0, limit) : records;
   }
 
   clear(): void {
@@ -133,10 +132,8 @@ export class InMemoryWebhookRepository
   extends InMemoryEntityRepository<WebhookRecord>
   implements WebhookRepository
 {
-  listByProvider(provider: string): Promise<readonly WebhookRecord[]> {
-    return Promise.resolve(
-      Array.from(this.records.values()).filter((record) => record.provider === provider)
-    );
+  async listByProvider(provider: string): Promise<readonly WebhookRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.provider === provider);
   }
 }
 
@@ -144,10 +141,8 @@ export class InMemoryModuleRegistryRepository
   extends InMemoryEntityRepository<ModuleRegistryRecord>
   implements ModuleRegistryRepository
 {
-  findByName(name: string): Promise<readonly ModuleRegistryRecord[]> {
-    return Promise.resolve(
-      Array.from(this.records.values()).filter((record) => record.name === name)
-    );
+  async findByName(name: string): Promise<readonly ModuleRegistryRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.name === name);
   }
 }
 
@@ -155,10 +150,8 @@ export class InMemoryAuditEntryRepository
   extends InMemoryEntityRepository<AuditEntryRecord>
   implements AuditEntryRepository
 {
-  listByTarget(targetId: string): Promise<readonly AuditEntryRecord[]> {
-    return Promise.resolve(
-      Array.from(this.records.values()).filter((record) => record.targetId === targetId)
-    );
+  async listByTarget(targetId: string): Promise<readonly AuditEntryRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.targetId === targetId);
   }
 }
 

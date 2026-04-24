@@ -138,29 +138,25 @@ function makeFakeSource(opts: FakeSourceOptions = {}): SessionAnalyticsSource {
   };
 
   return {
-    listProjectSummaries: () => Promise.resolve(guard("listProjectSummaries", opts.projects ?? [])),
-    listSessionSummaries: (filter?: SessionAnalyticsFilter) => {
+    listProjectSummaries: async () => guard("listProjectSummaries", opts.projects ?? []),
+    listSessionSummaries: async (filter?: SessionAnalyticsFilter) => {
       const all = opts.sessions ?? [];
       let result = all;
       if (filter?.projectId) {
         result = result.filter((s) => s.cwd === filter.projectId);
       }
-      return Promise.resolve(guard("listSessionSummaries", result));
+      return guard("listSessionSummaries", result);
     },
-    loadSessionUsage: (id) =>
-      Promise.resolve(
-        guard(
-          "loadSessionUsage",
-          (opts.sessions ?? []).find((s) => s.sessionId === id)
-        )
+    loadSessionUsage: async (id) =>
+      guard(
+        "loadSessionUsage",
+        (opts.sessions ?? []).find((s) => s.sessionId === id)
       ),
-    loadSessionReplay: () => Promise.resolve(guard("loadSessionReplay", opts.replay)),
-    loadActivityTimeseries: () =>
-      Promise.resolve(guard("loadActivityTimeseries", opts.timeseries ?? makeTimeseries())),
-    loadCostBreakdown: () =>
-      Promise.resolve(guard("loadCostBreakdown", opts.costs ?? makeCostBreakdown())),
-    loadToolAnalytics: () =>
-      Promise.resolve(guard("loadToolAnalytics", opts.tools ?? makeToolAnalytics())),
+    loadSessionReplay: async () => guard("loadSessionReplay", opts.replay),
+    loadActivityTimeseries: async () =>
+      guard("loadActivityTimeseries", opts.timeseries ?? makeTimeseries()),
+    loadCostBreakdown: async () => guard("loadCostBreakdown", opts.costs ?? makeCostBreakdown()),
+    loadToolAnalytics: async () => guard("loadToolAnalytics", opts.tools ?? makeToolAnalytics()),
   };
 }
 
@@ -336,21 +332,16 @@ describe("sessions-analytics", () => {
 
     it("coerces_non_Error_throws_to_string_message", async () => {
       const source: SessionAnalyticsSource = {
-        listProjectSummaries: () => {
-          // Reason: this test deliberately exercises the non-Error rejection
-          // path — the caller stringifies arbitrary rejection values. The
-          // Promise is tagged with the correct element type so the non-Error
-          // rejection flows back through the source's declared signature.
-          const rejection: Promise<readonly ProjectSummary[]> =
-            Promise.reject("plain-string-rejection"); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
-          return rejection;
+        listProjectSummaries: async () => {
+          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          throw "plain-string-rejection";
         },
-        listSessionSummaries: () => Promise.resolve([]),
-        loadSessionUsage: () => Promise.resolve(undefined),
-        loadSessionReplay: () => Promise.resolve(undefined),
-        loadActivityTimeseries: () => Promise.resolve(makeTimeseries()),
-        loadCostBreakdown: () => Promise.resolve(makeCostBreakdown()),
-        loadToolAnalytics: () => Promise.resolve(makeToolAnalytics()),
+        listSessionSummaries: async () => [],
+        loadSessionUsage: async () => undefined,
+        loadSessionReplay: async () => undefined,
+        loadActivityTimeseries: async () => makeTimeseries(),
+        loadCostBreakdown: async () => makeCostBreakdown(),
+        loadToolAnalytics: async () => makeToolAnalytics(),
       };
       __setAnalyticsSourceResolverForTests(() => source);
       const result = await listProjects();

@@ -1,12 +1,11 @@
 import { createReadStream } from "node:fs";
-import { open, readdir, stat } from "node:fs/promises";
+import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { createInterface } from "node:readline";
 
 import type {
   ClaudeAssistantEntry,
   ClaudeContentBlock,
-  ClaudeMessageContent,
   ClaudeSummaryEntry,
   ClaudeTranscriptEntry,
   ClaudeUserEntry,
@@ -121,78 +120,6 @@ export interface TranscriptPreview {
   readonly turnCountLowerBound: number;
 }
 
-interface PreviewState {
-  firstUserText: string | null;
-  summary: string | null;
-  model: string | null;
-  firstTimestamp: string | null;
-  turnCountLowerBound: number;
-}
-
-function parsePreviewLine(trimmed: string): ClaudeTranscriptEntry | null {
-  try {
-    return JSON.parse(trimmed) as ClaudeTranscriptEntry;
-  } catch {
-    return null;
-  }
-}
-
-function updatePreviewState(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  updateTurnCount(state, parsed);
-  updateFirstTimestamp(state, parsed);
-  updateModel(state, parsed);
-  updateSummary(state, parsed);
-  updateFirstUserText(state, parsed);
-}
-
-function updateTurnCount(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  if (parsed.type === "user" || parsed.type === "assistant") {
-    state.turnCountLowerBound += 1;
-  }
-}
-
-function updateFirstTimestamp(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  if (!state.firstTimestamp && typeof parsed.timestamp === "string") {
-    state.firstTimestamp = parsed.timestamp;
-  }
-}
-
-function updateModel(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  if (!state.model && parsed.type === "assistant") {
-    const m = (parsed as ClaudeAssistantEntry).message?.model;
-    if (typeof m === "string" && m.length > 0) state.model = m;
-  }
-}
-
-function updateSummary(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  if (!state.summary && parsed.type === "summary") {
-    const s = (parsed as ClaudeSummaryEntry).summary;
-    if (typeof s === "string" && s.trim().length > 0) state.summary = s.trim();
-  }
-}
-
-function updateFirstUserText(state: PreviewState, parsed: ClaudeTranscriptEntry): void {
-  if (!state.firstUserText && parsed.type === "user") {
-    state.firstUserText = extractFirstUserText((parsed as ClaudeUserEntry).message?.content);
-  }
-}
-
-/** Returns true if the caller should break (stop reading). */
-function processPreviewLine(
-  rawLine: string,
-  lineNumber: number,
-  maxLines: number,
-  state: PreviewState
-): boolean {
-  if (lineNumber > maxLines && state.firstUserText !== null) return true;
-  const trimmed = rawLine.trim();
-  if (trimmed.length === 0) return false;
-  const parsed = parsePreviewLine(trimmed);
-  if (!parsed) return false;
-  updatePreviewState(state, parsed);
-  return !!(state.firstUserText && state.summary && state.model && lineNumber >= 8);
-}
-
 /**
  * Peeks at the head of a transcript to extract a human-friendly title without
  * reading the full file. Stops after finding a title or after `maxLines`.
@@ -202,13 +129,11 @@ export async function readTranscriptPreview(
   options: { readonly maxLines?: number } = {}
 ): Promise<TranscriptPreview> {
   const maxLines = Math.max(1, options.maxLines ?? 40);
-  const state: PreviewState = {
-    firstUserText: null,
-    summary: null,
-    model: null,
-    firstTimestamp: null,
-    turnCountLowerBound: 0,
-  };
+  let firstUserText: string | null = null;
+  let summary: string | null = null;
+  let model: string | null = null;
+  let firstTimestamp: string | null = null;
+  let turnCountLowerBound = 0;
 
   const stream = createReadStream(filePath, { encoding: "utf8" });
   const reader = createInterface({ input: stream, crlfDelay: Infinity });
@@ -217,135 +142,51 @@ export async function readTranscriptPreview(
   try {
     for await (const rawLine of reader) {
       lineNumber += 1;
-      if (processPreviewLine(rawLine, lineNumber, maxLines, state)) break;
+      if (lineNumber > maxLines && firstUserText !== null) break;
+      const trimmed = rawLine.trim();
+      if (trimmed.length === 0) continue;
+
+      let parsed: ClaudeTranscriptEntry;
+      try {
+        parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
+      } catch {
+        continue;
+      }
+
+      if (parsed.type === "user" || parsed.type === "assistant") {
+        turnCountLowerBound += 1;
+      }
+      if (!firstTimestamp && typeof parsed.timestamp === "string") {
+        firstTimestamp = parsed.timestamp;
+      }
+      if (!model && parsed.type === "assistant") {
+        const m = (parsed as ClaudeAssistantEntry).message?.model;
+        if (typeof m === "string" && m.length > 0) model = m;
+      }
+      if (!summary && parsed.type === "summary") {
+        const s = (parsed as ClaudeSummaryEntry).summary;
+        if (typeof s === "string" && s.trim().length > 0) summary = s.trim();
+      }
+      if (!firstUserText && parsed.type === "user") {
+        firstUserText = extractFirstUserText((parsed as ClaudeUserEntry).message?.content);
+      }
+
+      if (firstUserText && summary && model && lineNumber >= 8) break;
     }
   } finally {
     reader.close();
     stream.close();
   }
 
-  const title = state.summary ?? state.firstUserText ?? null;
+  const title = summary ?? firstUserText ?? null;
   return {
     title,
-    firstUserText: state.firstUserText,
-    summary: state.summary,
-    model: state.model,
-    firstTimestamp: state.firstTimestamp,
-    turnCountLowerBound: state.turnCountLowerBound,
+    firstUserText,
+    summary,
+    model,
+    firstTimestamp,
+    turnCountLowerBound,
   };
-}
-
-export interface TranscriptTail {
-  readonly role: "user" | "assistant";
-  readonly text: string;
-}
-
-/**
- * Reads the last ~`windowBytes` of a JSONL transcript and returns the most
- * recent user or assistant text block. Skips tool_use / tool_result blocks
- * so the excerpt reflects actual conversation turns.
- *
- * Intended for live event enrichment: cheap (single pread + parse of a bounded
- * tail window) and tolerant (returns null on any error or missing text).
- */
-export async function readTranscriptTail(
-  filePath: string,
-  options: { readonly windowBytes?: number; readonly maxChars?: number } = {}
-): Promise<TranscriptTail | null> {
-  const windowBytes = Math.max(1024, options.windowBytes ?? 32_768);
-  const maxChars = Math.max(20, options.maxChars ?? 200);
-
-  let handle: Awaited<ReturnType<typeof open>> | null = null;
-  try {
-    handle = await open(filePath, "r");
-    const st = await handle.stat();
-    if (st.size === 0) return null;
-    const lines = await readTailLines(handle, st.size, windowBytes);
-    return scanLinesForTail(lines, maxChars);
-  } catch {
-    return null;
-  } finally {
-    if (handle) {
-      try {
-        await handle.close();
-      } catch {
-        // swallow
-      }
-    }
-  }
-}
-
-async function readTailLines(
-  handle: Awaited<ReturnType<typeof open>>,
-  size: number,
-  windowBytes: number
-): Promise<string[]> {
-  const readLen = Math.min(size, windowBytes);
-  const start = size - readLen;
-  const buf = Buffer.alloc(readLen);
-  await handle.read(buf, 0, readLen, start);
-  const text = buf.toString("utf8");
-  return (start === 0 ? text : text.slice(text.indexOf("\n") + 1)).split("\n");
-}
-
-function scanLinesForTail(lines: string[], maxChars: number): TranscriptTail | null {
-  for (let i = lines.length - 1; i >= 0; i -= 1) {
-    const trimmed = lines[i]!.trim();
-    if (trimmed.length === 0) continue;
-    let parsed: ClaudeTranscriptEntry;
-    try {
-      parsed = JSON.parse(trimmed) as ClaudeTranscriptEntry;
-    } catch {
-      continue;
-    }
-    const tail = pickTailFromEntry(parsed, maxChars);
-    if (tail) return tail;
-  }
-  return null;
-}
-
-function pickTailFromEntry(entry: ClaudeTranscriptEntry, maxChars: number): TranscriptTail | null {
-  if (entry.type === "user") {
-    const content = (entry as ClaudeUserEntry).message?.content;
-    const text = extractLastTextFromContent(content);
-    if (text) return { role: "user", text: truncateTail(text, maxChars) };
-    return null;
-  }
-  if (entry.type === "assistant") {
-    const content = (entry as ClaudeAssistantEntry).message?.content;
-    const text = extractLastTextFromContent(content);
-    if (text) return { role: "assistant", text: truncateTail(text, maxChars) };
-    return null;
-  }
-  return null;
-}
-
-function extractLastTextFromContent(content: ClaudeMessageContent | undefined): string | null {
-  if (typeof content === "string") return sanitizeTailText(content);
-  if (!Array.isArray(content)) return null;
-  const blocks = content as ClaudeContentBlock[];
-  for (let i = blocks.length - 1; i >= 0; i -= 1) {
-    const block = blocks[i]!;
-    const text = pickText(block);
-    if (text) {
-      const cleaned = sanitizeTailText(text);
-      if (cleaned) return cleaned;
-    }
-  }
-  return null;
-}
-
-function sanitizeTailText(text: string): string | null {
-  let stripped = text.replace(NOISE_TAG_BLOCK, " ");
-  stripped = stripped.replace(NOISE_SELF_CLOSING, " ");
-  stripped = stripped.replace(STRAY_TAG, " ");
-  const collapsed = stripped.replace(/\s+/g, " ").trim();
-  return collapsed.length === 0 ? null : collapsed;
-}
-
-function truncateTail(text: string, max: number): string {
-  if (text.length <= max) return text;
-  return `${text.slice(0, max - 1).trimEnd()}…`;
 }
 
 function extractFirstUserText(
@@ -355,7 +196,7 @@ function extractFirstUserText(
   if (typeof content === "string") {
     candidates.push(content);
   } else if (Array.isArray(content)) {
-    for (const block of content as ClaudeContentBlock[]) {
+    for (const block of content) {
       const text = pickText(block);
       if (text) candidates.push(text);
     }

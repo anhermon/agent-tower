@@ -27,14 +27,9 @@ import { withAudit } from "@/lib/with-audit";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-interface ExportParams {
-  ids: string[] | undefined;
-  projectId: string | undefined;
-  range: { from: string; to: string } | undefined;
-  scope: SessionExportScope;
-}
+async function exportHandler(request: Request): Promise<Response> {
+  const url = new URL(request.url);
 
-function parseExportParams(url: URL): ExportParams {
   const idsRaw = url.searchParams.get("ids");
   const projectId = url.searchParams.get("projectId") ?? undefined;
   const from = url.searchParams.get("from") ?? undefined;
@@ -49,42 +44,18 @@ function parseExportParams(url: URL): ExportParams {
     : undefined;
 
   const range = from && to ? { from, to } : undefined;
-  const scope = resolveScope(rawScope, ids, projectId, range);
 
-  return { ids, projectId, range, scope };
-}
-
-function buildSummariesQuery(
-  projectId: string | undefined,
-  range: { from: string; to: string } | undefined
-) {
-  if (projectId || range) {
-    return {
-      ...(projectId ? { projectId } : {}),
-      ...(range ? { range } : {}),
-    };
-  }
-  return undefined;
-}
-
-function buildExportRows(
-  summaries: readonly SessionExportRow["summary"][],
-  ids: string[] | undefined
-): SessionExportRow[] {
-  const idSet = ids && ids.length > 0 ? new Set(ids) : null;
-  const filtered = idSet ? summaries.filter((s) => idSet.has(s.sessionId)) : summaries;
-  return filtered.map((summary) => ({
-    summary,
-    flags: summary.flags,
-    compactions: summary.compactions,
-  }));
-}
-
-async function exportHandler(request: Request): Promise<Response> {
-  const { ids, projectId, range, scope } = parseExportParams(new URL(request.url));
+  const scope: SessionExportScope = resolveScope(rawScope, ids, projectId, range);
 
   const [summariesResult, costsResult, projectsResult] = await Promise.all([
-    listSessionSummariesOrEmpty(buildSummariesQuery(projectId, range)),
+    listSessionSummariesOrEmpty(
+      projectId || range
+        ? {
+            ...(projectId ? { projectId } : {}),
+            ...(range ? { range } : {}),
+          }
+        : undefined
+    ),
     getCostBreakdown(range),
     listProjects(),
   ]);
@@ -99,7 +70,16 @@ async function exportHandler(request: Request): Promise<Response> {
     return errorResponse(projectsResult);
   }
 
-  const rows = buildExportRows(summariesResult.value, ids);
+  const idSet = ids && ids.length > 0 ? new Set(ids) : null;
+  const filtered = idSet
+    ? summariesResult.value.filter((s) => idSet.has(s.sessionId))
+    : summariesResult.value;
+
+  const rows: SessionExportRow[] = filtered.map((summary) => ({
+    summary,
+    flags: summary.flags,
+    compactions: summary.compactions,
+  }));
 
   const bundle: SessionExportBundle = {
     version: 1,
