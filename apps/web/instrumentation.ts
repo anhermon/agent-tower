@@ -13,4 +13,10 @@ export async function register(): Promise<void> {
   initLogger({ defaultService: "@control-plane/web" });
   const log = getLogger("web");
   log.info({ nodeEnv: process.env.NODE_ENV, pid: process.pid }, "web.boot");
+
+  const { startWorkflowEngine } = await import(
+    /* webpackIgnore: true */ "./lib/workflow-bootstrap"
+  );
+  startWorkflowEngine();
+  log.info("workflow.engine.started");
 }

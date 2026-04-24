@@ -12,8 +12,8 @@ import {
   parseGithubWebhookJson,
   persistGithubWebhookDelivery,
   validateGithubWebhookHeaders,
-  verifyGithubWebhookSignature,
 } from "@/lib/github-webhooks";
+import { getWebhookVerifier } from "@/lib/webhook-verifier";
 import { eventBus } from "@/lib/event-bus";
 import { withAudit } from "@/lib/with-audit";
 
@@ -45,6 +45,11 @@ async function githubWebhookHandler(request: Request): Promise<Response> {
     return Response.json({ ok: false, error: "missing_signature" }, { status: 401 });
   }
 
+  const verifier = getWebhookVerifier("github");
+  if (!verifier) {
+    return Response.json({ ok: false, error: "verifier_not_found" }, { status: 500 });
+  }
+
   const sizeError = checkContentLength(request.headers);
   if (sizeError) return sizeError;
 
@@ -53,17 +58,13 @@ async function githubWebhookHandler(request: Request): Promise<Response> {
     return Response.json({ ok: false, error: "payload_too_large" }, { status: 413 });
   }
 
-  const signatureVerified = verifyGithubWebhookSignature({
-    body: rawBody,
-    signatureHeader: validation.headers.signature256,
-    secret,
-  });
+  const verification = verifier.verify(request, rawBody, secret);
 
-  if (!signatureVerified) {
+  if (!verification.verified) {
     return Response.json({ ok: false, error: "signature_verification_failed" }, { status: 401 });
   }
 
-  return persistDelivery(validation.headers, rawBody, signatureVerified);
+  return persistDelivery(validation.headers, rawBody, verification.verified);
 }
 
 function checkContentLength(headers: Headers): Response | null {
