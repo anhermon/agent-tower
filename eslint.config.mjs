@@ -47,6 +47,8 @@ export default tseslint.config(
       "**/.cursor/**",
       "**/.tmp/**",
       "**/.worktrees/**",
+      "**/.worktree/**",
+      ".worktree/**",
       "**/*.tsbuildinfo",
       "**/logs/**",
       "**/playwright-report/**",
