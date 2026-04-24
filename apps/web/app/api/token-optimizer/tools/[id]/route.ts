@@ -30,7 +30,10 @@ function validateBody(body: Record<string, unknown>): Response | null {
     return Response.json({ ok: false, error: "invalid_body" }, { status: 400 });
   }
   if ("tags" in body) {
-    if (!Array.isArray(body.tags) || !(body.tags as unknown[]).every((t) => typeof t === "string")) {
+    if (
+      !Array.isArray(body.tags) ||
+      !(body.tags as unknown[]).every((t) => typeof t === "string")
+    ) {
       return Response.json({ ok: false, error: "invalid_body" }, { status: 400 });
     }
     const tags = body.tags as string[];
