@@ -1,8 +1,14 @@
 import { ModulePlaceholder } from "@/components/layout/module-placeholder";
 import { getModuleByKey } from "@/lib/modules";
+import { listMcpServers } from "@/lib/mcps-source";
 
-export default function McpsPage() {
+export default async function McpsPage() {
   const mod = getModuleByKey("mcps");
+  // Phase 1 — deferred. The result is always { ok: false, reason: "deferred" }.
+  // TODO(Phase 2): await listMcpServers(); switch on result.ok to render
+  // result.servers and result.tools via components/mcps/ instead of the
+  // placeholder below.
+  await listMcpServers();
 
   return (
     <ModulePlaceholder
