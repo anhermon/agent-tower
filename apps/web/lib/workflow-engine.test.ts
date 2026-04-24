@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/unbound-method -- Vitest expect(mock).toHaveBeenCalledWith patterns are safely bound by the test framework */
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+
 import { InMemoryEventBus, type EventEnvelope, EventSourceKind } from "@control-plane/events";
-import type { RepoConfigProvider, RepoWorkflowConfig } from "./repo-config";
+
 import { createWorkflowEngine, type WebhookReceived } from "./workflow-engine";
+
+import type { RepoConfigProvider, RepoWorkflowConfig } from "./repo-config";
 
 function createWebhookEvent(overrides: Partial<WebhookReceived["payload"]> = {}): WebhookReceived {
   return {
@@ -75,10 +79,15 @@ describe("WorkflowEngine", () => {
     await eventBus.publish(event);
 
     expect(jobQueue.add).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- accessing mock call data; typed as any by Vitest
     const jobData = jobQueue.add.mock.calls[0][1];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- accessing mock call data
     expect(jobData.ruleName).toBe("Review PRs");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- accessing mock call data
     expect(jobData.repositoryFullName).toBe("owner/repo");
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- accessing mock call data
     expect(jobData.actions).toHaveLength(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- accessing mock call data
     expect(jobData.actions[0].type).toBe("review_pr");
   });
 
@@ -175,7 +184,9 @@ describe("WorkflowEngine", () => {
     await eventBus.publish(event);
 
     expect(jobQueue.add).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- accessing mock call data; typed as any by Vitest
     const jobData = jobQueue.add.mock.calls[0][1];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- accessing mock call data
     expect(jobData.ruleName).toBe("CI Failures");
   });
 

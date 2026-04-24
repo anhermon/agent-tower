@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/unbound-method -- Vitest expect(mock).toHaveBeenCalledWith patterns are safely bound by the test framework */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { Job } from "bullmq";
-import type { GitHubActionExecutor } from "./github-actions";
+
 import { processWorkflowJob, buildTemplateContext } from "./workflow-worker";
+
+import type { GitHubActionExecutor } from "./github-actions";
 import type { WorkflowJobData } from "./workflow-queue";
+import type { Job } from "bullmq";
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -25,6 +25,9 @@
 - `task ci:health` — one-line green/red board from `.ci/reports/latest.json`.
 - `task github:webhook:create` — create/update the GitHub repository webhook for `/api/webhooks/github` using `CLAUDE_CONTROL_PLANE_GITHUB_WEBHOOK_URL` and `CLAUDE_CONTROL_PLANE_GITHUB_WEBHOOK_SECRET`.
 - `task github:branch-protect` — apply the GitHub `main` branch rules after the remote exists.
+- `task agent:preflight` — pre-commit ritual: autofix fmt+lint (`task fmt` + `pnpm eslint --fix`), then typecheck + test. Run before every commit.
+- `task agent:worktree-new -- <branch>` — create a git worktree in `.worktrees/<branch>` + run baseline verify.
+- `task agent:worktree-rm -- <branch>` — remove a git worktree after work is merged or discarded.
 
 ## Architecture Map
 - `apps/web` — Next.js App Router dashboard, routes, module registry, local API endpoints.
@@ -64,6 +67,39 @@
 - Agents working from GitHub events should read the PR timeline first, address review comments directly, and leave a concise comment with the exact validation commands they ran.
 - Do not push directly to `main` after the initial repository bootstrap. Use `gh pr create`, `gh pr checks`, and `gh pr merge --squash` when operating from the CLI.
 - The inbound repository webhook targets `POST /api/webhooks/github`. Configure it with a public HTTPS callback URL and `CLAUDE_CONTROL_PLANE_GITHUB_WEBHOOK_SECRET`; use `task github:webhook:create` after `origin` points at the GitHub repo.
+
+## Agent Coding Workflow
+
+These rules apply whenever an agent (including sub-agents) starts implementation work. Evidence from session history shows agents fighting CI reactively instead of leveraging it proactively — these rules fix that.
+
+### a. Always start in a git worktree
+
+Never implement directly on the main working tree or on `main`. Before writing any code:
+```
+git worktree add .worktrees/<branch> -b <branch>
+# or the shortcut:
+task agent:worktree-new -- feat/<scope>
+```
+`task agent:worktree-new` creates the worktree, installs deps, and runs a baseline `task verify` to confirm the starting state is clean. Worktrees go in `.worktrees/` (gitignored). See `superpowers:using-git-worktrees` for the full protocol.
+
+### b. Pre-commit ritual — autofix before every commit
+
+Before staging and committing, always run:
+```
+task agent:preflight
+```
+This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` (so ESLint resolves `@control-plane/*` types) → `pnpm eslint . --fix` → `pnpm typecheck` → `pnpm test`. It autofixes ~90% of T1/T2 violations before the hooks see them.
+
+**Gotcha — `packages/*` edits:** ESLint resolves `@control-plane/*` imports from built `.d.ts` files. If you modify any `packages/` directory and skip `task build:packages`, ESLint reports thousands of false "type not found" errors. `agent:preflight` handles this automatically.
+
+**Commit cadence:** after each logical unit (one component, one fix, one plan step). Use `/commit` for message format. After every 3–5 commits, push and wait for `task ci:fast` to pass. Aim for ≤30 minutes of uncommitted changes.
+
+### c. Never bypass red CI
+
+- Never pass `--no-verify` to `git commit` or `git push`. If a T1 hook (Biome + ESLint + gitleaks) or T2 hook (`task ci:fast`) fails, fix the underlying issue — not the hook.
+- `task ci:fast` runs automatically on every `git push` (lefthook pre-push). If it fails, stop and fix before pushing more commits.
+- If GitHub Actions CI is red, do not open a PR, do not merge, do not stack commits on top of a failing gate. Fix forward.
+- Semantic ESLint violations (import cycles, cognitive complexity >25, missing hook deps) are not autofixable — they require code changes. Don't suppress with `eslint-disable`; fix the structure.
 
 ## Observability
 - Every server process uses `@control-plane/logger` — `getLogger(component).info({...}, "msg")`. Never `new pino()` directly, never `console.log`.
@@ -105,3 +141,42 @@ Data surface for all three: `CLAUDE_CONTROL_PLANE_DATA_ROOT` (env) → `~/.claud
 - `apps/web` runs with `next dev --hostname 127.0.0.1`. Playwright `global-setup` assumes that host; don't change it casually.
 - Workspace packages publish from `dist/` (built via `tsc -p`). If types look stale when iterating, run `pnpm -r build` or `pnpm typecheck` in the dependent package.
 - `packages/testing` exports **source** (`./fixtures/core/index.ts`), not a build artifact — importers get raw TS.
+
+<!-- code-review-graph MCP tools -->
+## MCP Tools: code-review-graph
+
+**IMPORTANT: This project has a knowledge graph. ALWAYS use the
+code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
+the codebase.** The graph is faster, cheaper (fewer tokens), and gives
+you structural context (callers, dependents, test coverage) that file
+scanning cannot.
+
+### When to use graph tools FIRST
+
+- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
+- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
+- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
+- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
+- **Architecture questions**: `get_architecture_overview` + `list_communities`
+
+Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
+
+### Key Tools
+
+| Tool | Use when |
+|------|----------|
+| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
+| `get_review_context` | Need source snippets for review — token-efficient |
+| `get_impact_radius` | Understanding blast radius of a change |
+| `get_affected_flows` | Finding which execution paths are impacted |
+| `query_graph` | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes` | Finding functions/classes by name or keyword |
+| `get_architecture_overview` | Understanding high-level codebase structure |
+| `refactor_tool` | Planning renames, finding dead code |
+
+### Workflow
+
+1. The graph auto-updates on file changes (via hooks).
+2. Use `detect_changes` for code review.
+3. Use `get_affected_flows` to understand impact.
+4. Use `query_graph` pattern="tests_for" to check coverage.

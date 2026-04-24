@@ -55,7 +55,7 @@ async function githubFetch(path: string, options: RequestInit = {}): Promise<Res
       Authorization: `Bearer ${token}`,
       "X-GitHub-Api-Version": "2022-11-28",
       "User-Agent": "control-plane-webhook-agent",
-      ...(options.headers || {}),
+      ...(options.headers ?? {}),
     },
   });
 

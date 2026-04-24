@@ -1,8 +1,10 @@
 import type { EventEnvelope, EventBus } from "@control-plane/events";
-import type { Queue } from "bullmq";
-import type { RepoConfigProvider, WorkflowAction } from "./repo-config";
-import type { WorkflowJobData } from "./workflow-queue";
+
 import { evaluateFilter } from "./filter-evaluator";
+
+import type { RepoConfigProvider } from "./repo-config";
+import type { WorkflowJobData } from "./workflow-queue";
+import type { Queue } from "bullmq";
 
 export interface WebhookPayload {
   readonly eventType: string;
@@ -28,6 +30,7 @@ export function createWorkflowEngine(deps: WorkflowEngineDependencies): Workflow
   const { eventBus, jobQueue, repoConfigProvider } = deps;
 
   const subscription = eventBus.subscribe(async (event) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- EventEnvelope.type is a string literal union; comparing to string literal is intentional
     if (event.type !== "webhook.received") {
       return;
     }
@@ -91,7 +94,7 @@ export function createWorkflowEngine(deps: WorkflowEngineDependencies): Workflow
           senderLogin: webhookEvent.payload.senderLogin,
           rawPayload,
           ruleName: rule.name,
-          actions: rule.actions as WorkflowAction[],
+          actions: rule.actions,
           repoConfig: config,
         };
 

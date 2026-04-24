@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface TodoItem {
   readonly content: string;
-  readonly status: "pending" | "in_progress" | "completed" | string;
+  readonly status: string;
   readonly activeForm?: string;
 }
 

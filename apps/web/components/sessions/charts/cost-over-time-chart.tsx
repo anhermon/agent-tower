@@ -103,6 +103,7 @@ export function CostOverTimeChart({ daily }: Props) {
             formatter={
               ((val: unknown, name: unknown) => [
                 formatCost(Number(val ?? 0)),
+                // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Recharts passes `name` as unknown; safe to stringify
                 shortModel(String(name ?? "")),
               ]) as never
             }

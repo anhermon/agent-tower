@@ -85,6 +85,7 @@ export function CacheEfficiencyPanel({ models, overall, totalCostUsd }: Props) {
               formatter={
                 ((val: unknown, name: unknown) => [
                   formatTokens(Number(val ?? 0)),
+                  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Recharts passes `name` as unknown; safe to stringify
                   String(name ?? ""),
                 ]) as never
               }

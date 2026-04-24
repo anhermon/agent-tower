@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Recharts tooltip props are typed as any by the library */
 "use client";
 
 import {

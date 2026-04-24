@@ -34,6 +34,7 @@ export type ListMcpServersResult =
  * When an {@link McpAdapter} is registered, replace this stub with real
  * capability-gated calls.
  */
+// eslint-disable-next-line @typescript-eslint/require-await -- Phase 1 stub; real implementation will use await
 export async function listMcpServers(): Promise<ListMcpServersResult> {
   // Phase 1: deferred. No adapter is wired.
   return { ok: false, reason: "deferred" };

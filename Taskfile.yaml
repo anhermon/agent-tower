@@ -22,6 +22,39 @@ tasks:
     cmds:
       - pnpm dev
 
+  # --- Agent workflow helpers -----------------------------------------------
+  agent:preflight:
+    desc: "Pre-commit ritual: autofix fmt+lint, then verify types+tests (run before committing)"
+    cmds:
+      - task: fmt
+      - task: build:packages
+      - pnpm eslint . --fix --cache --cache-location .ci/.eslintcache
+      - pnpm typecheck
+      - pnpm test
+
+  agent:worktree-new:
+    desc: "Create a git worktree + run baseline verify (usage: task agent:worktree-new -- feat/my-feature)"
+    cmds:
+      - git worktree add .worktrees/{{.CLI_ARGS}} -b {{.CLI_ARGS}}
+      - cmd: pnpm install --frozen-lockfile
+        dir: .worktrees/{{.CLI_ARGS}}
+      - cmd: pnpm typecheck
+        dir: .worktrees/{{.CLI_ARGS}}
+      - cmd: pnpm test
+        dir: .worktrees/{{.CLI_ARGS}}
+      - echo "Worktree ready → .worktrees/{{.CLI_ARGS}} (baseline verified)"
+    preconditions:
+      - sh: '[ -n "{{.CLI_ARGS}}" ]'
+        msg: "Usage: task agent:worktree-new -- <branch-name>"
+
+  agent:worktree-rm:
+    desc: "Remove a git worktree (usage: task agent:worktree-rm -- feat/my-feature)"
+    cmds:
+      - git worktree remove .worktrees/{{.CLI_ARGS}}
+    preconditions:
+      - sh: '[ -n "{{.CLI_ARGS}}" ]'
+        msg: "Usage: task agent:worktree-rm -- <branch-name>"
+
   # --- Fast sanity ----------------------------------------------------------
   typecheck:
     desc: TypeScript across all workspaces

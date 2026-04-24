@@ -1,5 +1,5 @@
-import type { EventEnvelope } from "@control-plane/events";
 import {
+  type EventEnvelope,
   type AppendOnlyEventLog,
   type AsyncEventStream,
   type EventLogAppendResult,
@@ -7,6 +7,7 @@ import {
   type EventLogRecord,
   InMemoryAppendOnlyEventLog,
 } from "@control-plane/events";
+
 import type { WebhookReceived } from "./webhook-normalizer";
 
 export interface WorkflowAction {

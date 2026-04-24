@@ -25,6 +25,7 @@ export interface ProjectGrouping {
  * filesystem reads, no external state. Accepts pre-grouped input so callers
  * decide how sessions map to projects.
  */
+// eslint-disable-next-line complexity -- project analytics fold; high branching reflects the many optional fields in ProjectSummary
 export function foldProjectSummary(group: ProjectGrouping): ProjectSummary {
   const sessions = group.sessions;
   const cwd = group.displayPath ?? inferDisplayPath(sessions) ?? decodeSlug(group.id);

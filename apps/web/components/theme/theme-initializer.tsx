@@ -45,6 +45,7 @@ export function ThemeInitializer() {
           },
           timestamp: Date.now(),
         }),
+        // eslint-disable-next-line @typescript-eslint/no-empty-function -- fire-and-forget; telemetry failures are intentionally silenced
       }).catch(() => {});
     } catch {
       // ignore

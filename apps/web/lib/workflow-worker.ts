@@ -1,9 +1,11 @@
 import { Worker, type Job } from "bullmq";
+
 import { getLogger } from "@control-plane/logger";
-import type { WorkflowJobData } from "./workflow-queue";
-import type { GitHubActionExecutor } from "./github-actions";
+
 import { renderTemplate } from "./template-renderer";
-import { getRedisConnection } from "./workflow-queue";
+import { getRedisConnection, type WorkflowJobData } from "./workflow-queue";
+
+import type { GitHubActionExecutor } from "./github-actions";
 
 export interface WorkflowWorker {
   stop(): Promise<void>;
@@ -27,6 +29,7 @@ export function buildTemplateContext(jobData: WorkflowJobData): Record<string, u
   };
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity -- workflow action dispatch; branching reflects per-action-type execution paths
 export async function processWorkflowJob(
   job: Job<WorkflowJobData>,
   actionExecutor: GitHubActionExecutor

@@ -3,8 +3,18 @@
   "mcpServers": {
     "control-plane": {
       "command": "node",
-      "args": ["packages/mcp-server/dist/server.js"],
+      "args": [
+        "packages/mcp-server/dist/server.js"
+      ],
       "env": {}
+    },
+    "code-review-graph": {
+      "command": "uvx",
+      "args": [
+        "code-review-graph",
+        "serve"
+      ],
+      "type": "stdio"
     }
   }
 }

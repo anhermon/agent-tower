@@ -53,6 +53,7 @@ export function createServer(options: CreateServerOptions = {}): Server {
   const byName = new Map<string, ToolDefinition>();
   for (const tool of REGISTERED_TOOLS) byName.set(tool.name, tool);
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- SDK requires async handler but list is synchronous
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: REGISTERED_TOOLS.map((tool) => ({
       name: tool.name,

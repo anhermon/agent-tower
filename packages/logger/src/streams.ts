@@ -18,6 +18,7 @@ export const STDERR_LEVEL_FLOOR = 40;
 const REQUEST_COMPONENT = "request";
 const require = createRequire(import.meta.url);
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports -- dynamic require pattern; no static import available at this module scope
 type PrettyFactory = typeof import("pino-pretty");
 
 export interface FanoutSinks {
