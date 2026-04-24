@@ -15,13 +15,15 @@ UI half of the Webhooks module; the data half lives in
   modules (`page.tsx`, `lib/webhooks-source.ts`) may touch `node:fs` or
   read the configured JSON file. Client components receive plain
   serializable props.
-- **Read-only.** No writes, no network, no mutations. No POST/PUT/DELETE
-  handlers live here. Subscription CRUD is deferred past Phase 2 v1.
-- **No inbound receiver.** The inbound webhook endpoint, HMAC/signature
-  verification, and the outbound fan-out from `DomainEvent` are
-  deferred — see `docs/architecture/security.md` and
-  `docs/modules/webhooks.md`. If you find yourself adding a route that
-  accepts inbound POSTs, stop and plan it as a separate Phase 3 slice.
+- **Read-only (this directory).** No writes, no network, no mutations
+  originating from the `/webhooks` UI routes. Subscription CRUD is deferred
+  past Phase 2 v1.
+- **Inbound receiver is live.** `app/api/webhooks/github/route.ts` is the
+  inbound GitHub webhook endpoint. It validates headers and HMAC-SHA256
+  signature (`lib/webhook-verifier.ts`), persists deliveries to the JSONL
+  log (`lib/github-webhooks.ts`), and publishes a `WebhookReceived` event to
+  the internal event bus (`lib/event-bus.ts`). Do not duplicate this logic
+  here; do not add a second POST handler under `/webhooks`.
 
 ## Routing
 
@@ -45,8 +47,6 @@ slice of the module is planned:
 
 - CRUD on webhook subscriptions (create/edit/delete/test-fire through the
   UI).
-- HMAC/signature verification — keep this out entirely until the inbound
-  receiver lands so the signing code path is not half-implemented.
 - Secret values in the UI: only `secretRef` is surfaced. Reading or
   writing the secret value is not allowed here.
 - Retry/backoff configuration.
