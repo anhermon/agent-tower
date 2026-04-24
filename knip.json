@@ -1,6 +1,16 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignore": ["**/*.test.ts", "**/*.test.tsx", "e2e/**", "packages/testing/fixtures/**"],
+  "ignore": ["e2e/**", "packages/testing/fixtures/**", ".claude/**"],
+  "ignoreDependencies": [
+    "@cyclonedx/cdxgen",
+    "@eslint/eslintrc",
+    "@testing-library/jest-dom",
+    "@testing-library/user-event",
+    "license-checker-rseidelsohn",
+    "lint-staged",
+    "redis-memory-server",
+    "@control-plane/events"
+  ],
   "ignoreBinaries": ["turbo", "next", "vitest", "playwright", "tsc", "task"],
   "workspaces": {
     ".": {
