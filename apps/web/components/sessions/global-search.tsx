@@ -34,6 +34,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Reset state when the palette closes so the next open starts clean.
   useEffect(() => {
@@ -44,6 +45,9 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
       setLoading(false);
       controllerRef.current?.abort();
       controllerRef.current = null;
+    } else {
+      // Focus the input when opened (replaces autoFocus to satisfy jsx-a11y/no-autofocus).
+      inputRef.current?.focus();
     }
   }, [open]);
 
@@ -115,6 +119,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
   if (!open) return null;
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog backdrop click-to-close; keyboard handled via onKeyDown and inner cmdk Command
     <div
       role="dialog"
       aria-modal="true"
@@ -122,6 +127,9 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
       className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-[10vh]"
       onClick={(event) => {
         if (event.target === event.currentTarget) onOpenChange(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") onOpenChange(false);
       }}
     >
       <Command
@@ -136,7 +144,7 @@ export function GlobalSearch({ open, onOpenChange }: GlobalSearchProps) {
             ⌕
           </span>
           <Command.Input
-            autoFocus
+            ref={inputRef}
             value={query}
             onValueChange={setQuery}
             placeholder="Search across all session transcripts…"

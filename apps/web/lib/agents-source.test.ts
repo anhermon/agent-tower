@@ -9,6 +9,7 @@ import { AGENT_STATUSES } from "@control-plane/core";
 let mockedHome: string | null = null;
 
 vi.mock("node:os", async () => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports -- vitest importActual<typeof import(...)> pattern requires inline import type
   const actual = await vi.importActual<typeof import("node:os")>("node:os");
   return {
     ...actual,

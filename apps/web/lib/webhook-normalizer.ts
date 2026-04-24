@@ -36,8 +36,11 @@ export function normalizeGithubWebhook(params: {
     },
     payload: {
       eventType: String(params.headers["x-github-event"] ?? ""),
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string -- payload fields are `unknown`; String() coercion is intentional
       action: String(body?.action ?? ""),
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string -- payload fields are `unknown`; String() coercion is intentional
       repositoryFullName: String((body?.repository as Record<string, unknown>)?.full_name ?? ""),
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string -- payload fields are `unknown`; String() coercion is intentional
       senderLogin: String((body?.sender as Record<string, unknown>)?.login ?? ""),
       rawPayload: body,
     },

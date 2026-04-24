@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { Badge } from "@/components/ui/badge";
 import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -11,12 +12,13 @@ import {
   WEBHOOKS_FILE_ENV,
   type WebhookSubscriptionListing,
 } from "@/lib/webhooks-source";
+
 import { WebhookWorkbench } from "./_module/webhook-workbench";
 
 export const dynamic = "force-dynamic";
 
 export default async function WebhooksPage() {
-  const module = getModuleByKey("webhooks");
+  const mod = getModuleByKey("webhooks");
   const configuredFile = getConfiguredWebhooksFile();
   const result = await listWebhooksOrEmpty();
 
@@ -33,7 +35,7 @@ export default async function WebhooksPage() {
         <div className="min-w-0">
           <p className="eyebrow">Module</p>
           <div className="mt-1 flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">

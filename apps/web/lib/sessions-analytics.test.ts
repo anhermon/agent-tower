@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await -- test mocks implement async interfaces with synchronous stubs */
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import type {
@@ -333,7 +334,7 @@ describe("sessions-analytics", () => {
     it("coerces_non_Error_throws_to_string_message", async () => {
       const source: SessionAnalyticsSource = {
         listProjectSummaries: async () => {
-          // eslint-disable-next-line @typescript-eslint/no-throw-literal
+          // eslint-disable-next-line @typescript-eslint/only-throw-error -- intentionally testing non-Error throw coercion
           throw "plain-string-rejection";
         },
         listSessionSummaries: async () => [],

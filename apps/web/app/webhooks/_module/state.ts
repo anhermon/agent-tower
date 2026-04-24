@@ -4,12 +4,15 @@ import {
   DEFAULT_WEBHOOK_ROUTE_MODE,
   WEBHOOK_PROVIDER_CATALOG,
 } from "./catalog";
+
 import type {
   ObservedWebhookEvent,
   RegisteredWebhookIntegration,
+  WebhookEventCategory,
   WebhookEventFilters,
+  WebhookEventStatus,
   WebhookIntegrationDraft,
-  WebhookObservedStatus,
+  WebhookIntegrationStatus,
   WebhookProviderDefinition,
   WebhookProviderEventDefinition,
   WebhookProviderId,
@@ -130,7 +133,7 @@ export function createObservedWebhookEvent(input: {
   const provider = getWebhookProvider(input.integration.providerId);
   const event = getWebhookEventDefinition(provider, input.eventId);
   const processingMs = processingTimeFor(input.sequence, input.integration.routeMode);
-  const status: WebhookObservedStatus = input.integration.enabled ? "routed" : "failed";
+  const status: WebhookEventStatus = input.integration.enabled ? "routed" : "failed";
   return {
     id: createStableId("event", input.sequence),
     integrationId: input.integration.id,
@@ -147,6 +150,7 @@ export function createObservedWebhookEvent(input: {
     processingMs,
     timeline: createTimeline(input.integration.routeMode, status, processingMs),
     payload: createSyntheticPayload(provider, event),
+    repository: event.targetLabel.split("#")[0] ?? event.targetLabel,
   };
 }
 
@@ -158,6 +162,8 @@ export function filterObservedWebhookEvents(
   return events.filter((event) => {
     if (filters.providerId !== "all" && event.providerId !== filters.providerId) return false;
     if (filters.status !== "all" && event.status !== filters.status) return false;
+    if (filters.repo !== undefined && filters.repo !== "all" && event.repository !== filters.repo)
+      return false;
     if (query.length === 0) return true;
     return [
       event.providerLabel,
@@ -183,9 +189,75 @@ export function routeModeLabel(routeMode: WebhookRouteMode): string {
   return "Agent handoff";
 }
 
+export function getIntegrationStatus(
+  integration: RegisteredWebhookIntegration
+): WebhookIntegrationStatus {
+  const provider = getWebhookProvider(integration.providerId);
+  return provider.receiverState === "live" ? "live" : "planned";
+}
+
+export function groupEventsByCategory(
+  events: readonly ObservedWebhookEvent[]
+): Record<WebhookEventCategory, ObservedWebhookEvent[]> {
+  const grouped: Record<WebhookEventCategory, ObservedWebhookEvent[]> = {
+    pull_requests: [],
+    issues: [],
+    ci: [],
+    other: [],
+  };
+
+  for (const event of events) {
+    const id = event.eventId.toLowerCase();
+    if (id.includes("pull_request")) {
+      grouped.pull_requests.push(event);
+    } else if (id.includes("issue")) {
+      grouped.issues.push(event);
+    } else if (id.includes("workflow") || id.includes("ci")) {
+      grouped.ci.push(event);
+    } else {
+      grouped.other.push(event);
+    }
+  }
+
+  return grouped;
+}
+
+export function computeStats(events: readonly ObservedWebhookEvent[]) {
+  const total24h = events.length;
+  const activeProcessing = events.filter((e) => e.status === "processing").length;
+  const failedDlq = events.filter((e) => e.status === "failed" || e.status === "dlq").length;
+  const avgProcessingTime =
+    events.length > 0 ? events.reduce((sum, e) => sum + e.processingMs, 0) / events.length : 0;
+
+  return {
+    total24h,
+    activeProcessing,
+    failedDlq,
+    avgProcessingTime,
+  };
+}
+
+export function getProviderBreakdown(
+  events: readonly ObservedWebhookEvent[]
+): Record<WebhookProviderId, number> {
+  const breakdown: Record<WebhookProviderId, number> = {
+    github: 0,
+    slack: 0,
+    email: 0,
+  };
+
+  for (const event of events) {
+    if (event.providerId in breakdown) {
+      breakdown[event.providerId] += 1;
+    }
+  }
+
+  return breakdown;
+}
+
 function createTimeline(
   routeMode: WebhookRouteMode,
-  status: WebhookObservedStatus,
+  status: WebhookEventStatus,
   processingMs: number
 ): readonly WebhookTimelineStep[] {
   const stepMs = Math.max(1, Math.round(processingMs / PROCESSING_STEP_COUNT));
@@ -197,16 +269,28 @@ function createTimeline(
         : routeMode === "normalize_and_queue"
           ? "Queued canonical event"
           : "Agent handoff skipped";
+  const lastStep = status === "failed" ? "failed" : "completed";
 
   return [
-    { label: "Received provider event", status: "accepted", durationMs: stepMs },
-    { label: "Verified registration", status: "accepted", durationMs: stepMs },
+    {
+      label: "Received provider event",
+      status: "completed",
+      durationMs: stepMs,
+      step: "triggered",
+    },
+    { label: "Verified registration", status: "completed", durationMs: stepMs, step: "queued" },
     {
       label: "Matched route",
-      status: status === "failed" ? "failed" : "routed",
+      status: status === "failed" ? "failed" : "completed",
       durationMs: stepMs,
+      step: "processing",
     },
-    { label: lastLabel, status, durationMs: Math.max(1, processingMs - stepMs * 3) },
+    {
+      label: lastLabel,
+      status: lastStep,
+      durationMs: Math.max(1, processingMs - stepMs * 3),
+      step: "completed",
+    },
   ];
 }
 

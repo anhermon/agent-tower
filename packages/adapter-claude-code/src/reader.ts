@@ -124,6 +124,7 @@ export interface TranscriptPreview {
  * Peeks at the head of a transcript to extract a human-friendly title without
  * reading the full file. Stops after finding a title or after `maxLines`.
  */
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- preview extraction reads multiple entry types; branching follows the Claude JSONL format
 export async function readTranscriptPreview(
   filePath: string,
   options: { readonly maxLines?: number } = {}
@@ -197,6 +198,7 @@ function extractFirstUserText(
     candidates.push(content);
   } else if (Array.isArray(content)) {
     for (const block of content) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- block comes from parsed JSON; pickText narrows it at runtime
       const text = pickText(block);
       if (text) candidates.push(text);
     }

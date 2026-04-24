@@ -1,12 +1,11 @@
 import { RedisMemoryServer } from "redis-memory-server";
+
 import type { Queue, Worker } from "bullmq";
 
 let redisServer: RedisMemoryServer | undefined;
 
 export async function startTestRedis(): Promise<{ host: string; port: number }> {
-  if (!redisServer) {
-    redisServer = new RedisMemoryServer();
-  }
+  redisServer ??= new RedisMemoryServer();
   const host = await redisServer.getHost();
   const port = await redisServer.getPort();
   return { host, port };

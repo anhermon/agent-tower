@@ -146,7 +146,7 @@ export function ActivityHeatmap({ data }: Props) {
           );
         })}
         {/* Day-of-week labels */}
-        {DAY_LABELS.map((lbl) => (
+        {DAY_LABELS.map((lbl, di) => (
           <text
             key={`d-${lbl}`}
             x={0}

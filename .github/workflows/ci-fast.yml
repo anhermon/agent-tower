@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -38,5 +40,34 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run ci:fast
-        run: task ci:fast
+      - name: Format check
+        run: task fmt:check
+
+      - name: Build packages
+        run: task build:packages
+
+      - name: Lint changed files
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.base_ref }}"
+          else
+            BASE_REF="main"
+          fi
+          changed_files=$(git diff --name-only --diff-filter=ACMRT origin/$BASE_REF...HEAD | grep -E '\.(ts|tsx|mjs|js|jsx)$' || true)
+          if [ -n "$changed_files" ]; then
+            echo "$changed_files" | xargs -r pnpm eslint --cache --cache-location .ci/.eslintcache
+          else
+            echo "No TypeScript/JavaScript files changed."
+          fi
+
+      - name: Type check
+        run: task typecheck
+
+      - name: Test with coverage
+        run: task test:coverage
+
+      - name: Build
+        run: task build
+
+      - name: Audit
+        run: task audit

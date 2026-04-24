@@ -17,6 +17,7 @@ export function useAgentAnimationEvents(): ReadonlyMap<string, AgentAnimationSna
     const source = new EventSource(AGENT_EVENTS_URL);
 
     source.addEventListener("message", (event) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- EventSource.data is typed as string; parseSnapshot accepts unknown
       const snapshot = parseSnapshot(event.data);
       if (!snapshot) return;
       setSnapshots((current) => {

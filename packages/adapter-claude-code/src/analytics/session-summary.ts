@@ -51,6 +51,17 @@ export const REPEAT_READ_MIN_COUNT = 3;
 /** Upper bound on how many repeat-read entries we surface (top-N by count). */
 export const REPEAT_READ_TOP_N = 10;
 
+// ─── Small-session gates ─────────────────────────────────────────────────────
+// These suppress noisy sub-scores on sessions too small for the metric to be
+// statistically meaningful. Tests pin these values in session-summary.test.ts.
+
+/** Minimum assistant turns with tools before sequentialToolTurnPct is reported. */
+export const SEQUENTIAL_TOOLS_MIN_TURNS = 10;
+/** Minimum tool_result samples before toolFailurePct is reported. */
+export const TOOL_FAILURE_MIN_SAMPLES = 5;
+/** Minimum session duration (ms) before bloatWithoutCompaction is evaluated. */
+export const BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS = 300_000;
+
 type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -379,7 +390,7 @@ function buildSummary(state: FoldState): SessionUsageSummary {
     userMessageCount: state.userMessageCount,
     assistantMessageCount: state.assistantMessageCount,
     ...buildSummaryOptionalFields(state, durationMs),
-    waste: buildWasteSignals(state),
+    waste: buildWasteSignals(state, durationMs),
   };
 }
 
@@ -398,16 +409,28 @@ function buildSummaryOptionalFields(
   };
 }
 
-function buildWasteSignals(state: FoldState): SessionWasteSignals {
+function buildWasteSignals(state: FoldState, durationMs: number | undefined): SessionWasteSignals {
   const cacheDenominator = state.usage.cacheCreationInputTokens + state.usage.cacheReadInputTokens;
   const cacheThrashRatio =
     cacheDenominator > 0 ? state.usage.cacheCreationInputTokens / cacheDenominator : 0;
   const mcpToolCallPct =
     state.totalToolUseBlocks > 0 ? state.mcpToolCalls / state.totalToolUseBlocks : 0;
+
+  // Small-session gates: suppress unreliable signals when the sample is too small.
   const sequentialToolTurnPct =
-    state.turnsWithTools > 0 ? state.singleToolTurns / state.turnsWithTools : 0;
+    state.turnsWithTools >= SEQUENTIAL_TOOLS_MIN_TURNS && state.turnsWithTools > 0
+      ? state.singleToolTurns / state.turnsWithTools
+      : 0;
   const toolFailurePct =
-    state.totalToolResults > 0 ? state.toolFailures / state.totalToolResults : 0;
+    state.totalToolResults >= TOOL_FAILURE_MIN_SAMPLES && state.totalToolResults > 0
+      ? state.toolFailures / state.totalToolResults
+      : 0;
+
+  const bloatWithoutCompaction =
+    typeof durationMs === "number" &&
+    durationMs >= BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS &&
+    state.peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
+    state.compactions.length === 0;
 
   const repeatReads: RepeatReadEntry[] = [...state.readFileCounts.entries()]
     .filter(([, count]) => count >= REPEAT_READ_MIN_COUNT)
@@ -422,9 +445,7 @@ function buildWasteSignals(state: FoldState): SessionWasteSignals {
     sequentialToolTurnPct,
     toolFailurePct,
     peakInputTokensBetweenCompactions: state.peakInputTokensBetweenCompactions,
-    bloatWithoutCompaction:
-      state.peakInputTokensBetweenCompactions > BLOAT_WITHOUT_COMPACTION_THRESHOLD &&
-      state.compactions.length === 0,
+    bloatWithoutCompaction,
     repeatReads,
     totalToolUseBlocks: state.totalToolUseBlocks,
     totalToolResults: state.totalToolResults,

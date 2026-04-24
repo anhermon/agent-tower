@@ -6,6 +6,7 @@ import {
   EventSourceKind,
 } from "@control-plane/events";
 
+import { eventBus } from "@/lib/event-bus";
 import {
   type GithubWebhookHeaders,
   getConfiguredGithubWebhookSecret,
@@ -14,7 +15,6 @@ import {
   validateGithubWebhookHeaders,
 } from "@/lib/github-webhooks";
 import { getWebhookVerifier } from "@/lib/webhook-verifier";
-import { eventBus } from "@/lib/event-bus";
 import { withAudit } from "@/lib/with-audit";
 
 export const dynamic = "force-dynamic";

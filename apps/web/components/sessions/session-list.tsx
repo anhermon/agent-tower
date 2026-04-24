@@ -141,6 +141,7 @@ export function SessionList({
   }, [focusIndex]);
 
   useEffect(() => {
+    // eslint-disable-next-line complexity -- keyboard nav handler; each key is a branch
     const handler = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       const tag = target?.tagName;

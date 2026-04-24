@@ -91,6 +91,7 @@ function prettyJson(value: JsonValue): string {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string -- fallback for values that failed JSON.stringify; intentional stringify
     return String(value);
   }
 }

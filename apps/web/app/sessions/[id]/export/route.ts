@@ -131,6 +131,7 @@ function renderExport(replay: ReplayData): string {
 </html>`;
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity -- HTML rendering of session turns; branching follows turn type and block type dispatch
 function renderTurn(
   turn: ReplayTurn,
   index: number,
