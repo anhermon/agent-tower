@@ -71,7 +71,9 @@ export class ClaudeCodeSessionSource {
       try {
         const normalized = normalizeTranscript(entries, options);
         yield normalized.batch;
-      } catch {}
+      } catch {
+        // Swallow per-file normalization errors; the rest of the batch continues.
+      }
     }
   }
 }
@@ -161,7 +163,9 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async collectAllSummaries(): Promise<readonly SessionUsageSummary[]> {
     const files = await listSessionFiles(this.root);
     const concurrency = 16;
-    const results: SessionUsageSummary[] = new Array(files.length);
+    const results: (SessionUsageSummary | undefined)[] = Array.from<
+      SessionUsageSummary | undefined
+    >({ length: files.length });
     let cursor = 0;
     const worker = async (): Promise<void> => {
       while (true) {
@@ -178,7 +182,8 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
       }
     };
     await Promise.all(Array.from({ length: Math.min(concurrency, files.length) }, worker));
-    return results.filter(Boolean);
+
+    return results.filter((s): s is SessionUsageSummary => s !== undefined);
   }
 
   private async summaryFor(file: ClaudeSessionFile): Promise<SessionUsageSummary> {
