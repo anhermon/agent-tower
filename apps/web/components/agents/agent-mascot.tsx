@@ -131,15 +131,25 @@ export function AgentMascot({
           reducedMotion && "agent-mascot--reduced-motion"
         )}
       >
+        {/* biome-ignore lint/performance/noImgElement: sprite sheets require <img> for CSS-animation layer positioning */}
         <img className="agent-mascot__shadow" src={manifest.parts.shadow} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__body" src={manifest.parts.body} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__left-arm" src={manifest.parts.leftArm} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__right-arm" src={manifest.parts.rightArm} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__head" src={manifest.parts.head} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__eyes" src={eyeSrc} alt="" />
+        {/* biome-ignore lint/performance/noImgElement: sprite */}
         <img className="agent-mascot__mouth" src={mouthSrc} alt="" />
         {hasLaptop ? (
-          <img className="agent-mascot__laptop" src={manifest.parts.laptop} alt="" />
+          <>
+            {/* biome-ignore lint/performance/noImgElement: sprite */}
+            <img className="agent-mascot__laptop" src={manifest.parts.laptop} alt="" />
+          </>
         ) : null}
       </div>
     </div>

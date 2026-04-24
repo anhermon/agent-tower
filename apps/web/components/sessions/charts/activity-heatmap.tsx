@@ -134,7 +134,7 @@ export function ActivityHeatmap({ data }: Props) {
           const x = DAY_LABEL_W + wi * (CELL + GAP);
           return (
             <text
-              key={`m-${wi}`}
+              key={`m-${w.days[0].label.toISOString().slice(0, 7)}`}
               x={x}
               y={MONTH_LABEL_H - 2}
               fontSize={9}
@@ -146,9 +146,9 @@ export function ActivityHeatmap({ data }: Props) {
           );
         })}
         {/* Day-of-week labels */}
-        {DAY_LABELS.map((lbl, di) => (
+        {DAY_LABELS.map((lbl) => (
           <text
-            key={`d-${di}`}
+            key={`d-${lbl}`}
             x={0}
             y={MONTH_LABEL_H + di * (CELL + GAP) + CELL - 1}
             fontSize={9}
@@ -168,7 +168,7 @@ export function ActivityHeatmap({ data }: Props) {
             if (day.label.getTime() > Date.now()) return null;
             return (
               <rect
-                key={`c-${wi}-${di}`}
+                key={day.label.toISOString().slice(0, 10)}
                 x={x}
                 y={y}
                 width={CELL}

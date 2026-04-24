@@ -205,6 +205,7 @@ function UsageBlock({ stats }: { readonly stats: SkillUsageStats | null }) {
             const lightness = 18 + Math.round(intensity * 46);
             const alpha = count === 0 ? 0.08 : 0.15 + intensity * 0.85;
             return (
+              // biome-ignore lint/suspicious/noArrayIndexKey: hour 0–23 is the stable UTC-hour semantic key
               <div
                 key={hour}
                 title={`${hour.toString().padStart(2, "0")}:00 UTC · ${count}`}
