@@ -15,17 +15,21 @@
 - `src/reader.ts` — low-level JSONL enumeration + line parsing.
 - `src/normalizer.ts` — pure raw→canonical mapping.
 - `src/data-root.ts` — `CLAUDE_CONTROL_PLANE_DATA_ROOT` env var + `~/.claude/projects` fallback. Shared by every consumer.
-- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary, **waste** (`scoreSessionWaste` → 6 sub-scores + overall + verbatim flags). Every `SessionUsageSummary` carries `.waste: SessionWasteSignals` populated during `foldSessionSummary`. The fold applies small-session gates (`SEQUENTIAL_TOOLS_MIN_TURNS = 10`, `TOOL_FAILURE_MIN_SAMPLES = 5`, `BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS = 300_000`) before emitting `sequentialToolTurnPct` / `toolFailurePct` / `bloatWithoutCompaction`, so downstream scorers don't fire on statistically meaningless inputs.
+- `src/analytics/*.ts` — pure folds: session-summary, cost, tools, replay, timeseries, project-summary, **waste** (`scoreSessionWaste` → 6 sub-scores + overall + verbatim flags). Small-session gates suppress unreliable signals (`SEQUENTIAL_TOOLS_MIN_TURNS=10`, `TOOL_FAILURE_MIN_SAMPLES=5`, `BLOAT_WITHOUT_COMPACTION_MIN_DURATION_MS=300_000`).
+- `src/analytics/turn-timeline.ts` — `computeTurnTimeline`: per-turn rollup of tool use, token usage, cache hit rate, duration, and `wastedTurn` flag.
+- `src/analytics/skill-turn-attribution.ts` — `computeSkillTurnAttribution`: per-turn + cumulative skill invocation sets; shares detection with `skills/detect.ts`.
 - `src/skills/manifests.ts` — `SKILL.md` discovery from `CONTROL_PLANE_SKILLS_ROOTS` → `~/.claude/skills`.
 - `src/skills/usage.ts` — `Skill` tool_use invocation counts + size-weighted injection totals.
 - `src/skills/efficacy.ts` — session-outcome heuristic + per-skill delta vs baseline.
-- `src/skills/hygiene.ts` — pure fold that classifies the catalogue into dead-weight (0 invocations), cold-giant, and negative-efficacy buckets. Powers `cp skills housekeep`.
+- `src/skills/hygiene.ts` — `computeSkillsHygiene`: classifies catalogue into dead-weight, cold-giant, and negative-efficacy buckets. Powers `cp skills housekeep`.
+- `src/skills/detect.ts` — `detectSkillFromBlock`/`detectSkillsFromEntry`: shared Skill detection predicate (used by `usage.ts` and `skill-turn-attribution.ts`).
 - `src/types.ts` — raw Claude Code entry shapes, kept internal.
 
 ## Entry Points / Flow
 - Session path: `ClaudeCodeSessionSource({ directory })` → `listSessions()`/`loadSession(id)` → `readTranscriptFile` → `normalizeTranscript` → canonical `SessionDescriptor` + `SessionTurn[]`.
 - Analytics path: `ClaudeCodeAnalyticsSource` → `listSessionSummaries`/`loadSessionUsage`/`loadCostBreakdown`/etc. → pure folds in `analytics/`. Waste scoring is a post-hoc fold: `scoreSessionWaste(summary)` / `scoreSessionsWaste(summaries)` takes an already-folded summary (where `.waste` is populated) and returns a `WasteVerdict` — it never reads JSONL itself.
-- Skills path: `listSkillsOrEmpty()` (manifests) → `computeSkillsUsage({skills})` and `computeSkillsEfficacy({skills, minSessionsForQualifying})`. Both scan the JSONL root resolved by `resolveDataRoot()` and join against the manifest catalogue.
+- Skills path: `listSkillsOrEmpty()` (manifests) → `computeSkillsUsage({skills})`, `computeSkillsEfficacy({skills})`, and `computeSkillsHygiene({skills})`. All scan the JSONL root resolved by `resolveDataRoot()` and join against the manifest catalogue.
+- Turn analytics: `computeTurnTimeline(entries)` and `computeSkillTurnAttribution(entries)` operate on raw transcript entries (no JSONL I/O — callers pass the already-loaded entries from `readTranscriptFile`).
 
 ## Local Conventions
 - **Read-only.** No mutations or writes of any kind.
