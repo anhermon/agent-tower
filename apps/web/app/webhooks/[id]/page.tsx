@@ -114,7 +114,7 @@ export default async function WebhookDetailPage({ params }: PageProps) {
             <h2 className="text-base font-semibold text-ink">Recent attempts</h2>
           </div>
           <p className="text-xs text-muted">
-            Inbound receiver deferred — deliveries are empty until Phase 3.
+            Accepted GitHub deliveries are shown when they match this subscription id.
           </p>
         </div>
         <WebhookDeliveryList deliveries={deliveries} />

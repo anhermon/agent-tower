@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { AppShell } from "@/components/layout/app-shell";
+import { RootShell } from "@/components/layout/root-shell";
 import { ThemeInitializer } from "@/components/theme/theme-initializer";
 import { ThemeScript } from "@/components/theme/theme-script";
 import "./globals.css";
@@ -29,7 +29,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeInitializer />
-        <AppShell>{children}</AppShell>
+        <RootShell>{children}</RootShell>
       </body>
     </html>
   );

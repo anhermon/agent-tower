@@ -19,6 +19,7 @@ logs/
 
 # Local IDE/tooling scratch
 .cursor/
+.worktrees/
 
 .env
 .env.*

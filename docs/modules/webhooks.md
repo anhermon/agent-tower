@@ -1,18 +1,23 @@
 # Webhooks Module
 
-The Webhooks module manages inbound event endpoints and outbound delivery
-history for the control plane. Phase 1 is deferred: the route is a
-placeholder (`apps/web/app/webhooks/page.tsx` renders the generic
-`ModulePage` shell) and no real subscriptions, deliveries, or signature
-verification exist yet. The canonical types are defined so later slices
-can light up without churning the domain. Rationale:
-[ADR-0001](../architecture/decisions/0001-phase-1-skeleton.md).
+The Webhooks module manages inbound event endpoints, local integration design,
+dry-run trigger testing, and delivery observability for the control plane. The
+current phase is webhook-first: registration and routing can be exercised
+without spending agent tokens, while agent handoff remains a disabled Phase 2
+target.
 
 ## What's live today
 
-- Nothing yet — see deferred scope. The route exists only to keep the
-  sidebar entry from 404'ing; the module registry marks it
-  `phase: "deferred"` in `apps/web/lib/modules.ts`.
+- `/webhooks` loads `CLAUDE_CONTROL_PLANE_WEBHOOKS_FILE`, renders configured
+  `WebhookSubscription[]`, joins local GitHub delivery JSONL records, and hosts
+  the embedded integration workbench.
+- `/webhooks/standalone` renders the workbench without the full control-plane
+  sidebar/topbar so the module can be refined independently.
+- `POST /api/webhooks/github` verifies GitHub HMAC signatures and appends
+  accepted delivery records to the local JSONL log.
+- The workbench supports GitHub, Slack, and Email provider catalogs, event
+  selection, route-mode selection, local test triggers, filters, timelines, and
+  drilldown. Slack and Email receivers are catalog/planning entries only.
 
 ## Canonical model
 
@@ -47,17 +52,25 @@ Types consumed from `@control-plane/core` (see
   explains the capability is unavailable.
 - Underlying source throws → `ErrorState` surfacing the error message.
 
-## Deliberately out of scope for Phase 1
+## Deliberately out of scope for the current phase
 
-Per [ADR-0001](../architecture/decisions/0001-phase-1-skeleton.md):
-
-- Webhook CRUD (create/edit/delete subscriptions) and persistence.
+- Durable webhook CRUD persistence. The workbench uses local client state for
+  UX validation.
 - Delivery retry policy and backoff scheduling.
-- Real HMAC/signature verification of inbound payloads — see
-  [security notes](../architecture/security.md).
 - Outbound fan-out from `DomainEvent` to external URLs.
-- Event-to-session traceability UI.
+- Agent session execution and prompt dispatch from webhook triggers.
+- Event-to-agent traceability. The UI stops at event-to-processing-route
+  drilldown until Phase 2 connects agents.
 - Secret storage backend (Phase 1 only names a `secretRef`).
+
+## Known hardening work
+
+- Publish a canonical `webhook.received` event after receiver validation instead
+  of only appending a delivery projection.
+- Add idempotency around provider delivery IDs.
+- Reject or explicitly classify unsupported provider events rather than mapping
+  them to a misleading canonical event type.
+- Add event-specific GitHub payload schemas before workflow execution is wired.
 
 ## Security notes
 
