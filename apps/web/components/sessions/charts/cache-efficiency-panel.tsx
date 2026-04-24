@@ -71,8 +71,8 @@ export function CacheEfficiencyPanel({ models, overall, totalCostUsd }: Props) {
               dataKey="value"
               strokeWidth={0}
             >
-              {pieData.map((entry) => (
-                <Cell key={entry.name} fill={entry.color} aria-label={entry.name} />
+              {pieData.map((entry, i) => (
+                <Cell key={i} fill={entry.color} aria-label={entry.name} />
               ))}
             </Pie>
             <Tooltip
@@ -85,7 +85,7 @@ export function CacheEfficiencyPanel({ models, overall, totalCostUsd }: Props) {
               formatter={
                 ((val: unknown, name: unknown) => [
                   formatTokens(Number(val ?? 0)),
-                  typeof name === "string" || typeof name === "number" ? String(name) : "",
+                  String(name ?? ""),
                 ]) as never
               }
             />

@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function SkillsPage({ searchParams }: { searchParams: SearchParams }) {
-  const mod = getModuleByKey("skills");
+  const module = getModuleByKey("skills");
   const sp = await searchParams;
   const range = resolveRangeFromSearchParams(sp);
   const [result, usage, efficacy] = await Promise.all([
@@ -41,7 +41,7 @@ export default async function SkillsPage({ searchParams }: { searchParams: Searc
           <p className="eyebrow">Module</p>
           <div className="mt-1 flex flex-wrap items-center gap-3">
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink md:text-[34px]">
-              {mod.label}
+              {module.label}
             </h1>
             <Badge state={status} />
           </div>

@@ -6,10 +6,7 @@ import type { DateRange } from "@control-plane/core";
 import { resolveDataRoot } from "../data-root.js";
 import { type ClaudeSessionFile, listSessionFiles } from "../reader.js";
 
-import { detectSkillFromBlock } from "./detect.js";
 import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
-
-import type { ClaudeContentBlock } from "../types.js";
 
 /**
  * Extracts Skill-tool invocation telemetry from locally stored Claude Code
@@ -149,60 +146,6 @@ async function scanWithCache(files: readonly ClaudeSessionFile[]): Promise<ScanR
   return { invocations, filesScanned: files.length };
 }
 
-/**
- * Parse a JSONL line into a plain record. Returns `null` when the line is
- * blank, not valid JSON, or not an object — callers treat all three cases the
- * same way (skip).
- */
-function parseJsonlLine(line: string): Record<string, unknown> | null {
-  const trimmed = line.trim();
-  if (trimmed.length === 0) return null;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(trimmed);
-  } catch {
-    return null;
-  }
-  if (!parsed || typeof parsed !== "object") return null;
-  return parsed as Record<string, unknown>;
-}
-
-/**
- * Pull the structured `content` array off an assistant entry. Returns `null`
- * if the entry is not an assistant entry or does not carry an array content.
- */
-function getAssistantContent(entry: Record<string, unknown>): readonly unknown[] | null {
-  if (entry.type !== "assistant") return null;
-  const message = entry.message;
-  if (!message || typeof message !== "object") return null;
-  const content = (message as Record<string, unknown>).content;
-  return Array.isArray(content) ? content : null;
-}
-
-/**
- * Map a parsed assistant entry into zero-or-more `RawInvocation` records.
- * Non-Skill tool_use blocks are ignored.
- */
-function invocationsFromEntry(entry: Record<string, unknown>): RawInvocation[] {
-  const content = getAssistantContent(entry);
-  if (!content) return [];
-
-  const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
-  const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
-  const cwd = typeof entry.cwd === "string" ? entry.cwd : null;
-
-  const out: RawInvocation[] = [];
-  for (const block of content) {
-    // Skill-invocation detection is shared with `analytics/skill-turn-attribution.ts`
-    // via `detectSkillFromBlock` — never fork the regex/shape check here.
-    const skillKey = detectSkillFromBlock(block as ClaudeContentBlock);
-    if (skillKey !== null) {
-      out.push({ skillKey, timestamp, sessionId, cwd });
-    }
-  }
-  return out;
-}
-
 async function readInvocationsFromFile(filePath: string): Promise<readonly RawInvocation[]> {
   // Stream line-by-line instead of materializing the whole transcript as a
   // single `await readFile()` promise. This has two benefits:
@@ -222,10 +165,40 @@ async function readInvocationsFromFile(filePath: string): Promise<readonly RawIn
   try {
     const rl = createInterface({ input: stream, crlfDelay: Infinity });
     for await (const line of rl) {
-      const entry = parseJsonlLine(line);
-      if (!entry) continue;
-      for (const inv of invocationsFromEntry(entry)) {
-        results.push(inv);
+      const trimmed = line.trim();
+      if (trimmed.length === 0) continue;
+
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        continue;
+      }
+      if (!parsed || typeof parsed !== "object") continue;
+
+      const entry = parsed as Record<string, unknown>;
+      if (entry.type !== "assistant") continue;
+
+      const message = entry.message;
+      if (!message || typeof message !== "object") continue;
+      const content = (message as Record<string, unknown>).content;
+      if (!Array.isArray(content)) continue;
+
+      const timestamp = typeof entry.timestamp === "string" ? entry.timestamp : null;
+      const sessionId = typeof entry.sessionId === "string" ? entry.sessionId : null;
+      const cwd = typeof entry.cwd === "string" ? entry.cwd : null;
+
+      for (const block of content) {
+        if (!block || typeof block !== "object") continue;
+        const blk = block as Record<string, unknown>;
+        if (blk.type !== "tool_use" || blk.name !== "Skill") continue;
+        const input = blk.input;
+        if (!input || typeof input !== "object") continue;
+        const skill = (input as Record<string, unknown>).skill;
+        if (typeof skill !== "string") continue;
+        const trimmedSkill = skill.trim();
+        if (trimmedSkill.length === 0) continue;
+        results.push({ skillKey: trimmedSkill, timestamp, sessionId, cwd });
       }
     }
   } catch {
@@ -250,181 +223,81 @@ interface SkillBucket {
   perDay: Map<string, number>;
 }
 
-interface ManifestLookup {
-  readonly byId: ReadonlyMap<string, SkillManifest>;
-  readonly byName: ReadonlyMap<string, SkillManifest>;
-}
-
-function indexManifests(skills: readonly SkillManifest[]): ManifestLookup {
+function buildReport(scan: ScanResult, skills: readonly SkillManifest[]): SkillsUsageReport {
   const byId = new Map<string, SkillManifest>();
   const byName = new Map<string, SkillManifest>();
   for (const s of skills) {
     byId.set(s.id, s);
-    if (typeof s.name === "string" && s.name.length > 0 && !byName.has(s.name)) {
-      byName.set(s.name, s);
+    if (typeof s.name === "string" && s.name.length > 0) {
+      if (!byName.has(s.name)) byName.set(s.name, s);
     }
   }
-  return { byId, byName };
-}
 
-function createBucket(skillKey: string, manifest: SkillManifest | null): SkillBucket {
-  return {
-    skillId: manifest ? manifest.id : skillKey,
-    displayName: manifest ? manifest.name : skillKey,
-    known: manifest !== null,
-    sizeBytes: manifest ? manifest.sizeBytes : 0,
-    invocationCount: 0,
-    firstInvokedAt: null,
-    lastInvokedAt: null,
-    perProject: new Map(),
-    perHourOfDay: new Array<number>(24).fill(0),
-    perDayOfWeek: new Array<number>(7).fill(0),
-    perDay: new Map(),
-  };
-}
+  const buckets = new Map<string, SkillBucket>();
+  const sessions = new Set<string>();
+  const totalPerHour = new Array<number>(24).fill(0);
+  const totalPerDow = new Array<number>(7).fill(0);
+  const totalPerDay = new Map<string, number>();
+  let totalFirst: string | null = null;
+  let totalLast: string | null = null;
 
-interface TimeAggregates {
-  readonly perHour: number[];
-  readonly perDow: number[];
-  readonly perDay: Map<string, number>;
-}
+  for (const inv of scan.invocations) {
+    const manifest = byId.get(inv.skillKey) ?? byName.get(inv.skillKey) ?? null;
+    const bucketKey = manifest ? manifest.id : inv.skillKey;
+    let bucket = buckets.get(bucketKey);
+    if (!bucket) {
+      bucket = {
+        skillId: manifest ? manifest.id : inv.skillKey,
+        displayName: manifest ? manifest.name : inv.skillKey,
+        known: manifest !== null,
+        sizeBytes: manifest ? manifest.sizeBytes : 0,
+        invocationCount: 0,
+        firstInvokedAt: null,
+        lastInvokedAt: null,
+        perProject: new Map(),
+        perHourOfDay: new Array<number>(24).fill(0),
+        perDayOfWeek: new Array<number>(7).fill(0),
+        perDay: new Map(),
+      };
+      buckets.set(bucketKey, bucket);
+    }
 
-function createTimeAggregates(): TimeAggregates {
-  return {
-    perHour: new Array<number>(24).fill(0),
-    perDow: new Array<number>(7).fill(0),
-    perDay: new Map<string, number>(),
-  };
-}
+    bucket.invocationCount += 1;
 
-interface ParsedTimestamp {
-  readonly hour: number;
-  readonly dow: number;
-  readonly dayKey: string;
-}
+    if (inv.timestamp) {
+      const date = new Date(inv.timestamp);
+      if (!Number.isNaN(date.getTime())) {
+        const hour = date.getUTCHours();
+        const dow = date.getUTCDay();
+        const dayKey = date.toISOString().slice(0, 10);
 
-function parseTimestamp(iso: string): ParsedTimestamp | null {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return null;
-  return {
-    hour: date.getUTCHours(),
-    dow: date.getUTCDay(),
-    dayKey: date.toISOString().slice(0, 10),
-  };
-}
+        bucket.perHourOfDay[hour] = (bucket.perHourOfDay[hour] ?? 0) + 1;
+        bucket.perDayOfWeek[dow] = (bucket.perDayOfWeek[dow] ?? 0) + 1;
+        bucket.perDay.set(dayKey, (bucket.perDay.get(dayKey) ?? 0) + 1);
 
-function incArray(arr: number[], idx: number): void {
-  arr[idx] = (arr[idx] ?? 0) + 1;
-}
+        totalPerHour[hour] = (totalPerHour[hour] ?? 0) + 1;
+        totalPerDow[dow] = (totalPerDow[dow] ?? 0) + 1;
+        totalPerDay.set(dayKey, (totalPerDay.get(dayKey) ?? 0) + 1);
 
-function incMap<K>(map: Map<K, number>, key: K): void {
-  map.set(key, (map.get(key) ?? 0) + 1);
-}
+        if (!bucket.firstInvokedAt || inv.timestamp < bucket.firstInvokedAt) {
+          bucket.firstInvokedAt = inv.timestamp;
+        }
+        if (!bucket.lastInvokedAt || inv.timestamp > bucket.lastInvokedAt) {
+          bucket.lastInvokedAt = inv.timestamp;
+        }
+        if (!totalFirst || inv.timestamp < totalFirst) totalFirst = inv.timestamp;
+        if (!totalLast || inv.timestamp > totalLast) totalLast = inv.timestamp;
+      }
+    }
 
-function applyTimestamp(bucket: SkillBucket, totals: TimeAggregates, ts: string): void {
-  const parsed = parseTimestamp(ts);
-  if (!parsed) return;
-  const { hour, dow, dayKey } = parsed;
-
-  incArray(bucket.perHourOfDay, hour);
-  incArray(bucket.perDayOfWeek, dow);
-  incMap(bucket.perDay, dayKey);
-
-  incArray(totals.perHour, hour);
-  incArray(totals.perDow, dow);
-  incMap(totals.perDay, dayKey);
-
-  if (!bucket.firstInvokedAt || ts < bucket.firstInvokedAt) bucket.firstInvokedAt = ts;
-  if (!bucket.lastInvokedAt || ts > bucket.lastInvokedAt) bucket.lastInvokedAt = ts;
-}
-
-interface TotalsTracker {
-  first: string | null;
-  last: string | null;
-}
-
-function trackTotalsSpan(totals: TotalsTracker, ts: string): void {
-  if (!totals.first || ts < totals.first) totals.first = ts;
-  if (!totals.last || ts > totals.last) totals.last = ts;
-}
-
-function getOrCreateBucket(
-  buckets: Map<string, SkillBucket>,
-  lookup: ManifestLookup,
-  skillKey: string
-): SkillBucket {
-  const manifest = lookup.byId.get(skillKey) ?? lookup.byName.get(skillKey) ?? null;
-  const bucketKey = manifest ? manifest.id : skillKey;
-  let bucket = buckets.get(bucketKey);
-  if (!bucket) {
-    bucket = createBucket(skillKey, manifest);
-    buckets.set(bucketKey, bucket);
+    if (inv.cwd) {
+      bucket.perProject.set(inv.cwd, (bucket.perProject.get(inv.cwd) ?? 0) + 1);
+    }
+    if (inv.sessionId) {
+      sessions.add(inv.sessionId);
+    }
   }
-  return bucket;
-}
 
-function ingestInvocation(
-  inv: RawInvocation,
-  bucket: SkillBucket,
-  totals: TimeAggregates,
-  span: TotalsTracker,
-  sessions: Set<string>
-): void {
-  bucket.invocationCount += 1;
-
-  if (inv.timestamp) {
-    applyTimestamp(bucket, totals, inv.timestamp);
-    trackTotalsSpan(span, inv.timestamp);
-  }
-  if (inv.cwd) {
-    incMap(bucket.perProject, inv.cwd);
-  }
-  if (inv.sessionId) {
-    sessions.add(inv.sessionId);
-  }
-}
-
-function bucketToStats(bucket: SkillBucket): SkillUsageStats {
-  const approxTokens = bucket.sizeBytes > 0 ? Math.ceil(bucket.sizeBytes / 4) : 0;
-  const bytesInjected = bucket.invocationCount * bucket.sizeBytes;
-  const tokensInjected = bucket.invocationCount * approxTokens;
-
-  const perProject = Array.from(bucket.perProject.entries())
-    .map(([cwd, count]) => ({ cwd, count }))
-    .sort((a, b) => b.count - a.count || a.cwd.localeCompare(b.cwd));
-
-  const perDay = Array.from(bucket.perDay.entries())
-    .map(([date, count]) => ({ date, count }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-
-  return {
-    skillId: bucket.skillId,
-    displayName: bucket.displayName,
-    known: bucket.known,
-    invocationCount: bucket.invocationCount,
-    firstInvokedAt: bucket.firstInvokedAt,
-    lastInvokedAt: bucket.lastInvokedAt,
-    sizeBytes: bucket.sizeBytes,
-    approxTokens,
-    bytesInjected,
-    tokensInjected,
-    perProject,
-    perHourOfDay: bucket.perHourOfDay.slice(),
-    perDayOfWeek: bucket.perDayOfWeek.slice(),
-    perDay,
-  };
-}
-
-interface BucketRollup {
-  readonly perSkill: SkillUsageStats[];
-  readonly totalInvocations: number;
-  readonly totalBytesInjected: number;
-  readonly totalTokensInjected: number;
-  readonly knownSkills: number;
-  readonly unknownSkills: number;
-}
-
-function rollupBuckets(buckets: ReadonlyMap<string, SkillBucket>): BucketRollup {
   const perSkill: SkillUsageStats[] = [];
   let totalInvocations = 0;
   let totalBytesInjected = 0;
@@ -433,13 +306,40 @@ function rollupBuckets(buckets: ReadonlyMap<string, SkillBucket>): BucketRollup 
   let unknownSkills = 0;
 
   for (const bucket of buckets.values()) {
-    const stats = bucketToStats(bucket);
-    totalInvocations += stats.invocationCount;
-    totalBytesInjected += stats.bytesInjected;
-    totalTokensInjected += stats.tokensInjected;
+    const approxTokens = bucket.sizeBytes > 0 ? Math.ceil(bucket.sizeBytes / 4) : 0;
+    const bytesInjected = bucket.invocationCount * bucket.sizeBytes;
+    const tokensInjected = bucket.invocationCount * approxTokens;
+
+    totalInvocations += bucket.invocationCount;
+    totalBytesInjected += bytesInjected;
+    totalTokensInjected += tokensInjected;
     if (bucket.known) knownSkills += 1;
     else unknownSkills += 1;
-    perSkill.push(stats);
+
+    const perProject = Array.from(bucket.perProject.entries())
+      .map(([cwd, count]) => ({ cwd, count }))
+      .sort((a, b) => b.count - a.count || a.cwd.localeCompare(b.cwd));
+
+    const perDay = Array.from(bucket.perDay.entries())
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    perSkill.push({
+      skillId: bucket.skillId,
+      displayName: bucket.displayName,
+      known: bucket.known,
+      invocationCount: bucket.invocationCount,
+      firstInvokedAt: bucket.firstInvokedAt,
+      lastInvokedAt: bucket.lastInvokedAt,
+      sizeBytes: bucket.sizeBytes,
+      approxTokens,
+      bytesInjected,
+      tokensInjected,
+      perProject,
+      perHourOfDay: bucket.perHourOfDay.slice(),
+      perDayOfWeek: bucket.perDayOfWeek.slice(),
+      perDay,
+    });
   }
 
   perSkill.sort(
@@ -448,50 +348,26 @@ function rollupBuckets(buckets: ReadonlyMap<string, SkillBucket>): BucketRollup 
       a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" })
   );
 
-  return {
-    perSkill,
-    totalInvocations,
-    totalBytesInjected,
-    totalTokensInjected,
-    knownSkills,
-    unknownSkills,
-  };
-}
-
-function buildReport(scan: ScanResult, skills: readonly SkillManifest[]): SkillsUsageReport {
-  const lookup = indexManifests(skills);
-  const buckets = new Map<string, SkillBucket>();
-  const sessions = new Set<string>();
-  const totals = createTimeAggregates();
-  const span: TotalsTracker = { first: null, last: null };
-
-  for (const inv of scan.invocations) {
-    const bucket = getOrCreateBucket(buckets, lookup, inv.skillKey);
-    ingestInvocation(inv, bucket, totals, span, sessions);
-  }
-
-  const rollup = rollupBuckets(buckets);
-
-  const perDayTotal = Array.from(totals.perDay.entries())
+  const perDayTotal = Array.from(totalPerDay.entries())
     .map(([date, count]) => ({ date, count }))
     .sort((a, b) => a.date.localeCompare(b.date));
 
   return {
     totals: {
-      totalInvocations: rollup.totalInvocations,
+      totalInvocations,
       distinctSkills: buckets.size,
-      knownSkills: rollup.knownSkills,
-      unknownSkills: rollup.unknownSkills,
-      totalBytesInjected: rollup.totalBytesInjected,
-      totalTokensInjected: rollup.totalTokensInjected,
+      knownSkills,
+      unknownSkills,
+      totalBytesInjected,
+      totalTokensInjected,
       sessionsScanned: sessions.size,
       filesScanned: scan.filesScanned,
-      firstInvokedAt: span.first,
-      lastInvokedAt: span.last,
+      firstInvokedAt: totalFirst,
+      lastInvokedAt: totalLast,
     },
-    perSkill: rollup.perSkill,
-    perHourOfDay: totals.perHour,
-    perDayOfWeek: totals.perDow,
+    perSkill,
+    perHourOfDay: totalPerHour,
+    perDayOfWeek: totalPerDow,
     perDay: perDayTotal,
   };
 }

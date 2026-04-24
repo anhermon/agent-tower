@@ -60,22 +60,22 @@ export function ModulePlaceholder({
       </header>
 
       {capabilities.length > 0 ? (
-        <ul
-          className="mb-5 grid list-none gap-3 sm:grid-cols-2 xl:grid-cols-4"
+        <dl
+          className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
           aria-label={`${module.label} capability preview`}
         >
           {capabilities.map((capability) => (
-            <li
+            <div
               key={capability.label}
               className="glass-panel-soft rounded-sm p-4 opacity-70"
-              data-disabled="true"
+              aria-disabled="true"
             >
-              <p className="eyebrow">{capability.label}</p>
-              <p className="mt-2 text-2xl font-semibold text-muted-strong">—</p>
+              <dt className="eyebrow">{capability.label}</dt>
+              <dd className="mt-2 text-2xl font-semibold text-muted-strong">—</dd>
               <p className="mt-1 text-xs leading-5 text-muted">{capability.detail}</p>
-            </li>
+            </div>
           ))}
-        </ul>
+        </dl>
       ) : null}
 
       <EmptyState title={emptyTitle} description={emptyDescription} />

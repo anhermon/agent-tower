@@ -103,9 +103,7 @@ export function CostOverTimeChart({ daily }: Props) {
             formatter={
               ((val: unknown, name: unknown) => [
                 formatCost(Number(val ?? 0)),
-                shortModel(
-                  typeof name === "string" || typeof name === "number" ? String(name) : ""
-                ),
+                shortModel(String(name ?? "")),
               ]) as never
             }
           />

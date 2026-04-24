@@ -17,7 +17,7 @@ export function useAgentAnimationEvents(): ReadonlyMap<string, AgentAnimationSna
     const source = new EventSource(AGENT_EVENTS_URL);
 
     source.addEventListener("message", (event) => {
-      const snapshot = parseSnapshot(String(event.data));
+      const snapshot = parseSnapshot(event.data);
       if (!snapshot) return;
       setSnapshots((current) => {
         const next = new Map(current);

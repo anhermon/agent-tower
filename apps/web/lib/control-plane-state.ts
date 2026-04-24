@@ -21,54 +21,6 @@ export interface OverviewState {
   readonly agentsAdapterError: string | null;
 }
 
-function buildSessionsMetric(
-  sessions: Awaited<ReturnType<typeof listSessionsOrEmpty>>,
-  agents: Awaited<ReturnType<typeof listAgentsOrEmpty>>
-): Metric {
-  return {
-    label: "Active sessions",
-    value: sessions.ok ? formatActiveSessions(agents) : UNIMPLEMENTED,
-    detail: sessions.ok
-      ? describeActiveSessions(agents, sessions.sessions.length)
-      : describeSessionsAdapter(sessions),
-    trend: "flat",
-  };
-}
-
-function buildAgentsMetric(agents: Awaited<ReturnType<typeof listAgentsOrEmpty>>): Metric {
-  return {
-    label: "Agent instances",
-    value: agents.ok ? String(agents.agents.length) : UNIMPLEMENTED,
-    detail: agents.ok ? describeAgents(agents.agents) : describeAgentsAdapter(agents),
-    trend: "flat",
-  };
-}
-
-function buildSkillsMetric(skills: Awaited<ReturnType<typeof listSkillsOrEmpty>>): Metric {
-  return {
-    label: "Skills",
-    value: skills.ok ? String(skills.skills.length) : UNIMPLEMENTED,
-    detail: skills.ok
-      ? describeSkills(skills.skills.length, skills.roots.length)
-      : describeSkillsAdapter(skills),
-    trend: "flat",
-  };
-}
-
-function resolveAgentsAdapterStatus(agents: Awaited<ReturnType<typeof listAgentsOrEmpty>>): {
-  configured: boolean;
-  error: string | null;
-} {
-  return {
-    // "configured" means the adapter resolved a data root — an error while
-    // listing is still a configured adapter, just a failing one. Without this
-    // distinction the panel header shows "Adapter not configured" while the
-    // body correctly shows an ErrorState.
-    configured: agents.ok || agents.reason !== "unconfigured",
-    error: !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
-  };
-}
-
 export async function getOverviewState(now: Date = new Date()): Promise<OverviewState> {
   const [sessions, agents, skills] = await Promise.all([
     listSessionsOrEmpty(),
@@ -76,12 +28,29 @@ export async function getOverviewState(now: Date = new Date()): Promise<Overview
     listSkillsOrEmpty(),
   ]);
 
-  const { configured, error } = resolveAgentsAdapterStatus(agents);
-
   const metrics: Metric[] = [
-    buildSessionsMetric(sessions, agents),
-    buildAgentsMetric(agents),
-    buildSkillsMetric(skills),
+    {
+      label: "Active sessions",
+      value: sessions.ok ? formatActiveSessions(agents) : UNIMPLEMENTED,
+      detail: sessions.ok
+        ? describeActiveSessions(agents, sessions.sessions.length)
+        : describeSessionsAdapter(sessions),
+      trend: "flat",
+    },
+    {
+      label: "Agent instances",
+      value: agents.ok ? String(agents.agents.length) : UNIMPLEMENTED,
+      detail: agents.ok ? describeAgents(agents.agents) : describeAgentsAdapter(agents),
+      trend: "flat",
+    },
+    {
+      label: "Skills",
+      value: skills.ok ? String(skills.skills.length) : UNIMPLEMENTED,
+      detail: skills.ok
+        ? describeSkills(skills.skills.length, skills.roots.length)
+        : describeSkillsAdapter(skills),
+      trend: "flat",
+    },
     {
       label: "Webhook deliveries",
       value: UNIMPLEMENTED,
@@ -100,8 +69,13 @@ export async function getOverviewState(now: Date = new Date()): Promise<Overview
     metrics,
     activity: [],
     agents: agents.ok ? agents.agents : [],
-    agentsAdapterConfigured: configured,
-    agentsAdapterError: error,
+    // "configured" means the adapter resolved a data root — an error while
+    // listing is still a configured adapter, just a failing one. Without this
+    // distinction the panel header shows "Adapter not configured" while the
+    // body correctly shows an ErrorState.
+    agentsAdapterConfigured: agents.ok || agents.reason !== "unconfigured",
+    agentsAdapterError:
+      !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
   };
 }
 

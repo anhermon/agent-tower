@@ -19,7 +19,7 @@ export function AgentSessionList({ sessions }: AgentSessionListProps) {
 
   return (
     <div className="glass-panel overflow-hidden rounded-md">
-      <ul className="divide-y divide-line/60">
+      <ul role="list" className="divide-y divide-line/60">
         {sessions.map((session) => (
           <li key={session.filePath}>
             <Link

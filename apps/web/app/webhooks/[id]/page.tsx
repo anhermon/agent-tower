@@ -114,7 +114,9 @@ export default async function WebhookDetailPage({ params }: PageProps) {
             <p className="eyebrow">Deliveries</p>
             <h2 className="text-base font-semibold text-ink">Recent attempts</h2>
           </div>
-          <p className="text-xs text-muted">Invocation log from the inbound GitHub receiver.</p>
+          <p className="text-xs text-muted">
+            Accepted GitHub deliveries are shown when they match this subscription id.
+          </p>
         </div>
         <WebhookDeliveryList deliveries={deliveries} />
       </div>

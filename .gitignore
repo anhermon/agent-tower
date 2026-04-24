@@ -17,6 +17,10 @@ test-results/
 logs/
 **/logs/
 
+# Git worktree directories (created by `git worktree add`)
+.worktree/
+.worktrees/
+
 # Local IDE/tooling scratch
 .cursor/
 

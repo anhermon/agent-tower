@@ -15,13 +15,8 @@ import { foldCostBreakdown } from "./analytics/cost.js";
 import { foldProjectSummaries } from "./analytics/project-summary.js";
 import { foldReplay } from "./analytics/replay.js";
 import { foldSessionSummary } from "./analytics/session-summary.js";
-import {
-  computeSkillTurnAttribution,
-  type SkillTurnAttribution,
-} from "./analytics/skill-turn-attribution.js";
 import { foldTimeseries } from "./analytics/timeseries.js";
 import { foldToolAnalytics } from "./analytics/tools.js";
-import { computeTurnTimeline, type TurnTimeline } from "./analytics/turn-timeline.js";
 import {
   type NormalizedTranscript,
   type NormalizeOptions,
@@ -76,9 +71,7 @@ export class ClaudeCodeSessionSource {
       try {
         const normalized = normalizeTranscript(entries, options);
         yield normalized.batch;
-      } catch {
-        // intentionally empty — malformed transcripts are skipped silently
-      }
+      } catch {}
     }
   }
 }
@@ -139,26 +132,6 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
     return this.summaryFor(file);
   }
 
-  /**
-   * Load the per-turn timeline + per-turn skill attribution for a single
-   * session. Returns `undefined` when the session id is unknown. Reuses the
-   * `parseCache` so a `loadSessionUsage` + `loadSessionTimeline` pair on the
-   * same session only reads the JSONL once.
-   */
-  async loadSessionTimeline(
-    sessionId: string
-  ): Promise<
-    undefined | { readonly timeline: TurnTimeline; readonly skillAttribution: SkillTurnAttribution }
-  > {
-    const file = await this.findSessionFile(sessionId);
-    if (!file) return undefined;
-    const parsed = await this.parseFile(file);
-    if (parsed.entries.length === 0) return undefined;
-    const timeline = computeTurnTimeline(parsed.entries, { sessionId });
-    const skillAttribution = computeSkillTurnAttribution(parsed.entries, { sessionId });
-    return { timeline, skillAttribution };
-  }
-
   async loadSessionReplay(sessionId: string): Promise<ReplayData | undefined> {
     const file = await this.findSessionFile(sessionId);
     if (!file) return undefined;
@@ -188,15 +161,14 @@ export class ClaudeCodeAnalyticsSource implements SessionAnalyticsSource {
   private async collectAllSummaries(): Promise<readonly SessionUsageSummary[]> {
     const files = await listSessionFiles(this.root);
     const concurrency = 16;
-    const results: SessionUsageSummary[] = new Array<SessionUsageSummary>(files.length);
+    const results: SessionUsageSummary[] = new Array(files.length);
     let cursor = 0;
     const worker = async (): Promise<void> => {
       while (true) {
         const index = cursor;
         cursor += 1;
         if (index >= files.length) return;
-        const file = files[index];
-        if (!file) return;
+        const file = files[index]!;
         try {
           results[index] = await this.summaryFor(file);
         } catch {

@@ -89,171 +89,163 @@ export const controlPlaneAuditTool: ToolDefinition = {
   },
   handler: async (raw): Promise<ToolResult> => {
     try {
-      return await runAuditHandler(raw);
+      const input = parseInput(raw);
+      const resolved = resolveDataRoot();
+      if (!resolved) {
+        return { ok: false, reason: "unconfigured" };
+      }
+      const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
+
+      let range: DateRange | null = null;
+      if (input.since && input.until) {
+        range = { from: input.since, to: input.until };
+      } else if (input.since) {
+        range = { from: input.since, to: input.since };
+      } else if (input.until) {
+        range = { from: input.until, to: input.until };
+      }
+      const filter: SessionAnalyticsFilter = range ? { range } : {};
+
+      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
+      const summaries = await source.listSessionSummaries(filter);
+
+      // ── Cost rollups ──────────────────────────────────────────────────
+      const totalEstimatedCostUsd = summaries.reduce((acc, s) => acc + s.estimatedCostUsd, 0);
+      const costRows = summaries.map(toCostRow);
+      const topByCost = [...costRows].sort((a, b) => b.costUsd - a.costUsd).slice(0, limit);
+
+      // ── Waste aggregates ──────────────────────────────────────────────
+      const costBySessionId = new Map<string, CostRow>();
+      for (const row of costRows) costBySessionId.set(row.sessionId, row);
+
+      const verdicts: readonly WasteVerdictWithContext[] = summaries
+        .filter((s) => s.waste !== undefined)
+        .map((summary) => {
+          const verdict = scoreSessionWaste(summary);
+          const ctx = costBySessionId.get(summary.sessionId);
+          return {
+            ...verdict,
+            cwd: ctx?.cwd ?? summary.cwd ?? "unknown",
+            costUsd: ctx?.costUsd ?? summary.estimatedCostUsd,
+          };
+        });
+      const topByWaste = [...verdicts].sort((a, b) => b.overall - a.overall).slice(0, limit);
+
+      const sessionsWithWasteSignals = verdicts.length;
+      const avg = (pick: (v: WasteVerdictWithContext) => number): number =>
+        sessionsWithWasteSignals === 0
+          ? 0
+          : verdicts.reduce((acc, v) => acc + pick(v), 0) / sessionsWithWasteSignals;
+
+      const bloatWithoutCompactionCount = summaries.reduce(
+        (acc, s) => acc + (s.waste?.bloatWithoutCompaction ? 1 : 0),
+        0
+      );
+      const highWasteSessionCount = verdicts.reduce(
+        (acc, v) => acc + (v.overall > HIGH_WASTE_THRESHOLD ? 1 : 0),
+        0
+      );
+
+      const wasteAggregates = {
+        avgOverall: avg((v) => v.overall),
+        avgCacheThrash: avg((v) => v.scores.cacheThrash),
+        avgSequentialTools: avg((v) => v.scores.sequentialTools),
+        avgToolPollution: avg((v) => v.scores.toolPollution),
+        avgContextBloat: avg((v) => v.scores.contextBloat),
+        bloatWithoutCompactionCount,
+        highWasteSessionCount,
+        sessionsWithWasteSignals,
+      };
+
+      // ── Per-project rollup ─────────────────────────────────────────────
+      interface ProjectAcc {
+        projectId: string;
+        sessions: number;
+        totalCostUsd: number;
+        wasteSum: number;
+        wasteCount: number;
+      }
+      const projectAcc = new Map<string, ProjectAcc>();
+      const verdictBySession = new Map<string, WasteVerdictWithContext>();
+      for (const v of verdicts) verdictBySession.set(v.sessionId, v);
+
+      for (const s of summaries) {
+        const projectId = s.cwd ?? "unknown";
+        let entry = projectAcc.get(projectId);
+        if (!entry) {
+          entry = {
+            projectId,
+            sessions: 0,
+            totalCostUsd: 0,
+            wasteSum: 0,
+            wasteCount: 0,
+          };
+          projectAcc.set(projectId, entry);
+        }
+        entry.sessions += 1;
+        entry.totalCostUsd += s.estimatedCostUsd;
+        const v = verdictBySession.get(s.sessionId);
+        if (v) {
+          entry.wasteSum += v.overall;
+          entry.wasteCount += 1;
+        }
+      }
+      const topProjects = [...projectAcc.values()]
+        .map((p) => ({
+          projectId: p.projectId,
+          sessions: p.sessions,
+          totalCostUsd: p.totalCostUsd,
+          avgWasteScore: p.wasteCount === 0 ? 0 : p.wasteSum / p.wasteCount,
+        }))
+        .sort((a, b) => b.totalCostUsd - a.totalCostUsd)
+        .slice(0, limit);
+
+      // ── Skills: cold giants + negative efficacy ───────────────────────
+      const usage = await computeSkillsUsage();
+      const skillsColdGiants = usage.ok
+        ? usage.report.perSkill
+            .filter(
+              (row) =>
+                row.sizeBytes > COLD_GIANT_SIZE_BYTES &&
+                row.invocationCount < COLD_GIANT_MAX_INVOCATIONS
+            )
+            .map((row) => ({
+              name: row.displayName,
+              sizeBytes: row.sizeBytes,
+              invocationCount: row.invocationCount,
+            }))
+        : [];
+
+      const efficacy = await computeSkillsEfficacy();
+      const skillsNegativeEfficacy = efficacy.ok
+        ? efficacy.report.qualifying
+            .filter(
+              (row) =>
+                row.delta < NEGATIVE_EFFICACY_DELTA &&
+                row.sessionsCount >= NEGATIVE_EFFICACY_MIN_SESSIONS
+            )
+            .sort((a, b) => a.delta - b.delta)
+            .map((row) => ({
+              name: row.displayName,
+              delta: row.delta,
+              sessions: row.sessionsCount,
+            }))
+        : [];
+
+      return {
+        ok: true,
+        dataRoot: resolved.directory,
+        sessionsScanned: summaries.length,
+        totalEstimatedCostUsd,
+        topByCost,
+        topByWaste,
+        wasteAggregates,
+        skillsColdGiants,
+        skillsNegativeEfficacy,
+        topProjects,
+      };
     } catch (error) {
       return errorResult(error);
     }
   },
 };
-
-async function runAuditHandler(raw: unknown): Promise<ToolResult> {
-  const input = parseInput(raw);
-  const resolved = resolveDataRoot();
-  if (!resolved) {
-    return { ok: false, reason: "unconfigured" };
-  }
-  const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
-  const range = buildDateRange(input.since, input.until);
-  const filter: SessionAnalyticsFilter = range ? { range } : {};
-
-  const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-  const summaries = await source.listSessionSummaries(filter);
-
-  const costRows = summaries.map(toCostRow);
-  const totalEstimatedCostUsd = summaries.reduce((acc, s) => acc + s.estimatedCostUsd, 0);
-  const topByCost = [...costRows].sort((a, b) => b.costUsd - a.costUsd).slice(0, limit);
-
-  const costBySessionId = new Map<string, CostRow>();
-  for (const row of costRows) costBySessionId.set(row.sessionId, row);
-
-  const verdicts = buildVerdicts(summaries, costBySessionId);
-  const topByWaste = [...verdicts].sort((a, b) => b.overall - a.overall).slice(0, limit);
-  const wasteAggregates = buildWasteAggregates(summaries, verdicts);
-  const topProjects = buildTopProjects(summaries, verdicts, limit);
-
-  const [usage, efficacy] = await Promise.all([computeSkillsUsage(), computeSkillsEfficacy()]);
-  const skillsColdGiants = buildColdGiants(usage);
-  const skillsNegativeEfficacy = buildNegativeEfficacy(efficacy);
-
-  return {
-    ok: true,
-    dataRoot: resolved.directory,
-    sessionsScanned: summaries.length,
-    totalEstimatedCostUsd,
-    topByCost,
-    topByWaste,
-    wasteAggregates,
-    skillsColdGiants,
-    skillsNegativeEfficacy,
-    topProjects,
-  };
-}
-
-function buildDateRange(since: string | null, until: string | null): DateRange | null {
-  if (since && until) return { from: since, to: until };
-  if (since) return { from: since, to: since };
-  if (until) return { from: until, to: until };
-  return null;
-}
-
-function buildVerdicts(
-  summaries: readonly SessionUsageSummary[],
-  costBySessionId: ReadonlyMap<string, CostRow>
-): readonly WasteVerdictWithContext[] {
-  return summaries
-    .filter((s) => s.waste !== undefined)
-    .map((summary) => {
-      const verdict = scoreSessionWaste(summary);
-      const ctx = costBySessionId.get(summary.sessionId);
-      return {
-        ...verdict,
-        cwd: ctx?.cwd ?? summary.cwd ?? "unknown",
-        costUsd: ctx?.costUsd ?? summary.estimatedCostUsd,
-      };
-    });
-}
-
-function buildWasteAggregates(
-  summaries: readonly SessionUsageSummary[],
-  verdicts: readonly WasteVerdictWithContext[]
-): Record<string, number> {
-  const count = verdicts.length;
-  const avg = (pick: (v: WasteVerdictWithContext) => number): number =>
-    count === 0 ? 0 : verdicts.reduce((acc, v) => acc + pick(v), 0) / count;
-  return {
-    avgOverall: avg((v) => v.overall),
-    avgCacheThrash: avg((v) => v.scores.cacheThrash),
-    avgSequentialTools: avg((v) => v.scores.sequentialTools),
-    avgToolPollution: avg((v) => v.scores.toolPollution),
-    avgContextBloat: avg((v) => v.scores.contextBloat),
-    bloatWithoutCompactionCount: summaries.reduce(
-      (acc, s) => acc + (s.waste?.bloatWithoutCompaction ? 1 : 0),
-      0
-    ),
-    highWasteSessionCount: verdicts.reduce(
-      (acc, v) => acc + (v.overall > HIGH_WASTE_THRESHOLD ? 1 : 0),
-      0
-    ),
-    sessionsWithWasteSignals: count,
-  };
-}
-
-interface ProjectAcc {
-  projectId: string;
-  sessions: number;
-  totalCostUsd: number;
-  wasteSum: number;
-  wasteCount: number;
-}
-
-function buildTopProjects(
-  summaries: readonly SessionUsageSummary[],
-  verdicts: readonly WasteVerdictWithContext[],
-  limit: number
-): unknown[] {
-  const verdictBySession = new Map<string, WasteVerdictWithContext>();
-  for (const v of verdicts) verdictBySession.set(v.sessionId, v);
-
-  const projectAcc = new Map<string, ProjectAcc>();
-  for (const s of summaries) {
-    const projectId = s.cwd ?? "unknown";
-    let entry = projectAcc.get(projectId);
-    if (!entry) {
-      entry = { projectId, sessions: 0, totalCostUsd: 0, wasteSum: 0, wasteCount: 0 };
-      projectAcc.set(projectId, entry);
-    }
-    entry.sessions += 1;
-    entry.totalCostUsd += s.estimatedCostUsd;
-    const v = verdictBySession.get(s.sessionId);
-    if (v) {
-      entry.wasteSum += v.overall;
-      entry.wasteCount += 1;
-    }
-  }
-  return [...projectAcc.values()]
-    .map((p) => ({
-      projectId: p.projectId,
-      sessions: p.sessions,
-      totalCostUsd: p.totalCostUsd,
-      avgWasteScore: p.wasteCount === 0 ? 0 : p.wasteSum / p.wasteCount,
-    }))
-    .sort((a, b) => b.totalCostUsd - a.totalCostUsd)
-    .slice(0, limit);
-}
-
-function buildColdGiants(usage: Awaited<ReturnType<typeof computeSkillsUsage>>): unknown[] {
-  if (!usage.ok) return [];
-  return usage.report.perSkill
-    .filter(
-      (row) =>
-        row.sizeBytes > COLD_GIANT_SIZE_BYTES && row.invocationCount < COLD_GIANT_MAX_INVOCATIONS
-    )
-    .map((row) => ({
-      name: row.displayName,
-      sizeBytes: row.sizeBytes,
-      invocationCount: row.invocationCount,
-    }));
-}
-
-function buildNegativeEfficacy(
-  efficacy: Awaited<ReturnType<typeof computeSkillsEfficacy>>
-): unknown[] {
-  if (!efficacy.ok) return [];
-  return efficacy.report.qualifying
-    .filter(
-      (row) =>
-        row.delta < NEGATIVE_EFFICACY_DELTA && row.sessionsCount >= NEGATIVE_EFFICACY_MIN_SESSIONS
-    )
-    .sort((a, b) => a.delta - b.delta)
-    .map((row) => ({ name: row.displayName, delta: row.delta, sessions: row.sessionsCount }));
-}

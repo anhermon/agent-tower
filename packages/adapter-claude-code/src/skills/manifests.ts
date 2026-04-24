@@ -282,7 +282,7 @@ function splitFrontmatter(raw: string): Frontmatter {
   }
   const [, yamlBlock, body] = match;
   try {
-    const parsed: unknown = YAML.parse(yamlBlock ?? "");
+    const parsed = YAML.parse(yamlBlock ?? "");
     if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
       return {
         frontmatter: parsed as Record<string, unknown>,
