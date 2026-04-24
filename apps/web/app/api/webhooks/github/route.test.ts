@@ -5,15 +5,15 @@ import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ControlPlaneEventType } from "@control-plane/events";
 import { WEBHOOK_EVENT_TYPES } from "@control-plane/core";
+import { ControlPlaneEventType } from "@control-plane/events";
 
+import { eventBus } from "@/lib/event-bus";
 import {
   GITHUB_WEBHOOK_DELIVERIES_FILE_ENV,
   GITHUB_WEBHOOK_SECRET_ENV,
   type GithubWebhookDeliveryLogEntry,
 } from "@/lib/github-webhooks";
-import { eventBus } from "@/lib/event-bus";
 
 import { POST } from "./route.js";
 

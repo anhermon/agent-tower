@@ -17,6 +17,7 @@ import {
  * `toolErrorCounts` map (produced by `foldSessionSummary` via its
  * `toolErrorSink` option) — omitting it keeps backward-compat: `errorCount: 0`.
  */
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- tool analytics fold; high branching reflects per-tool aggregation across many sessions
 export function foldToolAnalytics(
   sessions: readonly SessionUsageSummary[],
   toolErrorCounts: ReadonlyMap<string, number> = new Map()

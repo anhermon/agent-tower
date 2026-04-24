@@ -32,6 +32,7 @@ export function ProjectSwitcher({ projects, className }: ProjectSwitcherProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -55,6 +56,13 @@ export function ProjectSwitcher({ projects, className }: ProjectSwitcherProps) {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
+  }, [open]);
+
+  // Focus the input when the switcher opens (replaces autoFocus to satisfy jsx-a11y/no-autofocus).
+  useEffect(() => {
+    if (open) {
+      inputRef.current?.focus();
+    }
   }, [open]);
 
   const navigate = useCallback(
@@ -83,6 +91,7 @@ export function ProjectSwitcher({ projects, className }: ProjectSwitcherProps) {
       </button>
 
       {open ? (
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog backdrop click-to-close; keyboard handled via onKeyDown and inner cmdk Command
         <div
           role="dialog"
           aria-modal="true"
@@ -90,6 +99,9 @@ export function ProjectSwitcher({ projects, className }: ProjectSwitcherProps) {
           className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-[12vh]"
           onClick={(event) => {
             if (event.target === event.currentTarget) setOpen(false);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setOpen(false);
           }}
         >
           <Command
@@ -102,7 +114,7 @@ export function ProjectSwitcher({ projects, className }: ProjectSwitcherProps) {
                 ⌕
               </span>
               <Command.Input
-                autoFocus
+                ref={inputRef}
                 value={query}
                 onValueChange={setQuery}
                 placeholder="Search projects by name or path…"

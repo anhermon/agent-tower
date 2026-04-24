@@ -1,6 +1,6 @@
+import { LRUCache } from "lru-cache";
 import YAML from "yaml";
 import { z } from "zod";
-import { LRUCache } from "lru-cache";
 
 const WorkflowActionSchema = z.object({
   type: z.enum(["review_pr", "respond_comment", "create_issue"]),

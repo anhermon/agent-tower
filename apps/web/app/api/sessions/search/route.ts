@@ -225,6 +225,7 @@ function safeJsonParse(line: string): ParsedEntry | null {
   }
 }
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- JSONL entry text extraction; branching follows entry type × content block type
 function hitFromEntry(
   entry: ParsedEntry,
   file: ClaudeSessionFile,
@@ -245,6 +246,7 @@ function hitFromEntry(
       text = content;
     } else if (Array.isArray(content)) {
       const buffer: string[] = [];
+      /* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- content blocks from JSONL parsing are untyped */
       for (const block of content) {
         if (typeof block?.text === "string") buffer.push(block.text);
         if (typeof block?.thinking === "string") buffer.push(block.thinking);
@@ -253,6 +255,7 @@ function hitFromEntry(
           buffer.push(block.content);
         }
       }
+      /* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
       text = buffer.join("\n");
     }
   }

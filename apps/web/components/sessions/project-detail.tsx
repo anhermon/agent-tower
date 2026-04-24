@@ -216,6 +216,7 @@ function buildRows(
   sessions: readonly SessionUsageSummary[],
   listings: Readonly<Record<string, SessionListing>>
 ): readonly SessionListRow[] {
+  // eslint-disable-next-line complexity -- row mapping; each field derivation is an independent branch
   return sessions.map((summary): SessionListRow => {
     const listing = listings[summary.sessionId];
     const projectId = listing?.projectId ?? summary.cwd ?? "";

@@ -146,6 +146,7 @@ async function scanWithCache(files: readonly ClaudeSessionFile[]): Promise<ScanR
   return { invocations, filesScanned: files.length };
 }
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- skill invocation extraction from JSONL; branching follows the Claude entry format
 async function readInvocationsFromFile(filePath: string): Promise<readonly RawInvocation[]> {
   // Stream line-by-line instead of materializing the whole transcript as a
   // single `await readFile()` promise. This has two benefits:
@@ -223,13 +224,14 @@ interface SkillBucket {
   perDay: Map<string, number>;
 }
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- skill usage report builder; high branching reflects per-invocation aggregation and manifest join
 function buildReport(scan: ScanResult, skills: readonly SkillManifest[]): SkillsUsageReport {
   const byId = new Map<string, SkillManifest>();
   const byName = new Map<string, SkillManifest>();
   for (const s of skills) {
     byId.set(s.id, s);
-    if (typeof s.name === "string" && s.name.length > 0) {
-      if (!byName.has(s.name)) byName.set(s.name, s);
+    if (typeof s.name === "string" && s.name.length > 0 && !byName.has(s.name)) {
+      byName.set(s.name, s);
     }
   }
 

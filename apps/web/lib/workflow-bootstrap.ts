@@ -1,9 +1,10 @@
 import { getLogger } from "@control-plane/logger";
+
 import { eventBus } from "./event-bus";
-import { createRepoConfigProvider } from "./repo-config";
-import { createWorkflowQueue } from "./workflow-queue";
-import { createWorkflowEngine } from "./workflow-engine";
 import { createGitHubActionExecutor } from "./github-actions";
+import { createRepoConfigProvider } from "./repo-config";
+import { createWorkflowEngine } from "./workflow-engine";
+import { createWorkflowQueue } from "./workflow-queue";
 import { createWorkflowWorker } from "./workflow-worker";
 
 const log = getLogger("workflow-bootstrap");

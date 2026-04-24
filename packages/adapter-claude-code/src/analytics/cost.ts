@@ -27,6 +27,7 @@ export interface CostFoldOptions {
  * rollups plus an overall cache-efficiency summary. Unknown models use the
  * pricing fallback (upper-bound). No I/O, no clocks.
  */
+// eslint-disable-next-line complexity -- analytical fold over pricing tiers; decomposing would obscure the accounting logic
 export function foldCostBreakdown(
   sessions: readonly SessionUsageSummary[],
   options: CostFoldOptions = {}

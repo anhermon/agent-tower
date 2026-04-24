@@ -152,7 +152,7 @@ function AuditEntries({ ticket }: { readonly ticket: TicketRecord }) {
           No audit entries attached to this ticket.
         </div>
       ) : (
-        <ul role="list" className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
+        <ul className="glass-panel divide-y divide-line/60 overflow-hidden rounded-md">
           {entries.map((entry) => (
             <li
               key={`${entry.at}-${entry.message.slice(0, 32)}`}

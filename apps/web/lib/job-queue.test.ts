@@ -67,7 +67,7 @@ describe("JobQueue", () => {
 
       const pending = queue.listPending();
       expect(pending).toHaveLength(1);
-      expect(pending[0]!.id).toBe("job-1");
+      expect(pending[0].id).toBe("job-1");
     });
 
     it("appends multiple jobs and tracks all as pending", async () => {
@@ -92,7 +92,7 @@ describe("JobQueue", () => {
 
       const pending = queue.listPending();
       expect(pending).toHaveLength(1);
-      expect(pending[0]!.id).toBe("job-2");
+      expect(pending[0].id).toBe("job-2");
     });
   });
 
@@ -170,7 +170,7 @@ describe("JobQueue", () => {
 
       const records = await queue.read();
       expect(records).toHaveLength(1);
-      expect(records[0]!.event.id).toBe("job-1");
+      expect(records[0].event.id).toBe("job-1");
     });
 
     it("appendMany appends multiple events", async () => {

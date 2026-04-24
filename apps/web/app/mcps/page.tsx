@@ -1,6 +1,6 @@
 import { ModulePlaceholder } from "@/components/layout/module-placeholder";
-import { getModuleByKey } from "@/lib/modules";
 import { listMcpServers } from "@/lib/mcps-source";
+import { getModuleByKey } from "@/lib/modules";
 
 export default async function McpsPage() {
   const mod = getModuleByKey("mcps");

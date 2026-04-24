@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await -- test mocks implement async interfaces with synchronous stubs */
+/* eslint-disable @typescript-eslint/no-empty-function -- test spy suppressors need empty function bodies */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createRepoConfigProvider, type RepoConfigProvider } from "./repo-config";

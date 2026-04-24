@@ -8,12 +8,12 @@ export interface WorkflowJobData {
   readonly senderLogin: string;
   readonly rawPayload: unknown;
   readonly ruleName: string;
-  readonly actions: ReadonlyArray<{
+  readonly actions: readonly {
     readonly type: string;
     readonly instructions?: string;
     readonly title_template?: string;
     readonly body_template?: string;
-  }>;
+  }[];
   readonly repoConfig: {
     readonly version: number;
     readonly enabled: boolean;
@@ -24,7 +24,7 @@ export interface WorkflowJobData {
 const WORKFLOW_QUEUE_NAME = "workflow-jobs";
 
 export function getRedisConnection(): { host: string; port: number } {
-  const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+  const redisUrl = process.env.REDIS_URL ?? "redis://localhost:6379";
   try {
     const url = new URL(redisUrl);
     return {

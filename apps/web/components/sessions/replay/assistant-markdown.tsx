@@ -94,6 +94,7 @@ interface CodeProps {
 
 function CodeRenderer({ className, children }: CodeProps) {
   const languageMatch = /language-(\w+)/.exec(className ?? "");
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- React `children` is typed as ReactNode; String() coercion is intentional for code content
   const raw = String(children ?? "");
   const isBlock = !!languageMatch || raw.includes("\n");
   if (!isBlock) {

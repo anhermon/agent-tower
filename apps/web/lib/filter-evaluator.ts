@@ -45,6 +45,7 @@ interface BinaryNode {
 
 type ASTNode = LiteralNode | PropertyNode | BinaryNode;
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- lexer; branching follows character-class dispatch
 function tokenize(input: string): Token[] {
   const tokens: Token[] = [];
   let i = 0;
@@ -271,6 +272,7 @@ function getPropertyValue(obj: unknown, path: string[]): unknown {
   return current;
 }
 
+// eslint-disable-next-line complexity -- AST evaluator; switch case per node type
 function evaluateNode(node: ASTNode, context: unknown): unknown {
   switch (node.type) {
     case "literal":

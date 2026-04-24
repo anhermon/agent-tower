@@ -1,3 +1,5 @@
+import { createHmac } from "node:crypto";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -15,7 +17,7 @@ describe("webhook-verifier", () => {
     it("verifies valid GitHub signature", () => {
       const secret = "test-secret";
       const body = JSON.stringify({ action: "opened" });
-      const signature = `sha256=${require("node:crypto").createHmac("sha256", secret).update(body).digest("hex")}`;
+      const signature = `sha256=${createHmac("sha256", secret).update(body).digest("hex")}`;
       const request = new Request("http://localhost", {
         headers: {
           "x-hub-signature-256": signature,
@@ -58,7 +60,7 @@ describe("webhook-verifier", () => {
       const body = "payload=test";
       const timestamp = String(Math.floor(Date.now() / 1000));
       const baseString = `v0:${timestamp}:${body}`;
-      const signature = `v0=${require("node:crypto").createHmac("sha256", secret).update(baseString).digest("hex")}`;
+      const signature = `v0=${createHmac("sha256", secret).update(baseString).digest("hex")}`;
       const request = new Request("http://localhost", {
         headers: {
           "x-slack-request-timestamp": timestamp,
@@ -90,10 +92,7 @@ describe("webhook-verifier", () => {
     it("verifies valid Stripe signature", () => {
       const secret = "test-secret";
       const body = JSON.stringify({ type: "invoice.paid" });
-      const expected = require("node:crypto")
-        .createHmac("sha256", secret)
-        .update(body)
-        .digest("hex");
+      const expected = createHmac("sha256", secret).update(body).digest("hex");
       const signature = `v1=${expected},t=1234567890`;
       const request = new Request("http://localhost", {
         headers: {

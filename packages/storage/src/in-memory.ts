@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await -- in-memory methods implement async repository interfaces with synchronous stubs */
 import {
   type AgentRepository,
   type AuditEntryRepository,

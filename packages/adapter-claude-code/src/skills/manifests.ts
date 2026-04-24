@@ -282,6 +282,7 @@ function splitFrontmatter(raw: string): Frontmatter {
   }
   const [, yamlBlock, body] = match;
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- YAML.parse returns unknown; narrowed by the typeof/Array.isArray check below
     const parsed = YAML.parse(yamlBlock ?? "");
     if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
       return {

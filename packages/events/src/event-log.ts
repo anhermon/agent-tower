@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await -- append/read implement async interface contracts synchronously; appendMany and stream do use await */
 import { eventMatchesFilter } from "./bus.js";
 
 import type { AsyncEventStream, EventEnvelope, EventSubscriptionFilter } from "./types.js";

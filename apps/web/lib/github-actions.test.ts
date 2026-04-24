@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+
 import { createGitHubActionExecutor } from "./github-actions";
 
 const TEST_TOKEN = "ghp_test_token_12345";
