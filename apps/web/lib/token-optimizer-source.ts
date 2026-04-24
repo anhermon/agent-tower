@@ -277,13 +277,11 @@ const TOOL_MATCHERS: ToolMatcher[] = [
     id: TOOL_ID_RTK,
     evidence:
       "Approximation: Bash tool calls with 'rtk' in command string (~400 tokens saved per call).",
-    match: (toolName, _serverName, cmd) =>
-      toolName === "Bash" && /^\s*rtk(?:\s|$)/.test(cmd),
+    match: (toolName, _serverName, cmd) => toolName === "Bash" && /^\s*rtk(?:\s|$)/.test(cmd),
   },
   {
     id: TOOL_ID_CONTEXT_MODE,
-    evidence:
-      "Approximation: tool calls with ctx_* prefix (~400 tokens saved per call).",
+    evidence: "Approximation: tool calls with ctx_* prefix (~400 tokens saved per call).",
     match: (toolName) => toolName.startsWith("ctx_"),
   },
   {
@@ -304,8 +302,7 @@ const TOOL_MATCHERS: ToolMatcher[] = [
   },
   {
     id: TOOL_ID_GRAPHIFY,
-    evidence:
-      "Approximation: tool calls named 'graphify' (~400 tokens saved per call).",
+    evidence: "Approximation: tool calls named 'graphify' (~400 tokens saved per call).",
     match: (toolName) => toolName === "graphify",
   },
 ];
@@ -403,12 +400,7 @@ async function scanFile(
         if (Array.isArray(content)) {
           for (const block of content as unknown[]) {
             if (typeof block !== "object" || block === null) continue;
-            processToolBlock(
-              block as Record<string, unknown>,
-              rowMap,
-              sessionsPerTool,
-              filePath
-            );
+            processToolBlock(block as Record<string, unknown>, rowMap, sessionsPerTool, filePath);
           }
         }
       }
