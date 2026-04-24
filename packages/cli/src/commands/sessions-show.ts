@@ -59,10 +59,11 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
   }
 
   if (mode.json) {
+    const base = projectSummary(summary, values.full === true) as Record<string, unknown>;
     writeJson({
       ok: true,
       session: {
-        ...projectSummary(summary, values.full === true),
+        ...base,
         ...(timeline ? { timeline } : {}),
         ...(skillAttribution ? { skillAttribution } : {}),
       },
