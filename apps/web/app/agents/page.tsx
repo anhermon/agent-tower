@@ -2,7 +2,6 @@ import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
 
 import { AgentGrid } from "@/components/agents/agent-grid";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import {
   type AgentInventoryItem,
@@ -23,26 +22,21 @@ export default async function AgentsPage() {
 
   return (
     <section>
-      <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
-            <Badge state={status} />
-          </div>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Inventory of agent instances discovered from the configured Claude Code data root. Each
-            project directory is one agent scoped to that cwd. State is derived from transcript
-            activity — no heartbeats, no writes.
+      <div className="mb-5 min-w-0">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+          <Badge state={status} />
+        </div>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
+          Inventory of agent instances discovered from the configured Claude Code data root. Each
+          project directory is one agent scoped to that cwd. State is derived from transcript
+          activity — no heartbeats, no writes.
+        </p>
+        {dataRoot ? (
+          <p className="mt-2 font-mono text-xs text-muted/80" title={dataRoot}>
+            data root: {dataRoot}
           </p>
-          {dataRoot ? (
-            <p className="mt-2 font-mono text-xs text-muted/80" title={dataRoot}>
-              data root: {dataRoot}
-            </p>
-          ) : null}
-        </div>
-        <div className="flex h-10 shrink-0 items-center gap-2">
-          <Button>Refresh</Button>
-        </div>
+        ) : null}
       </div>
 
       <AgentsBody result={result} />
