@@ -7,9 +7,8 @@ export default async function McpsPage() {
   const result = await listMcpServers();
 
   // Phase 1 — deferred. The result is always { ok: false, reason: "deferred" }.
-  // When an McpAdapter is wired and result.ok is true, replace this block
-  // with real server/tool list rendering using components/mcps/.
-  void result;
+  // TODO(Phase 2): when result.ok is true, render result.servers and
+  // result.tools via components/mcps/ instead of the placeholder below.
 
   return (
     <ModulePlaceholder
