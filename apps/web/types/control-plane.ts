@@ -8,6 +8,7 @@ export type ModuleKey =
   | "kanban"
   | "skills"
   | "mcps"
+  | "token-optimizer"
   | "channels"
   | "replay";
 

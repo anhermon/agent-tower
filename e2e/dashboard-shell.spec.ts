@@ -9,6 +9,7 @@ const MODULE_ROUTES = [
   { path: "/mcps", emptyState: "No MCP servers" },
   { path: "/channels", emptyState: "No channels connected" },
   { path: "/replay", emptyState: "No replay traces" },
+  { path: "/token-optimizer", emptyState: "No tools registered" },
 ];
 
 test("given_the_dashboard_is_running__when_opening_home__then_the_shell_is_visible", async ({
