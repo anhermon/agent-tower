@@ -25,7 +25,9 @@ describe("runCli global-flag handling", () => {
       if (dir) {
         try {
           await rm(dir, { recursive: true, force: true });
-        } catch {}
+        } catch {
+          // ignore cleanup errors
+        }
       }
     }
   });

@@ -6,7 +6,6 @@ import {
   readTranscriptFile,
   scoreSessionWaste,
 } from "@control-plane/adapter-claude-code";
-import type { SkillTurnAttribution, TurnTimeline } from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
 import { resolveOrExplain } from "../data-root.js";
@@ -47,8 +46,8 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     return 1;
   }
 
-  let timeline: TurnTimeline | undefined;
-  let skillAttribution: SkillTurnAttribution | undefined;
+  let timeline = undefined;
+  let skillAttribution = undefined;
   if (values.timeline) {
     const files = await listSessionFiles({ directory: resolved.directory });
     const file = files.find((f) => f.sessionId === sessionId);
