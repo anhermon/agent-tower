@@ -32,9 +32,9 @@ describe("SkillGridItem shape contract", () => {
   });
 
   it("must not have body or frontmatter keys", () => {
-    // Runtime guard: confirm the object has no `body` or `frontmatter`.
-    // If `toGridItem` ever accidentally includes those fields the SkillGridItem
-    // type will have widened and this test will fail.
+    // Confirms the SkillGridItem literal shape excludes the forbidden keys.
+    // This is primarily a type-level contract; a runtime check is provided
+    // here to document the invariant and catch accidental shape widening.
     const item: SkillGridItem = {
       id: "test",
       name: "Test",
