@@ -1,10 +1,18 @@
-import { ClaudeCodeAnalyticsSource, resolveDataRoot } from "@control-plane/adapter-claude-code";
+import {
+  ClaudeCodeAnalyticsSource,
+  computeSkillTurnAttribution,
+  computeTurnTimeline,
+  listSessionFiles,
+  readTranscriptFile,
+  resolveDataRoot,
+} from "@control-plane/adapter-claude-code";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 interface ParsedSessionsShowInput {
   readonly sessionId: string;
   readonly includeTurns: boolean;
+  readonly includeTimeline: boolean;
 }
 
 function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: string } {
@@ -14,9 +22,11 @@ function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: s
     return { error: "sessionId is required and must be a non-empty string" };
   }
   const includeTurns = r.includeTurns;
+  const includeTimeline = r.includeTimeline;
   return {
     sessionId,
     includeTurns: typeof includeTurns === "boolean" ? includeTurns : false,
+    includeTimeline: typeof includeTimeline === "boolean" ? includeTimeline : false,
   };
 }
 
@@ -34,6 +44,11 @@ export const sessionsShowTool: ToolDefinition = {
       includeTurns: {
         type: "boolean",
         description: "When true, include the per-turn usage breakdown. Defaults to false.",
+      },
+      includeTimeline: {
+        type: "boolean",
+        description:
+          "When true, include per-turn tool/token timeline and skill-to-turn attribution. Defaults to false.",
       },
     },
     required: ["sessionId"],
@@ -65,11 +80,29 @@ export const sessionsShowTool: ToolDefinition = {
             void _turns;
             return rest;
           })();
+
+      let timeline = undefined;
+      let skillAttribution = undefined;
+      if (parsed.includeTimeline) {
+        const files = await listSessionFiles({ directory: resolved.directory });
+        const file = files.find((f) => f.sessionId === parsed.sessionId);
+        if (file) {
+          const { entries } = await readTranscriptFile(file.filePath);
+          timeline = computeTurnTimeline(entries, { sessionId: parsed.sessionId });
+          skillAttribution = computeSkillTurnAttribution(entries, { sessionId: parsed.sessionId });
+        }
+      }
+
       return {
         ok: true,
         sessionId: parsed.sessionId,
         includeTurns: parsed.includeTurns,
-        session: projected,
+        includeTimeline: parsed.includeTimeline,
+        session: {
+          ...projected,
+          ...(timeline ? { timeline } : {}),
+          ...(skillAttribution ? { skillAttribution } : {}),
+        },
       };
     } catch (error) {
       return errorResult(error);

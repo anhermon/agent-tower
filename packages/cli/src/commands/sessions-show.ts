@@ -1,4 +1,11 @@
-import { ClaudeCodeAnalyticsSource, scoreSessionWaste } from "@control-plane/adapter-claude-code";
+import {
+  ClaudeCodeAnalyticsSource,
+  computeSkillTurnAttribution,
+  computeTurnTimeline,
+  listSessionFiles,
+  readTranscriptFile,
+  scoreSessionWaste,
+} from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
 import { resolveOrExplain } from "../data-root.js";
@@ -10,10 +17,12 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     json?: boolean;
     pretty?: boolean;
     full?: boolean;
+    timeline?: boolean;
   }>(argv, {
     json: { type: "boolean" },
     pretty: { type: "boolean" },
     full: { type: "boolean" },
+    timeline: { type: "boolean" },
   });
 
   const sessionId = positionals[0];
@@ -37,8 +46,27 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     return 1;
   }
 
+  let timeline = undefined;
+  let skillAttribution = undefined;
+  if (values.timeline) {
+    const files = await listSessionFiles({ directory: resolved.directory });
+    const file = files.find((f) => f.sessionId === sessionId);
+    if (file) {
+      const { entries } = await readTranscriptFile(file.filePath);
+      timeline = computeTurnTimeline(entries, { sessionId });
+      skillAttribution = computeSkillTurnAttribution(entries, { sessionId });
+    }
+  }
+
   if (mode.json) {
-    writeJson({ ok: true, session: projectSummary(summary, values.full === true) });
+    writeJson({
+      ok: true,
+      session: {
+        ...projectSummary(summary, values.full === true),
+        ...(timeline ? { timeline } : {}),
+        ...(skillAttribution ? { skillAttribution } : {}),
+      },
+    });
     return 0;
   }
 
