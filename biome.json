@@ -27,7 +27,9 @@
       "!pnpm-lock.yaml",
       "!**/playwright-report",
       "!**/test-results",
-      "!packages/testing/fixtures/claude-code"
+      "!packages/testing/fixtures/claude-code",
+      "!.worktree/**",
+      "!.worktrees/**"
     ]
   },
   "formatter": {
