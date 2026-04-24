@@ -1,8 +1,7 @@
-import Link from "next/link";
-
 import { Badge } from "@/components/ui/badge";
 import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import { WebhookDeliveryList } from "@/components/webhooks/webhook-delivery-list";
 import { WebhookTable } from "@/components/webhooks/webhook-table";
 import { getModuleByKey } from "@/lib/modules";
 import {
@@ -13,12 +12,10 @@ import {
   type WebhookSubscriptionListing,
 } from "@/lib/webhooks-source";
 
-import { WebhookWorkbench } from "./_module/webhook-workbench";
-
 export const dynamic = "force-dynamic";
 
 export default async function WebhooksPage() {
-  const module = getModuleByKey("webhooks");
+  const mod = getModuleByKey("webhooks");
   const configuredFile = getConfiguredWebhooksFile();
   const result = await listWebhooksOrEmpty();
 
@@ -30,19 +27,19 @@ export default async function WebhooksPage() {
   const status: "healthy" | "degraded" = result.ok ? "healthy" : "degraded";
 
   return (
-    <section className="space-y-6">
+    <section>
       <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
           <p className="eyebrow">Module</p>
           <div className="mt-1 flex flex-wrap items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-normal text-ink">{module.label}</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Webhook subscriptions configured for this control plane instance, plus a local workbench
-            for registering integrations, dry-running triggers, and validating routing before agents
-            are connected. An inbound GitHub receiver at <code>/api/webhooks/github</code> validates
-            signatures and appends accepted deliveries to the local event log.
+            Webhook subscriptions configured for this control plane instance. Read-only for this
+            slice: no CRUD yet. The inbound GitHub receiver at <code>/api/webhooks/github</code>
+            validates signatures and appends accepted deliveries to the local event log. Invocation
+            history is shown below and links to sessions when a session id is present.
           </p>
           {configuredFile ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={configuredFile}>
@@ -51,18 +48,11 @@ export default async function WebhooksPage() {
           ) : null}
         </div>
         <div className="flex h-10 shrink-0 items-center gap-2">
-          <Link
-            className="inline-flex h-10 items-center rounded-xs border border-line/80 bg-ink/[0.04] px-3.5 text-sm font-medium text-ink transition-all hover:-translate-y-px hover:border-info/50 hover:bg-info/10"
-            href="/webhooks/standalone"
-          >
-            Standalone view
-          </Link>
           <RefreshButton />
         </div>
       </div>
 
       <WebhooksBody result={result} />
-      <WebhookWorkbench />
     </section>
   );
 }
@@ -86,7 +76,7 @@ function WebhooksBody({ result }: { result: ListWebhooksResult }) {
     );
   }
 
-  const { subscriptions } = result.snapshot;
+  const { subscriptions, deliveries } = result.snapshot;
   if (subscriptions.length === 0) {
     return (
       <EmptyState
@@ -100,6 +90,20 @@ function WebhooksBody({ result }: { result: ListWebhooksResult }) {
     <div className="flex flex-col gap-5">
       <SummaryStrip listings={subscriptions} />
       <WebhookTable listings={subscriptions} />
+      <section className="space-y-3">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="eyebrow">Invocation log</p>
+            <h2 className="text-base font-semibold text-ink">Recent webhook deliveries</h2>
+          </div>
+          <p className="text-xs text-muted">Showing {deliveries.length} recorded invocation(s).</p>
+        </div>
+        <WebhookDeliveryList
+          deliveries={[...deliveries].sort((a, b) =>
+            a.attemptedAt < b.attemptedAt ? 1 : a.attemptedAt > b.attemptedAt ? -1 : 0
+          )}
+        />
+      </section>
     </div>
   );
 }

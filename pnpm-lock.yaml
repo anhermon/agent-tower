@@ -113,6 +113,9 @@ importers:
       '@control-plane/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@control-plane/events':
+        specifier: workspace:*
+        version: link:../../packages/events
       '@control-plane/logger':
         specifier: workspace:*
         version: link:../../packages/logger
