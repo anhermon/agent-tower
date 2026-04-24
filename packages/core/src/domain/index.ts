@@ -14,4 +14,4 @@ export * from "./tickets.js";
 export * from "./tools.js";
 export * from "./validators.js";
 export * from "./webhooks.js";
-export * from "./token-optimizer.js";
+export type * from "./token-optimizer.js";

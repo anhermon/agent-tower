@@ -5,8 +5,9 @@ import {
   listSessionFiles,
   readTranscriptFile,
   scoreSessionWaste,
+  type SkillTurnAttribution,
+  type TurnTimeline,
 } from "@control-plane/adapter-claude-code";
-import type { SkillTurnAttribution, TurnTimeline } from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
 import { resolveOrExplain } from "../data-root.js";
