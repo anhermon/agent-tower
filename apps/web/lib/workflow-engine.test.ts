@@ -1,11 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import {
-  InMemoryEventBus,
-  InMemoryAppendOnlyEventLog,
-  type EventEnvelope,
-} from "@control-plane/events";
+import { InMemoryEventBus, type EventEnvelope, EventSourceKind } from "@control-plane/events";
 import type { RepoConfigProvider, RepoWorkflowConfig } from "./repo-config";
-import { createWorkflowEngine, type WebhookReceived, type WorkflowJob } from "./workflow-engine";
+import { createWorkflowEngine, type WebhookReceived } from "./workflow-engine";
 
 function createWebhookEvent(overrides: Partial<WebhookReceived["payload"]> = {}): WebhookReceived {
   return {
@@ -14,7 +10,7 @@ function createWebhookEvent(overrides: Partial<WebhookReceived["payload"]> = {})
     version: 1,
     occurredAt: new Date().toISOString(),
     source: {
-      kind: "webhook",
+      kind: EventSourceKind.Webhook,
       id: "delivery-1",
     },
     payload: {
@@ -30,19 +26,22 @@ function createWebhookEvent(overrides: Partial<WebhookReceived["payload"]> = {})
 
 describe("WorkflowEngine", () => {
   let eventBus: InMemoryEventBus<EventEnvelope>;
-  let jobQueue: InMemoryAppendOnlyEventLog<WorkflowJob>;
+  let jobQueue: { add: ReturnType<typeof vi.fn>; getJobs: ReturnType<typeof vi.fn> };
   let repoConfigProvider: RepoConfigProvider;
   let engine: ReturnType<typeof createWorkflowEngine>;
 
   beforeEach(() => {
     eventBus = new InMemoryEventBus<EventEnvelope>();
-    jobQueue = new InMemoryAppendOnlyEventLog<WorkflowJob>();
+    jobQueue = {
+      add: vi.fn().mockResolvedValue(undefined),
+      getJobs: vi.fn().mockResolvedValue([]),
+    };
     repoConfigProvider = {
       fetchConfig: vi.fn(),
     };
     engine = createWorkflowEngine({
       eventBus,
-      jobQueue,
+      jobQueue: jobQueue as unknown as Parameters<typeof createWorkflowEngine>[0]["jobQueue"],
       repoConfigProvider,
     });
   });
@@ -50,7 +49,6 @@ describe("WorkflowEngine", () => {
   afterEach(() => {
     engine.stop();
     eventBus.clear();
-    jobQueue.clear();
   });
 
   it("given WebhookReceived event, fetches config, matches rule, creates job", async () => {
@@ -76,13 +74,12 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(1);
-    expect(jobs[0].event.payload.ruleName).toBe("Review PRs");
-    expect(jobs[0].event.payload.repoFullName).toBe("owner/repo");
-    expect(jobs[0].event.payload.status).toBe("pending");
-    expect(jobs[0].event.payload.actions).toHaveLength(1);
-    expect(jobs[0].event.payload.actions[0].type).toBe("review_pr");
+    expect(jobQueue.add).toHaveBeenCalledTimes(1);
+    const jobData = jobQueue.add.mock.calls[0][1];
+    expect(jobData.ruleName).toBe("Review PRs");
+    expect(jobData.repositoryFullName).toBe("owner/repo");
+    expect(jobData.actions).toHaveLength(1);
+    expect(jobData.actions[0].type).toBe("review_pr");
   });
 
   it("given no config, drops event", async () => {
@@ -94,8 +91,7 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(0);
+    expect(jobQueue.add).not.toHaveBeenCalled();
   });
 
   it("given disabled config, drops event", async () => {
@@ -119,8 +115,7 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(0);
+    expect(jobQueue.add).not.toHaveBeenCalled();
   });
 
   it("given non-matching event type, no job created", async () => {
@@ -146,8 +141,7 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(0);
+    expect(jobQueue.add).not.toHaveBeenCalled();
   });
 
   it("given matching filter expression, job created", async () => {
@@ -180,9 +174,9 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(1);
-    expect(jobs[0].event.payload.ruleName).toBe("CI Failures");
+    expect(jobQueue.add).toHaveBeenCalledTimes(1);
+    const jobData = jobQueue.add.mock.calls[0][1];
+    expect(jobData.ruleName).toBe("CI Failures");
   });
 
   it("given non-matching filter expression, no job created", async () => {
@@ -215,7 +209,6 @@ describe("WorkflowEngine", () => {
 
     await eventBus.publish(event);
 
-    const jobs = await jobQueue.read();
-    expect(jobs).toHaveLength(0);
+    expect(jobQueue.add).not.toHaveBeenCalled();
   });
 });

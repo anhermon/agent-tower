@@ -1,5 +1,7 @@
-import type { EventEnvelope, EventBus, AppendOnlyEventLog } from "@control-plane/events";
-import type { RepoConfigProvider, RepoWorkflowConfig, WorkflowAction } from "./repo-config";
+import type { EventEnvelope, EventBus } from "@control-plane/events";
+import type { Queue } from "bullmq";
+import type { RepoConfigProvider, WorkflowAction } from "./repo-config";
+import type { WorkflowJobData } from "./workflow-queue";
 import { evaluateFilter } from "./filter-evaluator";
 
 export interface WebhookPayload {
@@ -12,25 +14,13 @@ export interface WebhookPayload {
 
 export type WebhookReceived = EventEnvelope<"webhook.received", WebhookPayload>;
 
-export interface WorkflowJobPayload {
-  readonly status: "pending" | "running" | "completed" | "failed";
-  readonly webhookEvent: WebhookReceived;
-  readonly ruleName: string;
-  readonly actions: readonly WorkflowAction[];
-  readonly repoFullName: string;
-  readonly repoConfig: RepoWorkflowConfig;
-  readonly createdAt: string;
-}
-
-export type WorkflowJob = EventEnvelope<"workflow.job_created", WorkflowJobPayload>;
-
 export interface WorkflowEngine {
   stop(): void;
 }
 
 export interface WorkflowEngineDependencies {
   readonly eventBus: EventBus;
-  readonly jobQueue: AppendOnlyEventLog<WorkflowJob>;
+  readonly jobQueue: Queue<WorkflowJobData>;
   readonly repoConfigProvider: RepoConfigProvider;
 }
 
@@ -93,27 +83,19 @@ export function createWorkflowEngine(deps: WorkflowEngineDependencies): Workflow
       });
 
       if (matches) {
-        const job: WorkflowJob = {
-          id: `job-${crypto.randomUUID()}`,
-          type: "workflow.job_created",
-          version: 1,
-          occurredAt: new Date().toISOString(),
-          source: {
-            kind: "system",
-            id: "workflow-engine",
-          },
-          payload: {
-            status: "pending",
-            webhookEvent,
-            ruleName: rule.name,
-            actions: rule.actions,
-            repoFullName: repositoryFullName,
-            repoConfig: config,
-            createdAt: new Date().toISOString(),
-          },
+        const jobData: WorkflowJobData = {
+          webhookEventId: webhookEvent.id,
+          webhookEventType: eventType,
+          webhookAction: action,
+          repositoryFullName,
+          senderLogin: webhookEvent.payload.senderLogin,
+          rawPayload,
+          ruleName: rule.name,
+          actions: rule.actions as WorkflowAction[],
+          repoConfig: config,
         };
 
-        await jobQueue.append(job);
+        await jobQueue.add("execute-workflow", jobData);
       }
     }
   });

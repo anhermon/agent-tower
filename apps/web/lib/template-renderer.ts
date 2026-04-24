@@ -1,3 +1,5 @@
+import Mustache from "mustache";
+
 export class TemplateSyntaxError extends Error {
   constructor(message: string) {
     super(message);
@@ -6,36 +8,12 @@ export class TemplateSyntaxError extends Error {
 }
 
 export function renderTemplate(template: string, context: Record<string, unknown>): string {
-  const regex = /\{\{([^{}]*)\}\}/g;
-
-  const result = template.replace(regex, (_match, path: string) => {
-    const trimmedPath = path.trim();
-
-    if (trimmedPath === "") {
-      throw new TemplateSyntaxError("Empty template variable");
+  try {
+    return Mustache.render(template, context, undefined, { escape: (text) => String(text ?? "") });
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new TemplateSyntaxError(error.message);
     }
-
-    const segments = trimmedPath.split(".");
-    let current: unknown = context;
-
-    for (const segment of segments) {
-      if (current === null || current === undefined) {
-        return "";
-      }
-
-      if (typeof current !== "object" || !(segment in current)) {
-        return "";
-      }
-
-      current = (current as Record<string, unknown>)[segment];
-    }
-
-    return current === null || current === undefined ? "" : String(current);
-  });
-
-  if (result.includes("{{") || result.includes("}}")) {
-    throw new TemplateSyntaxError("Unmatched template braces");
+    throw new TemplateSyntaxError(String(error));
   }
-
-  return result;
 }

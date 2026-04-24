@@ -14,11 +14,11 @@ describe("RepoConfigProvider", () => {
     global.fetch = fetchMock;
     warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     provider = createRepoConfigProvider();
-    vi.useFakeTimers();
+    // Note: we don't use fakeTimers here because lru-cache relies on Date.now()
+    // and we mock Date.now() directly in tests that need TTL expiration
   });
 
   afterEach(() => {
-    vi.useRealTimers();
     vi.restoreAllMocks();
     if (originalEnv === undefined) {
       delete process.env.CLAUDE_CONTROL_PLANE_GITHUB_TOKEN;
@@ -136,11 +136,14 @@ rules: []
           }),
         });
 
+      const baseTime = performance.now();
+      vi.spyOn(performance, "now").mockReturnValue(baseTime);
+
       // First fetch
       await provider.fetchConfig("owner/repo");
 
       // Advance time past TTL (60 seconds)
-      vi.advanceTimersByTime(61_000);
+      vi.spyOn(performance, "now").mockReturnValue(baseTime + 61_000);
 
       // Second fetch should call fetch again
       await provider.fetchConfig("owner/repo");
@@ -250,11 +253,14 @@ rules: []
           headers: new Headers({}),
         });
 
+      const baseTime = performance.now();
+      vi.spyOn(performance, "now").mockReturnValue(baseTime);
+
       // First fetch
       await provider.fetchConfig("owner/repo");
 
       // Advance time past 404 TTL (300 seconds)
-      vi.advanceTimersByTime(301_000);
+      vi.spyOn(performance, "now").mockReturnValue(baseTime + 301_000);
 
       // Second fetch should call fetch again
       await provider.fetchConfig("owner/repo");

@@ -1,37 +1,39 @@
 import YAML from "yaml";
+import { z } from "zod";
+import { LRUCache } from "lru-cache";
 
-export interface RepoWorkflowConfig {
-  readonly version: number;
-  readonly enabled: boolean;
-  readonly rules: readonly WorkflowRule[];
-}
+const WorkflowActionSchema = z.object({
+  type: z.enum(["review_pr", "respond_comment", "create_issue"]),
+  instructions: z.string().optional(),
+  title_template: z.string().optional(),
+  body_template: z.string().optional(),
+});
 
-export interface WorkflowRule {
-  readonly name: string;
-  readonly events: readonly EventTrigger[];
-  readonly actions: readonly WorkflowAction[];
-}
+const EventTriggerSchema = z.object({
+  type: z.string(),
+  actions: z.array(z.string()).optional(),
+  filter: z.string().optional(),
+});
 
-export interface EventTrigger {
-  readonly type: string;
-  readonly actions?: readonly string[];
-  readonly filter?: string;
-}
+const WorkflowRuleSchema = z.object({
+  name: z.string(),
+  events: z.array(EventTriggerSchema),
+  actions: z.array(WorkflowActionSchema),
+});
 
-export interface WorkflowAction {
-  readonly type: "review_pr" | "respond_comment" | "create_issue";
-  readonly instructions?: string;
-  readonly title_template?: string;
-  readonly body_template?: string;
-}
+const RepoWorkflowConfigSchema = z.object({
+  version: z.literal(1),
+  enabled: z.boolean(),
+  rules: z.array(WorkflowRuleSchema),
+});
+
+export type RepoWorkflowConfig = z.infer<typeof RepoWorkflowConfigSchema>;
+export type WorkflowRule = z.infer<typeof WorkflowRuleSchema>;
+export type EventTrigger = z.infer<typeof EventTriggerSchema>;
+export type WorkflowAction = z.infer<typeof WorkflowActionSchema>;
 
 export interface RepoConfigProvider {
   fetchConfig(repoFullName: string): Promise<RepoWorkflowConfig | null>;
-}
-
-interface CacheEntry {
-  config: RepoWorkflowConfig | null;
-  expiresAt: number;
 }
 
 const GITHUB_API_BASE = "https://api.github.com";
@@ -45,86 +47,6 @@ function getGitHubToken(): string {
     throw new Error("CLAUDE_CONTROL_PLANE_GITHUB_TOKEN is not configured");
   }
   return token;
-}
-
-function isValidRepoConfig(value: unknown): value is RepoWorkflowConfig {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-
-  const obj = value as Record<string, unknown>;
-
-  if (obj.version !== 1) {
-    return false;
-  }
-
-  if (typeof obj.enabled !== "boolean") {
-    return false;
-  }
-
-  if (!Array.isArray(obj.rules)) {
-    return false;
-  }
-
-  for (const rule of obj.rules) {
-    if (typeof rule !== "object" || rule === null) {
-      return false;
-    }
-
-    const ruleObj = rule as Record<string, unknown>;
-
-    if (typeof ruleObj.name !== "string") {
-      return false;
-    }
-
-    if (!Array.isArray(ruleObj.events)) {
-      return false;
-    }
-
-    for (const event of ruleObj.events) {
-      if (typeof event !== "object" || event === null) {
-        return false;
-      }
-      const eventObj = event as Record<string, unknown>;
-      if (typeof eventObj.type !== "string") {
-        return false;
-      }
-      if (eventObj.actions !== undefined && !Array.isArray(eventObj.actions)) {
-        return false;
-      }
-      if (eventObj.filter !== undefined && typeof eventObj.filter !== "string") {
-        return false;
-      }
-    }
-
-    if (!Array.isArray(ruleObj.actions)) {
-      return false;
-    }
-
-    for (const action of ruleObj.actions) {
-      if (typeof action !== "object" || action === null) {
-        return false;
-      }
-      const actionObj = action as Record<string, unknown>;
-      if (
-        typeof actionObj.type !== "string" ||
-        !["review_pr", "respond_comment", "create_issue"].includes(actionObj.type)
-      ) {
-        return false;
-      }
-      if (actionObj.instructions !== undefined && typeof actionObj.instructions !== "string") {
-        return false;
-      }
-      if (actionObj.title_template !== undefined && typeof actionObj.title_template !== "string") {
-        return false;
-      }
-      if (actionObj.body_template !== undefined && typeof actionObj.body_template !== "string") {
-        return false;
-      }
-    }
-  }
-
-  return true;
 }
 
 function logRateLimit(headers: Headers, repoFullName: string): void {
@@ -147,52 +69,26 @@ function logRateLimit(headers: Headers, repoFullName: string): void {
   }
 }
 
+interface CacheEntry {
+  readonly config: RepoWorkflowConfig | null;
+}
+
 export function createRepoConfigProvider(): RepoConfigProvider {
-  const cache = new Map<string, CacheEntry>();
-  const accessOrder: string[] = [];
+  const cache = new LRUCache<string, CacheEntry>({
+    max: MAX_CACHE_SIZE,
+    ttlAutopurge: true,
+  });
 
   function getCacheKey(repoFullName: string): string {
     return `github:${repoFullName}`;
   }
 
-  function getFromCache(key: string): CacheEntry | undefined {
-    const entry = cache.get(key);
-    if (!entry) return undefined;
-
-    // Update access order for LRU
-    const index = accessOrder.indexOf(key);
-    if (index > -1) {
-      accessOrder.splice(index, 1);
-    }
-    accessOrder.push(key);
-
-    return entry;
-  }
-
-  function setCache(key: string, entry: CacheEntry): void {
-    if (cache.has(key)) {
-      const index = accessOrder.indexOf(key);
-      if (index > -1) {
-        accessOrder.splice(index, 1);
-      }
-    } else if (cache.size >= MAX_CACHE_SIZE) {
-      const oldestKey = accessOrder.shift();
-      if (oldestKey) {
-        cache.delete(oldestKey);
-      }
-    }
-
-    cache.set(key, entry);
-    accessOrder.push(key);
-  }
-
   async function fetchConfig(repoFullName: string): Promise<RepoWorkflowConfig | null> {
     const token = getGitHubToken();
     const cacheKey = getCacheKey(repoFullName);
-    const now = Date.now();
 
-    const cached = getFromCache(cacheKey);
-    if (cached && cached.expiresAt > now) {
+    const cached = cache.get(cacheKey);
+    if (cached !== undefined) {
       return cached.config;
     }
 
@@ -210,10 +106,7 @@ export function createRepoConfigProvider(): RepoConfigProvider {
       logRateLimit(response.headers, repoFullName);
 
       if (response.status === 404) {
-        setCache(cacheKey, {
-          config: null,
-          expiresAt: now + NEGATIVE_CACHE_TTL_MS,
-        });
+        cache.set(cacheKey, { config: null }, { ttl: NEGATIVE_CACHE_TTL_MS });
         return null;
       }
 
@@ -239,19 +132,18 @@ export function createRepoConfigProvider(): RepoConfigProvider {
         return null;
       }
 
-      if (!isValidRepoConfig(parsed)) {
+      const result = RepoWorkflowConfigSchema.safeParse(parsed);
+      if (!result.success) {
         console.warn("Invalid repo config schema", {
           repoFullName,
+          errors: result.error.issues,
         });
         return null;
       }
 
-      setCache(cacheKey, {
-        config: parsed,
-        expiresAt: now + CACHE_TTL_MS,
-      });
+      cache.set(cacheKey, { config: result.data }, { ttl: CACHE_TTL_MS });
 
-      return parsed;
+      return result.data;
     } catch (error) {
       console.warn("Failed to fetch repo config", {
         repoFullName,
