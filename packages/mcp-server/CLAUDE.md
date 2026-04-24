@@ -17,6 +17,8 @@
 
 **`control_plane_audit`** is the holistic one-shot tool — use it for open-ended "is this session/project wasteful" questions. Returns top-by-cost, top-by-waste, corpus aggregates, cold-giant skills, negative-efficacy skills, and per-project rollup in a single call.
 
+**`sessions_show`** accepts `includeTurns: bool` and `includeTimeline: bool`. Pass `includeTimeline=true` to attach per-turn tool/token rollup (`timeline`) and skill-to-turn attribution (`skillAttribution`).
+
 **`sessions_waste`** returns `WasteVerdict[]` (6 sub-scores + overall + verbatim `flags`). Scoring heuristic lives in `@control-plane/adapter-claude-code`'s `analytics/waste.ts`.
 
 ## Entry Points / Flow

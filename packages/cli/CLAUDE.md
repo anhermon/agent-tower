@@ -17,6 +17,8 @@
 
 **`cp skills housekeep`** is the only subcommand that writes to disk. By default it's a dry run that lists dead-weight / cold-giant / negative-efficacy skills. With `--apply`, it moves dead-weight skill directories to `<skillsRoot>/.archive/<YYYYMMDD-HHMMSS>/`. It never deletes, and never touches cold-giant or negative-efficacy entries.
 
+**`cp sessions show <id> [--timeline]`** loads a single session summary. `--timeline` attaches per-turn tool/token rollup (`TurnTimeline`) and skill-to-turn attribution (`SkillTurnAttribution`). Without the flag those fields are omitted.
+
 **`cp audit`** is the holistic one-shot audit. Bundles top-by-cost, top-by-waste-score, corpus-wide waste aggregates, cold-giant skills, negative-efficacy skills, and per-project breakdown. The rest of the subcommands are single-question tools — prefer `audit` for open-ended efficiency questions, the others for targeted follow-ups.
 
 **`cp sessions waste`** emits a `WasteVerdict` per session (6 sub-scores + overall 0..1 + verbatim flags). Scoring lives in `@control-plane/adapter-claude-code`'s `analytics/waste.ts`; per-session `SessionWasteSignals` are folded during `foldSessionSummary`.
