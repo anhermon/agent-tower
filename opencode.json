@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["CLAUDE.md"],
+  "mcp": {
+    "control-plane": {
+      "type": "local",
+      "command": ["node", "packages/mcp-server/dist/server.js"]
+    },
+    "code-review-graph": {
+      "type": "local",
+      "command": ["uvx", "code-review-graph", "serve"]
+    }
+  }
+}

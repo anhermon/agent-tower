@@ -28,10 +28,11 @@
       "!**/playwright-report",
       "!**/test-results",
       "!packages/testing/fixtures/claude-code",
-      "!.claude/**",
-      "!.worktree/**",
-      "!.worktrees/**",
-      "!graphify-out/**"
+      "!.claude",
+      "!.opencode",
+      "!.worktree",
+      "!.worktrees",
+      "!graphify-out"
     ]
   },
   "formatter": {

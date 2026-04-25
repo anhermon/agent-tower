@@ -41,8 +41,9 @@ export default tseslint.config(
       "**/.coverage-reports/**",
       "**/.lighthouseci/**",
       "**/.ci/**",
-      // Git worktrees live under .claude/ — never lint them alongside the main tree.
+      // Claude Code and OpenCode config dirs — not workspace source.
       "**/.claude/**",
+      "**/.opencode/**",
       // git worktree directories created by `git worktree add .worktree/<name>` or `.worktrees/<name>`.
       // Each worktree has its own node_modules, massively inflating ESLint scope.
       ".worktree/**",
