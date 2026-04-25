@@ -35,6 +35,8 @@ import type {
   WebhookObservedStatus,
 } from "./types";
 
+type WebhookView = "overview" | "github" | "add";
+
 interface WebhookWorkbenchProps {
   readonly variant?: "embedded" | "standalone";
   readonly initialDeliveries?: readonly WebhookDelivery[];
@@ -66,7 +68,7 @@ export function WebhookWorkbench({
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [filters, setFilters] = useState<WebhookEventFilters>(INITIAL_FILTERS);
   const [clipboardState, setClipboardState] = useState<"idle" | "copied" | "failed">("idle");
-  const [showWorkbenchForm, setShowWorkbenchForm] = useState(false);
+  const [view, setView] = useState<WebhookView>("overview");
 
   const provider = getWebhookProvider(draft.providerId);
   const validation = validateWebhookDraft(draft);
@@ -75,6 +77,10 @@ export function WebhookWorkbench({
     integrations[0] ??
     null;
   const githubIntegration = integrations.find((i) => i.providerId === "github") ?? null;
+  const githubEventsCount = useMemo(
+    () => observedEvents.filter((e) => e.providerId === "github").length,
+    [observedEvents]
+  );
   const triggerEventId = selectedEventId ?? selectedIntegration?.selectedEventIds[0] ?? null;
 
   const updateDraft = useCallback((patch: Partial<WebhookIntegrationDraft>) => {
@@ -139,8 +145,9 @@ export function WebhookWorkbench({
       triggerTestEvent={triggerTestEvent}
       copyEndpointPath={copyEndpointPath}
       handleSelectIntegration={handleSelectIntegration}
-      showWorkbenchForm={showWorkbenchForm}
-      onToggleWorkbenchForm={() => setShowWorkbenchForm((v) => !v)}
+      view={view}
+      onSetView={setView}
+      githubEventsCount={githubEventsCount}
       githubIntegration={githubIntegration}
     />
   );
@@ -166,8 +173,9 @@ function WorkbenchShell({
   triggerTestEvent,
   copyEndpointPath,
   handleSelectIntegration,
-  showWorkbenchForm,
-  onToggleWorkbenchForm,
+  view,
+  onSetView,
+  githubEventsCount,
   githubIntegration,
 }: {
   readonly variant: "embedded" | "standalone";
@@ -189,67 +197,81 @@ function WorkbenchShell({
   readonly triggerTestEvent: () => void;
   readonly copyEndpointPath: () => Promise<void>;
   readonly handleSelectIntegration: (integration: RegisteredWebhookIntegration) => void;
-  readonly showWorkbenchForm: boolean;
-  readonly onToggleWorkbenchForm: () => void;
+  readonly view: WebhookView;
+  readonly onSetView: (v: WebhookView) => void;
+  readonly githubEventsCount: number;
   readonly githubIntegration: RegisteredWebhookIntegration | null;
 }) {
   const shellClass =
-    variant === "standalone" ? "min-h-screen bg-canvas px-4 py-5 sm:px-6 lg:px-8" : "space-y-8";
+    variant === "standalone" ? "min-h-screen bg-canvas px-4 py-5 sm:px-6 lg:px-8" : "";
 
   return (
     <div className={shellClass}>
       <div className={cn("mx-auto w-full", variant === "standalone" && "max-w-[1500px]")}>
-        {/* ─── Overview — all-source events ──────────────────────── */}
-        <section>
-          <div className="mb-4">
-            <p className="eyebrow">Observability</p>
-            <h2 className="text-lg font-semibold text-ink">Event overview</h2>
+        {/* ─── Tab navigation ─────────────────────────────────────── */}
+        <div className="flex items-center gap-1 border-b border-line/80 pb-px">
+          <ViewTab active={view === "overview"} onClick={() => onSetView("overview")}>
+            Overview
+          </ViewTab>
+          <ViewTab active={view === "github"} onClick={() => onSetView("github")}>
+            GitHub
+            {githubEventsCount > 0 && (
+              <span className="ml-1.5 rounded-full bg-ink/10 px-1.5 py-px text-[11px] font-medium">
+                {githubEventsCount}
+              </span>
+            )}
+          </ViewTab>
+          <div className="ml-auto pb-1">
+            {view !== "add" ? (
+              <button
+                type="button"
+                onClick={() => onSetView("add")}
+                className="inline-flex h-8 items-center gap-1.5 rounded-xs border border-transparent accent-gradient px-3 text-sm font-semibold text-[rgb(7_11_20)] shadow-glow transition-all hover:-translate-y-px hover:brightness-110"
+              >
+                <Icon name="plus" className="h-3.5 w-3.5" />
+                Add webhook integration
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onSetView("overview")}
+                className="inline-flex h-8 items-center gap-1.5 rounded-xs border border-line/80 bg-ink/[0.04] px-3 text-sm font-medium text-muted transition-all hover:border-line hover:text-ink"
+              >
+                ← Back to overview
+              </button>
+            )}
           </div>
-          <OverviewDashboard
-            events={observedEvents}
-            onSelectEvent={() => undefined}
-            filters={filters}
-            onFiltersChange={setFilters}
-          />
-        </section>
+        </div>
 
-        {/* ─── GitHub integration — per-repo view ─────────────────── */}
-        <GitHubIntegrationSection
-          allEvents={observedEvents}
-          githubIntegration={githubIntegration}
-          onConfigureClick={onToggleWorkbenchForm}
-        />
+        {/* ─── Content area ───────────────────────────────────────── */}
+        <div className="mt-6">
+          {view === "overview" && (
+            <OverviewDashboard
+              events={observedEvents}
+              onSelectEvent={() => undefined}
+              filters={filters}
+              onFiltersChange={setFilters}
+            />
+          )}
 
-        {/* ─── Add integration — collapsible workbench ────────────── */}
-        <section>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="eyebrow">Configuration</p>
-              <h2 className="text-base font-semibold text-ink">
-                Webhook integrations
-                {integrations.length > 0 && (
-                  <span className="ml-2 text-sm font-normal text-muted">
-                    ({integrations.length} registered)
-                  </span>
-                )}
-              </h2>
-            </div>
-            <button
-              type="button"
-              onClick={onToggleWorkbenchForm}
-              className={cn(
-                "inline-flex h-9 items-center gap-2 rounded-xs border px-3.5 text-sm font-medium transition-all hover:-translate-y-px",
-                showWorkbenchForm
-                  ? "border-line/80 bg-ink/[0.04] text-muted hover:border-line"
-                  : "border-transparent accent-gradient text-[rgb(7_11_20)] shadow-glow hover:brightness-110"
-              )}
-            >
-              {showWorkbenchForm ? "Close" : "+ Add webhook integration"}
-            </button>
-          </div>
+          {view === "github" && (
+            <GitHubIntegrationSection
+              allEvents={observedEvents}
+              githubIntegration={githubIntegration}
+              onConfigureClick={() => onSetView("add")}
+            />
+          )}
 
-          {showWorkbenchForm && (
-            <div className="mt-5 space-y-5">
+          {view === "add" && (
+            <div className="space-y-5">
+              <div>
+                <p className="eyebrow">Configuration</p>
+                <h2 className="mt-0.5 text-lg font-semibold text-ink">Add webhook integration</h2>
+                <p className="mt-1 max-w-2xl text-sm text-muted">
+                  Register an event source, configure routing, and dry-run triggers before agent
+                  execution is connected.
+                </p>
+              </div>
               <div className="grid gap-5 xl:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
                 <section className="glass-panel rounded-lg p-4">
                   <ProviderPicker draft={draft} onChange={setDraft} />
@@ -286,9 +308,32 @@ function WorkbenchShell({
               </div>
             </div>
           )}
-        </section>
+        </div>
       </div>
     </div>
+  );
+}
+
+function ViewTab({
+  active,
+  onClick,
+  children,
+}: {
+  readonly active: boolean;
+  readonly onClick: () => void;
+  readonly children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "inline-flex h-9 items-center gap-1 border-b-2 px-3 text-sm font-medium transition-colors",
+        active ? "-mb-px border-cyan text-ink" : "border-transparent text-muted hover:text-ink"
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
