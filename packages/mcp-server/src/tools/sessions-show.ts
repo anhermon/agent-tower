@@ -8,7 +8,6 @@ import {
   type SkillTurnAttribution,
   type TurnTimeline,
 } from "@control-plane/adapter-claude-code";
-import type { SkillTurnAttribution, TurnTimeline } from "@control-plane/adapter-claude-code";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
