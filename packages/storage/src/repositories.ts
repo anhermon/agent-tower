@@ -1,3 +1,5 @@
+import type { TicketPriority, TicketRecord, TicketStatus } from "@control-plane/core";
+
 import type {
   AgentRecord,
   AuditEntryRecord,
@@ -54,6 +56,27 @@ export interface AuditEntryRepository extends EntityRepository<AuditEntryRecord>
   listByTarget(targetId: string): Promise<readonly AuditEntryRecord[]>;
 }
 
+/** Input shape for creating a new ticket (server assigns id, timestamps). */
+export interface CreateTicketInput {
+  readonly title: string;
+  readonly description?: string;
+  readonly priority?: TicketPriority;
+  readonly assigneeAgentId?: string;
+}
+
+/** Input shape for updating a ticket (all fields optional except status changes). */
+export interface UpdateTicketInput {
+  readonly status?: TicketStatus;
+  readonly assigneeAgentId?: string;
+  readonly sessionId?: string;
+  readonly comment?: string;
+}
+
+export interface TicketRepository extends EntityRepository<TicketRecord, CreateTicketInput> {
+  listByStatus(status: TicketStatus): Promise<readonly TicketRecord[]>;
+  listByAgentId(agentId: string): Promise<readonly TicketRecord[]>;
+}
+
 export interface ControlPlaneRepositories {
   readonly agents: AgentRepository;
   readonly sessions: SessionRepository;
@@ -61,4 +84,5 @@ export interface ControlPlaneRepositories {
   readonly webhooks: WebhookRepository;
   readonly modules: ModuleRegistryRepository;
   readonly auditEntries: AuditEntryRepository;
+  readonly tickets: TicketRepository;
 }

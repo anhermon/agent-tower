@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/require-await -- in-memory methods implement async repository interfaces with synchronous stubs */
+import { randomUUID } from "node:crypto";
+
+import {
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+  type TicketRecord,
+  type TicketStatus,
+} from "@control-plane/core";
+
 import {
   type AgentRepository,
   type AuditEntryRepository,
   type ControlPlaneRepositories,
+  type CreateTicketInput,
   type EntityRepository,
   type EventRepository,
   type ModuleRegistryRepository,
   type RepositoryListOptions,
   RepositoryListOrder,
   type SessionRepository,
+  type TicketRepository,
   type WebhookRepository,
 } from "./repositories.js";
 
@@ -156,6 +167,72 @@ export class InMemoryAuditEntryRepository
   }
 }
 
+export class InMemoryTicketRepository implements TicketRepository {
+  private readonly records = new Map<string, TicketRecord>();
+
+  async create(input: CreateTicketInput): Promise<TicketRecord> {
+    const now = new Date().toISOString();
+    const ticket: TicketRecord = {
+      id: randomUUID(),
+      title: input.title,
+      status: TICKET_STATUSES.Open,
+      priority: input.priority ?? TICKET_PRIORITIES.Normal,
+      createdAt: now,
+      updatedAt: now,
+      ...(input.description !== undefined ? { description: input.description } : {}),
+      ...(input.assigneeAgentId !== undefined ? { assigneeAgentId: input.assigneeAgentId } : {}),
+    };
+    this.records.set(ticket.id, ticket);
+    return ticket;
+  }
+
+  async getById(id: string): Promise<TicketRecord | undefined> {
+    return this.records.get(id);
+  }
+
+  async list(options: RepositoryListOptions = {}): Promise<readonly TicketRecord[]> {
+    return applyListOptions(Array.from(this.records.values()), options);
+  }
+
+  async update(id: string, patch: Partial<TicketRecord>): Promise<TicketRecord> {
+    const current = this.records.get(id);
+    if (!current) {
+      throw new Error(`Ticket does not exist: ${id}`);
+    }
+    const updated: TicketRecord = {
+      ...current,
+      ...patch,
+      id,
+      updatedAt: new Date().toISOString(),
+    };
+    this.records.set(id, updated);
+    return updated;
+  }
+
+  async delete(id: string): Promise<boolean> {
+    return this.records.delete(id);
+  }
+
+  async listByStatus(status: TicketStatus): Promise<readonly TicketRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.status === status);
+  }
+
+  async listByAgentId(agentId: string): Promise<readonly TicketRecord[]> {
+    return Array.from(this.records.values()).filter((record) => record.assigneeAgentId === agentId);
+  }
+
+  /** Seed the store from externally-loaded tickets (e.g., from a configured file). */
+  seed(tickets: readonly TicketRecord[]): void {
+    for (const ticket of tickets) {
+      this.records.set(ticket.id, ticket);
+    }
+  }
+
+  clear(): void {
+    this.records.clear();
+  }
+}
+
 export class InMemoryControlPlaneRepositories implements ControlPlaneRepositories {
   readonly agents = new InMemoryAgentRepository();
   readonly sessions = new InMemorySessionRepository();
@@ -163,6 +240,7 @@ export class InMemoryControlPlaneRepositories implements ControlPlaneRepositorie
   readonly webhooks = new InMemoryWebhookRepository();
   readonly modules = new InMemoryModuleRegistryRepository();
   readonly auditEntries = new InMemoryAuditEntryRepository();
+  readonly tickets = new InMemoryTicketRepository();
 }
 
 function applyListOptions<TRecord>(
