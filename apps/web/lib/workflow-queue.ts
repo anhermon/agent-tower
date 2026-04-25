@@ -38,8 +38,16 @@ export function getRedisConnection(): { host: string; port: number } {
 
 export function createWorkflowQueue(): Queue<WorkflowJobData> {
   const { host, port } = getRedisConnection();
-  return new Queue<WorkflowJobData>(WORKFLOW_QUEUE_NAME, {
-    connection: { host, port },
+  const queue = new Queue<WorkflowJobData>(WORKFLOW_QUEUE_NAME, {
+    connection: {
+      host,
+      port,
+      // Do not retry endlessly when Redis is unavailable — fail fast so
+      // the bootstrap can degrade gracefully instead of hanging.
+      maxRetriesPerRequest: null,
+      enableReadyCheck: false,
+      lazyConnect: true,
+    },
     defaultJobOptions: {
       attempts: 3,
       backoff: {
@@ -48,4 +56,13 @@ export function createWorkflowQueue(): Queue<WorkflowJobData> {
       },
     },
   });
+
+  // Swallow connection errors so an unavailable Redis does not produce an
+  // unhandled EventEmitter error that crashes the Next.js server process.
+  queue.on("error", (_err) => {
+    // Errors are already logged by workflow-bootstrap; suppress here to
+    // prevent Node's "unhandled 'error' event" fatal throw.
+  });
+
+  return queue;
 }

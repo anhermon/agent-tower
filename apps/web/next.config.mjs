@@ -1,5 +1,13 @@
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Point at the monorepo root so Next.js doesn't confuse the repo's
+  // pnpm-lock.yaml with unrelated lockfiles higher in the filesystem.
+  outputFileTracingRoot: resolve(__dirname, "../.."),
   reactStrictMode: true,
   poweredByHeader: false,
   // Lint is enforced by `task lint` (flat-config ESLint). Skipping here
@@ -27,6 +35,8 @@ const nextConfig = {
     "sonic-boom",
     "split2",
     "@control-plane/logger",
+    "bullmq",
+    "ioredis",
   ],
   // `serverExternalPackages` covers route handlers and pages, but the
   // dedicated `instrumentation` webpack entry doesn't honor it. Mark the
@@ -47,6 +57,8 @@ const nextConfig = {
         "thread-stream",
         "sonic-boom",
         "split2",
+        "bullmq",
+        "ioredis",
       ];
     }
     return config;
