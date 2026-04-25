@@ -27,9 +27,7 @@ describe("listDetectedHarnesses", () => {
     mockedHomedir.mockReturnValue(HOME);
     // By default: no paths exist, no directories readable.
     mockedAccess.mockRejectedValue(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
-    mockedReaddir.mockRejectedValue(
-      Object.assign(new Error("ENOENT"), { code: "ENOENT" })
-    );
+    mockedReaddir.mockRejectedValue(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
   });
 
   afterEach(() => {
@@ -77,8 +75,7 @@ describe("listDetectedHarnesses", () => {
     const aiderDir = join(HOME, ".aider");
     const zedDir = join(HOME, ".config", "zed");
     mockedAccess.mockImplementation((path) => {
-      if (path === claudeDir || path === aiderDir || path === zedDir)
-        return Promise.resolve();
+      if (path === claudeDir || path === aiderDir || path === zedDir) return Promise.resolve();
       return Promise.reject(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
     });
 
@@ -96,9 +93,7 @@ describe("listDetectedHarnesses", () => {
     const matchedEntry = "saoudrizwan.claude-dev-3.14.0";
     mockedReaddir.mockImplementation((dir) => {
       if (dir === extensionsDir)
-        return Promise.resolve(
-          [matchedEntry] as unknown as Awaited<ReturnType<typeof readdir>>
-        );
+        return Promise.resolve([matchedEntry] as unknown as Awaited<ReturnType<typeof readdir>>);
       return Promise.reject(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
     });
 
@@ -114,11 +109,9 @@ describe("listDetectedHarnesses", () => {
     const extensionsDir = join(HOME, ".vscode", "extensions");
     mockedReaddir.mockImplementation((dir) => {
       if (dir === extensionsDir)
-        return Promise.resolve(
-          ["some-other-extension-1.0.0"] as unknown as Awaited<
-            ReturnType<typeof readdir>
-          >
-        );
+        return Promise.resolve(["some-other-extension-1.0.0"] as unknown as Awaited<
+          ReturnType<typeof readdir>
+        >);
       return Promise.reject(Object.assign(new Error("ENOENT"), { code: "ENOENT" }));
     });
 
