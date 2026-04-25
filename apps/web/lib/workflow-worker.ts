@@ -133,7 +133,13 @@ export function createWorkflowWorker(deps: WorkflowWorkerDependencies): Workflow
     "workflow-jobs",
     (job: Job<WorkflowJobData>) => processWorkflowJob(job, actionExecutor),
     {
-      connection: { host, port },
+      connection: {
+        host,
+        port,
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+        lazyConnect: true,
+      },
       concurrency: 1,
     }
   );

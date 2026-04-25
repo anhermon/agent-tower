@@ -22,11 +22,27 @@ Full feature modules such as Claude session analytics, webhook CRUD, agent manag
 - Vitest
 - Playwright
 
-## Commands
+## Quick start
 
 ```bash
-pnpm install
-pnpm dev
+pnpm install   # installs deps + auto-builds workspace packages
+pnpm dev       # starts dashboard at http://127.0.0.1:3000
+```
+
+**Optional — GitHub workflow engine (requires Redis):**
+The webhook workflow engine starts automatically when Redis is reachable. Without it the app runs normally — workflows are silently disabled.
+
+```bash
+# macOS/Linux
+brew install redis && brew services start redis
+# or: docker run -d -p 6379:6379 redis:alpine
+
+REDIS_URL=redis://localhost:6379 pnpm dev
+```
+
+## Other commands
+
+```bash
 pnpm typecheck
 pnpm test
 pnpm test:e2e
