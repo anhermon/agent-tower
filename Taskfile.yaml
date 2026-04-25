@@ -59,11 +59,41 @@ tasks:
       - sh: '[ -n "{{.CLI_ARGS}}" ]'
         msg: "Usage: task agent:worktree-rm -- <branch-name>"
 
-  agent:pr-merge:
-    desc: "Safe PR merge: wait for CI checks to pass, then squash-merge (usage: task agent:pr-merge or task agent:pr-merge -- <pr-number>)"
+  agent:pr-ready:
+    desc: "Check PR is conflict-free and CI-clean before declaring done (usage: task agent:pr-ready or task agent:pr-ready -- <pr-number>)"
     cmds:
       - cmd: |
           pr_arg="{{.CLI_ARGS}}"
+          pr_ref="${pr_arg:-$(gh pr view --json number -q .number 2>/dev/null)}"
+          if [ -z "$pr_ref" ]; then
+            echo "ERROR: no PR number given and no open PR for current branch." >&2
+            exit 1
+          fi
+          state=$(gh pr view "$pr_ref" --json mergeable,mergeStateStatus -q '"\(.mergeable) \(.mergeStateStatus)"')
+          mergeable=$(echo "$state" | cut -d' ' -f1)
+          merge_state=$(echo "$state" | cut -d' ' -f2)
+          if [ "$mergeable" = "CONFLICTING" ] || [ "$merge_state" = "DIRTY" ]; then
+            echo "ERROR: PR #$pr_ref has merge conflicts. Rebase before declaring done:" >&2
+            echo "  git fetch origin main && git rebase origin/main" >&2
+            echo "  # resolve conflicts, then: git push --force-with-lease" >&2
+            exit 1
+          fi
+          echo "PR #$pr_ref: no conflicts (mergeable=$mergeable, state=$merge_state)"
+          gh pr checks "$pr_ref" --json name,state -q '.[] | "\(.state)\t\(.name)"' | grep -v SUCCESS || true
+          all_ok=$(gh pr checks "$pr_ref" --json name,state -q '[.[] | select(.state != "SUCCESS" and .state != "SKIPPED")] | length')
+          if [ "$all_ok" != "0" ]; then
+            echo "ERROR: PR #$pr_ref has non-passing checks (pending or failed). Wait for CI." >&2
+            exit 1
+          fi
+          echo "PR #$pr_ref is ready: no conflicts, all checks green."
+
+  agent:pr-merge:
+    desc: "Safe PR merge: check conflicts, wait for CI, then squash-merge (usage: task agent:pr-merge or task agent:pr-merge -- <pr-number>)"
+    cmds:
+      - cmd: |
+          pr_arg="{{.CLI_ARGS}}"
+          # Fail fast on conflicts before waiting for CI
+          task agent:pr-ready ${pr_arg:+-- "$pr_arg"} || exit 1
           echo "Waiting for CI checks on PR ${pr_arg:-<current branch>}..."
           if [ -n "$pr_arg" ]; then
             gh pr checks "$pr_arg" --watch

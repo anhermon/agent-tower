@@ -97,6 +97,18 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 
 **Commit and push after every logical unit.** One fix, one component, one plan step = one commit, then push immediately. Do not accumulate commits locally. Push as soon as a unit is complete so CI runs early and failures surface fast. Aim for ≤15 minutes between pushes.
 
+**After every push, check the PR is conflict-free:**
+```
+task agent:pr-ready
+```
+This checks `gh pr view --json mergeable` and fails immediately if the PR has conflicts (`CONFLICTING`/`DIRTY`). If it fails, rebase before doing anything else:
+```
+git fetch origin main && git rebase origin/main
+# resolve any conflicts
+git push --force-with-lease
+```
+A PR with conflicts is not done. Do not declare done, do not wait for CI — fix the conflicts first.
+
 ### c. Never bypass red CI
 
 - Never pass `--no-verify` to `git commit` or `git push`. If a T1 hook (Biome + ESLint + gitleaks) or T2 hook (`task ci:fast`) fails, fix the underlying issue — not the hook.
@@ -104,10 +116,12 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 - **Local passing ≠ CI green.** `pnpm test` passing locally means nothing until GitHub Actions completes. Never declare a task done based on local results alone.
 - Never use `git checkout --detach HEAD` before a push. The pre-push hook runs `task ci:fast` unconditionally regardless of HEAD state, and the `ci-enforce.sh` Bash hook blocks it. Check out the branch directly.
 
-### d. Merging PRs — always gate on CI
+### d. Merging PRs — always gate on conflicts and CI
 
-- Use `task agent:pr-merge` for all PR merges. It calls `gh pr checks --watch` (blocks until all CI checks pass or fail), then merges, then watches the post-merge CI run on main.
+- Run `task agent:pr-ready` after every push and before declaring a task done. It exits non-zero if the PR has conflicts or non-passing checks.
+- Use `task agent:pr-merge` for all PR merges. It checks conflicts first, then calls `gh pr checks --watch`, then squash-merges, then watches post-merge CI on main.
 - **Never** use `gh pr merge --admin`. The `--admin` flag bypasses the required-status-check branch protection gate. It is blocked by the `ci-enforce.sh` hook.
+- **PR has conflicts = not done.** Rebase onto `origin/main`, resolve, force-push, verify `task agent:pr-ready` passes.
 - After merge, stay alive until `task agent:pr-merge` exits with status 0 — that means the post-merge CI run on main also passed. A green local merge with red main CI is still a broken repo.
 
 ### d. Monitor workflow health
