@@ -10,12 +10,11 @@
 import { InMemoryTicketRepository } from "@control-plane/storage";
 
 declare global {
-  // eslint-disable-next-line no-var -- intentional global augmentation for HMR persistence
   var _ticketStore: InMemoryTicketRepository | undefined;
 }
 
-if (!globalThis._ticketStore) {
-  globalThis._ticketStore = new InMemoryTicketRepository();
-}
+// ??= as a statement satisfies @typescript-eslint/prefer-nullish-coalescing
+// without being an assignment-in-expression.
+globalThis._ticketStore ??= new InMemoryTicketRepository();
 
 export const ticketStore: InMemoryTicketRepository = globalThis._ticketStore;

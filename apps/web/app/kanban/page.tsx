@@ -8,8 +8,8 @@ import {
   listTicketsOrEmpty,
   TICKETS_FILE_ENV,
 } from "@/lib/kanban-source";
-import { ticketStore } from "@/lib/ticket-store";
 import { getModuleByKey } from "@/lib/modules";
+import { ticketStore } from "@/lib/ticket-store";
 
 export const dynamic = "force-dynamic";
 
