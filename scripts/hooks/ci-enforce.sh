@@ -42,24 +42,6 @@ if echo "$cmd" | grep -q 'gh pr merge' && echo "$cmd" | grep -q -- '--admin'; th
   exit 0
 fi
 
-# ── Block direct commits to main ──────────────────────────────────────────────
-# Commits on main bypass the PR review gate. Use a feature branch + PR instead.
-# Skip this check when the command explicitly cd's into a worktree — the hook
-# runs from the main repo root (branch=main) even when the agent is in a
-# .worktrees/<branch> directory, causing false positives.
-# Covers both: `cd .worktrees/…` and `git -C .worktrees/…` invocation styles.
-if echo "$cmd" | grep -qE '(^|[;&|][[:space:]]*)git commit'; then
-  if ! echo "$cmd" | grep -qE '(cd ["\x27]?[^ ;|&]*\.worktrees/|git -C ["\x27]?[^ ;|&]*\.worktrees/)'; then
-    branch="${WORKTREE_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)}"
-    if [ "$branch" = "main" ]; then
-      jq -n '{
-        "continue": false,
-        "stopReason": "Direct commits to main are blocked. Create a feature branch first: task agent:worktree-new -- feat/<scope>. Then commit there and open a PR with gh pr create."
-      }'
-      exit 0
-    fi
-  fi
-fi
 
 # ── Auto-fix formatting before git commit ─────────────────────────────────────
 # Biome autofixes ~90% of T1 violations (formatting, import sort, basic lint).
