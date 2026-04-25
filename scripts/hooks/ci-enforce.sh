@@ -47,8 +47,9 @@ fi
 # Skip this check when the command explicitly cd's into a worktree — the hook
 # runs from the main repo root (branch=main) even when the agent is in a
 # .worktrees/<branch> directory, causing false positives.
+# Covers both: `cd .worktrees/…` and `git -C .worktrees/…` invocation styles.
 if echo "$cmd" | grep -qE '(^|[;&|][[:space:]]*)git commit'; then
-  if ! echo "$cmd" | grep -qE 'cd ["\x27]?[^ ;|&]*\.worktrees/'; then
+  if ! echo "$cmd" | grep -qE '(cd ["\x27]?[^ ;|&]*\.worktrees/|git -C ["\x27]?[^ ;|&]*\.worktrees/)'; then
     branch="${WORKTREE_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)}"
     if [ "$branch" = "main" ]; then
       jq -n '{
