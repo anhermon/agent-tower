@@ -86,6 +86,61 @@ export interface SessionDerivedFlags {
   readonly usesWebFetch: boolean;
 }
 
+// ─── Optimization & workflow attribution ────────────────────────────────────
+
+/**
+ * Tracks which token-optimization and workflow features were active during
+ * a session. Used for attribution: correlating feature enablement with token
+ * efficiency deltas.
+ */
+export interface SessionOptimizationState {
+  /** Session had ≥1 compaction event (manual or auto). */
+  readonly compactionUsed: boolean;
+  /** Extended thinking / reasoning mode was active. */
+  readonly thinkingEnabled: boolean;
+  /** Task-agent orchestration (parallel subagents) was used. */
+  readonly taskAgentEnabled: boolean;
+  /** MCP tools were invoked. */
+  readonly mcpEnabled: boolean;
+  /** Web search was used. */
+  readonly webSearchEnabled: boolean;
+  /** Web fetch was used. */
+  readonly webFetchEnabled: boolean;
+  /** Cache read was utilized (cache_read_input_tokens > 0). */
+  readonly cacheReadUsed: boolean;
+  /** Ephemeral cache (5m or 1h) was utilized. */
+  readonly ephemeralCacheUsed: boolean;
+  /** Service tier override (e.g. "auto" vs "default"). */
+  readonly serviceTier: string | undefined;
+  /** Inference geo routing. */
+  readonly inferenceGeo: string | undefined;
+}
+
+/**
+ * A feature toggle event recorded during a session. Enables before/after
+ * attribution: compare token usage before and after a feature was toggled.
+ */
+export interface FeatureToggleEvent {
+  readonly sessionId: string;
+  readonly turnIndex: number;
+  readonly featureId: string;
+  readonly enabled: boolean;
+  readonly timestamp: string;
+  /** Optional: estimated token impact at toggle time. */
+  readonly estimatedTokenDelta?: number;
+}
+
+/**
+ * Reference to a workflow-health fix that was active during this session.
+ * Links session metrics to the fixes that were in effect at the time.
+ */
+export interface AppliedFixReference {
+  readonly fixId: string;
+  readonly category: string;
+  readonly appliedAt: string;
+  readonly commit: string | undefined;
+}
+
 export const COMPACTION_TRIGGERS = {
   Auto: "auto",
   Manual: "manual",
@@ -119,6 +174,8 @@ export interface SessionTurnUsage {
   readonly usage?: TurnUsage;
   readonly estimatedCostUsd?: number;
   readonly turnDurationMs?: number;
+  /** Which optimization features were active on this turn. */
+  readonly activeFeatures?: readonly string[];
 }
 
 /**
@@ -134,6 +191,9 @@ export interface SessionUsageSummary {
   readonly cacheEfficiency: CacheEfficiency;
   readonly toolCounts: Readonly<Record<string, number>>;
   readonly flags: SessionDerivedFlags;
+  readonly optimizationState?: SessionOptimizationState;
+  readonly featureToggles?: readonly FeatureToggleEvent[];
+  readonly appliedFixes?: readonly AppliedFixReference[];
   readonly compactions: readonly SessionCompactionEvent[];
   readonly startTime?: string;
   readonly endTime?: string;

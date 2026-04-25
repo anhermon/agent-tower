@@ -11,6 +11,7 @@ import { runSkillsEfficacy } from "./commands/skills-efficacy.js";
 import { runSkillsHousekeep } from "./commands/skills-housekeep.js";
 import { runSkillsTop } from "./commands/skills-top.js";
 import { runSkillsUsage } from "./commands/skills-usage.js";
+import { runWorkflowHealth } from "./commands/workflow-health.js";
 import { UsageError } from "./flags.js";
 import { writeError } from "./output.js";
 
@@ -75,6 +76,8 @@ async function dispatchCommand(
       return runAgents(subOrFirst, restWithGlobals);
     case "audit":
       return runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
+    case "workflow-health":
+      return runWorkflowHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
     default:
       throw new UsageError(`Unknown command: ${command}`);
   }

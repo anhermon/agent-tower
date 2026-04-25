@@ -12,4 +12,11 @@ if [ "$branch" = "main" ]; then
       "additionalContext": "WARNING: current branch is main. For implementation work, invoke superpowers:using-git-worktrees and run: task agent:worktree-new -- feat/<scope>  before writing any code. Working directly on main bypasses the PR review gate."
     }
   }'
+else
+  jq -n '{
+    "hookSpecificOutput": {
+      "hookEventName": "SessionStart",
+      "additionalContext": "On feature branch '"$branch"'. Use /commit (or superpowers:commit-message) for conventional commit messages after each logical unit. Commit cadence: after each component/fix/plan step. After every 3–5 commits, push and wait for task ci:fast to pass."
+    }
+  }'
 fi

@@ -441,8 +441,6 @@ function buildSummary(state: FoldState): SessionUsageSummary {
     toolCounts: state.toolCounts,
     flags: state.flags,
     optimizationState,
-    featureToggles: undefined,
-    appliedFixes: undefined,
     compactions: state.compactions,
     userMessageCount: state.userMessageCount,
     assistantMessageCount: state.assistantMessageCount,

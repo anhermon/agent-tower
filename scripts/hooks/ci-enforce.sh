@@ -18,6 +18,17 @@ if echo "$cmd" | grep -q -- '--no-verify'; then
   exit 0
 fi
 
+# ── Block direct commits to main ──────────────────────────────────────────────
+# Commits on main bypass the PR review gate. Use a feature branch + PR instead.
+branch="${WORKTREE_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)}"
+if [ "$branch" = "main" ] && echo "$cmd" | grep -qE '(^|[;&|][[:space:]]*)git commit'; then
+  jq -n '{
+    "continue": false,
+    "stopReason": "Direct commits to main are blocked. Create a feature branch first: task agent:worktree-new -- feat/<scope>, or git worktree add .worktrees/<branch> -b <branch>. Then commit there and open a PR."
+  }'
+  exit 0
+fi
+
 # ── Auto-fix formatting before git commit ─────────────────────────────────────
 # Biome autofixes ~90% of T1 violations (formatting, import sort, basic lint).
 # Running it here means the pre-commit hook sees clean files and rarely fails.

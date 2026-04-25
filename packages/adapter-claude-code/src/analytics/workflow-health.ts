@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import * as fs from "node:fs";
 
 import type {
   AppliedFixReference,
@@ -292,6 +292,7 @@ export function buildWeightedWorkflowHealthReport(
         ? "declining"
         : "stable";
 
+  // Determine unapplied fixes (fixes in tracker that aren't showing effect yet).
   const unappliedFixes = fixesFile.pending.map((f) => f.title);
 
   return {
@@ -311,40 +312,49 @@ export function buildWeightedWorkflowHealthReport(
 
 // ─── Delta computation ───────────────────────────────────────────────────────
 
-function avg(values: number[]): number {
-  return values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-}
-
-function wasteVals(sessions: readonly SessionUsageSummary[], key: string): number[] {
-  return sessions
-    .map((s) => s.waste?.[key as keyof SessionUsageSummary["waste"]] as number | undefined)
-    .filter((v): v is number => v !== undefined && !Number.isNaN(v));
-}
-
-function significanceLevel(sampleSize: number, magnitude: number): "high" | "medium" | "low" {
-  if (sampleSize >= 5 && magnitude > 0.1) return "high";
-  if (sampleSize >= 3 && magnitude > 0.05) return "medium";
-  return "low";
-}
-
 function computeDimensionDelta(
-  dim: { key: string; label: string },
+  dim: (typeof DELTA_DIMENSIONS)[number],
   baseline: readonly SessionUsageSummary[],
   recent: readonly SessionUsageSummary[]
 ): DimensionDelta {
-  const baselineVals = wasteVals(baseline, dim.key);
-  const recentVals = wasteVals(recent, dim.key);
+  const extractVals = (sessions: readonly SessionUsageSummary[]): number[] =>
+    sessions
+      .map((s) => s.waste?.[dim.key as keyof SessionUsageSummary["waste"]] as number | undefined)
+      .filter((v): v is number => v !== undefined && !Number.isNaN(v));
+
+  const baselineVals = extractVals(baseline);
+  const recentVals = extractVals(recent);
+
+  const avg = (vals: number[]): number =>
+    vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+
   const baselineAvg = avg(baselineVals);
   const recentAvg = avg(recentVals);
   const delta = recentAvg - baselineAvg;
+
   const sampleSize = Math.min(baselineVals.length, recentVals.length);
-  const significance = significanceLevel(sampleSize, Math.abs(delta));
+  const magnitude = Math.abs(delta);
+  const significance: "high" | "medium" | "low" =
+    sampleSize >= 5 && magnitude > 0.1
+      ? "high"
+      : sampleSize >= 3 && magnitude > 0.05
+        ? "medium"
+        : "low";
+
   const direction: "improved" | "regressed" | "stable" =
     Math.abs(delta) < 0.02 ? "stable" : delta > 0 ? "regressed" : "improved";
-  return { dimension: dim.label, baselineAvg, recentAvg, delta, direction, significance };
+
+  return {
+    dimension: dim.label,
+    baselineAvg,
+    recentAvg,
+    delta,
+    direction,
+    significance,
+  };
 }
 
-function classifyIssues(deltas: DimensionDelta[]): {
+function categorizeIssues(deltas: readonly DimensionDelta[]): {
   issuesResolved: string[];
   issuesPersistent: string[];
   issuesNew: string[];
@@ -352,12 +362,31 @@ function classifyIssues(deltas: DimensionDelta[]): {
   const issuesResolved: string[] = [];
   const issuesPersistent: string[] = [];
   const issuesNew: string[] = [];
+
   for (const d of deltas) {
-    if (d.direction === "improved" && d.significance !== "low") issuesResolved.push(d.dimension);
-    else if (d.direction === "stable" && d.recentAvg > 0.3) issuesPersistent.push(d.dimension);
-    else if (d.direction === "regressed" && d.significance !== "low") issuesNew.push(d.dimension);
+    if (d.direction === "improved" && d.significance !== "low") {
+      issuesResolved.push(d.dimension);
+    } else if (d.direction === "stable" && d.recentAvg > 0.3) {
+      issuesPersistent.push(d.dimension);
+    } else if (d.direction === "regressed" && d.significance !== "low") {
+      issuesNew.push(d.dimension);
+    }
   }
+
   return { issuesResolved, issuesPersistent, issuesNew };
+}
+
+function makeBucket(label: string, sessions: readonly SessionUsageSummary[]): SessionBucket {
+  return {
+    label,
+    sessions,
+    startDate: sessions[0]?.startTime ?? "",
+    endDate: sessions[sessions.length - 1]?.startTime ?? "",
+  };
+}
+
+function computeAverageScore(sessions: readonly SessionUsageSummary[]): number {
+  return sessions.reduce((sum, s) => sum + computeQuickScore(s), 0) / sessions.length;
 }
 
 function computeDelta(
@@ -366,28 +395,20 @@ function computeDelta(
 ): WorkflowHealthDelta {
   const baselineLabel = `${baseline[0]?.startTime?.slice(0, 10) ?? "?"} → ${baseline[baseline.length - 1]?.startTime?.slice(0, 10) ?? "?"}`;
   const recentLabel = `${recent[0]?.startTime?.slice(0, 10) ?? "?"} → ${recent[recent.length - 1]?.startTime?.slice(0, 10) ?? "?"}`;
-  const deltas = DELTA_DIMENSIONS.map((dim) => computeDimensionDelta(dim, baseline, recent));
-  const baselineScore = avg(baseline.map((s) => computeQuickScore(s)));
-  const recentScore = avg(recent.map((s) => computeQuickScore(s)));
-  const { issuesResolved, issuesPersistent, issuesNew } = classifyIssues(deltas);
+
+  const deltas: DimensionDelta[] = DELTA_DIMENSIONS.map((dim) =>
+    computeDimensionDelta(dim, baseline, recent)
+  );
+
+  const { issuesResolved, issuesPersistent, issuesNew } = categorizeIssues(deltas);
 
   return {
-    baseline: {
-      label: baselineLabel,
-      sessions: baseline,
-      startDate: baseline[0]?.startTime ?? "",
-      endDate: baseline[baseline.length - 1]?.startTime ?? "",
-    },
-    recent: {
-      label: recentLabel,
-      sessions: recent,
-      startDate: recent[0]?.startTime ?? "",
-      endDate: recent[recent.length - 1]?.startTime ?? "",
-    },
+    baseline: makeBucket(baselineLabel, baseline),
+    recent: makeBucket(recentLabel, recent),
     deltas,
     issuesResolved,
     issuesPersistent,
     issuesNew,
-    scoreImprovement: baselineScore - recentScore,
+    scoreImprovement: computeAverageScore(baseline) - computeAverageScore(recent), // negative = improved
   };
 }
