@@ -13,6 +13,5 @@ parts=()
 
 if [ "${#parts[@]}" -gt 0 ]; then
   msg=$(printf '%s ' "${parts[@]}")
-  jq -n --arg m "$msg" \
-    '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:$m}}'
+  jq -n --arg m "$msg" '{"systemMessage": $m}'
 fi
