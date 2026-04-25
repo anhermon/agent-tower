@@ -54,7 +54,7 @@ tasks:
   agent:worktree-rm:
     desc: "Remove a git worktree (usage: task agent:worktree-rm -- feat/my-feature)"
     cmds:
-      - git worktree remove .worktrees/{{.CLI_ARGS}}
+      - git worktree remove --force .worktrees/{{.CLI_ARGS}}
     preconditions:
       - sh: '[ -n "{{.CLI_ARGS}}" ]'
         msg: "Usage: task agent:worktree-rm -- <branch-name>"
