@@ -82,6 +82,8 @@ task agent:worktree-new -- feat/<scope>
 ```
 `task agent:worktree-new` creates the worktree, installs deps, and runs a baseline `task verify` to confirm the starting state is clean. Worktrees go in `.worktrees/` (gitignored). **Invoke `superpowers:using-git-worktrees` before writing any code** — it contains the full worktree protocol and must be used, not just referenced.
 
+**Branch naming is mandatory:** branch names MUST describe the work — `fix/deferred-modules-idle-status`, `feat/replay-ui`, `ci/biome-worktree-exclusions`. Never use agent IDs, session hashes, or opaque strings (`worktree-agent-adf30134f050f530a` is not acceptable). The branch name is a human artifact and must be readable in a PR list.
+
 ### b. Pre-commit ritual — autofix before every commit
 
 Before staging and committing, always run:
@@ -92,7 +94,7 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 
 **Gotcha — `packages/*` edits:** ESLint resolves `@control-plane/*` imports from built `.d.ts` files. If you modify any `packages/` directory and skip `task build:packages`, ESLint reports thousands of false "type not found" errors. `agent:preflight` handles this automatically.
 
-**Commit cadence:** after each logical unit (one component, one fix, one plan step). Use `/commit` for message format. After every 3–5 commits, push and wait for `task ci:fast` to pass. Aim for ≤30 minutes of uncommitted changes.
+**Commit and push after every logical unit.** One fix, one component, one plan step = one commit, then push immediately. Do not accumulate commits locally. Push as soon as a unit is complete so CI runs early and failures surface fast. Aim for ≤15 minutes between pushes.
 
 ### c. Never bypass red CI
 

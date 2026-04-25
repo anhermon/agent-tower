@@ -9,6 +9,7 @@ import {
   type RepeatReadEntry,
   type SessionCompactionEvent,
   type SessionDerivedFlags,
+  type SessionOptimizationState,
   type SessionTurnUsage,
   type SessionUsageSummary,
   type SessionWasteSignals,
@@ -101,6 +102,12 @@ interface FoldState {
   turnsWithTools: number;
   peakInputTokensBetweenCompactions: number;
   runningInputPeak: number;
+  // ── Optimization tracking ─────────────────────────────────────────────────
+  cacheReadUsed: boolean;
+  ephemeralCacheUsed: boolean;
+  serviceTier: string | undefined;
+  inferenceGeo: string | undefined;
+  activeFeaturesByTurn: Map<number, string[]>;
 }
 
 function createFoldState(
@@ -151,6 +158,11 @@ function createFoldState(
     turnsWithTools: 0,
     peakInputTokensBetweenCompactions: 0,
     runningInputPeak: 0,
+    cacheReadUsed: false,
+    ephemeralCacheUsed: false,
+    serviceTier: undefined,
+    inferenceGeo: undefined,
+    activeFeaturesByTurn: new Map(),
   };
 }
 
@@ -259,14 +271,20 @@ function processAssistantEntry(state: FoldState, assistant: ClaudeAssistantEntry
   const turnCost = model && turnUsage ? estimateCostFromUsage(model, turnUsage) : 0;
   state.estimatedCostUsd += turnCost;
 
-  emitTurnUsage(state, assistant.uuid, model, turnUsage, turnCost);
-
   const blocks = assistant.message?.content;
   const toolUsesThisTurn = Array.isArray(blocks) ? processAssistantBlocks(state, blocks) : 0;
   if (toolUsesThisTurn >= 1) {
     state.turnsWithTools += 1;
     if (toolUsesThisTurn === 1) state.singleToolTurns += 1;
   }
+
+  // Collect active features for this turn.
+  const activeFeatures = collectActiveFeatures(state);
+  if (activeFeatures.length > 0) {
+    state.activeFeaturesByTurn.set(state.turnIndex, activeFeatures);
+  }
+
+  emitTurnUsage(state, assistant.uuid, model, turnUsage, turnCost, activeFeatures);
   state.turnIndex += 1;
 }
 
@@ -276,12 +294,27 @@ function recordAssistantModel(state: FoldState, model: string | undefined): void
   state.latestModel = model;
 }
 
+function collectActiveFeatures(state: FoldState): string[] {
+  const features: string[] = [];
+  if (state.flags.hasThinking) features.push("thinking");
+  if (state.flags.usesTaskAgent) features.push("task-agent");
+  if (state.flags.usesMcp) features.push("mcp");
+  if (state.flags.usesWebSearch) features.push("web-search");
+  if (state.flags.usesWebFetch) features.push("web-fetch");
+  if (state.cacheReadUsed) features.push("cache-read");
+  if (state.ephemeralCacheUsed) features.push("ephemeral-cache");
+  if (state.serviceTier) features.push(`service-tier:${state.serviceTier}`);
+  if (state.inferenceGeo) features.push(`inference-geo:${state.inferenceGeo}`);
+  return features;
+}
+
 function emitTurnUsage(
   state: FoldState,
   turnId: string | undefined,
   model: string | undefined,
   turnUsage: TurnUsage | undefined,
-  turnCost: number
+  turnCost: number,
+  activeFeatures: string[]
 ): void {
   if (!state.includeTurns || !turnId) return;
   const durationMs = state.turnDurations.get(turnId);
@@ -291,6 +324,7 @@ function emitTurnUsage(
     ...(turnUsage ? { usage: turnUsage } : {}),
     ...(turnCost ? { estimatedCostUsd: turnCost } : {}),
     ...(typeof durationMs === "number" ? { turnDurationMs: durationMs } : {}),
+    ...(activeFeatures.length > 0 ? { activeFeatures } : {}),
   });
 }
 
@@ -299,6 +333,13 @@ function accumulateUsage(state: FoldState, turnUsage: TurnUsage): void {
   state.usage.outputTokens += turnUsage.outputTokens;
   state.usage.cacheReadInputTokens += turnUsage.cacheReadInputTokens;
   state.usage.cacheCreationInputTokens += turnUsage.cacheCreationInputTokens;
+  if (turnUsage.cacheReadInputTokens > 0) state.cacheReadUsed = true;
+  if (turnUsage.ephemeral5mInputTokens && turnUsage.ephemeral5mInputTokens > 0)
+    state.ephemeralCacheUsed = true;
+  if (turnUsage.ephemeral1hInputTokens && turnUsage.ephemeral1hInputTokens > 0)
+    state.ephemeralCacheUsed = true;
+  if (turnUsage.serviceTier) state.serviceTier = turnUsage.serviceTier;
+  if (turnUsage.inferenceGeo) state.inferenceGeo = turnUsage.inferenceGeo;
   // Running input-token peak reflects how large the prompt grew at this
   // assistant turn; reset on compact_boundary in processSystemEntry. Peak
   // across the session is the max observed in any single inter-compaction
@@ -378,6 +419,19 @@ function buildSummary(state: FoldState): SessionUsageSummary {
       ? Math.max(0, isoDelta(state.startTime, state.endTime))
       : undefined;
 
+  const optimizationState: SessionOptimizationState = {
+    compactionUsed: state.flags.hasCompaction,
+    thinkingEnabled: state.flags.hasThinking,
+    taskAgentEnabled: state.flags.usesTaskAgent,
+    mcpEnabled: state.flags.usesMcp,
+    webSearchEnabled: state.flags.usesWebSearch,
+    webFetchEnabled: state.flags.usesWebFetch,
+    cacheReadUsed: state.cacheReadUsed,
+    ephemeralCacheUsed: state.ephemeralCacheUsed,
+    serviceTier: state.serviceTier,
+    inferenceGeo: state.inferenceGeo,
+  };
+
   return {
     sessionId: state.sessionId,
     model,
@@ -386,6 +440,9 @@ function buildSummary(state: FoldState): SessionUsageSummary {
     cacheEfficiency: efficiency,
     toolCounts: state.toolCounts,
     flags: state.flags,
+    optimizationState,
+    featureToggles: undefined,
+    appliedFixes: undefined,
     compactions: state.compactions,
     userMessageCount: state.userMessageCount,
     assistantMessageCount: state.assistantMessageCount,
