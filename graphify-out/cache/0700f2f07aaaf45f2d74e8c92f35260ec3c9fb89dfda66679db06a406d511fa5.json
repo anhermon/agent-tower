@@ -1,0 +1,23 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_catalog_ts",
+      "label": "catalog.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/catalog.ts",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_catalog_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_types",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/catalog.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -1,0 +1,242 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "label": "output.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "output_resolveoutputmode",
+      "label": "resolveOutputMode()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "output_writejson",
+      "label": "writeJson()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "output_writeline",
+      "label": "writeLine()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "output_writeerror",
+      "label": "writeError()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "output_supportsansi",
+      "label": "supportsAnsi()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "output_bold",
+      "label": "bold()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "output_dim",
+      "label": "dim()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "output_rendertable",
+      "label": "renderTable()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L50"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_resolveoutputmode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_writejson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_writeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_writeerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_supportsansi",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_bold",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_dim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "target": "output_rendertable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "output_bold",
+      "target": "output_supportsansi",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "output_dim",
+      "target": "output_supportsansi",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "output_rendertable",
+      "target": "output_bold",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "output_writejson",
+      "callee": "write",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "output_writejson",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "output_writeline",
+      "callee": "write",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "output_writeerror",
+      "callee": "write",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "output_supportsansi",
+      "callee": "Boolean",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "output_rendertable",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/output.ts",
+      "source_location": "L71"
+    }
+  ]
+}

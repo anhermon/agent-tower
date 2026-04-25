@@ -1,0 +1,243 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "label": "webhook-workbench.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "webhook_workbench_webhookworkbench",
+      "label": "WebhookWorkbench()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L49"
+    },
+    {
+      "id": "webhook_workbench_workbenchheader",
+      "label": "WorkbenchHeader()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L245"
+    },
+    {
+      "id": "webhook_workbench_updatefilters",
+      "label": "updateFilters()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L681"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "icon",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_catalog",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_state",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_types",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "webhook_workbench_webhookworkbench",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "webhook_workbench_workbenchheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_webhook_workbench_tsx",
+      "target": "webhook_workbench_updatefilters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L681",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "getWebhookProvider",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "validateWebhookDraft",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useMemo",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "webhook_workbench_webhookworkbench",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "webhook_workbench_workbenchheader",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "webhook_workbench_workbenchheader",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "webhook_workbench_workbenchheader",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "webhook_workbench_workbenchheader",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "webhook_workbench_updatefilters",
+      "callee": "onFiltersChange",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/webhook-workbench.tsx",
+      "source_location": "L682"
+    }
+  ]
+}

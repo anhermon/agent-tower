@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_storage_src_schema_ts",
+      "label": "schema.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/storage/src/schema.ts",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [],
+  "raw_calls": []
+}

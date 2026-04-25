@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "label": "agent-mascot.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_mascot_pickeyesrc",
+      "label": "pickEyeSrc()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L64"
+    },
+    {
+      "id": "agent_mascot_pickmouthsrc",
+      "label": "pickMouthSrc()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L82"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "target": "agent_mascot_pickeyesrc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_tsx",
+      "target": "agent_mascot_pickmouthsrc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot.tsx",
+      "source_location": "L82",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

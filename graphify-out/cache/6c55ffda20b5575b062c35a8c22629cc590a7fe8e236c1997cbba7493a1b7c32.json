@@ -1,0 +1,145 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "label": "logger.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "logger_initlogger",
+      "label": "initLogger()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "logger_getlogger",
+      "label": "getLogger()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "logger_getactiveconfig",
+      "label": "getActiveConfig()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "logger_resetloggerfortests",
+      "label": "resetLoggerForTests()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L70"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "pino",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_logger_src_config_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_logger_src_streams_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "logger_initlogger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "logger_getlogger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "logger_getactiveconfig",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_logger_src_logger_ts",
+      "target": "logger_resetloggerfortests",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "logger_getlogger",
+      "target": "logger_initlogger",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "logger_initlogger",
+      "callee": "resolveLoggerConfig",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "logger_initlogger",
+      "callee": "buildStreams",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "logger_initlogger",
+      "callee": "pino",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "logger_initlogger",
+      "callee": "multistream",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "logger_getlogger",
+      "callee": "child",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/logger/src/logger.ts",
+      "source_location": "L57"
+    }
+  ]
+}

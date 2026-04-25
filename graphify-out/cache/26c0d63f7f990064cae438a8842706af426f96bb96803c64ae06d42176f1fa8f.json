@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_vitest_coverage_config_ts",
+      "label": "vitest.coverage.config.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/vitest.coverage.config.ts",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_vitest_coverage_config_ts",
+      "target": "config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/vitest.coverage.config.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_vitest_coverage_config_ts",
+      "target": "users_angelhermon_workspace_control_plane_vitest_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/vitest.coverage.config.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -1,0 +1,717 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "label": "replay.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "replay_foldreplay",
+      "label": "foldReplay()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "replay_collectmetadata",
+      "label": "collectMetadata()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "replay_collectturndurationfromsystem",
+      "label": "collectTurnDurationFromSystem()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "replay_collectmetadatafields",
+      "label": "collectMetadataFields()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "replay_processreplayentry",
+      "label": "processReplayEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L121"
+    },
+    {
+      "id": "replay_processcompactionboundary",
+      "label": "processCompactionBoundary()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L149"
+    },
+    {
+      "id": "replay_resolvecompactiontrigger",
+      "label": "resolveCompactionTrigger()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L171"
+    },
+    {
+      "id": "replay_resolvecompactionsummary",
+      "label": "resolveCompactionSummary()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L177"
+    },
+    {
+      "id": "replay_extractusercontent",
+      "label": "extractUserContent()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L189"
+    },
+    {
+      "id": "replay_processreplayuserentry",
+      "label": "processReplayUserEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L217"
+    },
+    {
+      "id": "replay_extractassistantcontent",
+      "label": "extractAssistantContent()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L237"
+    },
+    {
+      "id": "replay_computeresponsetimesec",
+      "label": "computeResponseTimeSec()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L271"
+    },
+    {
+      "id": "replay_resolveassistantcontent",
+      "label": "resolveAssistantContent()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L276"
+    },
+    {
+      "id": "replay_buildassistantoptionalfields",
+      "label": "buildAssistantOptionalFields()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L285"
+    },
+    {
+      "id": "replay_advanceresponsetiming",
+      "label": "advanceResponseTiming()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L303"
+    },
+    {
+      "id": "replay_processreplayassistantentry",
+      "label": "processReplayAssistantEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L313"
+    },
+    {
+      "id": "replay_toolresultpreview",
+      "label": "toolResultPreview()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L336"
+    },
+    {
+      "id": "replay_stringifytoolresultitem",
+      "label": "stringifyToolResultItem()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L356"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_session_summary_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_foldreplay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_collectmetadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_collectturndurationfromsystem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_collectmetadatafields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_processreplayentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_processcompactionboundary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_resolvecompactiontrigger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_resolvecompactionsummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_extractusercontent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_processreplayuserentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_extractassistantcontent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L237",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_computeresponsetimesec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_resolveassistantcontent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L276",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_buildassistantoptionalfields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_advanceresponsetiming",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L303",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_processreplayassistantentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_toolresultpreview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L336",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_replay_ts",
+      "target": "replay_stringifytoolresultitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_foldreplay",
+      "target": "replay_collectmetadata",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_foldreplay",
+      "target": "replay_processreplayentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_collectmetadata",
+      "target": "replay_collectturndurationfromsystem",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_collectmetadata",
+      "target": "replay_collectmetadatafields",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayentry",
+      "target": "replay_processcompactionboundary",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayentry",
+      "target": "replay_processreplayuserentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayentry",
+      "target": "replay_processreplayassistantentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processcompactionboundary",
+      "target": "replay_resolvecompactiontrigger",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processcompactionboundary",
+      "target": "replay_resolvecompactionsummary",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_extractusercontent",
+      "target": "replay_toolresultpreview",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayuserentry",
+      "target": "replay_extractusercontent",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_resolveassistantcontent",
+      "target": "replay_extractassistantcontent",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L282",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_advanceresponsetiming",
+      "target": "replay_computeresponsetimesec",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L308",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayassistantentry",
+      "target": "replay_resolveassistantcontent",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L317",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayassistantentry",
+      "target": "replay_advanceresponsetiming",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L322",
+      "weight": 1.0
+    },
+    {
+      "source": "replay_processreplayassistantentry",
+      "target": "replay_buildassistantoptionalfields",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L332",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "replay_foldreplay",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "replay_collectturndurationfromsystem",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "replay_processreplayentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "replay_processcompactionboundary",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "replay_extractusercontent",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "replay_extractusercontent",
+      "callee": "isTextBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "replay_extractusercontent",
+      "callee": "isToolResultBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "replay_extractusercontent",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "replay_processreplayuserentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "replay_processreplayuserentry",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "replay_extractassistantcontent",
+      "callee": "isTextBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "replay_extractassistantcontent",
+      "callee": "isThinkingBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "replay_extractassistantcontent",
+      "callee": "isToolUseBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "replay_extractassistantcontent",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "replay_computeresponsetimesec",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "replay_computeresponsetimesec",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "replay_resolveassistantcontent",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "replay_buildassistantoptionalfields",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L292"
+    },
+    {
+      "caller_nid": "replay_advanceresponsetiming",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "replay_advanceresponsetiming",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "replay_processreplayassistantentry",
+      "callee": "normalizeTurnUsage",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "replay_processreplayassistantentry",
+      "callee": "estimateCostFromUsage",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "replay_processreplayassistantentry",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L321"
+    },
+    {
+      "caller_nid": "replay_processreplayassistantentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "replay_processreplayassistantentry",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L340"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L340"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L353"
+    },
+    {
+      "caller_nid": "replay_toolresultpreview",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L353"
+    },
+    {
+      "caller_nid": "replay_stringifytoolresultitem",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "replay_stringifytoolresultitem",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L360"
+    },
+    {
+      "caller_nid": "replay_stringifytoolresultitem",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "replay_stringifytoolresultitem",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/replay.ts",
+      "source_location": "L370"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_status_badge_tsx",
+      "label": "agent-status-badge.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-status-badge.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_status_badge_agentstatusbadge",
+      "label": "AgentStatusBadge()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-status-badge.tsx",
+      "source_location": "L24"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_status_badge_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-status-badge.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_status_badge_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-status-badge.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_status_badge_tsx",
+      "target": "agent_status_badge_agentstatusbadge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-status-badge.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

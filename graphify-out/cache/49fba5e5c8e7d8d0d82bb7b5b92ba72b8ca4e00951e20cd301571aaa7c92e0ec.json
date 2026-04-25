@@ -1,0 +1,493 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "label": "kanban-source.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "kanban_source_resolveticketsfile",
+      "label": "resolveTicketsFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "kanban_source_getconfiguredticketsfile",
+      "label": "getConfiguredTicketsFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L64"
+    },
+    {
+      "id": "kanban_source_listticketsorempty",
+      "label": "listTicketsOrEmpty()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "kanban_source_loadticketorundefined",
+      "label": "loadTicketOrUndefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "kanban_source_existsfile",
+      "label": "existsFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "kanban_source_parseticketsfile",
+      "label": "parseTicketsFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "kanban_source_validateticket",
+      "label": "validateTicket()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L141"
+    },
+    {
+      "id": "kanban_source_isrecord",
+      "label": "isRecord()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L187"
+    },
+    {
+      "id": "kanban_source_isunknownarray",
+      "label": "isUnknownArray()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "kanban_source_requirestring",
+      "label": "requireString()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L195"
+    },
+    {
+      "id": "kanban_source_optionalstring",
+      "label": "optionalString()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "kanban_source_errormessage",
+      "label": "errorMessage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "kanban_source_groupticketsbystatus",
+      "label": "groupTicketsByStatus()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L232"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_resolveticketsfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_getconfiguredticketsfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_listticketsorempty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_loadticketorundefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_existsfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_parseticketsfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_validateticket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_isrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L187",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_isunknownarray",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_requirestring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_optionalstring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_errormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_kanban_source_ts",
+      "target": "kanban_source_groupticketsbystatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_getconfiguredticketsfile",
+      "target": "kanban_source_resolveticketsfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_listticketsorempty",
+      "target": "kanban_source_resolveticketsfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_listticketsorempty",
+      "target": "kanban_source_existsfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_listticketsorempty",
+      "target": "kanban_source_parseticketsfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_listticketsorempty",
+      "target": "kanban_source_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_loadticketorundefined",
+      "target": "kanban_source_listticketsorempty",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_parseticketsfile",
+      "target": "kanban_source_isunknownarray",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_parseticketsfile",
+      "target": "kanban_source_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_validateticket",
+      "target": "kanban_source_isrecord",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_validateticket",
+      "target": "kanban_source_requirestring",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "kanban_source_validateticket",
+      "target": "kanban_source_optionalstring",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "kanban_source_resolveticketsfile",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "kanban_source_listticketsorempty",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "kanban_source_listticketsorempty",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "kanban_source_loadticketorundefined",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "kanban_source_existsfile",
+      "callee": "existsSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "kanban_source_existsfile",
+      "callee": "isFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "kanban_source_existsfile",
+      "callee": "statSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "kanban_source_parseticketsfile",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "kanban_source_validateticket",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "kanban_source_validateticket",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "kanban_source_validateticket",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "kanban_source_validateticket",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "kanban_source_isrecord",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "kanban_source_isunknownarray",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "kanban_source_optionalstring",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "kanban_source_errormessage",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "kanban_source_groupticketsbystatus",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "kanban_source_groupticketsbystatus",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/kanban-source.ts",
+      "source_location": "L247"
+    }
+  ]
+}

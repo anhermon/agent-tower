@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_webhooks_webhook_status_badge_tsx",
+      "label": "webhook-status-badge.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "webhook_status_badge_webhookstatusbadge",
+      "label": "WebhookStatusBadge()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "webhook_status_badge_subscriptionstatus",
+      "label": "subscriptionStatus()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L24"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_webhooks_webhook_status_badge_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_webhooks_webhook_status_badge_tsx",
+      "target": "webhook_status_badge_webhookstatusbadge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_webhooks_webhook_status_badge_tsx",
+      "target": "webhook_status_badge_subscriptionstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/webhooks/webhook-status-badge.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -144,6 +144,39 @@ async function writeJsonl(
   return filePath;
 }
 
+function subagentUserEntry(opts: {
+  readonly timestamp: string;
+  readonly sessionId: string;
+  readonly text: string;
+}): Record<string, unknown> {
+  return {
+    type: "user",
+    sessionId: opts.sessionId,
+    timestamp: opts.timestamp,
+    cwd: "/repo/x",
+    isSidechain: true,
+    message: { role: "user", content: [{ type: "text", text: opts.text }] },
+  };
+}
+
+function assistantSyntheticEntry(opts: {
+  readonly timestamp: string;
+  readonly sessionId: string;
+  readonly text: string;
+}): Record<string, unknown> {
+  return {
+    type: "assistant",
+    sessionId: opts.sessionId,
+    timestamp: opts.timestamp,
+    cwd: "/repo/x",
+    message: {
+      role: "assistant",
+      model: "synthetic",
+      content: [{ type: "text", text: opts.text }],
+    },
+  };
+}
+
 // ---------- Tests ----------
 
 describe("skills-efficacy-source", () => {
@@ -906,5 +939,240 @@ describe("skills-efficacy-source", () => {
       fresh.report.qualifying.find((r) => r.skillId === "epsilon") ??
       fresh.report.insufficientData.find((r) => r.skillId === "epsilon");
     expect(freshRow?.invocationsCount).toBe(2);
+  });
+
+  it("given_subagent_session__when_computing__then_classified_as_subagent", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-subagent");
+    await mkdir(project, { recursive: true });
+    const sessionId = "subagent-1111-2222-3333-444444444444";
+
+    const entries = [
+      subagentUserEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "help me with this",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Sure.",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.report.sessionsByType.subagent).toBe(1);
+    expect(result.report.sessionsByType.user).toBe(0);
+    expect(result.report.baselineByType.subagent.sessionsScored).toBe(1);
+  });
+
+  it("given_synthetic_model_session__when_computing__then_classified_as_synthetic", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-synthetic");
+    await mkdir(project, { recursive: true });
+    const sessionId = "synthet-1111-2222-3333-444444444444";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "hello",
+      }),
+      assistantSyntheticEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Hello!",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.report.sessionsByType.synthetic).toBe(1);
+    expect(result.report.sessionsByType.user).toBe(0);
+    expect(result.report.baselineByType.synthetic.sessionsScored).toBe(1);
+  });
+
+  it("given_local_command_caveat_session__when_computing__then_classified_as_local_command", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-local-cmd");
+    await mkdir(project, { recursive: true });
+    const sessionId = "localcmd-1111-2222-3333-444444444444";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "<local-command-caveat> run tests",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Running tests.",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.report.sessionsByType.local_command).toBe(1);
+    expect(result.report.sessionsByType.user).toBe(0);
+    expect(result.report.baselineByType.local_command.sessionsScored).toBe(1);
+  });
+
+  it("given_paperclip_agent_wake_session__when_computing__then_classified_as_paperclip_agent", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-paperclip");
+    await mkdir(project, { recursive: true });
+    const sessionId = "papercli-1111-2222-3333-444444444444";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "You are agent Alpha in the Paperclip system.",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Acknowledged.",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.report.sessionsByType.paperclip_agent).toBe(1);
+    expect(result.report.sessionsByType.user).toBe(0);
+    expect(result.report.baselineByType.paperclip_agent.sessionsScored).toBe(1);
+  });
+
+  it("given_mixed_session_types__when_computing__then_counts_and_baselines_separate_correctly", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-mixed");
+    await mkdir(project, { recursive: true });
+
+    // User session with skill
+    const userSessionId = "user1111-0000-0000-0000-000000000001";
+    await writeJsonl(project, userSessionId, [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId: userSessionId,
+        text: "go alpha",
+      }),
+      assistantSkillEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId: userSessionId,
+        skill: "alpha",
+        toolUseId: "a1",
+      }),
+      userToolResultEntry({
+        timestamp: "2026-04-10T10:00:02.000Z",
+        sessionId: userSessionId,
+        toolUseId: "a1",
+        content: "ok",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:03.000Z",
+        sessionId: userSessionId,
+        text: "Done.",
+      }),
+    ]);
+
+    // Subagent session with same skill
+    const subSessionId = "subagent-0000-0000-0000-000000000002";
+    await writeJsonl(project, subSessionId, [
+      subagentUserEntry({
+        timestamp: "2026-04-10T11:00:00.000Z",
+        sessionId: subSessionId,
+        text: "go alpha",
+      }),
+      assistantSkillEntry({
+        timestamp: "2026-04-10T11:00:01.000Z",
+        sessionId: subSessionId,
+        skill: "alpha",
+        toolUseId: "a2",
+      }),
+      userToolResultEntry({
+        timestamp: "2026-04-10T11:00:02.000Z",
+        sessionId: subSessionId,
+        toolUseId: "a2",
+        content: "ok",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T11:00:03.000Z",
+        sessionId: subSessionId,
+        text: "Done.",
+      }),
+    ]);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({
+      skills: [manifest({ id: "alpha", name: "Alpha" })],
+      minSessionsForQualifying: 1,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.sessionsAnalyzed).toBe(2);
+    expect(result.report.sessionsByType.user).toBe(1);
+    expect(result.report.sessionsByType.subagent).toBe(1);
+
+    // Overall qualifying should include alpha (2 sessions total)
+    const overallAlpha = result.report.qualifying.find((r) => r.skillId === "alpha");
+    expect(overallAlpha).toBeDefined();
+    expect(overallAlpha?.sessionsCount).toBe(2);
+
+    // User-only qualifying should also include alpha (1 session)
+    const userAlpha = result.report.qualifyingByType.user.find((r) => r.skillId === "alpha");
+    expect(userAlpha).toBeDefined();
+    expect(userAlpha?.sessionsCount).toBe(1);
+
+    // Subagent-only qualifying should also include alpha (1 session)
+    const subAlpha = result.report.qualifyingByType.subagent.find((r) => r.skillId === "alpha");
+    expect(subAlpha).toBeDefined();
+    expect(subAlpha?.sessionsCount).toBe(1);
+  });
+
+  it("given_normal_user_session__when_computing__then_classified_as_user", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-normal-user");
+    await mkdir(project, { recursive: true });
+    const sessionId = "usernorm-1111-2222-3333-444444444444";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "hello there",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Hello!",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.report.sessionsByType.user).toBe(1);
+    expect(result.report.sessionsByType.subagent).toBe(0);
+    expect(result.report.sessionsByType.synthetic).toBe(0);
+    expect(result.report.sessionsByType.local_command).toBe(0);
+    expect(result.report.sessionsByType.paperclip_agent).toBe(0);
+    expect(result.report.baselineByType.user.sessionsScored).toBe(1);
   });
 });

@@ -1,0 +1,235 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "label": "bundle-size.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "bundle_size_runsizelimit",
+      "label": "runSizeLimit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L9"
+    },
+    {
+      "id": "bundle_size_parselimit",
+      "label": "parseLimit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L24"
+    },
+    {
+      "id": "bundle_size_extractjson",
+      "label": "extractJson()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L35"
+    },
+    {
+      "id": "bundle_size_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L46"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "node_child_process",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "bundle_size_runsizelimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "bundle_size_parselimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "bundle_size_extractjson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_bundle_size_mjs",
+      "target": "bundle_size_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "bundle_size_main",
+      "target": "bundle_size_runsizelimit",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "bundle_size_main",
+      "target": "bundle_size_extractjson",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L49",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "bundle_size_parselimit",
+      "callee": "match",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "bundle_size_parselimit",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "bundle_size_parselimit",
+      "callee": "Number",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "bundle_size_parselimit",
+      "callee": "toUpperCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "bundle_size_parselimit",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "bundle_size_extractjson",
+      "callee": "indexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "bundle_size_extractjson",
+      "callee": "lastIndexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "bundle_size_extractjson",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "bundle_size_extractjson",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "every",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "bundle_size_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/bundle-size.mjs",
+      "source_location": "L82"
+    }
+  ]
+}

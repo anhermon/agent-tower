@@ -1,0 +1,57 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_project_activity_donut_tsx",
+      "label": "project-activity-donut.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "project_activity_donut_customtooltip",
+      "label": "CustomTooltip()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L17"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_project_activity_donut_tsx",
+      "target": "recharts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_project_activity_donut_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_project_activity_donut_tsx",
+      "target": "format",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_project_activity_donut_tsx",
+      "target": "project_activity_donut_customtooltip",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/project-activity-donut.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

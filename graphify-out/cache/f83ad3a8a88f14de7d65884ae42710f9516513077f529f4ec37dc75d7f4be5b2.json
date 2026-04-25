@@ -1,0 +1,245 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "label": "sessions-waste.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "sessions_waste_runsessionswaste",
+      "label": "runSessionsWaste()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "sessions_waste_readfloatflag",
+      "label": "readFloatFlag()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L90"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "sessions_waste_runsessionswaste",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "target": "sessions_waste_readfloatflag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "sessions_waste_runsessionswaste",
+      "target": "sessions_waste_readfloatflag",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "parseFlags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "resolveOutputMode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "readIntFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "readDateFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "readDateFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "resolveOrExplain",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "listSessionSummaries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "scoreSessionsWaste",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "sessions_waste_runsessionswaste",
+      "callee": "renderTable",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "sessions_waste_readfloatflag",
+      "callee": "parseFloat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "sessions_waste_readfloatflag",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-waste.ts",
+      "source_location": "L93"
+    }
+  ]
+}

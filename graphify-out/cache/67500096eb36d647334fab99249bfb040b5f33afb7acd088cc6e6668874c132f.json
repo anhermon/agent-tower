@@ -1,0 +1,164 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "label": "agent-mascot-state-machine.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_mascot_state_machine_useagentmascotstate",
+      "label": "useAgentMascotState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "agent_mascot_state_machine_tovisualstate",
+      "label": "toVisualState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "agent_mascot_state_machine_settletransient",
+      "label": "settleTransient()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "agent_mascot_state_machine_fallbackbasestate",
+      "label": "fallbackBaseState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "agent_mascot_state_machine_labelfor",
+      "label": "labelFor()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L139"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "agent_mascot_state_machine_useagentmascotstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "agent_mascot_state_machine_tovisualstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "agent_mascot_state_machine_settletransient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "agent_mascot_state_machine_fallbackbasestate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_mascot_state_machine_ts",
+      "target": "agent_mascot_state_machine_labelfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_mascot_state_machine_tovisualstate",
+      "target": "agent_mascot_state_machine_labelfor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_mascot_state_machine_tovisualstate",
+      "target": "agent_mascot_state_machine_fallbackbasestate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_mascot_state_machine_settletransient",
+      "target": "agent_mascot_state_machine_labelfor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agent_mascot_state_machine_useagentmascotstate",
+      "callee": "useMemo",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "agent_mascot_state_machine_useagentmascotstate",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "agent_mascot_state_machine_useagentmascotstate",
+      "callee": "useEffect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "agent_mascot_state_machine_tovisualstate",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-mascot-state-machine.ts",
+      "source_location": "L111"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "label": "github-actions.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_actions_getgithubtoken",
+      "label": "getGitHubToken()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "github_actions_extractpullrequestnumber",
+      "label": "extractPullRequestNumber()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "github_actions_extractissuenumber",
+      "label": "extractIssueNumber()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "github_actions_githubfetch",
+      "label": "githubFetch()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "github_actions_creategithubactionexecutor",
+      "label": "createGitHubActionExecutor()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "github_actions_createactionexecutor",
+      "label": "createActionExecutor()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L116"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_getgithubtoken",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_extractpullrequestnumber",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_extractissuenumber",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_githubfetch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_creategithubactionexecutor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions_ts",
+      "target": "github_actions_createactionexecutor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "github_actions_githubfetch",
+      "target": "github_actions_getgithubtoken",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "github_actions_createactionexecutor",
+      "target": "github_actions_creategithubactionexecutor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "github_actions_githubfetch",
+      "callee": "fetch",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "github_actions_githubfetch",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "github_actions_githubfetch",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "github_actions_githubfetch",
+      "callee": "warn",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "github_actions_githubfetch",
+      "callee": "text",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/github-actions.ts",
+      "source_location": "L78"
+    }
+  ]
+}

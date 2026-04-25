@@ -1,0 +1,597 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_searchhandler",
+      "label": "searchHandler()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "route_scanfileswithlimit",
+      "label": "scanFilesWithLimit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "route_scanfile",
+      "label": "scanFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L138"
+    },
+    {
+      "id": "route_safejsonparse",
+      "label": "safeJsonParse()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L216"
+    },
+    {
+      "id": "route_hitfromentry",
+      "label": "hitFromEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "route_countoccurrences",
+      "label": "countOccurrences()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L279"
+    },
+    {
+      "id": "route_extractsnippet",
+      "label": "extractSnippet()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L292"
+    },
+    {
+      "id": "route_errormessage",
+      "label": "errorMessage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L302"
+    },
+    {
+      "id": "route_json",
+      "label": "json()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L306"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "server_only",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "node_readline",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "sessions_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "with_audit",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_searchhandler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_scanfileswithlimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_scanfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_safejsonparse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_hitfromentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_countoccurrences",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L279",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_extractsnippet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L292",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_errormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_route_ts",
+      "target": "route_json",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "route_searchhandler",
+      "target": "route_json",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "route_searchhandler",
+      "target": "route_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "route_searchhandler",
+      "target": "route_scanfileswithlimit",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "route_scanfile",
+      "target": "route_safejsonparse",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "route_scanfile",
+      "target": "route_hitfromentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "route_hitfromentry",
+      "target": "route_countoccurrences",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "route_hitfromentry",
+      "target": "route_extractsnippet",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L269",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "test",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "parseInt",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "getConfiguredDataRoot",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "listSessionFiles",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "route_searchhandler",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "getFileCacheForNeedle",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "all",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "from",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "route_scanfileswithlimit",
+      "callee": "setFileCacheForNeedle",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "stat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "createReadStream",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "createInterface",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "addEventListener",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "removeEventListener",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "close",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L189"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "close",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "route_scanfile",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "route_safejsonparse",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "route_hitfromentry",
+      "callee": "indexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "route_countoccurrences",
+      "callee": "indexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "floor",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L293"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "route_extractsnippet",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "route_errormessage",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "route_json",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/route.ts",
+      "source_location": "L307"
+    }
+  ]
+}

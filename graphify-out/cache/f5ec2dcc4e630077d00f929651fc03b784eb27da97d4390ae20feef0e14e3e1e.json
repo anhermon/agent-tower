@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "label": "with-audit.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "with_audit_withaudit",
+      "label": "withAudit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "with_audit_serializeerror",
+      "label": "serializeError()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L92"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "target": "server_only",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "target": "node_crypto",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "target": "logger",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "target": "with_audit_withaudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_with_audit_ts",
+      "target": "with_audit_serializeerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "with_audit_withaudit",
+      "target": "with_audit_serializeerror",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "getLogger",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "randomUUID",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "debug",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "handler",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "info",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "with_audit_withaudit",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "with_audit_serializeerror",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/with-audit.ts",
+      "source_location": "L104"
+    }
+  ]
+}

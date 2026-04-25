@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_mcps_source_ts",
+      "label": "mcps-source.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/mcps-source.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "mcps_source_listmcpservers",
+      "label": "listMcpServers()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/mcps-source.ts",
+      "source_location": "L38"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_mcps_source_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/mcps-source.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_mcps_source_ts",
+      "target": "mcps_source_listmcpservers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/mcps-source.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

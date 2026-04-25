@@ -1,0 +1,224 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "label": "route.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_test_seedroot",
+      "label": "seedRoot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "route_test_readfirstdataframe",
+      "label": "readFirstDataFrame()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L148"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "route_test_seedroot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_agents_events_route_test_ts",
+      "target": "route_test_readfirstdataframe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "mkdtempSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "tmpdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "mkdirSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "unshift",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "writeFileSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "route_test_seedroot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "getReader",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "read",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "decode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "route_test_readfirstdataframe",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/agents/events/route.test.ts",
+      "source_location": "L165"
+    }
+  ]
+}

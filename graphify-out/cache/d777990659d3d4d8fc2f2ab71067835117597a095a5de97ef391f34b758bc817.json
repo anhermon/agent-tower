@@ -1,0 +1,245 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "label": "skills-usage.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "skills_usage_runskillsusage",
+      "label": "runSkillsUsage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "skills_usage_stripperskillseries",
+      "label": "stripPerSkillSeries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L98"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "skills_usage_runskillsusage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "target": "skills_usage_stripperskillseries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "parseFlags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "resolveOutputMode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "readIntFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "resolveOrExplain",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "computeSkillsUsage",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "skills_usage_runskillsusage",
+      "callee": "renderTable",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-usage.ts",
+      "source_location": "L80"
+    }
+  ]
+}

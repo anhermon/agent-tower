@@ -1,0 +1,370 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "label": "ci-health.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "ci_health_loadreports",
+      "label": "loadReports()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L20"
+    },
+    {
+      "id": "ci_health_buildlatest",
+      "label": "buildLatest()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L41"
+    },
+    {
+      "id": "ci_health_printboard",
+      "label": "printBoard()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L68"
+    },
+    {
+      "id": "ci_health_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L91"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "node_url",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "ci_health_loadreports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "ci_health_buildlatest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "ci_health_printboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_health_mjs",
+      "target": "ci_health_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "ci_health_main",
+      "target": "ci_health_loadreports",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "ci_health_main",
+      "target": "ci_health_buildlatest",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "ci_health_main",
+      "target": "ci_health_printboard",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L119",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "ci_health_loadreports",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "ci_health_buildlatest",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "ci_health_buildlatest",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "ci_health_buildlatest",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "ci_health_buildlatest",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "repeat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "padEnd",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "padEnd",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "ci_health_printboard",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "existsSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "readdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "ci_health_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci-health.mjs",
+      "source_location": "L121"
+    }
+  ]
+}

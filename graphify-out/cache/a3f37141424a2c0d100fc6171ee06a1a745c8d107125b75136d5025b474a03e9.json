@@ -1,0 +1,148 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "label": "use-agent-animation-events.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "use_agent_animation_events_useagentanimationevents",
+      "label": "useAgentAnimationEvents()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "use_agent_animation_events_parsesnapshot",
+      "label": "parseSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "use_agent_animation_events_issnapshotenvelope",
+      "label": "isSnapshotEnvelope()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "use_agent_animation_events_isagentanimationsnapshot",
+      "label": "isAgentAnimationSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L65"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "use_agent_animation_events_useagentanimationevents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "use_agent_animation_events_parsesnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "use_agent_animation_events_issnapshotenvelope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_use_agent_animation_events_ts",
+      "target": "use_agent_animation_events_isagentanimationsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "use_agent_animation_events_parsesnapshot",
+      "target": "use_agent_animation_events_issnapshotenvelope",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "use_agent_animation_events_parsesnapshot",
+      "target": "use_agent_animation_events_isagentanimationsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "use_agent_animation_events_issnapshotenvelope",
+      "target": "use_agent_animation_events_isagentanimationsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "use_agent_animation_events_useagentanimationevents",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L10"
+    },
+    {
+      "caller_nid": "use_agent_animation_events_useagentanimationevents",
+      "callee": "useEffect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "use_agent_animation_events_parsesnapshot",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "use_agent_animation_events_isagentanimationsnapshot",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/use-agent-animation-events.ts",
+      "source_location": "L74"
+    }
+  ]
+}

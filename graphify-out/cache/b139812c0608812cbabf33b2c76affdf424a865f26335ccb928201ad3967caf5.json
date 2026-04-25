@@ -1,0 +1,137 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "label": "sessions-analytics.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "sessions_analytics_test_makesession",
+      "label": "makeSession()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "sessions_analytics_test_makeproject",
+      "label": "makeProject()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "sessions_analytics_test_maketimeseries",
+      "label": "makeTimeseries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "sessions_analytics_test_makecostbreakdown",
+      "label": "makeCostBreakdown()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "sessions_analytics_test_maketoolanalytics",
+      "label": "makeToolAnalytics()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "sessions_analytics_test_makefakesource",
+      "label": "makeFakeSource()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L135"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_makesession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_makeproject",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_maketimeseries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_makecostbreakdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_maketoolanalytics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_sessions_analytics_test_ts",
+      "target": "sessions_analytics_test_makefakesource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/sessions-analytics.test.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

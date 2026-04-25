@@ -1,0 +1,482 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "label": "cli.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "cli_partitionglobalflags",
+      "label": "partitionGlobalFlags()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "cli_runcli",
+      "label": "runCli()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "cli_dispatchcommand",
+      "label": "dispatchCommand()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "cli_handleclierror",
+      "label": "handleCliError()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L86"
+    },
+    {
+      "id": "cli_runsessions",
+      "label": "runSessions()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "cli_runskills",
+      "label": "runSkills()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "cli_runagents",
+      "label": "runAgents()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "cli_isdefined",
+      "label": "isDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L138"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_audit_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_health_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_help_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_mcp_stub_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_show_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_waste_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_housekeep_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_top_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_usage_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_workflow_health_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_partitionglobalflags",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_runcli",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_dispatchcommand",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_handleclierror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_runsessions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_runskills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_runagents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "target": "cli_isdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_runcli",
+      "target": "cli_partitionglobalflags",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_runcli",
+      "target": "cli_dispatchcommand",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_runcli",
+      "target": "cli_handleclierror",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_dispatchcommand",
+      "target": "cli_runsessions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_dispatchcommand",
+      "target": "cli_runskills",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "cli_dispatchcommand",
+      "target": "cli_runagents",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "cli_partitionglobalflags",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "cli_partitionglobalflags",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "cli_partitionglobalflags",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "cli_partitionglobalflags",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "cli_partitionglobalflags",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "cli_runcli",
+      "callee": "runHelp",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "runHealth",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "runMcpStub",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "runAudit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "runWorkflowHealth",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "cli_dispatchcommand",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "cli_handleclierror",
+      "callee": "writeError",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "cli_handleclierror",
+      "callee": "writeError",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "cli_handleclierror",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "cli_handleclierror",
+      "callee": "writeError",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "cli_runsessions",
+      "callee": "runSessionsTop",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "cli_runsessions",
+      "callee": "runSessionsShow",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "cli_runsessions",
+      "callee": "runSessionsWaste",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "cli_runskills",
+      "callee": "runSkillsTop",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "cli_runskills",
+      "callee": "runSkillsUsage",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "cli_runskills",
+      "callee": "runSkillsEfficacy",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "cli_runskills",
+      "callee": "runSkillsHousekeep",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "cli_runagents",
+      "callee": "runAgentsList",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.ts",
+      "source_location": "L132"
+    }
+  ]
+}

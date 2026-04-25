@@ -1,0 +1,136 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "label": "perf-coverage.perf.spec.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "perf_coverage_perf_spec_scrollfullpage",
+      "label": "scrollFullPage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "label": "assertNoSevereConsoleErrors()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "perf_coverage_perf_spec_isbenignconsolemessage",
+      "label": "isBenignConsoleMessage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "perf_coverage_perf_spec_readchromiumjsheapbytes",
+      "label": "readChromiumJsHeapBytes()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L73"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "target": "test",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "target": "perf_coverage_perf_spec_scrollfullpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "target": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "target": "perf_coverage_perf_spec_isbenignconsolemessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_e2e_perf_coverage_perf_spec_ts",
+      "target": "perf_coverage_perf_spec_readchromiumjsheapbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "perf_coverage_perf_spec_scrollfullpage",
+      "callee": "evaluate",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "callee": "toEqual",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "callee": "expect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_assertnosevereconsoleerrors",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_isbenignconsolemessage",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_isbenignconsolemessage",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "perf_coverage_perf_spec_readchromiumjsheapbytes",
+      "callee": "evaluate",
+      "source_file": "/Users/angelhermon/workspace/control-plane/e2e/perf-coverage.perf.spec.ts",
+      "source_location": "L74"
+    }
+  ]
+}

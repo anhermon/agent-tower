@@ -1,0 +1,266 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "label": "system-info-panel.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "system_info_panel_systeminfopanel",
+      "label": "SystemInfoPanel()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "system_info_panel_stat",
+      "label": "Stat()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L98"
+    },
+    {
+      "id": "system_info_panel_bylastseen",
+      "label": "byLastSeen()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L107"
+    },
+    {
+      "id": "system_info_panel_computediskbytes",
+      "label": "computeDiskBytes()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L111"
+    },
+    {
+      "id": "system_info_panel_safestat",
+      "label": "safeStat()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L132"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "server_only",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "format",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "sessions_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "system_info_panel_systeminfopanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "system_info_panel_stat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "system_info_panel_bylastseen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "system_info_panel_computediskbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_system_info_panel_tsx",
+      "target": "system_info_panel_safestat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "system_info_panel_systeminfopanel",
+      "target": "system_info_panel_computediskbytes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "system_info_panel_computediskbytes",
+      "target": "system_info_panel_safestat",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "system_info_panel_safestat",
+      "target": "system_info_panel_stat",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L134",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "getConfiguredDataRoot",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "formatBytes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "system_info_panel_systeminfopanel",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "system_info_panel_bylastseen",
+      "callee": "localeCompare",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "readdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "isDirectory",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "catch",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "readdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "endsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "system_info_panel_computediskbytes",
+      "callee": "isFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/system-info-panel.tsx",
+      "source_location": "L123"
+    }
+  ]
+}

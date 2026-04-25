@@ -1,0 +1,296 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "label": "sessions-top.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "sessions_top_runsessionstop",
+      "label": "runSessionsTop()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "sessions_top_turncount",
+      "label": "turnCount()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "sessions_top_totaltokens",
+      "label": "totalTokens()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "sessions_top_comparesummaries",
+      "label": "compareSummaries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "sessions_top_projectsession",
+      "label": "projectSession()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L116"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "sessions_top_runsessionstop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "sessions_top_turncount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "sessions_top_totaltokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "sessions_top_comparesummaries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_sessions_top_ts",
+      "target": "sessions_top_projectsession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "sessions_top_comparesummaries",
+      "target": "sessions_top_turncount",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "sessions_top_comparesummaries",
+      "target": "sessions_top_totaltokens",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "sessions_top_projectsession",
+      "target": "sessions_top_totaltokens",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "sessions_top_projectsession",
+      "target": "sessions_top_turncount",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "parseFlags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "resolveOutputMode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "readEnumFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "readIntFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "readDateFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "readDateFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "resolveOrExplain",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "listSessionSummaries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "sessions_top_runsessionstop",
+      "callee": "renderTable",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/sessions-top.ts",
+      "source_location": "L79"
+    }
+  ]
+}

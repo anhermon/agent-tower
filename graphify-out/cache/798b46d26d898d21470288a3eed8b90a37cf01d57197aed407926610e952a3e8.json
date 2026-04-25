@@ -1,0 +1,88 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_webhook_normalizer_ts",
+      "label": "webhook-normalizer.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "webhook_normalizer_normalizegithubwebhook",
+      "label": "normalizeGithubWebhook()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L21"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhook_normalizer_ts",
+      "target": "node_crypto",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhook_normalizer_ts",
+      "target": "webhook_normalizer_normalizegithubwebhook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "randomUUID",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "randomUUID",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "webhook_normalizer_normalizegithubwebhook",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhook-normalizer.ts",
+      "source_location": "L44"
+    }
+  ]
+}

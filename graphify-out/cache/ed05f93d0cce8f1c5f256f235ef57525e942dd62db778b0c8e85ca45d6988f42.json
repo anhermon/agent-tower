@@ -1,0 +1,95 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_usage_over_time_chart_tsx",
+      "label": "usage-over-time-chart.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "usage_over_time_chart_formatdate",
+      "label": "formatDate()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "usage_over_time_chart_formaty",
+      "label": "formatY()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L27"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_usage_over_time_chart_tsx",
+      "target": "recharts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_usage_over_time_chart_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_usage_over_time_chart_tsx",
+      "target": "usage_over_time_chart_formatdate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_usage_over_time_chart_tsx",
+      "target": "usage_over_time_chart_formaty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "usage_over_time_chart_formatdate",
+      "callee": "isNaN",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "usage_over_time_chart_formatdate",
+      "callee": "getTime",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "usage_over_time_chart_formatdate",
+      "callee": "toLocaleDateString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "usage_over_time_chart_formaty",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "usage_over_time_chart_formaty",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/usage-over-time-chart.tsx",
+      "source_location": "L29"
+    }
+  ]
+}

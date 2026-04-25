@@ -1,0 +1,355 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "label": "coverage-report.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "coverage_report_bucketfor",
+      "label": "bucketFor()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L47"
+    },
+    {
+      "id": "coverage_report_emptymetrics",
+      "label": "emptyMetrics()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L54"
+    },
+    {
+      "id": "coverage_report_accumulate",
+      "label": "accumulate()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L63"
+    },
+    {
+      "id": "coverage_report_finalizepct",
+      "label": "finalizePct()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L72"
+    },
+    {
+      "id": "coverage_report_picktotals",
+      "label": "pickTotals()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L80"
+    },
+    {
+      "id": "coverage_report_passes",
+      "label": "passes()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L94"
+    },
+    {
+      "id": "coverage_report_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L98"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_bucketfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_emptymetrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_accumulate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_finalizepct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_picktotals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_passes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_coverage_report_mjs",
+      "target": "coverage_report_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_picktotals",
+      "target": "coverage_report_emptymetrics",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_picktotals",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_bucketfor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_emptymetrics",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_accumulate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_finalizepct",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "coverage_report_main",
+      "target": "coverage_report_passes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L144",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "coverage_report_bucketfor",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "coverage_report_bucketfor",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "coverage_report_finalizepct",
+      "callee": "Number",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "coverage_report_finalizepct",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "coverage_report_picktotals",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "coverage_report_passes",
+      "callee": "every",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "stat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "write",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "entries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "keys",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "coverage_report_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/coverage-report.mjs",
+      "source_location": "L160"
+    }
+  ]
+}

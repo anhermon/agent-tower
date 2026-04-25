@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_channels_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_channelspage",
+      "label": "ChannelsPage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L4"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_channels_page_tsx",
+      "target": "module_placeholder",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_channels_page_tsx",
+      "target": "modules",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_channels_page_tsx",
+      "target": "page_channelspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "page_channelspage",
+      "callee": "getModuleByKey",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/channels/page.tsx",
+      "source_location": "L5"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_skills_viewport_mount_tsx",
+      "label": "viewport-mount.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "viewport_mount_viewportmount",
+      "label": "ViewportMount()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "viewport_mount_defaultskeleton",
+      "label": "DefaultSkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L78"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_viewport_mount_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_viewport_mount_tsx",
+      "target": "viewport_mount_viewportmount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_viewport_mount_tsx",
+      "target": "viewport_mount_defaultskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "viewport_mount_viewportmount",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "viewport_mount_viewportmount",
+      "callee": "useRef",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "viewport_mount_viewportmount",
+      "callee": "useEffect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "viewport_mount_viewportmount",
+      "callee": "return",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/viewport-mount.tsx",
+      "source_location": "L71"
+    }
+  ]
+}

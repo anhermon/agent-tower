@@ -1,0 +1,238 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "label": "event-log.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog",
+      "label": "InMemoryAppendOnlyEventLog",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog_append",
+      "label": ".append()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog_appendmany",
+      "label": ".appendMany()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog_read",
+      "label": ".read()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog_stream",
+      "label": ".stream()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "event_log_inmemoryappendonlyeventlog_clear",
+      "label": ".clear()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "event_log_cursortosequence",
+      "label": "cursorToSequence()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L113"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_bus_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "target": "event_log_inmemoryappendonlyeventlog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog",
+      "target": "event_log_inmemoryappendonlyeventlog_append",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog",
+      "target": "event_log_inmemoryappendonlyeventlog_appendmany",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog",
+      "target": "event_log_inmemoryappendonlyeventlog_read",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog",
+      "target": "event_log_inmemoryappendonlyeventlog_stream",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog",
+      "target": "event_log_inmemoryappendonlyeventlog_clear",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "target": "event_log_cursortosequence",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog_appendmany",
+      "target": "event_log_inmemoryappendonlyeventlog_append",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog_read",
+      "target": "event_log_cursortosequence",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "event_log_inmemoryappendonlyeventlog_stream",
+      "target": "event_log_inmemoryappendonlyeventlog_read",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_append",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_append",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_append",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_appendmany",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_read",
+      "callee": "Boolean",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_read",
+      "callee": "reverse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_read",
+      "callee": "from",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_read",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "event_log_inmemoryappendonlyeventlog_read",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "event_log_cursortosequence",
+      "callee": "parseInt",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "event_log_cursortosequence",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.ts",
+      "source_location": "L119"
+    }
+  ]
+}

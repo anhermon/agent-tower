@@ -51,29 +51,36 @@ export async function listSessionFiles(
       continue;
     }
 
-    const files = await safeReadDir(projectPath);
-    for (const fileName of files) {
-      if (!fileName.endsWith(JSONL_EXTENSION)) {
-        continue;
-      }
-      const filePath = path.join(projectPath, fileName);
-      const fileStat = await safeStat(filePath);
-      if (!fileStat?.isFile()) {
-        continue;
-      }
-
-      results.push({
-        sessionId: fileName.slice(0, -JSONL_EXTENSION.length),
-        projectId: projectName,
-        filePath,
-        sizeBytes: fileStat.size,
-        modifiedAt: fileStat.mtime.toISOString(),
-      });
-    }
+    await collectJsonlFiles(projectPath, projectName, results);
   }
 
   results.sort((a, b) => (a.modifiedAt < b.modifiedAt ? 1 : -1));
   return results;
+}
+
+async function collectJsonlFiles(
+  directory: string,
+  projectId: string,
+  results: ClaudeSessionFile[]
+): Promise<void> {
+  const entries = await safeReadDir(directory);
+
+  for (const entryName of entries) {
+    const entryPath = path.join(directory, entryName);
+    const entryStat = await safeStat(entryPath);
+
+    if (entryStat?.isDirectory()) {
+      await collectJsonlFiles(entryPath, projectId, results);
+    } else if (entryStat?.isFile() && entryName.endsWith(JSONL_EXTENSION)) {
+      results.push({
+        sessionId: entryName.slice(0, -JSONL_EXTENSION.length),
+        projectId,
+        filePath: entryPath,
+        sizeBytes: entryStat.size,
+        modifiedAt: entryStat.mtime.toISOString(),
+      });
+    }
+  }
 }
 
 export async function readTranscriptFile(filePath: string): Promise<ReadTranscriptResult> {

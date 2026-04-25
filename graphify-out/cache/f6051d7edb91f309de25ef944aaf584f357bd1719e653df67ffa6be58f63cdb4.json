@@ -1,0 +1,265 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "label": "timeseries.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "timeseries_foldtimeseries",
+      "label": "foldTimeseries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "timeseries_computestreaks",
+      "label": "computeStreaks()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "timeseries_todate",
+      "label": "toDate()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L163"
+    },
+    {
+      "id": "timeseries_daysbetween",
+      "label": "daysBetween()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L171"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "target": "timeseries_foldtimeseries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "target": "timeseries_computestreaks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "target": "timeseries_todate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_timeseries_ts",
+      "target": "timeseries_daysbetween",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "timeseries_foldtimeseries",
+      "target": "timeseries_todate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "timeseries_foldtimeseries",
+      "target": "timeseries_computestreaks",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "timeseries_computestreaks",
+      "target": "timeseries_daysbetween",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "fill",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "getUTCHours",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "getUTCDay",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "timeseries_foldtimeseries",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "timeseries_computestreaks",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "getUTCFullYear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "padStart",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "getUTCMonth",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "padStart",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "timeseries_todate",
+      "callee": "getUTCDate",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "timeseries_daysbetween",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "timeseries_daysbetween",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "timeseries_daysbetween",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/timeseries.ts",
+      "source_location": "L174"
+    }
+  ]
+}

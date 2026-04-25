@@ -1,0 +1,119 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "label": "sessions-top.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "sessions_top_test_assistantline",
+      "label": "assistantLine()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "sessions_top_test_makejsonl",
+      "label": "makeJsonl()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L63"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "sessions_top_test_assistantline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_top_test_ts",
+      "target": "sessions_top_test_makejsonl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "sessions_top_test_makejsonl",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-top.test.ts",
+      "source_location": "L73"
+    }
+  ]
+}

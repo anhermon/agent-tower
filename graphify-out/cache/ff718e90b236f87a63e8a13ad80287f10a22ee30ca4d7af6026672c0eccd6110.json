@@ -1,0 +1,103 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_kanbanpage",
+      "label": "KanbanPage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L16"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "kanban_board",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "badge",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "state",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "kanban_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "modules",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_kanban_page_tsx",
+      "target": "page_kanbanpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "page_kanbanpage",
+      "callee": "getModuleByKey",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "page_kanbanpage",
+      "callee": "getConfiguredTicketsFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "page_kanbanpage",
+      "callee": "listTicketsOrEmpty",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/kanban/page.tsx",
+      "source_location": "L19"
+    }
+  ]
+}

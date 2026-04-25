@@ -1,0 +1,68 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_modules_ts",
+      "label": "modules.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "modules_getmodulebyhref",
+      "label": "getModuleByHref()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "modules_getmodulebykey",
+      "label": "getModuleByKey()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L121"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_modules_ts",
+      "target": "control_plane",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_modules_ts",
+      "target": "modules_getmodulebyhref",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_modules_ts",
+      "target": "modules_getmodulebykey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "modules_getmodulebyhref",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "modules_getmodulebykey",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/modules.ts",
+      "source_location": "L124"
+    }
+  ]
+}

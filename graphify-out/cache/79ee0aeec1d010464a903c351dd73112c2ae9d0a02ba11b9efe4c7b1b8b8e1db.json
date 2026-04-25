@@ -1,0 +1,87 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "label": "content-blocks.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "content_blocks_istextblock",
+      "label": "isTextBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "content_blocks_isthinkingblock",
+      "label": "isThinkingBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "content_blocks_istooluseblock",
+      "label": "isToolUseBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "content_blocks_istoolresultblock",
+      "label": "isToolResultBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L45"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "target": "content_blocks_istextblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "target": "content_blocks_isthinkingblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "target": "content_blocks_istooluseblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "target": "content_blocks_istoolresultblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/content-blocks.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

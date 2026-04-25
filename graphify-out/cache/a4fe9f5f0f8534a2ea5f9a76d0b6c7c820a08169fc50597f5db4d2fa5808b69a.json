@@ -1,0 +1,107 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_pr_link_card_tsx",
+      "label": "pr-link-card.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "pr_link_card_extractprlinks",
+      "label": "extractPrLinks()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "pr_link_card_prlinkcard",
+      "label": "PrLinkCard()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L46"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_pr_link_card_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_pr_link_card_tsx",
+      "target": "pr_link_card_extractprlinks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_pr_link_card_tsx",
+      "target": "pr_link_card_prlinkcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "pr_link_card_prlinkcard",
+      "target": "pr_link_card_extractprlinks",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L47",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "scan",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "scan",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "scan",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "scan",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "pr_link_card_extractprlinks",
+      "callee": "from",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "pr_link_card_prlinkcard",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/pr-link-card.tsx",
+      "source_location": "L54"
+    }
+  ]
+}
