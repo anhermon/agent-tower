@@ -271,6 +271,9 @@ importers:
 
   packages/storage:
     dependencies:
+      '@control-plane/core':
+        specifier: workspace:*
+        version: link:../core
       '@control-plane/events':
         specifier: workspace:*
         version: link:../events

@@ -18,6 +18,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@control-plane/core": "workspace:*",
     "@control-plane/events": "workspace:*"
   },
   "devDependencies": {

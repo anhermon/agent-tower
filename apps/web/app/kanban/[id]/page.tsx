@@ -6,6 +6,7 @@ import { TicketPriorityBadge, TicketStatusBadge } from "@/components/kanban/tick
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import { formatRelative } from "@/lib/format";
 import { loadTicketOrUndefined, TICKETS_FILE_ENV } from "@/lib/kanban-source";
+import { ticketStore } from "@/lib/ticket-store";
 
 export const dynamic = "force-dynamic";
 
@@ -16,37 +17,41 @@ interface PageProps {
 export default async function TicketDetailPage({ params }: PageProps) {
   const { id } = await params;
   const decodedId = safeDecode(id);
-  const result = await loadTicketOrUndefined(decodedId);
 
-  if (!result.ok) {
+  // Check in-memory store first (agent-updated tickets), fall back to file source.
+  const storeTicket = await ticketStore.getById(decodedId);
+  const fileResult = storeTicket ? null : await loadTicketOrUndefined(decodedId);
+  const ticket: TicketRecord | null = storeTicket ?? (fileResult?.ok ? fileResult.ticket : null);
+
+  if (!ticket) {
+    const reason = fileResult?.ok === false ? fileResult.reason : "not_found";
+    const message = fileResult?.ok === false ? fileResult.message : undefined;
     return (
       <section className="space-y-5">
         <Link href="/kanban" className="text-sm text-cyan hover:underline">
           ← Back to board
         </Link>
-        {result.reason === "unconfigured" ? (
-          <EmptyState
-            title="No ticket source configured"
-            description={`Set ${TICKETS_FILE_ENV} to point at a JSON or JSONL file containing canonical TicketRecord entries.`}
-          />
-        ) : result.reason === "not_found" ? (
+        {reason === "not_found" ? (
           <EmptyState
             title="Ticket not found"
-            description={`No ticket with id ${decodedId} was found in the configured tickets file.`}
+            description={`No ticket with id ${decodedId} was found in the store or the configured file.`}
+          />
+        ) : reason === "unconfigured" ? (
+          <EmptyState
+            title="Ticket not found"
+            description={`No ticket with id ${decodedId} exists. Set ${TICKETS_FILE_ENV} to load tickets from a file.`}
           />
         ) : (
           <ErrorState
             title="Could not load ticket"
             description={
-              result.message ?? "An unknown error occurred reading the configured tickets file."
+              message ?? "An unknown error occurred reading the configured tickets file."
             }
           />
         )}
       </section>
     );
   }
-
-  const ticket: TicketRecord = result.ticket;
 
   return (
     <section className="space-y-6">

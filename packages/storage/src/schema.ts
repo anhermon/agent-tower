@@ -5,6 +5,7 @@ export enum StorageTableName {
   Webhooks = "webhooks",
   ModuleRegistry = "module_registry",
   AuditEntries = "audit_entries",
+  Tickets = "tickets",
 }
 
 export enum StorageFieldType {
@@ -108,6 +109,23 @@ export const AUDIT_ENTRY_SCHEMA: StorageSchemaDescriptor = {
   ],
 };
 
+export const TICKET_SCHEMA: StorageSchemaDescriptor = {
+  tableName: StorageTableName.Tickets,
+  fields: [
+    { name: "id", type: StorageFieldType.String, required: true, primaryKey: true },
+    { name: "title", type: StorageFieldType.String, required: true },
+    { name: "status", type: StorageFieldType.String, required: true, indexed: true },
+    { name: "priority", type: StorageFieldType.String, required: true, indexed: true },
+    { name: "description", type: StorageFieldType.String, required: false },
+    { name: "assigneeAgentId", type: StorageFieldType.String, required: false, indexed: true },
+    { name: "sessionId", type: StorageFieldType.String, required: false, indexed: true },
+    { name: "externalUrl", type: StorageFieldType.String, required: false },
+    { name: "metadata", type: StorageFieldType.Json, required: false },
+    { name: "createdAt", type: StorageFieldType.Timestamp, required: true },
+    { name: "updatedAt", type: StorageFieldType.Timestamp, required: true },
+  ],
+};
+
 export const STORAGE_SCHEMAS = [
   AGENT_SCHEMA,
   SESSION_SCHEMA,
@@ -115,4 +133,5 @@ export const STORAGE_SCHEMAS = [
   WEBHOOK_SCHEMA,
   MODULE_REGISTRY_SCHEMA,
   AUDIT_ENTRY_SCHEMA,
+  TICKET_SCHEMA,
 ] as const;
