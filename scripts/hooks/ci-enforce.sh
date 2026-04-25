@@ -7,10 +7,10 @@ set -euo pipefail
 cmd=$(jq -r '.tool_input.command // empty' 2>/dev/null || true)
 
 # ── Block --no-verify ──────────────────────────────────────────────────────────
-# Any git commit or push with --no-verify is unconditionally blocked.
-# This prevents bypassing the T1 pre-commit (biome + eslint + gitleaks)
-# and T2 pre-push (task ci:fast) hooks. Fix the failure instead.
-if echo "$cmd" | grep -q -- '--no-verify'; then
+# git commit or push with --no-verify is unconditionally blocked.
+# Match only when --no-verify follows a git commit/push invocation, not when
+# the string appears inside a heredoc, --body argument, or other text payload.
+if echo "$cmd" | grep -qE '(^|[;&|[:space:]])git (commit|push)\b[^'"'"'"]*--no-verify'; then
   jq -n '{
     "continue": false,
     "stopReason": "--no-verify is blocked by project policy. Fix the hook failure instead: run task fmt, then address the actual error. Never bypass CI gates."
