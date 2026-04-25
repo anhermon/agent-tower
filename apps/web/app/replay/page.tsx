@@ -1,11 +1,11 @@
 import { ReplaySessionList } from "@/components/replay/replay-session-list";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import { getModuleByKey } from "@/lib/modules";
 import {
   CLAUDE_DATA_ROOT_ENV,
   getConfiguredDataRoot,
   listSessionsOrEmpty,
 } from "@/lib/replay-source";
-import { getModuleByKey } from "@/lib/modules";
 
 export const dynamic = "force-dynamic";
 
