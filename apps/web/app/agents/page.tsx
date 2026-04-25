@@ -1,6 +1,7 @@
-import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
+import { AGENT_STATUSES, type AgentStatus, listDetectedHarnesses } from "@control-plane/core";
 
 import { AgentGrid } from "@/components/agents/agent-grid";
+import { HarnessList } from "@/components/agents/harness-list";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import {
@@ -16,13 +17,16 @@ export const dynamic = "force-dynamic";
 export default async function AgentsPage() {
   const mod = getModuleByKey("agents");
   const dataRoot = getConfiguredDataRoot();
-  const result = await listAgentsOrEmpty();
+  const [result, harnesses] = await Promise.all([
+    listAgentsOrEmpty(),
+    listDetectedHarnesses().catch(() => []),
+  ]);
 
   const status = dataRoot && result.ok ? "healthy" : "degraded";
 
   return (
-    <section>
-      <div className="mb-5 min-w-0">
+    <section className="flex flex-col gap-8">
+      <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
           <Badge state={status} />
@@ -40,6 +44,15 @@ export default async function AgentsPage() {
       </div>
 
       <AgentsBody result={result} />
+
+      <div>
+        <h2 className="mb-3 text-base font-semibold text-ink">Detected Harnesses</h2>
+        <p className="mb-3 max-w-3xl text-sm leading-6 text-muted">
+          AI coding assistant runtimes found on this machine by scanning well-known local paths.
+          Read-only — no configuration required.
+        </p>
+        <HarnessList harnesses={harnesses} />
+      </div>
     </section>
   );
 }
