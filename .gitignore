@@ -47,3 +47,6 @@ logs/
 /SCRATCH.md
 # Added by code-review-graph
 .code-review-graph/
+
+# graphify MCP tool output
+/graphify-out/
