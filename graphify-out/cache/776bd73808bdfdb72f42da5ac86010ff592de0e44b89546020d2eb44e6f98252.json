@@ -1,0 +1,637 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "label": "webhooks-source.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "webhooks_source_getconfiguredwebhooksfile",
+      "label": "getConfiguredWebhooksFile()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "webhooks_source_listwebhooksorempty",
+      "label": "listWebhooksOrEmpty()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "webhooks_source_loadwebhookorundefined",
+      "label": "loadWebhookOrUndefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "webhooks_source_buildsnapshot",
+      "label": "buildSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L125"
+    },
+    {
+      "id": "webhooks_source_parsejson",
+      "label": "parseJson()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L160"
+    },
+    {
+      "id": "webhooks_source_coercesubscriptions",
+      "label": "coerceSubscriptions()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "webhooks_source_coercesubscription",
+      "label": "coerceSubscription()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L179"
+    },
+    {
+      "id": "webhooks_source_requiresubscriptioncore",
+      "label": "requireSubscriptionCore()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "webhooks_source_collectsubscriptionextras",
+      "label": "collectSubscriptionExtras()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L230"
+    },
+    {
+      "id": "webhooks_source_coerceeventtypes",
+      "label": "coerceEventTypes()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L248"
+    },
+    {
+      "id": "webhooks_source_isplainobject",
+      "label": "isPlainObject()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L267"
+    },
+    {
+      "id": "webhooks_source_towebhookrecord",
+      "label": "toWebhookRecord()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L271"
+    },
+    {
+      "id": "webhooks_source_fromwebhookrecord",
+      "label": "fromWebhookRecord()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L287"
+    },
+    {
+      "id": "webhooks_source_tolisting",
+      "label": "toListing()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L291"
+    },
+    {
+      "id": "webhooks_source_errormessage",
+      "label": "errorMessage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L308"
+    },
+    {
+      "id": "webhooks_source_clearwebhookscachefortests",
+      "label": "__clearWebhooksCacheForTests()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L314"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "storage",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_github_webhooks",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_getconfiguredwebhooksfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_listwebhooksorempty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_loadwebhookorundefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_buildsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_parsejson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_coercesubscriptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_coercesubscription",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_requiresubscriptioncore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_collectsubscriptionextras",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_coerceeventtypes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_isplainobject",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_towebhookrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_fromwebhookrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_tolisting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_errormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L308",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_webhooks_source_ts",
+      "target": "webhooks_source_clearwebhookscachefortests",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_listwebhooksorempty",
+      "target": "webhooks_source_getconfiguredwebhooksfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_listwebhooksorempty",
+      "target": "webhooks_source_buildsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_listwebhooksorempty",
+      "target": "webhooks_source_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_loadwebhookorundefined",
+      "target": "webhooks_source_getconfiguredwebhooksfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_loadwebhookorundefined",
+      "target": "webhooks_source_buildsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_loadwebhookorundefined",
+      "target": "webhooks_source_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_buildsnapshot",
+      "target": "webhooks_source_parsejson",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_buildsnapshot",
+      "target": "webhooks_source_coercesubscriptions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_buildsnapshot",
+      "target": "webhooks_source_towebhookrecord",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_parsejson",
+      "target": "webhooks_source_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_coercesubscription",
+      "target": "webhooks_source_isplainobject",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_coercesubscription",
+      "target": "webhooks_source_requiresubscriptioncore",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_coercesubscription",
+      "target": "webhooks_source_coerceeventtypes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_coercesubscription",
+      "target": "webhooks_source_collectsubscriptionextras",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_collectsubscriptionextras",
+      "target": "webhooks_source_isplainobject",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "webhooks_source_tolisting",
+      "target": "webhooks_source_fromwebhookrecord",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "webhooks_source_getconfiguredwebhooksfile",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "webhooks_source_loadwebhookorundefined",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "webhooks_source_loadwebhookorundefined",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "stat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "getGithubWebhookDeliveriesFileCacheKey",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "create",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "list",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "readGithubWebhookDeliveriesFromFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "webhooks_source_buildsnapshot",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "webhooks_source_parsejson",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "webhooks_source_coercesubscriptions",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "webhooks_source_coercesubscriptions",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "webhooks_source_collectsubscriptionextras",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L236"
+    },
+    {
+      "caller_nid": "webhooks_source_collectsubscriptionextras",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L237"
+    },
+    {
+      "caller_nid": "webhooks_source_collectsubscriptionextras",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "webhooks_source_collectsubscriptionextras",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "webhooks_source_coerceeventtypes",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "webhooks_source_isplainobject",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "webhooks_source_tolisting",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "webhooks_source_tolisting",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "webhooks_source_errormessage",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "webhooks_source_clearwebhookscachefortests",
+      "callee": "clear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/webhooks-source.ts",
+      "source_location": "L315"
+    }
+  ]
+}

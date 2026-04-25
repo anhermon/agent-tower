@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "label": "normalizer.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "normalizer_test_expectdefined",
+      "label": "expectDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L257"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_test_ts",
+      "target": "normalizer_test_expectdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L257",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "normalizer_test_expectdefined",
+      "callee": "toBeDefined",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "normalizer_test_expectdefined",
+      "callee": "expect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.test.ts",
+      "source_location": "L258"
+    }
+  ]
+}

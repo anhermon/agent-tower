@@ -1,0 +1,214 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "label": "resolver.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "resolver_resolveandserve",
+      "label": "resolveAndServe()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "resolver_validatefilestat",
+      "label": "validateFileStat()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "resolver_readandserve",
+      "label": "readAndServe()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "resolver_hassafeextension",
+      "label": "hasSafeExtension()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L102"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "resolver_resolveandserve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "resolver_validatefilestat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "resolver_readandserve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_id_file_resolver_ts",
+      "target": "resolver_hassafeextension",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "resolver_resolveandserve",
+      "target": "resolver_validatefilestat",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "resolver_resolveandserve",
+      "target": "resolver_readandserve",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "resolver_validatefilestat",
+      "target": "resolver_hassafeextension",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "isAbsolute",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "endsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "resolver_resolveandserve",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "resolver_validatefilestat",
+      "callee": "statImpl",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "resolver_validatefilestat",
+      "callee": "isFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "resolver_readandserve",
+      "callee": "readFileImpl",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "resolver_readandserve",
+      "callee": "toString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "resolver_hassafeextension",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "resolver_hassafeextension",
+      "callee": "extname",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "resolver_hassafeextension",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "resolver_hassafeextension",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "resolver_hassafeextension",
+      "callee": "basename",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/[id]/file/resolver.ts",
+      "source_location": "L105"
+    }
+  ]
+}

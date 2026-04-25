@@ -1,0 +1,114 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_core_src_domain_tools_ts",
+      "label": "tools.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tools_categorizetool",
+      "label": "categorizeTool()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L116"
+    },
+    {
+      "id": "tools_ismcptool",
+      "label": "isMcpTool()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "tools_parsemcptool",
+      "label": "parseMcpTool()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L130"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_tools_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_core_src_domain_common_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_tools_ts",
+      "target": "tools_categorizetool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_tools_ts",
+      "target": "tools_ismcptool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_tools_ts",
+      "target": "tools_parsemcptool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "tools_categorizetool",
+      "target": "tools_ismcptool",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "tools_parsemcptool",
+      "target": "tools_ismcptool",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "tools_ismcptool",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "tools_parsemcptool",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "tools_parsemcptool",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "tools_parsemcptool",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/tools.ts",
+      "source_location": "L138"
+    }
+  ]
+}

@@ -20,6 +20,8 @@ import { listSkillsOrEmpty, type SkillManifest } from "./manifests.js";
 
 export type SessionOutcome = "completed" | "partial" | "abandoned" | "unknown";
 
+export type SessionType = "user" | "paperclip_agent" | "subagent" | "local_command" | "synthetic";
+
 export interface SessionSummary {
   readonly sessionId: string;
   readonly filePath: string;
@@ -38,6 +40,8 @@ export interface SessionSummary {
   readonly satisfactionScore: number;
   readonly effectiveScore: number;
   readonly skillIds: readonly string[];
+  readonly sessionType: SessionType;
+  readonly model: string | null;
 }
 
 export interface SkillEfficacyRow {
@@ -80,6 +84,9 @@ export interface SkillsEfficacyReport {
     readonly unknown: number;
   };
   readonly minSessionsForQualifying: number;
+  readonly sessionsByType: Record<string, number>;
+  readonly qualifyingByType: Record<string, SkillEfficacyRow[]>;
+  readonly baselineByType: Record<string, EfficacyBaseline>;
 }
 
 export type ListSkillsEfficacyResult =
@@ -426,6 +433,9 @@ async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary |
   void toolUseIds;
   void toolResultIds;
 
+  const sessionType = detectSessionType(entries);
+  const model = extractFirstAssistantModel(entries);
+
   const summary: SessionSummary = {
     sessionId,
     filePath: file.filePath,
@@ -444,6 +454,8 @@ async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary |
     satisfactionScore,
     effectiveScore,
     skillIds: skillIdsOrdered,
+    sessionType,
+    model,
   };
   return { summary, invocationsBySkillKey };
 }
@@ -498,6 +510,36 @@ function extractUserText(entry: Record<string, unknown>): string | null {
   }
   if (parts.length === 0) return null;
   return lastTextBlock ?? parts.join("\n");
+}
+
+function detectSessionType(entries: RawEntry[]): SessionType {
+  const hasSidechain = entries.some((e) => e.raw?.isSidechain === true);
+  if (hasSidechain) return "subagent";
+
+  const firstAssistant = entries.find((e) => e.type === "assistant");
+  const model =
+    typeof firstAssistant?.raw?.message === "object" && firstAssistant?.raw?.message !== null
+      ? (firstAssistant.raw.message as Record<string, unknown>).model
+      : undefined;
+  if (model === "synthetic") return "synthetic";
+
+  const firstUser = entries.find((e) => e.type === "user");
+  const userText = extractUserText(firstUser?.raw ?? {});
+  if (userText?.includes("<local-command-caveat>")) return "local_command";
+
+  if (userText?.includes("You are agent") && userText?.includes("Paperclip"))
+    return "paperclip_agent";
+
+  return "user";
+}
+
+function extractFirstAssistantModel(entries: RawEntry[]): string | null {
+  const firstAssistant = entries.find((e) => e.type === "assistant");
+  if (!firstAssistant) return null;
+  const message = firstAssistant.raw?.message;
+  if (!message || typeof message !== "object") return null;
+  const model = (message as Record<string, unknown>).model;
+  return typeof model === "string" ? model : null;
 }
 
 function extractToolResult(entry: Record<string, unknown>): {
@@ -572,35 +614,58 @@ interface Accumulator {
   outcomeBreakdown: { completed: number; partial: number; abandoned: number; unknown: number };
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity -- skill efficacy report aggregation; high branching reflects multi-dimensional per-skill scoring
-function buildReport(
+function buildBaseline(summaries: readonly SessionSummary[]): EfficacyBaseline {
+  const n = summaries.length;
+  if (n === 0)
+    return { satisfaction: 0, outcomeMultiplier: 0, effectiveScore: 0, sessionsScored: 0 };
+  let sat = 0;
+  let mul = 0;
+  let eff = 0;
+  for (const s of summaries) {
+    sat += s.satisfactionScore;
+    mul += s.outcomeMultiplier;
+    eff += s.effectiveScore;
+  }
+  return {
+    satisfaction: sat / n,
+    outcomeMultiplier: mul / n,
+    effectiveScore: eff / n,
+    sessionsScored: n,
+  };
+}
+
+function getOrCreateBucket(
+  acc: Map<string, Accumulator>,
+  bucketKey: string,
+  manifest: SkillManifest | null,
+  rawSkillKey: string
+): Accumulator {
+  let bucket = acc.get(bucketKey);
+  if (!bucket) {
+    bucket = {
+      skillId: manifest ? manifest.id : rawSkillKey,
+      displayName: manifest ? manifest.name : rawSkillKey,
+      known: manifest !== null,
+      sessionsCount: 0,
+      invocationsCount: 0,
+      satisfactionSum: 0,
+      outcomeMultiplierSum: 0,
+      effectiveScoreSum: 0,
+      outcomeBreakdown: { completed: 0, partial: 0, abandoned: 0, unknown: 0 },
+    };
+    acc.set(bucketKey, bucket);
+  }
+  return bucket;
+}
+
+function buildSkillRows(
   enriched: readonly EnrichedSummary[],
+  baselineEff: number,
+  baselineEffSum: number,
+  sessionsAnalyzed: number,
   skills: readonly SkillManifest[],
   minSessions: number
-): SkillsEfficacyReport {
-  const sessionsAnalyzed = enriched.length;
-  let baselineSatSum = 0;
-  let baselineMulSum = 0;
-  let baselineEffSum = 0;
-  const outcomeDistribution = { completed: 0, partial: 0, abandoned: 0, unknown: 0 };
-
-  for (const { summary: s } of enriched) {
-    baselineSatSum += s.satisfactionScore;
-    baselineMulSum += s.outcomeMultiplier;
-    baselineEffSum += s.effectiveScore;
-    outcomeDistribution[s.outcome] += 1;
-  }
-
-  const baseline: EfficacyBaseline =
-    sessionsAnalyzed === 0
-      ? { satisfaction: 0, outcomeMultiplier: 0, effectiveScore: 0, sessionsScored: 0 }
-      : {
-          satisfaction: baselineSatSum / sessionsAnalyzed,
-          outcomeMultiplier: baselineMulSum / sessionsAnalyzed,
-          effectiveScore: baselineEffSum / sessionsAnalyzed,
-          sessionsScored: sessionsAnalyzed,
-        };
-
+): SkillEfficacyRow[] {
   const byId = new Map<string, SkillManifest>();
   const byName = new Map<string, SkillManifest>();
   for (const m of skills) {
@@ -611,30 +676,14 @@ function buildReport(
   }
 
   const acc = new Map<string, Accumulator>();
-  let sessionsWithSkill = 0;
 
   for (const { summary: session, invocationsBySkillKey } of enriched) {
     if (session.skillIds.length === 0) continue;
-    sessionsWithSkill += 1;
 
     for (const rawSkillKey of session.skillIds) {
       const manifest = byId.get(rawSkillKey) ?? byName.get(rawSkillKey) ?? null;
       const bucketKey = manifest ? manifest.id : rawSkillKey;
-      let bucket = acc.get(bucketKey);
-      if (!bucket) {
-        bucket = {
-          skillId: manifest ? manifest.id : rawSkillKey,
-          displayName: manifest ? manifest.name : rawSkillKey,
-          known: manifest !== null,
-          sessionsCount: 0,
-          invocationsCount: 0,
-          satisfactionSum: 0,
-          outcomeMultiplierSum: 0,
-          effectiveScoreSum: 0,
-          outcomeBreakdown: { completed: 0, partial: 0, abandoned: 0, unknown: 0 },
-        };
-        acc.set(bucketKey, bucket);
-      }
+      const bucket = getOrCreateBucket(acc, bucketKey, manifest, rawSkillKey);
       bucket.sessionsCount += 1;
       bucket.satisfactionSum += session.satisfactionScore;
       bucket.outcomeMultiplierSum += session.outcomeMultiplier;
@@ -653,7 +702,7 @@ function buildReport(
     const baselineEffExclSkill =
       sessionsAnalyzed > bucket.sessionsCount
         ? (baselineEffSum - bucket.effectiveScoreSum) / (sessionsAnalyzed - bucket.sessionsCount)
-        : baseline.effectiveScore;
+        : baselineEff;
     rows.push({
       skillId: bucket.skillId,
       displayName: bucket.displayName,
@@ -673,7 +722,13 @@ function buildReport(
       qualifying,
     });
   }
+  return rows;
+}
 
+function sortRows(rows: SkillEfficacyRow[]): {
+  readonly qualifying: SkillEfficacyRow[];
+  readonly insufficientData: SkillEfficacyRow[];
+} {
   const qualifying = rows
     .filter((r) => r.qualifying)
     .sort((a, b) => b.delta - a.delta || b.sessionsCount - a.sessionsCount);
@@ -684,6 +739,67 @@ function buildReport(
         b.sessionsCount - a.sessionsCount ||
         a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" })
     );
+  return { qualifying, insufficientData };
+}
+
+function buildReport(
+  enriched: readonly EnrichedSummary[],
+  skills: readonly SkillManifest[],
+  minSessions: number
+): SkillsEfficacyReport {
+  const sessionsAnalyzed = enriched.length;
+  const outcomeDistribution = { completed: 0, partial: 0, abandoned: 0, unknown: 0 };
+  let baselineEffSum = 0;
+
+  for (const { summary: s } of enriched) {
+    baselineEffSum += s.effectiveScore;
+    outcomeDistribution[s.outcome] += 1;
+  }
+
+  const baseline = buildBaseline(enriched.map((e) => e.summary));
+
+  const allRows = buildSkillRows(
+    enriched,
+    baseline.effectiveScore,
+    baselineEffSum,
+    sessionsAnalyzed,
+    skills,
+    minSessions
+  );
+  const { qualifying, insufficientData } = sortRows(allRows);
+  const sessionsWithSkill = enriched.filter((e) => e.summary.skillIds.length > 0).length;
+
+  const sessionsByType: Record<string, number> = {};
+  const baselineByType: Record<string, EfficacyBaseline> = {};
+  const qualifyingByType: Record<string, SkillEfficacyRow[]> = {};
+
+  const types: SessionType[] = [
+    "user",
+    "paperclip_agent",
+    "subagent",
+    "local_command",
+    "synthetic",
+  ];
+  for (const t of types) {
+    const typeEnriched = enriched.filter((e) => e.summary.sessionType === t);
+    sessionsByType[t] = typeEnriched.length;
+    const typeBaseline = buildBaseline(typeEnriched.map((e) => e.summary));
+    baselineByType[t] = typeBaseline;
+
+    let typeEffSum = 0;
+    for (const { summary } of typeEnriched) {
+      typeEffSum += summary.effectiveScore;
+    }
+    const typeRows = buildSkillRows(
+      typeEnriched,
+      typeBaseline.effectiveScore,
+      typeEffSum,
+      typeEnriched.length,
+      skills,
+      minSessions
+    );
+    qualifyingByType[t] = sortRows(typeRows).qualifying;
+  }
 
   return {
     baseline,
@@ -694,6 +810,9 @@ function buildReport(
     insufficientData,
     outcomeDistribution,
     minSessionsForQualifying: minSessions,
+    sessionsByType,
+    qualifyingByType,
+    baselineByType,
   };
 }
 

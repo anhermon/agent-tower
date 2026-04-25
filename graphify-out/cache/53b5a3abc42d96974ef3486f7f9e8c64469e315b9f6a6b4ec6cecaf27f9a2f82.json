@@ -1,0 +1,144 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "label": "data-root.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "data_root_resolvedataroot",
+      "label": "resolveDataRoot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "data_root_getconfigureddataroot",
+      "label": "getConfiguredDataRoot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "data_root_isexistingdirectory",
+      "label": "isExistingDirectory()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L45"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "data_root_resolvedataroot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "data_root_getconfigureddataroot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_data_root_ts",
+      "target": "data_root_isexistingdirectory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "data_root_resolvedataroot",
+      "target": "data_root_isexistingdirectory",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "data_root_getconfigureddataroot",
+      "target": "data_root_resolvedataroot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "data_root_resolvedataroot",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "data_root_resolvedataroot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "data_root_resolvedataroot",
+      "callee": "homedir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "data_root_isexistingdirectory",
+      "callee": "existsSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "data_root_isexistingdirectory",
+      "callee": "isDirectory",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "data_root_isexistingdirectory",
+      "callee": "statSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/data-root.ts",
+      "source_location": "L47"
+    }
+  ]
+}

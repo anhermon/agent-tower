@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "label": "audit.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "audit_test_assistantline",
+      "label": "assistantLine()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "audit_test_writesession",
+      "label": "writeSession()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L80"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "audit_test_assistantline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_audit_test_ts",
+      "target": "audit_test_writesession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "audit_test_assistantline",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "audit_test_writesession",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/audit.test.ts",
+      "source_location": "L90"
+    }
+  ]
+}

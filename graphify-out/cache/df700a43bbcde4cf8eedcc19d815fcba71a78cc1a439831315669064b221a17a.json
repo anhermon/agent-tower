@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "label": "eslint.fix.config.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "target": "node_url",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "target": "eslint_plugin_import",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "target": "globals",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_eslint_fix_config_mjs",
+      "target": "typescript_eslint",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/eslint.fix.config.mjs",
+      "source_location": "L21",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

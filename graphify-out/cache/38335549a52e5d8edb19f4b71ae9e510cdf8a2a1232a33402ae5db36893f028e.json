@@ -1,0 +1,1000 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "label": "normalizer.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "normalizer_accumulatenormalizedentries",
+      "label": "accumulateNormalizedEntries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "normalizer_normalizetranscript",
+      "label": "normalizeTranscript()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L86"
+    },
+    {
+      "id": "normalizer_normalizeentry",
+      "label": "normalizeEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "normalizer_normalizeuserentry",
+      "label": "normalizeUserEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "normalizer_normalizeblockasuser",
+      "label": "normalizeBlockAsUser()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L195"
+    },
+    {
+      "id": "normalizer_normalizeassistantentry",
+      "label": "normalizeAssistantEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L248"
+    },
+    {
+      "id": "normalizer_normalizeblockasassistant",
+      "label": "normalizeBlockAsAssistant()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L289"
+    },
+    {
+      "id": "normalizer_normalizesystementry",
+      "label": "normalizeSystemEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L358"
+    },
+    {
+      "id": "normalizer_buildturn",
+      "label": "buildTurn()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L398"
+    },
+    {
+      "id": "normalizer_collectsessionmetadata",
+      "label": "collectSessionMetadata()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L422"
+    },
+    {
+      "id": "normalizer_derivesessiontitle",
+      "label": "deriveSessionTitle()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L440"
+    },
+    {
+      "id": "normalizer_titlefromsummaryentries",
+      "label": "titleFromSummaryEntries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L446"
+    },
+    {
+      "id": "normalizer_titlefromuserentries",
+      "label": "titleFromUserEntries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L457"
+    },
+    {
+      "id": "normalizer_collectusertextcandidates",
+      "label": "collectUserTextCandidates()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L469"
+    },
+    {
+      "id": "normalizer_sanitizetitlecandidate",
+      "label": "sanitizeTitleCandidate()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L494"
+    },
+    {
+      "id": "normalizer_truncatetitle",
+      "label": "truncateTitle()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L508"
+    },
+    {
+      "id": "normalizer_derivesessionstate",
+      "label": "deriveSessionState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L514"
+    },
+    {
+      "id": "normalizer_turnid",
+      "label": "turnId()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L525"
+    },
+    {
+      "id": "normalizer_firstdefined",
+      "label": "firstDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L530"
+    },
+    {
+      "id": "normalizer_lastdefined",
+      "label": "lastDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L543"
+    },
+    {
+      "id": "normalizer_tojsonvalue",
+      "label": "toJsonValue()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L558"
+    },
+    {
+      "id": "normalizer_isclaudetextblock",
+      "label": "isClaudeTextBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L578"
+    },
+    {
+      "id": "normalizer_isclaudethinkingblock",
+      "label": "isClaudeThinkingBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L582"
+    },
+    {
+      "id": "normalizer_isclaudetooluseblock",
+      "label": "isClaudeToolUseBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L586"
+    },
+    {
+      "id": "normalizer_isclaudetoolresultblock",
+      "label": "isClaudeToolResultBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L595"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_accumulatenormalizedentries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizetranscript",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizeentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizeuserentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizeblockasuser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizeassistantentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizeblockasassistant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_normalizesystementry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L358",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_buildturn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L398",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_collectsessionmetadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L422",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_derivesessiontitle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L440",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_titlefromsummaryentries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L446",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_titlefromuserentries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L457",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_collectusertextcandidates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L469",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_sanitizetitlecandidate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L494",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_truncatetitle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L508",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_derivesessionstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L514",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_turnid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L525",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_firstdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L530",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_lastdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L543",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_tojsonvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L558",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_isclaudetextblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L578",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_isclaudethinkingblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L582",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_isclaudetooluseblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L586",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_normalizer_ts",
+      "target": "normalizer_isclaudetoolresultblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L595",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_accumulatenormalizedentries",
+      "target": "normalizer_normalizeentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_firstdefined",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_lastdefined",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_accumulatenormalizedentries",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_derivesessiontitle",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_derivesessionstate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizetranscript",
+      "target": "normalizer_collectsessionmetadata",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeentry",
+      "target": "normalizer_normalizeuserentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeentry",
+      "target": "normalizer_normalizeassistantentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeentry",
+      "target": "normalizer_normalizesystementry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeuserentry",
+      "target": "normalizer_buildturn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeuserentry",
+      "target": "normalizer_turnid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeuserentry",
+      "target": "normalizer_normalizeblockasuser",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasuser",
+      "target": "normalizer_isclaudetextblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasuser",
+      "target": "normalizer_buildturn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasuser",
+      "target": "normalizer_turnid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasuser",
+      "target": "normalizer_isclaudetoolresultblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasuser",
+      "target": "normalizer_tojsonvalue",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L219",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeassistantentry",
+      "target": "normalizer_buildturn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeassistantentry",
+      "target": "normalizer_turnid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeassistantentry",
+      "target": "normalizer_normalizeblockasassistant",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L274",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_isclaudetextblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_buildturn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_turnid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_isclaudethinkingblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L311",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_isclaudetooluseblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L326",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizeblockasassistant",
+      "target": "normalizer_tojsonvalue",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L332",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizesystementry",
+      "target": "normalizer_buildturn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L374",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_normalizesystementry",
+      "target": "normalizer_turnid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L375",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_collectsessionmetadata",
+      "target": "normalizer_firstdefined",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L430",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_derivesessiontitle",
+      "target": "normalizer_titlefromsummaryentries",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L441",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_derivesessiontitle",
+      "target": "normalizer_titlefromuserentries",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L443",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_titlefromsummaryentries",
+      "target": "normalizer_truncatetitle",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L451",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_titlefromuserentries",
+      "target": "normalizer_collectusertextcandidates",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L460",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_titlefromuserentries",
+      "target": "normalizer_sanitizetitlecandidate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L462",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_titlefromuserentries",
+      "target": "normalizer_truncatetitle",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L463",
+      "weight": 1.0
+    },
+    {
+      "source": "normalizer_collectusertextcandidates",
+      "target": "normalizer_isclaudetextblock",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L479",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "normalizer_accumulatenormalizedentries",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "normalizer_accumulatenormalizedentries",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "normalizer_accumulatenormalizedentries",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "normalizer_normalizetranscript",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "normalizer_normalizeuserentry",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "normalizer_normalizeuserentry",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "normalizer_normalizeuserentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L189"
+    },
+    {
+      "caller_nid": "normalizer_normalizeblockasuser",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "normalizer_normalizeblockasuser",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L235"
+    },
+    {
+      "caller_nid": "normalizer_normalizeassistantentry",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "normalizer_normalizeassistantentry",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L262"
+    },
+    {
+      "caller_nid": "normalizer_normalizeassistantentry",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L283"
+    },
+    {
+      "caller_nid": "normalizer_normalizeblockasassistant",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L302"
+    },
+    {
+      "caller_nid": "normalizer_normalizeblockasassistant",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "normalizer_normalizeblockasassistant",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "normalizer_normalizesystementry",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L364"
+    },
+    {
+      "caller_nid": "normalizer_normalizesystementry",
+      "callee": "nextSequence",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L377"
+    },
+    {
+      "caller_nid": "normalizer_titlefromsummaryentries",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "normalizer_collectusertextcandidates",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L473"
+    },
+    {
+      "caller_nid": "normalizer_collectusertextcandidates",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L479"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L496"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L497"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L499"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L499"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L499"
+    },
+    {
+      "caller_nid": "normalizer_sanitizetitlecandidate",
+      "callee": "test",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L504"
+    },
+    {
+      "caller_nid": "normalizer_truncatetitle",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L509"
+    },
+    {
+      "caller_nid": "normalizer_truncatetitle",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L509"
+    },
+    {
+      "caller_nid": "normalizer_truncatetitle",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L509"
+    },
+    {
+      "caller_nid": "normalizer_truncatetitle",
+      "callee": "trimEnd",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L511"
+    },
+    {
+      "caller_nid": "normalizer_truncatetitle",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L511"
+    },
+    {
+      "caller_nid": "normalizer_firstdefined",
+      "callee": "selector",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L535"
+    },
+    {
+      "caller_nid": "normalizer_lastdefined",
+      "callee": "selector",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "normalizer_tojsonvalue",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L567"
+    },
+    {
+      "caller_nid": "normalizer_tojsonvalue",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L568"
+    },
+    {
+      "caller_nid": "normalizer_tojsonvalue",
+      "callee": "entries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L571"
+    },
+    {
+      "caller_nid": "normalizer_tojsonvalue",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L573"
+    },
+    {
+      "caller_nid": "normalizer_tojsonvalue",
+      "callee": "fromEntries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/normalizer.ts",
+      "source_location": "L575"
+    }
+  ]
+}

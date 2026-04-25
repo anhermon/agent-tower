@@ -1,0 +1,68 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "label": "skills-efficacy-dashboard.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_insufficient",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_narratives",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_summary",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_table",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "skills_efficacy_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_efficacy_dashboard_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-efficacy-dashboard.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

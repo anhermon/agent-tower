@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_show_ts",
+      "label": "sessions-show.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "sessions_show_parseinput",
+      "label": "parseInput()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L20"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_show_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_show_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_sessions_show_ts",
+      "target": "sessions_show_parseinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "sessions_show_parseinput",
+      "callee": "asRecord",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/sessions-show.ts",
+      "source_location": "L21"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_skill_turn_attribution_ts",
+      "label": "skill-turn-attribution.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "skill_turn_attribution_computeskillturnattribution",
+      "label": "computeSkillTurnAttribution()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "skill_turn_attribution_firstdefined",
+      "label": "firstDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L74"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_skill_turn_attribution_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_detect_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_skill_turn_attribution_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_skill_turn_attribution_ts",
+      "target": "skill_turn_attribution_computeskillturnattribution",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_skill_turn_attribution_ts",
+      "target": "skill_turn_attribution_firstdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "skill_turn_attribution_computeskillturnattribution",
+      "target": "skill_turn_attribution_firstdefined",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "detectSkillsFromEntry",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_computeskillturnattribution",
+      "callee": "from",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "skill_turn_attribution_firstdefined",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/skill-turn-attribution.ts",
+      "source_location": "L79"
+    }
+  ]
+}

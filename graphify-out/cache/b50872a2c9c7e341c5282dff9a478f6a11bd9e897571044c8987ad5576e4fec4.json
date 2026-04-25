@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_attribution_table_tsx",
+      "label": "attribution-table.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "attribution_table_attributiontable",
+      "label": "AttributionTable()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L7"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_attribution_table_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_attribution_table_tsx",
+      "target": "attribution_table_attributiontable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "attribution_table_attributiontable",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L10"
+    },
+    {
+      "caller_nid": "attribution_table_attributiontable",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L11"
+    },
+    {
+      "caller_nid": "attribution_table_attributiontable",
+      "callee": "Savings",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "attribution_table_attributiontable",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "attribution_table_attributiontable",
+      "callee": "toLocaleString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/attribution-table.tsx",
+      "source_location": "L48"
+    }
+  ]
+}

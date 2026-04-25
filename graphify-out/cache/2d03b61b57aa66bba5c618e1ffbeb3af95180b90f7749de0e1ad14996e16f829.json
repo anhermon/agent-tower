@@ -1,0 +1,176 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "label": "workflow-bootstrap.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "workflow_bootstrap_startworkflowengine",
+      "label": "startWorkflowEngine()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "workflow_bootstrap_stopworkflowengine",
+      "label": "stopWorkflowEngine()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L53"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "logger",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_event_bus",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_github_actions",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_engine",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_queue",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_worker",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "workflow_bootstrap_startworkflowengine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_bootstrap_ts",
+      "target": "workflow_bootstrap_stopworkflowengine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "createRepoConfigProvider",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "createWorkflowQueue",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "warn",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "createWorkflowEngine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "createGitHubActionExecutor",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "createWorkflowWorker",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "warn",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_startworkflowengine",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_stopworkflowengine",
+      "callee": "stop",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "workflow_bootstrap_stopworkflowengine",
+      "callee": "stop",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-bootstrap.ts",
+      "source_location": "L58"
+    }
+  ]
+}

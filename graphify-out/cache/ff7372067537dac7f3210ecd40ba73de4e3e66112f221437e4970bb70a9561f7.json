@@ -1,0 +1,862 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "label": "manifests.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "manifests_resolveskillsroots",
+      "label": "resolveSkillsRoots()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "manifests_getconfiguredskillsroots",
+      "label": "getConfiguredSkillsRoots()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "manifests_listskillsorempty",
+      "label": "listSkillsOrEmpty()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "manifests_loadskillorundefined",
+      "label": "loadSkillOrUndefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "manifests_discoverskillfiles",
+      "label": "discoverSkillFiles()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L167"
+    },
+    {
+      "id": "manifests_loadmanifestcached",
+      "label": "loadManifestCached()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L201"
+    },
+    {
+      "id": "manifests_parsemanifest",
+      "label": "parseManifest()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L243"
+    },
+    {
+      "id": "manifests_splitfrontmatter",
+      "label": "splitFrontmatter()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L278"
+    },
+    {
+      "id": "manifests_buildskillid",
+      "label": "buildSkillId()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L299"
+    },
+    {
+      "id": "manifests_pathtoslug",
+      "label": "pathToSlug()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L306"
+    },
+    {
+      "id": "manifests_humanizeslug",
+      "label": "humanizeSlug()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L310"
+    },
+    {
+      "id": "manifests_firstheadingabstract",
+      "label": "firstHeadingAbstract()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L316"
+    },
+    {
+      "id": "manifests_firstsentence",
+      "label": "firstSentence()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L323"
+    },
+    {
+      "id": "manifests_extracttriggers",
+      "label": "extractTriggers()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L337"
+    },
+    {
+      "id": "manifests_stringornull",
+      "label": "stringOrNull()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L355"
+    },
+    {
+      "id": "manifests_deriverootlabel",
+      "label": "deriveRootLabel()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L361"
+    },
+    {
+      "id": "manifests_isexistingdirectory",
+      "label": "isExistingDirectory()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L369"
+    },
+    {
+      "id": "manifests_errormessage",
+      "label": "errorMessage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L377"
+    },
+    {
+      "id": "manifests_clearskillscachefortests",
+      "label": "__clearSkillsCacheForTests()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L383"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "yaml",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_resolveskillsroots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_getconfiguredskillsroots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_listskillsorempty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_loadskillorundefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_discoverskillfiles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_loadmanifestcached",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L201",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_parsemanifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_splitfrontmatter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L278",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_buildskillid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_pathtoslug",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_humanizeslug",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_firstheadingabstract",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L316",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_firstsentence",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L323",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_extracttriggers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_stringornull",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_deriverootlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L361",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_isexistingdirectory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L369",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_errormessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L377",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_skills_manifests_ts",
+      "target": "manifests_clearskillscachefortests",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L383",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_resolveskillsroots",
+      "target": "manifests_deriverootlabel",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_resolveskillsroots",
+      "target": "manifests_isexistingdirectory",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_getconfiguredskillsroots",
+      "target": "manifests_resolveskillsroots",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_listskillsorempty",
+      "target": "manifests_resolveskillsroots",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_listskillsorempty",
+      "target": "manifests_isexistingdirectory",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_listskillsorempty",
+      "target": "manifests_discoverskillfiles",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_listskillsorempty",
+      "target": "manifests_loadmanifestcached",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_listskillsorempty",
+      "target": "manifests_errormessage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_loadskillorundefined",
+      "target": "manifests_listskillsorempty",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_loadmanifestcached",
+      "target": "manifests_parsemanifest",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_splitfrontmatter",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_buildskillid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L247",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_stringornull",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_firstheadingabstract",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L251",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_firstsentence",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_humanizeslug",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L256",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_parsemanifest",
+      "target": "manifests_extracttriggers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "manifests_buildskillid",
+      "target": "manifests_pathtoslug",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L301",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "manifests_resolveskillsroots",
+      "callee": "homedir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "manifests_listskillsorempty",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "manifests_listskillsorempty",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "manifests_loadskillorundefined",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "manifests_discoverskillfiles",
+      "callee": "walk",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "stat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "manifests_loadmanifestcached",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L231"
+    },
+    {
+      "caller_nid": "manifests_parsemanifest",
+      "callee": "dirname",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "manifests_parsemanifest",
+      "callee": "relative",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "manifests_parsemanifest",
+      "callee": "basename",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "manifests_splitfrontmatter",
+      "callee": "exec",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "manifests_splitfrontmatter",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L286"
+    },
+    {
+      "caller_nid": "manifests_splitfrontmatter",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L287"
+    },
+    {
+      "caller_nid": "manifests_buildskillid",
+      "callee": "basename",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "manifests_pathtoslug",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "manifests_pathtoslug",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "manifests_pathtoslug",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "manifests_humanizeslug",
+      "callee": "at",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "manifests_humanizeslug",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "manifests_humanizeslug",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "manifests_firstheadingabstract",
+      "callee": "exec",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "manifests_firstheadingabstract",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "search",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L326"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "indexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "manifests_firstsentence",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "match",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "exec",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "manifests_extracttriggers",
+      "callee": "exec",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "manifests_stringornull",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "manifests_deriverootlabel",
+      "callee": "homedir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "manifests_deriverootlabel",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L363"
+    },
+    {
+      "caller_nid": "manifests_deriverootlabel",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L364"
+    },
+    {
+      "caller_nid": "manifests_isexistingdirectory",
+      "callee": "existsSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "manifests_isexistingdirectory",
+      "callee": "isDirectory",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "manifests_isexistingdirectory",
+      "callee": "statSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "manifests_errormessage",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L379"
+    },
+    {
+      "caller_nid": "manifests_clearskillscachefortests",
+      "callee": "clear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/skills/manifests.ts",
+      "source_location": "L384"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "label": "report.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "report_writereport",
+      "label": "writeReport()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L21"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "target": "report_writereport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L21",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "report_writereport",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "resolve",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "dirname",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "report_writereport",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/lib/report.mjs",
+      "source_location": "L38"
+    }
+  ]
+}

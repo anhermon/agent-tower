@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_agent_tree_tsx",
+      "label": "agent-tree.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_tree_agenttree",
+      "label": "AgentTree()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L22"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_agent_tree_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_agent_tree_tsx",
+      "target": "agent_tree_agenttree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "extractTaskInvocations",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "<section className=\"glass-panel rounded-md p-4\">\n      <h3 className=\"eyebrow mb-3\">Sub-agents</h3>\n      <ul className=\"space-y-2\">\n        {tasks.map((task) => (\n          <li key={task.id} className=\"rounded-md border border-cyan/30 bg-cyan/5 px-3 py-2\">\n            <div className=\"flex flex-wrap items-center gap-2 text-xs\">\n              <span className=\"font-mono text-cyan\">@{task.subagent ?? \"task\"}</span>\n              <span className=\"font-mono text-[10px] text-muted\">turn {task.turnIndex}</span>\n              {task.hasResult ? (\n                <span className=\"rounded-xs border border-ok/30 px-1 py-0 text-[10px] font-semibold uppercase tracking-wide text-ok\">\n                  done\n                </span>\n              ) : (\n                <span className=\"rounded-xs border border-muted/30 px-1 py-0 text-[10px] text-muted\">\n                  pending\n                </span>\n              )}\n            </div>\n            <p className=\"mt-1 text-sm text-ink/90\">{task.description}</p>\n            {task.prompt ? (\n              <p className=\"mt-1 line-clamp-2 text-xs text-muted/80\">{task.prompt}</p>\n            ) : null}\n          </li>\n        ))}\n      </ul>\n    </section>\n  );\n}\n\nfunction extractTaskInvocations(replay: ReplayData): readonly TaskInvocation[] {\n  const results = new Set<string>();\n  for (const turn of replay.turns) {\n    if (!turn.toolResults) continue;\n    for (const tr of turn.toolResults) results.add(tr.toolUseId);\n  }\n\n  const items: TaskInvocation[] = [];\n  replay.turns.forEach((turn, i) => {\n    if (!turn.toolCalls) return;\n    for (const tc of turn.toolCalls) {\n      if (tc.name !== \"Task\") continue;\n      const { description, subagent, prompt } = readTaskInput(tc.input);\n      items.push({\n        id: tc.id,\n        turnIndex: i,\n        description: description ?? \"Sub-agent task\",\n        subagent,\n        prompt,\n        hasResult: results.has(tc.id),\n      });\n    }\n    void turnIsAssistant(turn); // tree-shake guard\n  });\n  return items;\n}\n\nfunction turnIsAssistant(_t: ReplayTurn): void {\n  /* intentionally empty */\n}\n\nfunction readTaskInput(input: JsonValue)",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "<section className=\"glass-panel rounded-md p-4\">\n      <h3 className=\"eyebrow mb-3\">Sub-agents</h3>\n      <ul className=\"space-y-2\">\n        {tasks.map((task) => (\n          <li key={task.id} className=\"rounded-md border border-cyan/30 bg-cyan/5 px-3 py-2\">\n            <div className=\"flex flex-wrap items-center gap-2 text-xs\">\n              <span className=\"font-mono text-cyan\">@{task.subagent ?? \"task\"}</span>\n              <span className=\"font-mono text-[10px] text-muted\">turn {task.turnIndex}</span>\n              {task.hasResult ? (\n                <span className=\"rounded-xs border border-ok/30 px-1 py-0 text-[10px] font-semibold uppercase tracking-wide text-ok\">\n                  done\n                </span>\n              ) : (\n                <span className=\"rounded-xs border border-muted/30 px-1 py-0 text-[10px] text-muted\">\n                  pending\n                </span>\n              )}\n            </div>\n            <p className=\"mt-1 text-sm text-ink/90\">{task.description}</p>\n            {task.prompt ? (\n              <p className=\"mt-1 line-clamp-2 text-xs text-muted/80\">{task.prompt}</p>\n            ) : null}\n          </li>\n        ))}\n      </ul>\n    </section>\n  );\n}\n\nfunction extractTaskInvocations(replay: ReplayData): readonly TaskInvocation[] {\n  const results = new Set<string>();\n  for (const turn of replay.turns) {\n    if (!turn.toolResults) continue;\n    for (const tr of turn.toolResults) results.add(tr.toolUseId);\n  }\n\n  const items: TaskInvocation[] = [];\n  replay.turns.forEach((turn, i) => {\n    if (!turn.toolCalls) return;\n    for (const tc of turn.toolCalls) {\n      if (tc.name !== \"Task\") continue;\n      const { description, subagent, prompt } = readTaskInput(tc.input);\n      items.push({\n        id: tc.id,\n        turnIndex: i,\n        description: description ?? \"Sub-agent task\",\n        subagent,\n        prompt,\n        hasResult: results.has(tc.id),\n      });\n    }\n    void turnIsAssistant(turn); // tree-shake guard\n  });\n  return items;\n}\n\nfunction turnIsAssistant(_t: ReplayTurn)",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "agent_tree_agenttree",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/agent-tree.tsx",
+      "source_location": "L101"
+    }
+  ]
+}

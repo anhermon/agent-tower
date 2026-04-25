@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "label": "repo-config.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "repo_config_getgithubtoken",
+      "label": "getGitHubToken()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "repo_config_logratelimit",
+      "label": "logRateLimit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "repo_config_createrepoconfigprovider",
+      "label": "createRepoConfigProvider()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L76"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "lru_cache",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "yaml",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "repo_config_getgithubtoken",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "repo_config_logratelimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_repo_config_ts",
+      "target": "repo_config_createrepoconfigprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "repo_config_logratelimit",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "repo_config_logratelimit",
+      "callee": "parseInt",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "repo_config_logratelimit",
+      "callee": "isNaN",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "repo_config_logratelimit",
+      "callee": "warn",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "repo_config_logratelimit",
+      "callee": "debug",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/repo-config.ts",
+      "source_location": "L65"
+    }
+  ]
+}

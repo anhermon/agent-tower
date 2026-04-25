@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_route_ts",
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_toolsgethandler",
+      "label": "toolsGetHandler()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L7"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_route_ts",
+      "target": "token_optimizer_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_route_ts",
+      "target": "with_audit",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_route_ts",
+      "target": "route_toolsgethandler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "route_toolsgethandler",
+      "callee": "listTools",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "route_toolsgethandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L10"
+    },
+    {
+      "caller_nid": "route_toolsgethandler",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "route_toolsgethandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/route.ts",
+      "source_location": "L13"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_agents_list_ts",
+      "label": "agents-list.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_list_foldagents",
+      "label": "foldAgents()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L18"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_agents_list_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_agents_list_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_agents_list_ts",
+      "target": "agents_list_foldagents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agents_list_foldagents",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "agents_list_foldagents",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "agents_list_foldagents",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "agents_list_foldagents",
+      "callee": "from",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "agents_list_foldagents",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/agents-list.ts",
+      "source_location": "L43"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_find_in_session_tsx",
+      "label": "find-in-session.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "find_in_session_handler",
+      "label": "handler()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L104"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_find_in_session_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_find_in_session_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_replay_find_in_session_tsx",
+      "target": "find_in_session_handler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L104",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "preventDefault",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "setOpen",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "setTimeout",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "preventDefault",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "find_in_session_handler",
+      "callee": "close",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/replay/find-in-session.tsx",
+      "source_location": "L112"
+    }
+  ]
+}

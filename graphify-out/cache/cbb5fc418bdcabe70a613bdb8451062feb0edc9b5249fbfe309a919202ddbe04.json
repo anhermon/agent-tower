@@ -1,0 +1,68 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_core_src_domain_validators_ts",
+      "label": "validators.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "validators_parsetranscriptentry",
+      "label": "parseTranscriptEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L75"
+    },
+    {
+      "id": "validators_parsetranscriptentries",
+      "label": "parseTranscriptEntries()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L80"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_validators_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_validators_ts",
+      "target": "validators_parsetranscriptentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_domain_validators_ts",
+      "target": "validators_parsetranscriptentries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "validators_parsetranscriptentry",
+      "callee": "safeParse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "validators_parsetranscriptentries",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/domain/validators.ts",
+      "source_location": "L81"
+    }
+  ]
+}

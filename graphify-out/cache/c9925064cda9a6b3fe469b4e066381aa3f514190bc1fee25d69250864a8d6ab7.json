@@ -1,0 +1,914 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "label": "agent-animation-source.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_animation_source_createaccumulator",
+      "label": "createAccumulator()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "agent_animation_source_markactivity",
+      "label": "markActivity()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "agent_animation_source_deriveagentanimationsnapshot",
+      "label": "deriveAgentAnimationSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L109"
+    },
+    {
+      "id": "agent_animation_source_shouldpruneforstartup",
+      "label": "shouldPruneForStartup()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "agent_animation_source_applyentry",
+      "label": "applyEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "agent_animation_source_applyassistantentry",
+      "label": "applyAssistantEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L164"
+    },
+    {
+      "id": "agent_animation_source_hastextactivity",
+      "label": "hasTextActivity()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "agent_animation_source_applyuserentry",
+      "label": "applyUserEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L197"
+    },
+    {
+      "id": "agent_animation_source_applysystementry",
+      "label": "applySystemEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L225"
+    },
+    {
+      "id": "agent_animation_source_applyprogressentry",
+      "label": "applyProgressEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L253"
+    },
+    {
+      "id": "agent_animation_source_resolvependingpermissions",
+      "label": "resolvePendingPermissions()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L281"
+    },
+    {
+      "id": "agent_animation_source_applysubagentoverlay",
+      "label": "applySubagentOverlay()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L301"
+    },
+    {
+      "id": "agent_animation_source_buildsnapshot",
+      "label": "buildSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L314"
+    },
+    {
+      "id": "agent_animation_source_computeisactive",
+      "label": "computeIsActive()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L343"
+    },
+    {
+      "id": "agent_animation_source_mergeagentanimationsnapshots",
+      "label": "mergeAgentAnimationSnapshots()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L354"
+    },
+    {
+      "id": "agent_animation_source_latestsnapshot",
+      "label": "latestSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L372"
+    },
+    {
+      "id": "agent_animation_source_aggregatesnapshots",
+      "label": "aggregateSnapshots()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L388"
+    },
+    {
+      "id": "agent_animation_source_promoteoverlay",
+      "label": "promoteOverlay()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L403"
+    },
+    {
+      "id": "agent_animation_source_promotebasestate",
+      "label": "promoteBaseState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L413"
+    },
+    {
+      "id": "agent_animation_source_arraycontent",
+      "label": "arrayContent()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L423"
+    },
+    {
+      "id": "agent_animation_source_istooluseblock",
+      "label": "isToolUseBlock()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L432"
+    },
+    {
+      "id": "agent_animation_source_entrytimems",
+      "label": "entryTimeMs()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L443"
+    },
+    {
+      "id": "agent_animation_source_usagecontexttokens",
+      "label": "usageContextTokens()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L451"
+    },
+    {
+      "id": "agent_animation_source_iscompactionsubtype",
+      "label": "isCompactionSubtype()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L461"
+    },
+    {
+      "id": "agent_animation_source_progressrecord",
+      "label": "progressRecord()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L471"
+    },
+    {
+      "id": "agent_animation_source_derivefatiguelevel",
+      "label": "deriveFatigueLevel()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L503"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_createaccumulator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_markactivity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_deriveagentanimationsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_shouldpruneforstartup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applyentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applyassistantentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_hastextactivity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applyuserentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applysystementry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L225",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applyprogressentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_resolvependingpermissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_applysubagentoverlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_buildsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_computeisactive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_mergeagentanimationsnapshots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L354",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_latestsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L372",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_aggregatesnapshots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L388",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_promoteoverlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L403",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_promotebasestate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L413",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_arraycontent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L423",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_istooluseblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L432",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_entrytimems",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L443",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_usagecontexttokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L451",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_iscompactionsubtype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L461",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_progressrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L471",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_agent_animation_source_ts",
+      "target": "agent_animation_source_derivefatiguelevel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L503",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_shouldpruneforstartup",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_createaccumulator",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_entrytimems",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_applyentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_resolvependingpermissions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_applysubagentoverlay",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_deriveagentanimationsnapshot",
+      "target": "agent_animation_source_buildsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyentry",
+      "target": "agent_animation_source_applyassistantentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyentry",
+      "target": "agent_animation_source_applyuserentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyentry",
+      "target": "agent_animation_source_applysystementry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyentry",
+      "target": "agent_animation_source_applyprogressentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyassistantentry",
+      "target": "agent_animation_source_arraycontent",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyassistantentry",
+      "target": "agent_animation_source_hastextactivity",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyassistantentry",
+      "target": "agent_animation_source_usagecontexttokens",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyassistantentry",
+      "target": "agent_animation_source_markactivity",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyuserentry",
+      "target": "agent_animation_source_arraycontent",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyuserentry",
+      "target": "agent_animation_source_markactivity",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applysystementry",
+      "target": "agent_animation_source_iscompactionsubtype",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applysystementry",
+      "target": "agent_animation_source_markactivity",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyprogressentry",
+      "target": "agent_animation_source_progressrecord",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_applyprogressentry",
+      "target": "agent_animation_source_markactivity",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L265",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_buildsnapshot",
+      "target": "agent_animation_source_derivefatiguelevel",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L324",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_buildsnapshot",
+      "target": "agent_animation_source_computeisactive",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_mergeagentanimationsnapshots",
+      "target": "agent_animation_source_latestsnapshot",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L359",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_mergeagentanimationsnapshots",
+      "target": "agent_animation_source_aggregatesnapshots",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L360",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_mergeagentanimationsnapshots",
+      "target": "agent_animation_source_promotebasestate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L364",
+      "weight": 1.0
+    },
+    {
+      "source": "agent_animation_source_mergeagentanimationsnapshots",
+      "target": "agent_animation_source_promoteoverlay",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L365",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agent_animation_source_createaccumulator",
+      "callee": "getTime",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "agent_animation_source_deriveagentanimationsnapshot",
+      "callee": "getTime",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "agent_animation_source_deriveagentanimationsnapshot",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "agent_animation_source_deriveagentanimationsnapshot",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "agent_animation_source_shouldpruneforstartup",
+      "callee": "getTime",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "agent_animation_source_shouldpruneforstartup",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyassistantentry",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyassistantentry",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyassistantentry",
+      "callee": "has",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyassistantentry",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "agent_animation_source_hastextactivity",
+      "callee": "some",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyuserentry",
+      "callee": "delete",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "agent_animation_source_applysystementry",
+      "callee": "clear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "agent_animation_source_applysystementry",
+      "callee": "clear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L231"
+    },
+    {
+      "caller_nid": "agent_animation_source_applysystementry",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "agent_animation_source_applysystementry",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "agent_animation_source_applyprogressentry",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "agent_animation_source_resolvependingpermissions",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L283"
+    },
+    {
+      "caller_nid": "agent_animation_source_resolvependingpermissions",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "agent_animation_source_resolvependingpermissions",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "agent_animation_source_buildsnapshot",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "agent_animation_source_buildsnapshot",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "agent_animation_source_buildsnapshot",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "agent_animation_source_mergeagentanimationsnapshots",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L367"
+    },
+    {
+      "caller_nid": "agent_animation_source_latestsnapshot",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L374"
+    },
+    {
+      "caller_nid": "agent_animation_source_aggregatesnapshots",
+      "callee": "add",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "agent_animation_source_arraycontent",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L429"
+    },
+    {
+      "caller_nid": "agent_animation_source_entrytimems",
+      "callee": "getTime",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L445"
+    },
+    {
+      "caller_nid": "agent_animation_source_entrytimems",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L446"
+    },
+    {
+      "caller_nid": "agent_animation_source_usagecontexttokens",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "agent_animation_source_iscompactionsubtype",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "agent_animation_source_iscompactionsubtype",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L467"
+    },
+    {
+      "caller_nid": "agent_animation_source_progressrecord",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L485"
+    },
+    {
+      "caller_nid": "agent_animation_source_progressrecord",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L485"
+    },
+    {
+      "caller_nid": "agent_animation_source_progressrecord",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L485"
+    },
+    {
+      "caller_nid": "agent_animation_source_progressrecord",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L485"
+    },
+    {
+      "caller_nid": "agent_animation_source_derivefatiguelevel",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/agent-animation-source.ts",
+      "source_location": "L508"
+    }
+  ]
+}

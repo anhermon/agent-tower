@@ -1,0 +1,251 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "label": "skills-efficacy.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "skills_efficacy_runskillsefficacy",
+      "label": "runSkillsEfficacy()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "skills_efficacy_formatdelta",
+      "label": "formatDelta()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L91"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "skills_efficacy_runskillsefficacy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_skills_efficacy_ts",
+      "target": "skills_efficacy_formatdelta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "parseFlags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "resolveOutputMode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "readIntFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "readIntFlag",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "resolveOrExplain",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "computeSkillsEfficacy",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "skills_efficacy_runskillsefficacy",
+      "callee": "renderTable",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "skills_efficacy_formatdelta",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/skills-efficacy.ts",
+      "source_location": "L93"
+    }
+  ]
+}

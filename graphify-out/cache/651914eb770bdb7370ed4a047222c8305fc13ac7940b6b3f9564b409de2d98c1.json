@@ -1,0 +1,107 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "label": "skill-grid.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "skill_grid_step",
+      "label": "step()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L61"
+    },
+    {
+      "id": "skill_grid_togglesort",
+      "label": "toggleSort()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L84"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "format",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "skills_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "skill_grid_step",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skill_grid_tsx",
+      "target": "skill_grid_togglesort",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L84",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skill_grid_step",
+      "callee": "setVisibleCount",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "skill_grid_togglesort",
+      "callee": "setSortDir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "skill_grid_togglesort",
+      "callee": "setSortKey",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "skill_grid_togglesort",
+      "callee": "setSortDir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skill-grid.tsx",
+      "source_location": "L90"
+    }
+  ]
+}

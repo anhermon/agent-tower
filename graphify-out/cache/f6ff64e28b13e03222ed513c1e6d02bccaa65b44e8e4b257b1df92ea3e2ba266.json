@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "label": "event-stream-table.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "event_stream_table_handleselect",
+      "label": "handleSelect()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L298"
+    },
+    {
+      "id": "event_stream_table_handleclick",
+      "label": "handleClick()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L627"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "button",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "icon",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_types",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "event_stream_table_handleselect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_event_stream_table_tsx",
+      "target": "event_stream_table_handleclick",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L627",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "event_stream_table_handleselect",
+      "callee": "onSelect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "event_stream_table_handleselect",
+      "callee": "buildFilterPatch",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "event_stream_table_handleselect",
+      "callee": "onClose",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "event_stream_table_handleclick",
+      "callee": "contains",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L628"
+    },
+    {
+      "caller_nid": "event_stream_table_handleclick",
+      "callee": "setOpenFilterColumn",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/event-stream-table.tsx",
+      "source_location": "L629"
+    }
+  ]
+}

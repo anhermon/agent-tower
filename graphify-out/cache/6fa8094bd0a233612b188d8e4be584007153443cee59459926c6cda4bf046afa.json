@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_branch_leaderboard_tsx",
+      "label": "branch-leaderboard.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "branch_leaderboard_branchleaderboard",
+      "label": "BranchLeaderboard()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L7"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_branch_leaderboard_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_charts_branch_leaderboard_tsx",
+      "target": "branch_leaderboard_branchleaderboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "branch_leaderboard_branchleaderboard",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "branch_leaderboard_branchleaderboard",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "branch_leaderboard_branchleaderboard",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/charts/branch-leaderboard.tsx",
+      "source_location": "L20"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_facets_ts",
+      "label": "facets.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "facets_readsessionfacet",
+      "label": "readSessionFacet()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "facets_facetpathforsession",
+      "label": "facetPathForSession()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L36"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_facets_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_facets_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_facets_ts",
+      "target": "facets_readsessionfacet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_facets_ts",
+      "target": "facets_facetpathforsession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "facets_readsessionfacet",
+      "callee": "stat",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "facets_readsessionfacet",
+      "callee": "isFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "facets_readsessionfacet",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "facets_readsessionfacet",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "facets_facetpathforsession",
+      "callee": "dirname",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "facets_facetpathforsession",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/facets.ts",
+      "source_location": "L38"
+    }
+  ]
+}

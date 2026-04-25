@@ -1,0 +1,279 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_sessionsoverviewpage",
+      "label": "SessionsOverviewPage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "page_renderoverviewerror",
+      "label": "renderOverviewError()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L229"
+    },
+    {
+      "id": "page_rendercostserror",
+      "label": "renderCostsError()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L243"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "lazy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "sparkline",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "token_breakdown_bars",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "date_range",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "date_range_picker",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "live_activity_panel",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "state",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "format",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "sessions_analytics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "sessions_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "page_sessionsoverviewpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "page_renderoverviewerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_overview_page_tsx",
+      "target": "page_rendercostserror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "page_sessionsoverviewpage",
+      "target": "page_renderoverviewerror",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "page_sessionsoverviewpage",
+      "target": "page_rendercostserror",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L40",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "resolveRangeFromSearchParams",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "all",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "getOverview",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "getCostBreakdown",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "listProjects",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "renderUnconfigured",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "cache",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "formatCost",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "cache`}\n          spark={costSpark}\n          color=\"#34d399\"\n          ariaLabel=\"Cost sparkline\"\n        />\n      </div>\n\n      <LiveActivityPanel />\n\n      {/* Usage over time + Model distribution */}\n      <div className=\"grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]\">\n        <Card\n          title=\"Usage over time\"\n          description={`Messages and sessions across ${value.timeseries.daily.length} days`}\n        >\n          <UsageOverTimeChart data={value.timeseries.daily} />\n        </Card>\n        <Card title=\"Model distribution\" description=\"Token usage by model\">\n          <ModelBreakdownDonut models={costBreakdown.byModel} />\n        </Card>\n      </div>\n\n      {/* Peak hours + Project activity */}\n      <div className=\"grid grid-cols-1 gap-6 md:grid-cols-2\">\n        <Card title=\"Peak hours\" description=\"Activity by hour of day (UTC)\">\n          <PeakHoursChart data={value.timeseries.peakHours} />\n        </Card>\n        <Card title=\"Project activity\" description=\"Top projects by token usage\">\n          <ProjectActivityDonut projects={projects} />\n        </Card>\n      </div>\n\n      {/* Token breakdown */}\n      <Card\n        title=\"Token breakdown\"\n        description={`Distribution across token types (${range ? \"in selected range\" : \"all time\"})",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "cache`}\n          spark={costSpark}\n          color=\"#34d399\"\n          ariaLabel=\"Cost sparkline\"\n        />\n      </div>\n\n      <LiveActivityPanel />\n\n      {/* Usage over time + Model distribution */}\n      <div className=\"grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]\">\n        <Card\n          title=\"Usage over time\"\n          description={`Messages and sessions across ${value.timeseries.daily.length} days`}\n        >\n          <UsageOverTimeChart data={value.timeseries.daily} />\n        </Card>\n        <Card title=\"Model distribution\" description=\"Token usage by model\">\n          <ModelBreakdownDonut models={costBreakdown.byModel} />\n        </Card>\n      </div>\n\n      {/* Peak hours + Project activity */}\n      <div className=\"grid grid-cols-1 gap-6 md:grid-cols-2\">\n        <Card title=\"Peak hours\" description=\"Activity by hour of day (UTC)\">\n          <PeakHoursChart data={value.timeseries.peakHours} />\n        </Card>\n        <Card title=\"Project activity\" description=\"Top projects by token usage\">\n          <ProjectActivityDonut projects={projects} />\n        </Card>\n      </div>\n\n      {/* Token breakdown */}\n      <Card\n        title=\"Token breakdown\"\n        description={`",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "length",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "page_sessionsoverviewpage",
+      "callee": "cache",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/overview/page.tsx",
+      "source_location": "L99"
+    }
+  ]
+}

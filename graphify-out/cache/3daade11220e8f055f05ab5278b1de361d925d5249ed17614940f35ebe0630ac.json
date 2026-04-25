@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "label": "cache.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "cache_getfilecacheforneedle",
+      "label": "getFileCacheForNeedle()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "cache_setfilecacheforneedle",
+      "label": "setFileCacheForNeedle()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "cache_clearsearchcachefortests",
+      "label": "__clearSearchCacheForTests()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L30"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "target": "server_only",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "target": "cache_getfilecacheforneedle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "target": "cache_setfilecacheforneedle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_sessions_search_cache_ts",
+      "target": "cache_clearsearchcachefortests",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "cache_getfilecacheforneedle",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "cache_getfilecacheforneedle",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "cache_setfilecacheforneedle",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "cache_clearsearchcachefortests",
+      "callee": "clear",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/sessions/search/cache.ts",
+      "source_location": "L31"
+    }
+  ]
+}

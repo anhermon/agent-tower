@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "label": "flags.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "flags_usageerror",
+      "label": "UsageError",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "flags_usageerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "flags_parseflags",
+      "label": "parseFlags()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "flags_readintflag",
+      "label": "readIntFlag()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "flags_readenumflag",
+      "label": "readEnumFlag()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "flags_readdateflag",
+      "label": "readDateFlag()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L68"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "node_util",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "flags_usageerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "flags_usageerror",
+      "target": "flags_usageerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "flags_parseflags",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "flags_readintflag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "flags_readenumflag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "target": "flags_readdateflag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "flags_usageerror_constructor",
+      "callee": "super",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L11"
+    },
+    {
+      "caller_nid": "flags_parseflags",
+      "callee": "parseArgs",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "flags_parseflags",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "flags_readintflag",
+      "callee": "parseInt",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "flags_readintflag",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "flags_readintflag",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "flags_readintflag",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "flags_readenumflag",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "flags_readenumflag",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "flags_readdateflag",
+      "callee": "test",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/flags.ts",
+      "source_location": "L70"
+    }
+  ]
+}

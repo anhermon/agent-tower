@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_skills_usage_ts",
+      "label": "skills-usage.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "skills_usage_parseinput",
+      "label": "parseInput()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "skills_usage_stripheatmaps",
+      "label": "stripHeatmaps()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L21"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_skills_usage_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_skills_usage_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_skills_usage_ts",
+      "target": "skills_usage_parseinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_mcp_server_src_tools_skills_usage_ts",
+      "target": "skills_usage_stripheatmaps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skills_usage_parseinput",
+      "callee": "asRecord",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "skills_usage_parseinput",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/mcp-server/src/tools/skills-usage.ts",
+      "source_location": "L15"
+    }
+  ]
+}

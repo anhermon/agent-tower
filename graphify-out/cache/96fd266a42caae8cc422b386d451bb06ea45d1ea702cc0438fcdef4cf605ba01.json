@@ -1,0 +1,352 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "label": "audit.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "audit_runpnpmaudit",
+      "label": "runPnpmAudit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L12"
+    },
+    {
+      "id": "audit_emptycounts",
+      "label": "emptyCounts()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L36"
+    },
+    {
+      "id": "audit_parsejson",
+      "label": "parseJson()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L41"
+    },
+    {
+      "id": "audit_extractmetavulns",
+      "label": "extractMetaVulns()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L59"
+    },
+    {
+      "id": "audit_countadvisories",
+      "label": "countAdvisories()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L71"
+    },
+    {
+      "id": "audit_parseaudit",
+      "label": "parseAudit()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L90"
+    },
+    {
+      "id": "audit_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L104"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "node_child_process",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_runpnpmaudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_emptycounts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_parsejson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_extractmetavulns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_countadvisories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_parseaudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_audit_mjs",
+      "target": "audit_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_parseaudit",
+      "target": "audit_emptycounts",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_parseaudit",
+      "target": "audit_parsejson",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_parseaudit",
+      "target": "audit_extractmetavulns",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_parseaudit",
+      "target": "audit_countadvisories",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_main",
+      "target": "audit_runpnpmaudit",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_main",
+      "target": "audit_emptycounts",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "audit_main",
+      "target": "audit_parseaudit",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L125",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "audit_emptycounts",
+      "callee": "fromEntries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "audit_emptycounts",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "audit_parsejson",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "audit_parsejson",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "audit_parsejson",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "audit_parsejson",
+      "callee": "reverse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "audit_parsejson",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "audit_countadvisories",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "audit_countadvisories",
+      "callee": "toLowerCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "audit_countadvisories",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "audit_countadvisories",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "audit_parseaudit",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "audit_parseaudit",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "toUpperCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "audit_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/audit.mjs",
+      "source_location": "L148"
+    }
+  ]
+}

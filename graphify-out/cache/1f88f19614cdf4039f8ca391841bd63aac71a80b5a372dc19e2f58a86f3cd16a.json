@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "label": "agents-list.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "agents_list_runagentslist",
+      "label": "runAgentsList()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "agents_list_groupbyproject",
+      "label": "groupByProject()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L54"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_flags_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "agents_list_runagentslist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_commands_agents_list_ts",
+      "target": "agents_list_groupbyproject",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_list_runagentslist",
+      "target": "agents_list_groupbyproject",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "parseFlags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "resolveOutputMode",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "resolveOrExplain",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "listSessionFiles",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "agents_list_runagentslist",
+      "callee": "renderTable",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "agents_list_groupbyproject",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "agents_list_groupbyproject",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "agents_list_groupbyproject",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "agents_list_groupbyproject",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/commands/agents-list.ts",
+      "source_location": "L88"
+    }
+  ]
+}

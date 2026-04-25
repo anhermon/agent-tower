@@ -1,0 +1,476 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "label": "license-check.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "license_check_runlicensechecker",
+      "label": "runLicenseChecker()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L26"
+    },
+    {
+      "id": "license_check_splitkey",
+      "label": "splitKey()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L50"
+    },
+    {
+      "id": "license_check_licensestring",
+      "label": "licenseString()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L57"
+    },
+    {
+      "id": "license_check_isdisallowed",
+      "label": "isDisallowed()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L64"
+    },
+    {
+      "id": "license_check_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L68"
+    },
+    {
+      "id": "license_check_checkcheckeravailability",
+      "label": "checkCheckerAvailability()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L111"
+    },
+    {
+      "id": "license_check_parselicenseoutput",
+      "label": "parseLicenseOutput()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L150"
+    },
+    {
+      "id": "license_check_classifypackages",
+      "label": "classifyPackages()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L173"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "node_child_process",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_runlicensechecker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_splitkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_licensestring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_isdisallowed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_checkcheckeravailability",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_parselicenseoutput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_license_check_mjs",
+      "target": "license_check_classifypackages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_main",
+      "target": "license_check_runlicensechecker",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_main",
+      "target": "license_check_checkcheckeravailability",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_main",
+      "target": "license_check_parselicenseoutput",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_main",
+      "target": "license_check_classifypackages",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_classifypackages",
+      "target": "license_check_splitkey",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_classifypackages",
+      "target": "license_check_licensestring",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "license_check_classifypackages",
+      "target": "license_check_isdisallowed",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L185",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "license_check_splitkey",
+      "callee": "lastIndexOf",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "license_check_splitkey",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "license_check_splitkey",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "license_check_licensestring",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "license_check_licensestring",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "license_check_licensestring",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "license_check_isdisallowed",
+      "callee": "some",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "toUpperCase",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "license_check_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "test",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "license_check_checkcheckeravailability",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "license_check_parselicenseoutput",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "license_check_classifypackages",
+      "callee": "entries",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "license_check_classifypackages",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L181"
+    },
+    {
+      "caller_nid": "license_check_classifypackages",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "license_check_classifypackages",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/license-check.mjs",
+      "source_location": "L186"
+    }
+  ]
+}

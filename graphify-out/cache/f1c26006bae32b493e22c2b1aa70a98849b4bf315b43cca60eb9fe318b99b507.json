@@ -1,0 +1,240 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "route_parsebody",
+      "label": "parseBody()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "route_validatebody",
+      "label": "validateBody()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "route_toolpatchhandler",
+      "label": "toolPatchHandler()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L48"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "token_optimizer_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "with_audit",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "route_parsebody",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "route_validatebody",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_api_token_optimizer_tools_id_route_ts",
+      "target": "route_toolpatchhandler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "route_toolpatchhandler",
+      "target": "route_parsebody",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "route_toolpatchhandler",
+      "target": "route_validatebody",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "route_parsebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "route_parsebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "route_parsebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "every",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "route_validatebody",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "listTools",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "some",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "toggleTool",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "updateToolTags",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "listTools",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "find",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "route_toolpatchhandler",
+      "callee": "json",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/api/token-optimizer/tools/[id]/route.ts",
+      "source_location": "L83"
+    }
+  ]
+}

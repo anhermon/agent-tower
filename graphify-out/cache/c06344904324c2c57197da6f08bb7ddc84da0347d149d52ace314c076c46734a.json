@@ -1,0 +1,92 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "label": "skills-timeline.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "skills_timeline_formaty",
+      "label": "formatY()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "skills_timeline_customtooltip",
+      "label": "CustomTooltip()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L34"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "target": "recharts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_components_skills_format_usage",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "target": "skills_timeline_formaty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_skills_skills_timeline_tsx",
+      "target": "skills_timeline_customtooltip",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "skills_timeline_formaty",
+      "callee": "toFixed",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "skills_timeline_formaty",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "skills_timeline_customtooltip",
+      "callee": "toLocaleString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/skills/skills-timeline.tsx",
+      "source_location": "L42"
+    }
+  ]
+}

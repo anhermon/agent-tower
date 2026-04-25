@@ -1,0 +1,148 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "label": "cli.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "cli_test_seedtemproot",
+      "label": "seedTempRoot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L35"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "node_os",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_test_helpers_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_cli_test_ts",
+      "target": "cli_test_seedtemproot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "mkdtemp",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "tmpdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "writeFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "cli_test_seedtemproot",
+      "callee": "stringify",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/cli.test.ts",
+      "source_location": "L53"
+    }
+  ]
+}

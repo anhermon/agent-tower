@@ -1,0 +1,139 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "label": "mock-stream.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "mock_stream_createmockeventenvelope",
+      "label": "createMockEventEnvelope()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "mock_stream_withoptionaleventfields",
+      "label": "withOptionalEventFields()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "mock_stream_createmockeventstream",
+      "label": "createMockEventStream()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "mock_stream_collecteventstream",
+      "label": "collectEventStream()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L85"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "target": "mock_stream_createmockeventenvelope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "target": "mock_stream_withoptionaleventfields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "target": "mock_stream_createmockeventstream",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "target": "mock_stream_collecteventstream",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "mock_stream_createmockeventenvelope",
+      "target": "mock_stream_withoptionaleventfields",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "mock_stream_createmockeventenvelope",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "mock_stream_createmockeventenvelope",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "mock_stream_createmockeventenvelope",
+      "callee": "toString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "mock_stream_createmockeventenvelope",
+      "callee": "random",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "mock_stream_createmockeventenvelope",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "mock_stream_createmockeventstream",
+      "callee": "events[Symbol.iterator]",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "mock_stream_collecteventstream",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/mock-stream.ts",
+      "source_location": "L91"
+    }
+  ]
+}

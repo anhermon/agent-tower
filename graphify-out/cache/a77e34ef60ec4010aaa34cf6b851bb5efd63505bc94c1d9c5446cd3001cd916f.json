@@ -1,0 +1,101 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "label": "integration-header.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "integration_header_computeheaderstats",
+      "label": "computeHeaderStats()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "integration_header_integrationheader",
+      "label": "IntegrationHeader()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L44"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "target": "utils",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_state",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "target": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_types",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "target": "integration_header_computeheaderstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_webhooks_module_components_integration_header_tsx",
+      "target": "integration_header_integrationheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "integration_header_integrationheader",
+      "target": "integration_header_computeheaderstats",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L52",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "integration_header_computeheaderstats",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "integration_header_computeheaderstats",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "integration_header_integrationheader",
+      "callee": "getIntegrationStatus",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/webhooks/_module/components/integration-header.tsx",
+      "source_location": "L51"
+    }
+  ]
+}

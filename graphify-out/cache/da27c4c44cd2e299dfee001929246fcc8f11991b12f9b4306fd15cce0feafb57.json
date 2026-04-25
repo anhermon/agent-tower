@@ -1,0 +1,505 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "label": "workflow-health.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "workflow_health_computequickscore",
+      "label": "computeQuickScore()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "workflow_health_computerecencyweight",
+      "label": "computeRecencyWeight()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "workflow_health_loadappliedfixes",
+      "label": "loadAppliedFixes()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L163"
+    },
+    {
+      "id": "workflow_health_getactivefixesforsession",
+      "label": "getActiveFixesForSession()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L181"
+    },
+    {
+      "id": "workflow_health_buildweightedworkflowhealthreport",
+      "label": "buildWeightedWorkflowHealthReport()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L204"
+    },
+    {
+      "id": "workflow_health_computedimensiondelta",
+      "label": "computeDimensionDelta()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L315"
+    },
+    {
+      "id": "workflow_health_categorizeissues",
+      "label": "categorizeIssues()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L357"
+    },
+    {
+      "id": "workflow_health_makebucket",
+      "label": "makeBucket()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L379"
+    },
+    {
+      "id": "workflow_health_computeaveragescore",
+      "label": "computeAverageScore()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L388"
+    },
+    {
+      "id": "workflow_health_computedelta",
+      "label": "computeDelta()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L392"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_waste_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_computequickscore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_computerecencyweight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_loadappliedfixes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_getactivefixesforsession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_buildweightedworkflowhealthreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_computedimensiondelta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_categorizeissues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L357",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_makebucket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L379",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_computeaveragescore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L388",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_workflow_health_ts",
+      "target": "workflow_health_computedelta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L392",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_health_buildweightedworkflowhealthreport",
+      "target": "workflow_health_loadappliedfixes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_health_buildweightedworkflowhealthreport",
+      "target": "workflow_health_computedelta",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_health_computedelta",
+      "target": "workflow_health_categorizeissues",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L403",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_health_computedelta",
+      "target": "workflow_health_makebucket",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L406",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_health_computedelta",
+      "target": "workflow_health_computeaveragescore",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L412",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "workflow_health_computequickscore",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "workflow_health_computequickscore",
+      "callee": "values",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "workflow_health_computequickscore",
+      "callee": "max",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "workflow_health_computerecencyweight",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "workflow_health_computerecencyweight",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "workflow_health_computerecencyweight",
+      "callee": "isFinite",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "workflow_health_computerecencyweight",
+      "callee": "exp",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "workflow_health_loadappliedfixes",
+      "callee": "readFileSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "workflow_health_loadappliedfixes",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "workflow_health_loadappliedfixes",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "workflow_health_getactivefixesforsession",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "workflow_health_getactivefixesforsession",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "workflow_health_getactivefixesforsession",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "sort",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L280"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L302"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "workflow_health_buildweightedworkflowhealthreport",
+      "callee": "round",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "extractVals",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "extractVals",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L326"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "avg",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L331"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "avg",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "min",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L335"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "abs",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "workflow_health_computedimensiondelta",
+      "callee": "abs",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "workflow_health_categorizeissues",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L368"
+    },
+    {
+      "caller_nid": "workflow_health_categorizeissues",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L370"
+    },
+    {
+      "caller_nid": "workflow_health_categorizeissues",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "workflow_health_computeaveragescore",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "workflow_health_computedelta",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L396"
+    },
+    {
+      "caller_nid": "workflow_health_computedelta",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L396"
+    },
+    {
+      "caller_nid": "workflow_health_computedelta",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L397"
+    },
+    {
+      "caller_nid": "workflow_health_computedelta",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L397"
+    },
+    {
+      "caller_nid": "workflow_health_computedelta",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/workflow-health.ts",
+      "source_location": "L399"
+    }
+  ]
+}

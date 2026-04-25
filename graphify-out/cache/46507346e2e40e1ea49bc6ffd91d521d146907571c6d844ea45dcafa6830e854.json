@@ -1,0 +1,135 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "index_load",
+      "label": "load()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "index_claudecodefixture",
+      "label": "claudeCodeFixture()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "index_allclaudecodefixtures",
+      "label": "allClaudeCodeFixtures()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L61"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "node_url",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "index_load",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "index_claudecodefixture",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_testing_fixtures_claude_code_index_ts",
+      "target": "index_allclaudecodefixtures",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "index_claudecodefixture",
+      "target": "index_load",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "index_load",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "index_load",
+      "callee": "readFileSync",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "index_load",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "index_load",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "index_load",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "index_allclaudecodefixtures",
+      "callee": "map",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/testing/fixtures/claude-code/index.ts",
+      "source_location": "L62"
+    }
+  ]
+}

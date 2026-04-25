@@ -1,0 +1,329 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "label": "turn-timeline.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "turn_timeline_computeturntimeline",
+      "label": "computeTurnTimeline()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L73"
+    },
+    {
+      "id": "turn_timeline_collectdurations",
+      "label": "collectDurations()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "turn_timeline_buildtimeline",
+      "label": "buildTimeline()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "turn_timeline_builduserentry",
+      "label": "buildUserEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "turn_timeline_derivetokenfields",
+      "label": "deriveTokenFields()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L163"
+    },
+    {
+      "id": "turn_timeline_buildassistantentry",
+      "label": "buildAssistantEntry()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "turn_timeline_collecttoolsandtext",
+      "label": "collectToolsAndText()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L211"
+    },
+    {
+      "id": "turn_timeline_firstdefined",
+      "label": "firstDefined()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L232"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_content_blocks_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_session_summary_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_computeturntimeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_collectdurations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_buildtimeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_builduserentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_derivetokenfields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_buildassistantentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_collecttoolsandtext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_adapter_claude_code_src_analytics_turn_timeline_ts",
+      "target": "turn_timeline_firstdefined",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_computeturntimeline",
+      "target": "turn_timeline_firstdefined",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_computeturntimeline",
+      "target": "turn_timeline_collectdurations",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_computeturntimeline",
+      "target": "turn_timeline_buildtimeline",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_buildtimeline",
+      "target": "turn_timeline_builduserentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_buildtimeline",
+      "target": "turn_timeline_buildassistantentry",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_buildassistantentry",
+      "target": "turn_timeline_collecttoolsandtext",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "turn_timeline_buildassistantentry",
+      "target": "turn_timeline_derivetokenfields",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "turn_timeline_collectdurations",
+      "callee": "set",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "turn_timeline_buildtimeline",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "turn_timeline_buildtimeline",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "turn_timeline_builduserentry",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "turn_timeline_builduserentry",
+      "callee": "isToolResultBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "turn_timeline_buildassistantentry",
+      "callee": "normalizeTurnUsage",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "turn_timeline_buildassistantentry",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "turn_timeline_buildassistantentry",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "turn_timeline_buildassistantentry",
+      "callee": "get",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "isToolUseBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "isTextBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "addText",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "replace",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "turn_timeline_collecttoolsandtext",
+      "callee": "isThinkingBlock",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L224"
+    },
+    {
+      "caller_nid": "turn_timeline_firstdefined",
+      "callee": "pick",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/adapter-claude-code/src/analytics/turn-timeline.ts",
+      "source_location": "L237"
+    }
+  ]
+}

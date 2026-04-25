@@ -1,0 +1,333 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "label": "control-plane-state.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "control_plane_state_getoverviewstate",
+      "label": "getOverviewState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "control_plane_state_statustohealthstate",
+      "label": "statusToHealthState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "control_plane_state_formatactivesessions",
+      "label": "formatActiveSessions()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L95"
+    },
+    {
+      "id": "control_plane_state_describeactivesessions",
+      "label": "describeActiveSessions()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "control_plane_state_describeagents",
+      "label": "describeAgents()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "control_plane_state_describeskills",
+      "label": "describeSkills()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "control_plane_state_describesessionsadapter",
+      "label": "describeSessionsAdapter()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "control_plane_state_describeagentsadapter",
+      "label": "describeAgentsAdapter()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L152"
+    },
+    {
+      "id": "control_plane_state_describeskillsadapter",
+      "label": "describeSkillsAdapter()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L160"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "agents_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "sessions_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "skills_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_getoverviewstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_statustohealthstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_formatactivesessions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describeactivesessions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describeagents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describeskills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describesessionsadapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describeagentsadapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_control_plane_state_ts",
+      "target": "control_plane_state_describeskillsadapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_formatactivesessions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describeactivesessions",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describesessionsadapter",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describeagents",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describeagentsadapter",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describeskills",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "control_plane_state_getoverviewstate",
+      "target": "control_plane_state_describeskillsadapter",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "all",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "listSessionsOrEmpty",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "listAgentsOrEmpty",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "listSkillsOrEmpty",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "control_plane_state_getoverviewstate",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "control_plane_state_formatactivesessions",
+      "callee": "reduce",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "control_plane_state_formatactivesessions",
+      "callee": "String",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "control_plane_state_describeagents",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "control_plane_state_describeagents",
+      "callee": "push",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "control_plane_state_describeagents",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/control-plane-state.ts",
+      "source_location": "L134"
+    }
+  ]
+}

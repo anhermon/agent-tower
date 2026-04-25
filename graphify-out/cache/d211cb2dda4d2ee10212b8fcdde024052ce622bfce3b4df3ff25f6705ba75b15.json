@@ -1,0 +1,183 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "page_sessionsactivitypage",
+      "label": "SessionsActivityPage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "page_pageheader",
+      "label": "PageHeader()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L97"
+    },
+    {
+      "id": "page_card",
+      "label": "Card()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L117"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "lazy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "activity_heatmap",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "branch_leaderboard",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "streak_card",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "date_range",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "date_range_picker",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "system_info_panel",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "state",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "sessions_analytics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "sessions_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "page_sessionsactivitypage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "page_pageheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_sessions_activity_page_tsx",
+      "target": "page_card",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L117",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "page_sessionsactivitypage",
+      "callee": "resolveRangeFromSearchParams",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "page_sessionsactivitypage",
+      "callee": "all",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "page_sessionsactivitypage",
+      "callee": "getActivity",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "page_sessionsactivitypage",
+      "callee": "getToolAnalytics",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "page_sessionsactivitypage",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/sessions/activity/page.tsx",
+      "source_location": "L55"
+    }
+  ]
+}

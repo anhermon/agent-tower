@@ -1,0 +1,267 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "label": "sbom.mjs",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "sbom_runcdxgen",
+      "label": "runCdxgen()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L13"
+    },
+    {
+      "id": "sbom_countcomponents",
+      "label": "countComponents()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L38"
+    },
+    {
+      "id": "sbom_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L49"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "node_child_process",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "promises",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "users_angelhermon_workspace_control_plane_scripts_ci_lib_report_mjs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "sbom_runcdxgen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "sbom_countcomponents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_scripts_ci_sbom_mjs",
+      "target": "sbom_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "sbom_main",
+      "target": "sbom_runcdxgen",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "sbom_main",
+      "target": "sbom_countcomponents",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L111",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "sbom_countcomponents",
+      "callee": "readFile",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "sbom_countcomponents",
+      "callee": "parse",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "sbom_countcomponents",
+      "callee": "isArray",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "mkdir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "test",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "error",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "writeReport",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "toISOString",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "now",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "log",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "sbom_main",
+      "callee": "exit",
+      "source_file": "/Users/angelhermon/workspace/control-plane/scripts/ci/sbom.mjs",
+      "source_location": "L130"
+    }
+  ]
+}

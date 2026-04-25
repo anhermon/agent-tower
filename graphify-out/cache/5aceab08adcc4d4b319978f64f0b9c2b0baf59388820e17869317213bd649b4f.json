@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_queue_ts",
+      "label": "workflow-queue.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "workflow_queue_getredisconnection",
+      "label": "getRedisConnection()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "workflow_queue_createworkflowqueue",
+      "label": "createWorkflowQueue()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L39"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_queue_ts",
+      "target": "bullmq",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_queue_ts",
+      "target": "workflow_queue_getredisconnection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_lib_workflow_queue_ts",
+      "target": "workflow_queue_createworkflowqueue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "workflow_queue_createworkflowqueue",
+      "target": "workflow_queue_getredisconnection",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "workflow_queue_getredisconnection",
+      "callee": "parseInt",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/lib/workflow-queue.ts",
+      "source_location": "L32"
+    }
+  ]
+}

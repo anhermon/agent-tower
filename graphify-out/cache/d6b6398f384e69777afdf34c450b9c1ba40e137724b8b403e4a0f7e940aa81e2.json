@@ -1,0 +1,151 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "label": "pricing.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "pricing_getpricing",
+      "label": "getPricing()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "pricing_estimatecostfromusage",
+      "label": "estimateCostFromUsage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "pricing_estimatecostfrommodelusage",
+      "label": "estimateCostFromModelUsage()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "pricing_cacheefficiency",
+      "label": "cacheEfficiency()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L105"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_core_src_domain_costs_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "target": "pricing_getpricing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "target": "pricing_estimatecostfromusage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "target": "pricing_estimatecostfrommodelusage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_core_src_lib_pricing_ts",
+      "target": "pricing_cacheefficiency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "pricing_estimatecostfromusage",
+      "target": "pricing_getpricing",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "pricing_estimatecostfrommodelusage",
+      "target": "pricing_getpricing",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "pricing_cacheefficiency",
+      "target": "pricing_getpricing",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "join",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "slice",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "split",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "keys",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "pricing_getpricing",
+      "callee": "startsWith",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/core/src/lib/pricing.ts",
+      "source_location": "L66"
+    }
+  ]
+}

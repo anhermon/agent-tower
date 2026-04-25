@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "label": "agent-grid.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_grid_togglesort",
+      "label": "toggleSort()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L58"
+    },
+    {
+      "id": "agent_grid_if",
+      "label": "if()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L250"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "link",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "agent_status_badge",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "format",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "agents_source",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "agent_grid_togglesort",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_agents_agent_grid_tsx",
+      "target": "agent_grid_if",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L250",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "agent_grid_togglesort",
+      "callee": "setSortDir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "agent_grid_togglesort",
+      "callee": "setSortKey",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "agent_grid_togglesort",
+      "callee": "setSortDir",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "agent_grid_if",
+      "callee": "localeCompare",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/agents/agent-grid.tsx",
+      "source_location": "L275"
+    }
+  ]
+}

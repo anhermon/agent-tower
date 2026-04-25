@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "label": "event-log.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "event_log_test_makelog",
+      "label": "makeLog()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "event_log_test_webhook",
+      "label": "webhook()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "event_log_test_session",
+      "label": "session()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L23"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_mock_stream_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_events_src_types_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "event_log_test_makelog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "event_log_test_webhook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_events_src_event_log_test_ts",
+      "target": "event_log_test_session",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "event_log_test_webhook",
+      "callee": "createMockEventEnvelope",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L16"
+    },
+    {
+      "caller_nid": "event_log_test_session",
+      "callee": "createMockEventEnvelope",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/events/src/event-log.test.ts",
+      "source_location": "L24"
+    }
+  ]
+}

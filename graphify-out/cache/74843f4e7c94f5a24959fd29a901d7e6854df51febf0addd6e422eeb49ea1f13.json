@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "label": "agent-mascot.test.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "agent_mascot_test_agentstate",
+      "label": "agentState()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L80"
+    },
+    {
+      "id": "agent_mascot_test_snapshot",
+      "label": "snapshot()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L89"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "vitest",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "agent_mascot",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "agent_mascot_test_agentstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_app_agents_agent_mascot_test_tsx",
+      "target": "agent_mascot_test_snapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/app/agents/agent-mascot.test.tsx",
+      "source_location": "L89",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

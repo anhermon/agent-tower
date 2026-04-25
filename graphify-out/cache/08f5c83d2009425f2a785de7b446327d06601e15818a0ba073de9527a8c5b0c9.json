@@ -1,0 +1,103 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "label": "data-root.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "data_root_resolveorexplain",
+      "label": "resolveOrExplain()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L17"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "target": "adapter_claude_code",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "target": "users_angelhermon_workspace_control_plane_packages_cli_src_output_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_packages_cli_src_data_root_ts",
+      "target": "data_root_resolveorexplain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "resolveDataRoot",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeJson",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "bold",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "dim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "data_root_resolveorexplain",
+      "callee": "writeLine",
+      "source_file": "/Users/angelhermon/workspace/control-plane/packages/cli/src/data-root.ts",
+      "source_location": "L38"
+    }
+  ]
+}

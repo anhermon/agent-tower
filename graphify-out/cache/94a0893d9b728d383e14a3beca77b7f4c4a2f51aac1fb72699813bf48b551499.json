@@ -1,0 +1,113 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_tool_card_tsx",
+      "label": "tool-card.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "tool_card_handletagkeydown",
+      "label": "handleTagKeyDown()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "tool_card_removetag",
+      "label": "removeTag()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L28"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_tool_card_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_tool_card_tsx",
+      "target": "core",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_tool_card_tsx",
+      "target": "tool_card_handletagkeydown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_token_optimizer_tool_card_tsx",
+      "target": "tool_card_removetag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "preventDefault",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "trim",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "includes",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "setTagInput",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "onTagsChange",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "tool_card_handletagkeydown",
+      "callee": "setTagInput",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "tool_card_removetag",
+      "callee": "onTagsChange",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "tool_card_removetag",
+      "callee": "filter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/token-optimizer/tool-card.tsx",
+      "source_location": "L31"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "label": "keyboard-nav-provider.tsx",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "keyboard_nav_provider_iseditabletarget",
+      "label": "isEditableTarget()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "keyboard_nav_provider_keyboardnavprovider",
+      "label": "KeyboardNavProvider()",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L50"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "target": "navigation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "target": "global_search",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "target": "keyboard_nav_provider_iseditabletarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_angelhermon_workspace_control_plane_apps_web_components_sessions_keyboard_nav_provider_tsx",
+      "target": "keyboard_nav_provider_keyboardnavprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useRouter",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useState",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useRef",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useCallback",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "keyboard_nav_provider_keyboardnavprovider",
+      "callee": "useEffect",
+      "source_file": "/Users/angelhermon/workspace/control-plane/apps/web/components/sessions/keyboard-nav-provider.tsx",
+      "source_location": "L58"
+    }
+  ]
+}

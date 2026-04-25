@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {
+      "id": "users_angelhermon_workspace_control_plane_test_shims_server_only_ts",
+      "label": "server-only.ts",
+      "file_type": "code",
+      "source_file": "/Users/angelhermon/workspace/control-plane/test/shims/server-only.ts",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [],
+  "raw_calls": []
+}
