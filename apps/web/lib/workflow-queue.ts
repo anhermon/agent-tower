@@ -39,7 +39,13 @@ export function getRedisConnection(): { host: string; port: number } {
 export function createWorkflowQueue(): Queue<WorkflowJobData> {
   const { host, port } = getRedisConnection();
   return new Queue<WorkflowJobData>(WORKFLOW_QUEUE_NAME, {
-    connection: { host, port },
+    connection: {
+      host,
+      port,
+      enableOfflineQueue: false,
+      retryStrategy: () => null,
+      lazyConnect: true,
+    },
     defaultJobOptions: {
       attempts: 3,
       backoff: {

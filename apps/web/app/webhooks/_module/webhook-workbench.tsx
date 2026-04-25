@@ -2,6 +2,8 @@
 
 import { useCallback, type ChangeEvent, type ReactNode, useMemo, useState } from "react";
 
+import type { WebhookDelivery } from "@control-plane/core";
+
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +12,7 @@ import {
   countEnabledEvents,
   createDefaultWebhookDraft,
   createObservedWebhookEvent,
+  deliveryToObservedEvent,
   filterObservedWebhookEvents,
   getWebhookEventDefinition,
   getWebhookProvider,
@@ -31,6 +34,7 @@ import type {
 
 interface WebhookWorkbenchProps {
   readonly variant?: "embedded" | "standalone";
+  readonly initialDeliveries?: readonly WebhookDelivery[];
 }
 
 const INITIAL_FILTERS: WebhookEventFilters = {
@@ -46,10 +50,15 @@ const EVENT_FILTER_STATUSES: readonly (WebhookObservedStatus | "all")[] = [
   "failed",
 ] as const;
 
-export function WebhookWorkbench({ variant = "embedded" }: WebhookWorkbenchProps) {
+export function WebhookWorkbench({
+  variant = "embedded",
+  initialDeliveries,
+}: WebhookWorkbenchProps) {
   const [draft, setDraft] = useState<WebhookIntegrationDraft>(() => createDefaultWebhookDraft());
   const [integrations, setIntegrations] = useState<RegisteredWebhookIntegration[]>([]);
-  const [observedEvents, setObservedEvents] = useState<ObservedWebhookEvent[]>([]);
+  const [observedEvents, setObservedEvents] = useState<ObservedWebhookEvent[]>(() =>
+    (initialDeliveries ?? []).map((d, i) => deliveryToObservedEvent(d, i))
+  );
   const [selectedIntegrationId, setSelectedIntegrationId] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [filters, setFilters] = useState<WebhookEventFilters>(INITIAL_FILTERS);

@@ -27,6 +27,8 @@ const nextConfig = {
     "sonic-boom",
     "split2",
     "@control-plane/logger",
+    "bullmq",
+    "ioredis",
   ],
   // `serverExternalPackages` covers route handlers and pages, but the
   // dedicated `instrumentation` webpack entry doesn't honor it. Mark the
@@ -47,6 +49,8 @@ const nextConfig = {
         "thread-stream",
         "sonic-boom",
         "split2",
+        "bullmq",
+        "ioredis",
       ];
     }
     return config;

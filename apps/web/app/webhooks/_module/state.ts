@@ -1,3 +1,5 @@
+import type { WebhookDelivery } from "@control-plane/core";
+
 import {
   DEFAULT_LOCAL_PROCESSOR,
   DEFAULT_WEBHOOK_PROVIDER_ID,
@@ -253,6 +255,70 @@ export function getProviderBreakdown(
   }
 
   return breakdown;
+}
+
+export function deliveryToObservedEvent(
+  delivery: WebhookDelivery,
+  sequence: number
+): ObservedWebhookEvent {
+  const meta = (delivery.metadata ?? {}) as Record<string, unknown>;
+  const githubEvent = typeof meta.githubEvent === "string" ? meta.githubEvent : "";
+  const action = typeof meta.action === "string" ? meta.action : "received";
+  const repo = typeof meta.repositoryFullName === "string" ? meta.repositoryFullName : "";
+  const eventId = githubEvent || delivery.eventType;
+  const eventLabel = eventId.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const status: WebhookEventStatus =
+    delivery.status === "delivered"
+      ? "accepted"
+      : delivery.status === "failed"
+        ? "failed"
+        : "processing";
+  const payload = Object.entries(meta).reduce<Record<string, string>>((acc, [k, v]) => {
+    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+      acc[k] = String(v);
+    }
+    return acc;
+  }, {});
+  return {
+    id: delivery.id,
+    integrationId: delivery.subscriptionId,
+    providerId: "github",
+    providerLabel: "GitHub",
+    eventId,
+    eventLabel,
+    action,
+    targetLabel: repo || delivery.subscriptionId,
+    receivedAt: delivery.attemptedAt,
+    routeName: "store_only",
+    routeMode: "store_only",
+    status,
+    processingMs: (sequence % 5) * 12 + 8,
+    timeline: [
+      {
+        label: "Received provider event",
+        status: "completed",
+        durationMs: 4,
+        step: "triggered",
+        timestamp: delivery.attemptedAt,
+      },
+      {
+        label: "Verified HMAC signature",
+        status: "completed",
+        durationMs: 2,
+        step: "queued",
+        timestamp: delivery.attemptedAt,
+      },
+      {
+        label: "Stored delivery",
+        status: delivery.status === "failed" ? "failed" : "completed",
+        durationMs: 2,
+        step: "completed",
+        timestamp: delivery.attemptedAt,
+      },
+    ],
+    payload,
+    repository: repo,
+  };
 }
 
 function createTimeline(

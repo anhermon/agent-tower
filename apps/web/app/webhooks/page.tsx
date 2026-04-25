@@ -62,7 +62,7 @@ export default async function WebhooksPage() {
       </div>
 
       <WebhooksBody result={result} />
-      <WebhookWorkbench />
+      <WebhookWorkbench initialDeliveries={result.ok ? result.snapshot.deliveries : []} />
     </section>
   );
 }

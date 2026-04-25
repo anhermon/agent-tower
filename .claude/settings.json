@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && bash scripts/hooks/main-branch-block.sh",
+            "command": "WORKTREE_BRANCH=\"$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)\" && cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && WORKTREE_BRANCH=\"$WORKTREE_BRANCH\" bash scripts/hooks/main-branch-block.sh",
             "timeout": 5,
             "statusMessage": "Checking branch..."
           }
