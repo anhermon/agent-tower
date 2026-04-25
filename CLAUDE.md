@@ -98,6 +98,16 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 
 - Never pass `--no-verify` to `git commit` or `git push`. If a T1 hook (Biome + ESLint + gitleaks) or T2 hook (`task ci:fast`) fails, fix the underlying issue — not the hook.
 - `task ci:fast` runs automatically on every `git push` (lefthook pre-push). If it fails, stop and fix before pushing more commits.
+
+### d. Monitor workflow health
+
+Run `cp workflow-health --pretty` periodically to check whether workflow discipline is improving:
+
+```
+pnpm cp workflow-health --pretty --limit 10
+```
+
+This shows a weighted score (recent sessions count more), baseline-vs-recent delta, and top issues (e.g., bash dominance, single-tool turns, context bloat). Use it to verify that applied fixes are working and to identify new regressions. Invoke `superpowers:workflow-health` for the full analysis protocol.
 - If GitHub Actions CI is red, do not open a PR, do not merge, do not stack commits on top of a failing gate. Fix forward.
 - Semantic ESLint violations (import cycles, cognitive complexity >25, missing hook deps) are not autofixable — they require code changes. Don't suppress with `eslint-disable`; fix the structure.
 
