@@ -80,7 +80,7 @@ git worktree add .worktrees/<branch> -b <branch>
 # or the shortcut:
 task agent:worktree-new -- feat/<scope>
 ```
-`task agent:worktree-new` creates the worktree, installs deps, and runs a baseline `task verify` to confirm the starting state is clean. Worktrees go in `.worktrees/` (gitignored). See `superpowers:using-git-worktrees` for the full protocol.
+`task agent:worktree-new` creates the worktree, installs deps, and runs a baseline `task verify` to confirm the starting state is clean. Worktrees go in `.worktrees/` (gitignored). **Invoke `superpowers:using-git-worktrees` before writing any code** — it contains the full worktree protocol and must be used, not just referenced.
 
 ### b. Pre-commit ritual — autofix before every commit
 
