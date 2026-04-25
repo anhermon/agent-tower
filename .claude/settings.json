@@ -43,6 +43,17 @@
             "statusMessage": "Enforcing CI gates..."
           }
         ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && bash scripts/hooks/main-branch-block.sh",
+            "timeout": 5,
+            "statusMessage": "Checking branch..."
+          }
+        ]
       }
     ],
     "Stop": [
