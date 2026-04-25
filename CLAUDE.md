@@ -30,6 +30,7 @@
 - `task agent:preflight` — pre-commit ritual: autofix fmt+lint (`task fmt` + `pnpm eslint --fix`), then typecheck + test. Run before every commit.
 - `task agent:worktree-new -- <branch>` — create a git worktree in `.worktrees/<branch>` + run baseline verify.
 - `task agent:worktree-rm -- <branch>` — remove a git worktree after work is merged or discarded.
+- `task agent:pr-merge` — wait for GitHub Actions CI to pass on the current branch's PR, then squash-merge and watch post-merge CI. Use this for ALL merges. Never use `gh pr merge --admin`.
 
 ## Architecture Map
 - `apps/web` — Next.js App Router dashboard, routes, module registry, local API endpoints.
@@ -100,6 +101,14 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 
 - Never pass `--no-verify` to `git commit` or `git push`. If a T1 hook (Biome + ESLint + gitleaks) or T2 hook (`task ci:fast`) fails, fix the underlying issue — not the hook.
 - `task ci:fast` runs automatically on every `git push` (lefthook pre-push). If it fails, stop and fix before pushing more commits.
+- **Local passing ≠ CI green.** `pnpm test` passing locally means nothing until GitHub Actions completes. Never declare a task done based on local results alone.
+- Never use `git checkout --detach HEAD` before a push. The pre-push hook runs `task ci:fast` unconditionally regardless of HEAD state, and the `ci-enforce.sh` Bash hook blocks it. Check out the branch directly.
+
+### d. Merging PRs — always gate on CI
+
+- Use `task agent:pr-merge` for all PR merges. It calls `gh pr checks --watch` (blocks until all CI checks pass or fail), then merges, then watches the post-merge CI run on main.
+- **Never** use `gh pr merge --admin`. The `--admin` flag bypasses the required-status-check branch protection gate. It is blocked by the `ci-enforce.sh` hook.
+- After merge, stay alive until `task agent:pr-merge` exits with status 0 — that means the post-merge CI run on main also passed. A green local merge with red main CI is still a broken repo.
 
 ### d. Monitor workflow health
 
