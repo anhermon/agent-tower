@@ -27,6 +27,21 @@ export type {
 } from "./analytics/turn-timeline.js";
 export { computeTurnTimeline } from "./analytics/turn-timeline.js";
 export { scoreSessionsWaste, scoreSessionWaste } from "./analytics/waste.js";
+export type {
+  AppliedFixesFile,
+  BuildReportOptions,
+  DimensionDelta,
+  SessionBucket,
+  TrackedFix,
+  WeightedSessionHealth,
+  WeightedWorkflowHealthReport,
+  WorkflowHealthDelta,
+} from "./analytics/workflow-health.js";
+export {
+  buildWeightedWorkflowHealthReport,
+  getActiveFixesForSession,
+  loadAppliedFixes,
+} from "./analytics/workflow-health.js";
 export type { DataRootOrigin, ResolvedDataRoot } from "./data-root.js";
 // Phase 1 Wave 1: data-root resolution + skill catalogue/analytics (shared by
 // the web dashboard, the `cp` CLI, and the MCP server).

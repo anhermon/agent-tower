@@ -1,0 +1,60 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "true"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph update --skip-flows",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph status",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "WORKTREE_BRANCH=\"$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)\" && cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && WORKTREE_BRANCH=\"$WORKTREE_BRANCH\" bash scripts/hooks/session-start-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && bash scripts/hooks/ci-enforce.sh",
+            "timeout": 15,
+            "statusMessage": "Enforcing CI gates..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "WORKTREE_BRANCH=\"$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)\" && cd \"$(git rev-parse --git-common-dir 2>/dev/null)/..\" && WORKTREE_BRANCH=\"$WORKTREE_BRANCH\" bash scripts/hooks/stop-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
