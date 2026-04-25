@@ -36,12 +36,16 @@ tasks:
     desc: "Create a git worktree + run baseline verify (usage: task agent:worktree-new -- feat/my-feature)"
     cmds:
       - git worktree add .worktrees/{{.CLI_ARGS}} -b {{.CLI_ARGS}}
-      - cmd: pnpm install --frozen-lockfile
-        dir: .worktrees/{{.CLI_ARGS}}
-      - cmd: pnpm typecheck
-        dir: .worktrees/{{.CLI_ARGS}}
-      - cmd: pnpm test
-        dir: .worktrees/{{.CLI_ARGS}}
+      - |
+        root="$(pwd)"
+        wt=".worktrees/{{.CLI_ARGS}}"
+        ln -sfn "$root/node_modules" "$wt/node_modules"
+        for pkg in packages/*/; do
+          [ -d "$pkg/node_modules" ] && ln -sfn "$root/${pkg}node_modules" "$wt/${pkg}node_modules"
+        done
+        [ -d apps/web/node_modules ] && ln -sfn "$root/apps/web/node_modules" "$wt/apps/web/node_modules"
+      - bash -c 'cd ".worktrees/{{.CLI_ARGS}}" && pnpm typecheck'
+      - bash -c 'cd ".worktrees/{{.CLI_ARGS}}" && pnpm test'
       - echo "Worktree ready → .worktrees/{{.CLI_ARGS}} (baseline verified)"
     preconditions:
       - sh: '[ -n "{{.CLI_ARGS}}" ]'

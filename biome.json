@@ -30,7 +30,8 @@
       "!packages/testing/fixtures/claude-code",
       "!.claude/**",
       "!.worktree/**",
-      "!.worktrees/**"
+      "!.worktrees/**",
+      "!graphify-out/**"
     ]
   },
   "formatter": {
