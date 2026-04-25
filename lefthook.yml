@@ -15,10 +15,12 @@ pre-commit:
       run: gitleaks protect --staged --config .gitleaks.toml --no-banner --redact
 
 # T2 — pre-push: full fast gate. Budget <2min.
+# The script guards against running ci:fast against a working tree that does
+# not reflect the branch being pushed (e.g. when renaming from a worktree).
 pre-push:
   commands:
     ci-fast:
-      run: task ci:fast
+      run: bash scripts/hooks/pre-push.sh
 
 # Conventional Commits validator via commit-msg regex (no extra deps).
 commit-msg:

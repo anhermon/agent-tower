@@ -207,7 +207,7 @@ describe("skills-efficacy-source", () => {
       abandoned: 0,
       unknown: 0,
     });
-    expect(result.report.minSessionsForQualifying).toBe(3);
+    expect(result.report.minSessionsForQualifying).toBe(10);
   });
 
   it("given_completed_session_with_two_skill_invocations__when_computing__then_outcome_completed_and_delta_zero", async () => {
@@ -632,6 +632,194 @@ describe("skills-efficacy-source", () => {
       scoped.report.insufficientData.find((r) => r.skillId === "alpha");
     expect(alphaRow).toBeDefined();
     expect(alphaRow?.sessionsCount).toBe(1);
+  });
+
+  it("given_interrupted_session_with_3plus_turns__when_computing__then_not_abandoned", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-interrupt-not-abandoned");
+    await mkdir(project, { recursive: true });
+    const sessionId = "77777777-8888-9999-aaaa-bbbbbbbbbbbb";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-08T10:00:00.000Z",
+        sessionId,
+        text: "hi there",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-08T10:00:01.000Z",
+        sessionId,
+        text: "Hello! How can I help?",
+      }),
+      userEntry({
+        timestamp: "2026-04-08T10:00:02.000Z",
+        sessionId,
+        text: "[Request interrupted by user for tool use]",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    // With 3 turns, interrupt alone should NOT force abandonment anymore.
+    expect(result.report.outcomeDistribution.abandoned).toBe(0);
+    expect(result.report.outcomeDistribution.partial).toBe(1);
+  });
+
+  it("given_last_prompt_session_with_no_issues__when_computing__then_outcome_partial", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-last-prompt");
+    await mkdir(project, { recursive: true });
+    const sessionId = "88888888-9999-aaaa-bbbb-cccccccccccc";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-09T10:00:00.000Z",
+        sessionId,
+        text: "Please help me refactor this",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-09T10:00:01.000Z",
+        sessionId,
+        text: "Sure, I can help with that.",
+      }),
+      userEntry({
+        timestamp: "2026-04-09T10:00:02.000Z",
+        sessionId,
+        text: "Actually, never mind that. Let's work on tests instead.",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    // Last entry is user (not correction, no errors) → partial instead of unknown
+    expect(result.report.outcomeDistribution.partial).toBe(1);
+    expect(result.report.outcomeDistribution.unknown).toBe(0);
+  });
+
+  it("given_correction_regex_false_positive__when_computing__then_not_counted", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-false-positive");
+    await mkdir(project, { recursive: true });
+    const sessionId = "99999999-aaaa-bbbb-cccc-dddddddddddd";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-10T10:00:00.000Z",
+        sessionId,
+        text: "No problem, that works perfectly!",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-10T10:00:01.000Z",
+        sessionId,
+        text: "Great!",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    // "No problem" should NOT match the correction regex
+    expect(result.report.baseline.satisfaction).toBeGreaterThan(0.6);
+  });
+
+  it("given_positive_regex_expanded__when_computing__then_counts_new_terms", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-positive-expanded");
+    await mkdir(project, { recursive: true });
+    const sessionId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+
+    const entries = [
+      userEntry({
+        timestamp: "2026-04-11T10:00:00.000Z",
+        sessionId,
+        text: "good job",
+      }),
+      userEntry({
+        timestamp: "2026-04-11T10:00:01.000Z",
+        sessionId,
+        text: "excellent work",
+      }),
+      userEntry({
+        timestamp: "2026-04-11T10:00:02.000Z",
+        sessionId,
+        text: "amazing",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-11T10:00:03.000Z",
+        sessionId,
+        text: "Thanks!",
+      }),
+    ];
+    await writeJsonl(project, sessionId, entries);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({ skills: [], minSessionsForQualifying: 1 });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    // "good job", "excellent", "amazing" should all match positive regex
+    expect(result.report.baseline.satisfaction).toBeGreaterThan(0.7);
+  });
+
+  it("given_baseline_contamination__when_skill_in_all_sessions__then_delta_not_zero_by_construction", async () => {
+    const root = await makeDataRoot();
+    const project = path.join(root, "proj-baseline");
+    await mkdir(project, { recursive: true });
+
+    // Session 1: skill "alpha", completed, score = 0.85
+    const session1Id = "bbbbbbbb-cccc-dddd-eeee-ffffffffffff";
+    const entries1 = [
+      userEntry({ timestamp: "2026-04-12T10:00:00.000Z", sessionId: session1Id, text: "go alpha" }),
+      assistantSkillEntry({
+        timestamp: "2026-04-12T10:00:01.000Z",
+        sessionId: session1Id,
+        skill: "alpha",
+        toolUseId: "a1",
+      }),
+      userToolResultEntry({
+        timestamp: "2026-04-12T10:00:02.000Z",
+        sessionId: session1Id,
+        toolUseId: "a1",
+        content: "ok",
+      }),
+      assistantTextEntry({
+        timestamp: "2026-04-12T10:00:03.000Z",
+        sessionId: session1Id,
+        text: "Done.",
+      }),
+    ];
+    await writeJsonl(project, session1Id, entries1);
+
+    // Session 2: no skills, lower score (abandoned tiny session)
+    const session2Id = "cccccccc-dddd-eeee-ffff-gggggggggggg";
+    const entries2 = [
+      userEntry({ timestamp: "2026-04-12T11:00:00.000Z", sessionId: session2Id, text: "hi" }),
+    ];
+    await writeJsonl(project, session2Id, entries2);
+
+    process.env[CLAUDE_DATA_ROOT_ENV] = root;
+    const result = await computeSkillsEfficacy({
+      skills: [manifest({ id: "alpha", name: "Alpha" })],
+      minSessionsForQualifying: 1,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    const alphaRow = result.report.qualifying.find((r) => r.skillId === "alpha");
+    expect(alphaRow).toBeDefined();
+    if (!alphaRow) return;
+
+    // Baseline excluding alpha's sessions = session2 only (abandoned, score ~0.18)
+    // Alpha's avg score = completed session (~0.85)
+    // Delta should be POSITIVE because alpha's sessions are better than non-alpha sessions
+    expect(alphaRow.delta).toBeGreaterThan(0);
   });
 
   it("given_unchanged_mtime__when_computing_twice__then_cache_serves_stale_summary", async () => {

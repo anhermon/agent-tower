@@ -92,7 +92,7 @@ This runs in order: `task fmt` (Biome autofix, ~0.2s) → `task build:packages` 
 
 **Gotcha — `packages/*` edits:** ESLint resolves `@control-plane/*` imports from built `.d.ts` files. If you modify any `packages/` directory and skip `task build:packages`, ESLint reports thousands of false "type not found" errors. `agent:preflight` handles this automatically.
 
-**Commit cadence:** after each logical unit (one component, one fix, one plan step). Use `/commit` for message format. After every 3–5 commits, push and wait for `task ci:fast` to pass. Aim for ≤30 minutes of uncommitted changes.
+**Commit and push after every logical unit.** One fix, one component, one plan step = one commit, then push immediately. Do not accumulate commits locally. Push as soon as a unit is complete so CI runs early and failures surface fast. Aim for ≤15 minutes between pushes.
 
 ### c. Never bypass red CI
 
