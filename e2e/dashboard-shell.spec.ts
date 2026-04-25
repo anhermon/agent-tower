@@ -8,7 +8,7 @@ const MODULE_ROUTES = [
   { path: "/skills", emptyState: "No skills discovered" },
   { path: "/mcps", emptyState: "No MCP servers" },
   { path: "/channels", emptyState: "No channels connected" },
-  { path: "/replay", emptyState: "No replay traces" },
+  { path: "/replay", emptyState: "No session records" },
   { path: "/token-optimizer", emptyState: "No tools registered" },
 ];
 
