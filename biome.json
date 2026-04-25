@@ -28,9 +28,9 @@
       "!**/playwright-report",
       "!**/test-results",
       "!packages/testing/fixtures/claude-code",
-      "!.claude/**",
-      "!.worktree/**",
-      "!.worktrees/**"
+      "!.claude",
+      "!.worktree",
+      "!.worktrees"
     ]
   },
   "formatter": {
