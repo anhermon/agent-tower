@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
-# Stop hook — staged-files reminder + main-branch advisory.
-# Fires when Claude finishes a response turn.
-
-staged=$(git diff --cached --name-only 2>/dev/null | wc -l | tr -d ' ')
-branch="${WORKTREE_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)}"
-
-parts=()
-[ "${staged:-0}" -gt 0 ] 2>/dev/null && \
-  parts+=("${staged} staged files — run task agent:preflight before git commit to autofix fmt/lint and verify types+tests.")
-[ "$branch" = "main" ] && \
-  parts+=("You are on main — use: task agent:worktree-new -- feat/<scope> for isolated development. Invoke superpowers:using-git-worktrees for the full protocol.")
-
-if [ "${#parts[@]}" -gt 0 ]; then
-  msg=$(printf '%s ' "${parts[@]}")
-  jq -n --arg m "$msg" '{"systemMessage": $m}'
-fi
+# Stop hook — intentionally silent.
+#
+# Branch detection is unreliable here: Claude Code hooks always run from the
+# main working-tree root, so git rev-parse --abbrev-ref HEAD always returns
+# "main" regardless of which worktree the session is actually in. Any
+# branch-based advisory fires as a false positive in every worktree session.
+#
+# Real enforcement lives in the PreToolUse hooks (ci-enforce.sh detects
+# bad Bash commands by pattern-matching the command text; main-branch-block.sh
+# detects edits by pattern-matching the file path).  Those work correctly
+# because they use tool-input content, not the hook process's branch.
+exit 0
