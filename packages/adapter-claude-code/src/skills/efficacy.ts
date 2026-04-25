@@ -86,8 +86,7 @@ export type ListSkillsEfficacyResult =
   | { readonly ok: true; readonly report: SkillsEfficacyReport }
   | { readonly ok: false; readonly reason: "unconfigured" | "error"; readonly message?: string };
 
-const DEFAULT_MIN_SESSIONS = 3;
-const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+const DEFAULT_MIN_SESSIONS = 10;
 
 interface EnrichedSummary {
   readonly summary: SessionSummary;
@@ -354,16 +353,6 @@ async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary |
     }
   }
 
-  const totalEntries = entries.length;
-  const lastTwentyPercentStart = Math.floor(totalEntries * 0.8);
-  let interruptInTail = 0;
-  for (const idx of userEntryIndices) {
-    if (idx >= lastTwentyPercentStart) {
-      const text = extractUserText(entries[idx]?.raw ?? {});
-      if (text !== null && isInterruptMessage(text)) interruptInTail += 1;
-    }
-  }
-
   const firstMs = firstAt ? Date.parse(firstAt) : NaN;
   const lastMs = lastAt ? Date.parse(lastAt) : NaN;
   const durationSeconds =
@@ -372,7 +361,7 @@ async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary |
       : null;
 
   const nowMs = Date.now();
-  const lastEntryAgeMs = Number.isFinite(lastMs) ? nowMs - lastMs : 0;
+  const _lastEntryAgeMs = Number.isFinite(lastMs) ? nowMs - lastMs : 0;
 
   const lastUserIndex =
     userEntryIndices.length > 0 ? userEntryIndices[userEntryIndices.length - 1]! : -1;
@@ -394,17 +383,17 @@ async function summarizeFile(file: ClaudeSessionFile): Promise<EnrichedSummary |
 
   const toolErrorRate = toolErrorCount / Math.max(1, toolUseCount);
 
+  const lastEntryIsUser = lastUserIndex > lastAssistantIndex;
+
   let outcome: SessionOutcome;
-  if (
-    turnCount < 3 ||
-    interruptInTail >= 1 ||
-    (lastEntryAgeMs > SIX_HOURS_MS && endedWithOrphanToolUse)
-  ) {
+  if (turnCount < 3) {
     outcome = "abandoned";
   } else if (endedWithOrphanToolUse || toolErrorRate > 0.25 || lastUserIsCorrectionWithNoReply) {
     outcome = "partial";
   } else if (lastIsAssistantText && toolErrorRate <= 0.1) {
     outcome = "completed";
+  } else if (lastEntryIsUser && !lastUserHasCorrection && toolErrorRate <= 0.1) {
+    outcome = "partial";
   } else {
     outcome = "unknown";
   }
@@ -557,13 +546,15 @@ function isInterruptMessage(text: string): boolean {
   return false;
 }
 
-const CORRECTION_REGEX = /(?:^|[.!?;:,]\s*)(no|don['’]?t|stop|wrong|actually|instead)\b/i;
+const CORRECTION_REGEX =
+  /(?:^|[.!?;:,]\s*)(no|don['\u2019]?t|stop|wrong|actually|instead)(?!\s+(?:problem|mention|exactly|yes|better|of\s+course|thank|thanks|way|worry))\b/i;
 
 function matchesCorrection(text: string): boolean {
   return CORRECTION_REGEX.test(text.trim());
 }
 
-const POSITIVE_REGEX = /\b(thanks|thank you|perfect|great|awesome|nice work|nicely done|lgtm)\b/i;
+const POSITIVE_REGEX =
+  /\b(thanks|thank you|perfect|great|awesome|nice work|nicely done|lgtm|good job|excellent|works(?:\s+perfectly)?|fixed|solved|done|amazing|brilliant|much better|exactly|love it)\b/i;
 
 function matchesPositive(text: string): boolean {
   return POSITIVE_REGEX.test(text);
@@ -659,6 +650,10 @@ function buildReport(
     const avgOutcomeMultiplier = bucket.outcomeMultiplierSum / bucket.sessionsCount;
     const avgEffectiveScore = bucket.effectiveScoreSum / bucket.sessionsCount;
     const qualifying = bucket.sessionsCount >= minSessions;
+    const baselineEffExclSkill =
+      sessionsAnalyzed > bucket.sessionsCount
+        ? (baselineEffSum - bucket.effectiveScoreSum) / (sessionsAnalyzed - bucket.sessionsCount)
+        : baseline.effectiveScore;
     rows.push({
       skillId: bucket.skillId,
       displayName: bucket.displayName,
@@ -668,7 +663,7 @@ function buildReport(
       avgSatisfaction,
       avgOutcomeMultiplier,
       avgEffectiveScore,
-      delta: avgEffectiveScore - baseline.effectiveScore,
+      delta: avgEffectiveScore - baselineEffExclSkill,
       outcomeBreakdown: {
         completed: bucket.outcomeBreakdown.completed,
         partial: bucket.outcomeBreakdown.partial,
