@@ -8,12 +8,15 @@ import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
 import { WEBHOOK_PROVIDER_CATALOG, WEBHOOK_ROUTE_MODES } from "./catalog";
+import { IntegrationHeader } from "./components/integration-header";
+import { OverviewDashboard } from "./components/overview-dashboard";
+import { RepoFilterBar } from "./components/repo-filter-bar";
+import { StatsRow } from "./components/stats-row";
 import {
-  countEnabledEvents,
+  computeStats,
   createDefaultWebhookDraft,
   createObservedWebhookEvent,
   deliveryToObservedEvent,
-  filterObservedWebhookEvents,
   getWebhookEventDefinition,
   getWebhookProvider,
   registerWebhookIntegration,
@@ -63,6 +66,7 @@ export function WebhookWorkbench({
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [filters, setFilters] = useState<WebhookEventFilters>(INITIAL_FILTERS);
   const [clipboardState, setClipboardState] = useState<"idle" | "copied" | "failed">("idle");
+  const [showWorkbenchForm, setShowWorkbenchForm] = useState(false);
 
   const provider = getWebhookProvider(draft.providerId);
   const validation = validateWebhookDraft(draft);
@@ -70,12 +74,8 @@ export function WebhookWorkbench({
     integrations.find((integration) => integration.id === selectedIntegrationId) ??
     integrations[0] ??
     null;
+  const githubIntegration = integrations.find((i) => i.providerId === "github") ?? null;
   const triggerEventId = selectedEventId ?? selectedIntegration?.selectedEventIds[0] ?? null;
-  const filteredEvents = useMemo(
-    () => filterObservedWebhookEvents(observedEvents, filters),
-    [observedEvents, filters]
-  );
-  const selectedObservedEvent = filteredEvents[0] ?? observedEvents[0] ?? null;
 
   const updateDraft = useCallback((patch: Partial<WebhookIntegrationDraft>) => {
     setDraft((current) => ({ ...current, ...patch }));
@@ -129,8 +129,6 @@ export function WebhookWorkbench({
       _selectedEventId={selectedEventId}
       setSelectedEventId={setSelectedEventId}
       triggerEventId={triggerEventId}
-      filteredEvents={filteredEvents}
-      selectedObservedEvent={selectedObservedEvent}
       filters={filters}
       setFilters={setFilters}
       clipboardState={clipboardState}
@@ -141,6 +139,9 @@ export function WebhookWorkbench({
       triggerTestEvent={triggerTestEvent}
       copyEndpointPath={copyEndpointPath}
       handleSelectIntegration={handleSelectIntegration}
+      showWorkbenchForm={showWorkbenchForm}
+      onToggleWorkbenchForm={() => setShowWorkbenchForm((v) => !v)}
+      githubIntegration={githubIntegration}
     />
   );
 }
@@ -155,8 +156,6 @@ function WorkbenchShell({
   _selectedEventId,
   setSelectedEventId,
   triggerEventId,
-  filteredEvents,
-  selectedObservedEvent,
   filters,
   setFilters,
   clipboardState,
@@ -167,6 +166,9 @@ function WorkbenchShell({
   triggerTestEvent,
   copyEndpointPath,
   handleSelectIntegration,
+  showWorkbenchForm,
+  onToggleWorkbenchForm,
+  githubIntegration,
 }: {
   readonly variant: "embedded" | "standalone";
   readonly draft: WebhookIntegrationDraft;
@@ -177,8 +179,6 @@ function WorkbenchShell({
   readonly _selectedEventId: string | null;
   readonly setSelectedEventId: (eventId: string | null) => void;
   readonly triggerEventId: string | null;
-  readonly filteredEvents: readonly ObservedWebhookEvent[];
-  readonly selectedObservedEvent: ObservedWebhookEvent | null;
   readonly filters: WebhookEventFilters;
   readonly setFilters: (filters: WebhookEventFilters) => void;
   readonly clipboardState: "idle" | "copied" | "failed";
@@ -189,108 +189,106 @@ function WorkbenchShell({
   readonly triggerTestEvent: () => void;
   readonly copyEndpointPath: () => Promise<void>;
   readonly handleSelectIntegration: (integration: RegisteredWebhookIntegration) => void;
+  readonly showWorkbenchForm: boolean;
+  readonly onToggleWorkbenchForm: () => void;
+  readonly githubIntegration: RegisteredWebhookIntegration | null;
 }) {
   const shellClass =
-    variant === "standalone" ? "min-h-screen bg-canvas px-4 py-5 sm:px-6 lg:px-8" : "space-y-6";
+    variant === "standalone" ? "min-h-screen bg-canvas px-4 py-5 sm:px-6 lg:px-8" : "space-y-8";
 
   return (
     <div className={shellClass}>
       <div className={cn("mx-auto w-full", variant === "standalone" && "max-w-[1500px]")}>
-        <WorkbenchHeader
-          variant={variant}
-          integrationCount={integrations.length}
-          eventCount={observedEvents.length}
-          enabledEventCount={countEnabledEvents(integrations)}
-        />
-
-        <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
-          <section className="glass-panel rounded-lg p-4">
-            <ProviderPicker draft={draft} onChange={setDraft} />
-            <RegistrationForm
-              clipboardState={clipboardState}
-              draft={draft}
-              provider={provider}
-              validationMessage={validation.message}
-              onCopyEndpoint={copyEndpointPath}
-              onDraftChange={updateDraft}
-              onRegister={registerIntegration}
-            />
-          </section>
-
-          <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_minmax(360px,440px)]">
-            <section className="glass-panel rounded-lg p-4">
-              <IntegrationList
-                integrations={integrations}
-                selectedIntegrationId={selectedIntegration?.id ?? null}
-                onSelect={handleSelectIntegration}
-              />
-              <RouteDesigner draft={draft} onDraftChange={updateDraft} />
-            </section>
-
-            <section className="glass-panel rounded-lg p-4">
-              <TriggerPanel
-                integration={selectedIntegration}
-                selectedEventId={triggerEventId}
-                onEventChange={setSelectedEventId}
-                onTrigger={triggerTestEvent}
-              />
-            </section>
+        {/* ─── Overview — all-source events ──────────────────────── */}
+        <section>
+          <div className="mb-4">
+            <p className="eyebrow">Observability</p>
+            <h2 className="text-lg font-semibold text-ink">Event overview</h2>
           </div>
-        </div>
-
-        <section className="mt-5 glass-panel rounded-lg p-4">
-          <EventExplorer
-            events={filteredEvents}
+          <OverviewDashboard
+            events={observedEvents}
+            onSelectEvent={() => undefined}
             filters={filters}
             onFiltersChange={setFilters}
-            selectedEvent={selectedObservedEvent}
           />
+        </section>
+
+        {/* ─── GitHub integration — per-repo view ─────────────────── */}
+        <GitHubIntegrationSection
+          allEvents={observedEvents}
+          githubIntegration={githubIntegration}
+          onConfigureClick={onToggleWorkbenchForm}
+        />
+
+        {/* ─── Add integration — collapsible workbench ────────────── */}
+        <section>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="eyebrow">Configuration</p>
+              <h2 className="text-base font-semibold text-ink">
+                Webhook integrations
+                {integrations.length > 0 && (
+                  <span className="ml-2 text-sm font-normal text-muted">
+                    ({integrations.length} registered)
+                  </span>
+                )}
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={onToggleWorkbenchForm}
+              className={cn(
+                "inline-flex h-9 items-center gap-2 rounded-xs border px-3.5 text-sm font-medium transition-all hover:-translate-y-px",
+                showWorkbenchForm
+                  ? "border-line/80 bg-ink/[0.04] text-muted hover:border-line"
+                  : "border-transparent accent-gradient text-[rgb(7_11_20)] shadow-glow hover:brightness-110"
+              )}
+            >
+              {showWorkbenchForm ? "Close" : "+ Add webhook integration"}
+            </button>
+          </div>
+
+          {showWorkbenchForm && (
+            <div className="mt-5 space-y-5">
+              <div className="grid gap-5 xl:grid-cols-[minmax(320px,420px)_minmax(0,1fr)]">
+                <section className="glass-panel rounded-lg p-4">
+                  <ProviderPicker draft={draft} onChange={setDraft} />
+                  <RegistrationForm
+                    clipboardState={clipboardState}
+                    draft={draft}
+                    provider={provider}
+                    validationMessage={validation.message}
+                    onCopyEndpoint={copyEndpointPath}
+                    onDraftChange={updateDraft}
+                    onRegister={registerIntegration}
+                  />
+                </section>
+
+                <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_minmax(360px,440px)]">
+                  <section className="glass-panel rounded-lg p-4">
+                    <IntegrationList
+                      integrations={integrations}
+                      selectedIntegrationId={selectedIntegration?.id ?? null}
+                      onSelect={handleSelectIntegration}
+                    />
+                    <RouteDesigner draft={draft} onDraftChange={updateDraft} />
+                  </section>
+
+                  <section className="glass-panel rounded-lg p-4">
+                    <TriggerPanel
+                      integration={selectedIntegration}
+                      selectedEventId={triggerEventId}
+                      onEventChange={setSelectedEventId}
+                      onTrigger={triggerTestEvent}
+                    />
+                  </section>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>
-  );
-}
-
-function WorkbenchHeader({
-  variant,
-  integrationCount,
-  eventCount,
-  enabledEventCount,
-}: {
-  readonly variant: "embedded" | "standalone";
-  readonly integrationCount: number;
-  readonly eventCount: number;
-  readonly enabledEventCount: number;
-}) {
-  const metrics = [
-    { label: "Integrations", value: String(integrationCount) },
-    { label: "Enabled events", value: String(enabledEventCount) },
-    { label: "Observed events", value: String(eventCount) },
-  ] as const;
-
-  return (
-    <header className={cn("glass-panel rounded-lg p-5", variant === "embedded" && "bg-panel")}>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="min-w-0">
-          <p className="eyebrow">Webhooks module</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-normal text-ink md:text-3xl">
-            Integration workbench
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Register event sources, dry-run routing, and inspect delivery timelines before agent
-            execution is connected.
-          </p>
-        </div>
-        <div className="grid grid-cols-3 gap-2 sm:min-w-[360px]">
-          {metrics.map((metric) => (
-            <div key={metric.label} className="rounded-xs border border-line/80 bg-ink/[0.03] p-3">
-              <p className="eyebrow">{metric.label}</p>
-              <p className="mt-1 text-xl font-semibold text-ink">{metric.value}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </header>
   );
 }
 
@@ -857,4 +855,86 @@ function StatusPill({ status }: { readonly status: WebhookEventStatus }) {
           ? "text-ok"
           : "text-muted";
   return <span className={cn("pill px-2 py-1 text-[11px]", tone)}>{status}</span>;
+}
+
+function GitHubIntegrationSection({
+  allEvents,
+  githubIntegration,
+  onConfigureClick,
+}: {
+  readonly allEvents: readonly ObservedWebhookEvent[];
+  readonly githubIntegration: RegisteredWebhookIntegration | null;
+  readonly onConfigureClick: () => void;
+}) {
+  const githubProvider = useMemo(() => getWebhookProvider("github"), []);
+  const githubEvents = useMemo(
+    () => allEvents.filter((e) => e.providerId === "github"),
+    [allEvents]
+  );
+  const allRepos = useMemo(
+    () => [...new Set(githubEvents.map((e) => e.repository).filter(Boolean))],
+    [githubEvents]
+  );
+  const [activeRepos, setActiveRepos] = useState<string[]>([]);
+  const [githubFilters, setGithubFilters] = useState<WebhookEventFilters>({
+    providerId: "github",
+    status: "all",
+    query: "",
+  });
+
+  const displayedEvents = useMemo(
+    () =>
+      activeRepos.length === 0
+        ? githubEvents
+        : githubEvents.filter((e) => activeRepos.includes(e.repository)),
+    [githubEvents, activeRepos]
+  );
+
+  const stats = useMemo(() => computeStats(displayedEvents), [displayedEvents]);
+
+  const handleToggleRepo = useCallback((repo: string) => {
+    setActiveRepos((current) =>
+      current.includes(repo) ? current.filter((r) => r !== repo) : [...current, repo]
+    );
+  }, []);
+
+  const handleAddRepo = useCallback((repo: string) => {
+    setActiveRepos((current) => (current.includes(repo) ? current : [...current, repo]));
+  }, []);
+
+  return (
+    <section className="space-y-4">
+      <div>
+        <p className="eyebrow">Integration</p>
+        <h2 className="text-lg font-semibold text-ink">GitHub</h2>
+      </div>
+
+      <IntegrationHeader
+        provider={githubProvider}
+        integration={githubIntegration}
+        events={githubEvents}
+        onConfigure={onConfigureClick}
+        onTestWebhook={onConfigureClick}
+      />
+
+      <div>
+        <p className="eyebrow mb-2">Repositories</p>
+        <RepoFilterBar
+          repos={allRepos}
+          activeRepoIds={activeRepos}
+          onToggleRepo={handleToggleRepo}
+          onAddRepo={handleAddRepo}
+        />
+      </div>
+
+      <StatsRow stats={{ ...stats, total24hTrend: 0 }} />
+
+      <EventExplorer
+        events={displayedEvents}
+        filters={githubFilters}
+        onFiltersChange={setGithubFilters}
+        selectedEvent={displayedEvents[0] ?? null}
+      />
+    </section>
+  );
 }
