@@ -1,5 +1,7 @@
 import { join } from "node:path";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { HARNESS_KINDS, listDetectedHarnesses } from "./harness-detector.js";
 
 // Mock node:fs/promises and node:os BEFORE the module under test is imported
