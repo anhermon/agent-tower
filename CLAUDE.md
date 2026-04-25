@@ -2,7 +2,9 @@
 
 ## Purpose
 - Local-first dashboard for managing, observing, and analyzing multiple AI agent harnesses through a shared control-plane model.
-- Phase 1 is skeleton only: reusable UI shell, canonical domain types, adapter contracts, mock/empty flows. Real ingestion, CRUD, and runtime control are **explicitly deferred**.
+- Phase 1 (complete): dashboard shell, canonical domain types, adapter contracts, in-memory event bus and storage, read-only Claude Code JSONL adapter.
+- Phase 2 (in progress): Sessions analytics (5 sub-routes, search, export), Agents inventory, Skills manifests + usage telemetry + efficacy, Webhooks inbound receiver + workflow engine, Kanban read-only board, CLI (`cp`), and MCP server (9 tools).
+- Still deferred: MCPs module UI, Channels module, Replay module UI, webhook CRUD persistence, live process control, multi-user auth, persistent storage backends.
 
 ## Stack
 - TypeScript (ES modules), Node 22+, pnpm 10 workspaces.

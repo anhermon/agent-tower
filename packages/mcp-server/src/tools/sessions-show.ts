@@ -5,7 +5,7 @@ import {
   listSessionFiles,
   readTranscriptFile,
   resolveDataRoot,
-} from "@control-plane/adapter-claude-code";
+type  SkillTurnAttribution,type  TurnTimeline } from "@control-plane/adapter-claude-code";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
@@ -81,8 +81,8 @@ export const sessionsShowTool: ToolDefinition = {
             return rest;
           })();
 
-      let timeline = undefined;
-      let skillAttribution = undefined;
+      let timeline: TurnTimeline | undefined;
+      let skillAttribution: SkillTurnAttribution | undefined;
       if (parsed.includeTimeline) {
         const files = await listSessionFiles({ directory: resolved.directory });
         const file = files.find((f) => f.sessionId === parsed.sessionId);
