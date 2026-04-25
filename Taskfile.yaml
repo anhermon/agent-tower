@@ -52,6 +52,23 @@ tasks:
       - sh: '[ -n "{{.CLI_ARGS}}" ]'
         msg: "Usage: task agent:worktree-rm -- <branch-name>"
 
+  agent:pr-merge:
+    desc: "Safe PR merge: wait for CI checks to pass, then squash-merge (usage: task agent:pr-merge or task agent:pr-merge -- <pr-number>)"
+    cmds:
+      - cmd: |
+          pr_arg="{{.CLI_ARGS}}"
+          echo "Waiting for CI checks on PR ${pr_arg:-<current branch>}..."
+          if [ -n "$pr_arg" ]; then
+            gh pr checks "$pr_arg" --watch
+            gh pr merge "$pr_arg" --squash --delete-branch
+          else
+            gh pr checks --watch
+            gh pr merge --squash --delete-branch
+          fi
+          echo ""
+          echo "Merged. Monitoring post-merge CI on main (ctrl-c to detach)..."
+          gh run watch --exit-status || echo "WARNING: post-merge CI run failed or could not be watched. Check GitHub Actions before declaring done."
+
   # --- Fast sanity ----------------------------------------------------------
   typecheck:
     desc: TypeScript across all workspaces
