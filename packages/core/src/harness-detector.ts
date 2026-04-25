@@ -137,11 +137,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
     {
       kind: HARNESS_KINDS.Aider,
       displayName: "Aider",
-      indicators: [
-        p(h(".aider")),
-        p(h(".aider.conf.yml")),
-        p(h(".config", "aider")),
-      ],
+      indicators: [p(h(".aider")), p(h(".aider.conf.yml")), p(h(".config", "aider"))],
     },
     {
       kind: HARNESS_KINDS.Windsurf,
@@ -175,10 +171,7 @@ async function pathExists(absolute: string): Promise<boolean> {
   }
 }
 
-async function findPrefixMatch(
-  dir: string,
-  entryPrefix: string
-): Promise<string | null> {
+async function findPrefixMatch(dir: string, entryPrefix: string): Promise<string | null> {
   try {
     const entries = await readdir(dir);
     const match = entries.find((e) => e.startsWith(entryPrefix));
@@ -188,9 +181,7 @@ async function findPrefixMatch(
   }
 }
 
-async function firstMatchingIndicator(
-  indicators: readonly Indicator[]
-): Promise<string | null> {
+async function firstMatchingIndicator(indicators: readonly Indicator[]): Promise<string | null> {
   for (const ind of indicators) {
     if (ind.type === "path") {
       if (await pathExists(ind.path)) return ind.path;

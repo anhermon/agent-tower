@@ -7,11 +7,7 @@ interface HarnessListProps {
 /** Read-only list of detected AI coding assistant harnesses on the local machine. */
 export function HarnessList({ harnesses }: HarnessListProps) {
   if (harnesses.length === 0) {
-    return (
-      <p className="text-sm text-muted">
-        No known harnesses detected on this machine.
-      </p>
-    );
+    return <p className="text-sm text-muted">No known harnesses detected on this machine.</p>;
   }
 
   return (
@@ -27,10 +23,7 @@ export function HarnessList({ harnesses }: HarnessListProps) {
           />
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-medium text-ink">{h.displayName}</span>
-            <span
-              className="block truncate font-mono text-xs text-muted/80"
-              title={h.detectedPath}
-            >
+            <span className="block truncate font-mono text-xs text-muted/80" title={h.detectedPath}>
               {h.detectedPath}
             </span>
           </span>
