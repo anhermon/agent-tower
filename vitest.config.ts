@@ -68,6 +68,13 @@ export default defineConfig({
   resolve: {
     alias: sharedAlias,
   },
+  // Force the development React CJS bundle (which exports `act`) instead of the
+  // production bundle (which omits it). esbuild evaluates this substitution at
+  // pre-bundle time, so react/index.js sees 'test' !== 'production' and requires
+  // the development build — fixing "React.act is not a function" with React 19.
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("test"),
+  },
   test: {
     passWithNoTests: true,
     // Each workspace package gets its own project so coverage output and the
