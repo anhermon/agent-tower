@@ -14,7 +14,5 @@ export async function register(): Promise<void> {
   const log = getLogger("web");
   log.info({ nodeEnv: process.env.NODE_ENV, pid: process.pid }, "web.boot");
 
-  const { startWorkflowEngine } = await import("./lib/workflow-bootstrap");
-  startWorkflowEngine();
-  log.info("workflow.engine.started");
+  log.info("web.ready");
 }
