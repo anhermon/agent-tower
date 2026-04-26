@@ -17,6 +17,25 @@ import { WebhookWorkbench } from "./_module/webhook-workbench";
 
 export const dynamic = "force-dynamic";
 
+const PROVIDER_CARDS = [
+  {
+    id: "github",
+    label: "GitHub",
+    description: "Pull requests, issues, reviews, and CI/CD run outcomes.",
+    href: "/webhooks/github",
+    statusLabel: "Receiver live",
+    statusTone: "text-ok",
+  },
+  {
+    id: "slack",
+    label: "Slack",
+    description: "Channel messages, app mentions, and reaction-based routing.",
+    href: "/webhooks/slack",
+    statusLabel: "Planned",
+    statusTone: "text-muted",
+  },
+] as const;
+
 export default async function WebhooksPage() {
   const mod = getModuleByKey("webhooks");
   const configuredFile = getConfiguredWebhooksFile();
@@ -25,8 +44,6 @@ export default async function WebhooksPage() {
   // Status derivation:
   //   - healthy: configured and the source parses without error.
   //   - degraded: unconfigured or the source currently fails to parse.
-  // No live delivery signal yet — when the inbound pipeline lands,
-  // delivery failure rates will feed into this.
   const status: "healthy" | "degraded" = result.ok ? "healthy" : "degraded";
 
   return (
@@ -53,12 +70,37 @@ export default async function WebhooksPage() {
         <div className="flex h-10 shrink-0 items-center gap-2">
           <Link
             className="inline-flex h-10 items-center rounded-xs border border-line/80 bg-ink/[0.04] px-3.5 text-sm font-medium text-ink transition-all hover:-translate-y-px hover:border-info/50 hover:bg-info/10"
+            href="/webhooks/settings"
+          >
+            Settings
+          </Link>
+          <Link
+            className="inline-flex h-10 items-center rounded-xs border border-line/80 bg-ink/[0.04] px-3.5 text-sm font-medium text-ink transition-all hover:-translate-y-px hover:border-info/50 hover:bg-info/10"
             href="/webhooks/standalone"
           >
             Standalone view
           </Link>
           <RefreshButton />
         </div>
+      </div>
+
+      {/* Per-provider navigation */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {PROVIDER_CARDS.map((card) => (
+          <Link
+            key={card.id}
+            href={card.href}
+            className="group flex flex-col gap-2 rounded-lg border border-line bg-panel p-4 shadow-control transition-all hover:-translate-y-px hover:border-info/50 hover:shadow-md"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-base font-semibold text-ink group-hover:text-info">
+                {card.label}
+              </span>
+              <span className={`pill text-[11px] ${card.statusTone}`}>{card.statusLabel}</span>
+            </div>
+            <p className="text-sm leading-5 text-muted">{card.description}</p>
+          </Link>
+        ))}
       </div>
 
       <WebhooksBody result={result} />
