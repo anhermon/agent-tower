@@ -14,8 +14,10 @@ import {
   persistGithubWebhookDelivery,
   validateGithubWebhookHeaders,
 } from "@/lib/github-webhooks";
+import { appendWebhookSession } from "@/lib/webhook-session-store";
 import { getWebhookVerifier } from "@/lib/webhook-verifier";
 import { withAudit } from "@/lib/with-audit";
+import { normalizeWorkflowRunPayload } from "@/lib/workflow-run-normalizer";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -119,6 +121,15 @@ async function persistDelivery(
       { ok: false, error: "event_publish_failed", message: errorMessage(error) },
       { status: 500 }
     );
+  }
+
+  // If this is a workflow_run event from a claude.yml run, record it for the
+  // webhook sessions observability panel.
+  if (headers.event === "workflow_run") {
+    const session = normalizeWorkflowRunPayload(payload);
+    if (session) {
+      appendWebhookSession(session);
+    }
   }
 
   return Response.json(
