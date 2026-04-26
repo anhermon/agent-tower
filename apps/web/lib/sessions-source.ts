@@ -144,10 +144,16 @@ async function enrichWithPreviews(
           };
         }
       }
+      const FIRST_USER_TEXT_LIMIT = 300;
+      const rawText = preview.firstUserText;
+      const firstUserText =
+        rawText && rawText.length > FIRST_USER_TEXT_LIMIT
+          ? rawText.slice(0, FIRST_USER_TEXT_LIMIT) + "…"
+          : rawText;
       results[index] = {
         ...file,
         title: preview.title,
-        firstUserText: preview.firstUserText,
+        firstUserText,
         model: preview.model,
         turnCountLowerBound: preview.turnCountLowerBound,
       };

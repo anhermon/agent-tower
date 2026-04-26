@@ -81,5 +81,19 @@ function SessionsBody({ result }: { result: ListResult }) {
     );
   }
 
-  return <SessionList sessions={result.sessions} />;
+  const SESSIONS_PAGE_LIMIT = 200;
+  const sessions = result.sessions.slice(0, SESSIONS_PAGE_LIMIT);
+  const truncated = result.sessions.length > SESSIONS_PAGE_LIMIT;
+
+  return (
+    <>
+      {truncated && (
+        <p className="mb-3 text-xs text-muted">
+          Showing most recent {SESSIONS_PAGE_LIMIT} of {result.sessions.length} sessions. Use search
+          to find older sessions.
+        </p>
+      )}
+      <SessionList sessions={sessions} />
+    </>
+  );
 }
