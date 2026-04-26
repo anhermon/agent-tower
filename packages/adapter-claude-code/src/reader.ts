@@ -42,36 +42,34 @@ export async function listSessionFiles(
   root: ClaudeCodeDataRoot
 ): Promise<readonly ClaudeSessionFile[]> {
   const projects = await safeReadDir(root.directory);
-  const results: ClaudeSessionFile[] = [];
 
-  for (const projectName of projects) {
-    const projectPath = path.join(root.directory, projectName);
-    const projectStat = await safeStat(projectPath);
-    if (!projectStat?.isDirectory()) {
-      continue;
-    }
+  const perProject = await Promise.all(
+    projects.map(async (projectName) => {
+      const projectPath = path.join(root.directory, projectName);
+      const projectStat = await safeStat(projectPath);
+      if (!projectStat?.isDirectory()) return [];
 
-    const files = await safeReadDir(projectPath);
-    for (const fileName of files) {
-      if (!fileName.endsWith(JSONL_EXTENSION)) {
-        continue;
-      }
-      const filePath = path.join(projectPath, fileName);
-      const fileStat = await safeStat(filePath);
-      if (!fileStat?.isFile()) {
-        continue;
-      }
+      const files = await safeReadDir(projectPath);
+      const fileResults = await Promise.all(
+        files.map(async (fileName) => {
+          if (!fileName.endsWith(JSONL_EXTENSION)) return null;
+          const filePath = path.join(projectPath, fileName);
+          const fileStat = await safeStat(filePath);
+          if (!fileStat?.isFile()) return null;
+          return {
+            sessionId: fileName.slice(0, -JSONL_EXTENSION.length),
+            projectId: projectName,
+            filePath,
+            sizeBytes: fileStat.size,
+            modifiedAt: fileStat.mtime.toISOString(),
+          } satisfies ClaudeSessionFile;
+        })
+      );
+      return fileResults.filter((f): f is ClaudeSessionFile => f !== null);
+    })
+  );
 
-      results.push({
-        sessionId: fileName.slice(0, -JSONL_EXTENSION.length),
-        projectId: projectName,
-        filePath,
-        sizeBytes: fileStat.size,
-        modifiedAt: fileStat.mtime.toISOString(),
-      });
-    }
-  }
-
+  const results = perProject.flat();
   results.sort((a, b) => (a.modifiedAt < b.modifiedAt ? 1 : -1));
   return results;
 }
