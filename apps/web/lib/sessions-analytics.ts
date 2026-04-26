@@ -1,4 +1,6 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
+
 import type {
   CostBreakdown,
   DateRange,
@@ -81,52 +83,68 @@ async function withSource<T>(fn: (src: SessionAnalyticsSource) => Promise<T>): P
 
 // ─── Public entry points ─────────────────────────────────────────────────────
 
-export async function getOverview(range?: DateRange): Promise<Result<AnalyticsOverview>> {
-  return withSource(async (src) => {
-    const [sessions, timeseries, costBreakdown] = await Promise.all([
-      src.listSessionSummaries(range ? { range } : undefined),
-      src.loadActivityTimeseries(range),
-      src.loadCostBreakdown(range),
-    ]);
+const _getOverview = unstable_cache(
+  async (range?: DateRange): Promise<Result<AnalyticsOverview>> => {
+    return await withSource(async (src) => {
+      const [sessions, timeseries, costBreakdown] = await Promise.all([
+        src.listSessionSummaries(range ? { range } : undefined),
+        src.loadActivityTimeseries(range),
+        src.loadCostBreakdown(range),
+      ]);
 
-    let messageCount = 0;
-    let toolCallCount = 0;
-    let inputTokens = 0;
-    let outputTokens = 0;
-    let cacheReadTokens = 0;
-    let cacheCreationTokens = 0;
+      let messageCount = 0;
+      let toolCallCount = 0;
+      let inputTokens = 0;
+      let outputTokens = 0;
+      let cacheReadTokens = 0;
+      let cacheCreationTokens = 0;
 
-    for (const session of sessions) {
-      messageCount += session.userMessageCount + session.assistantMessageCount;
-      for (const count of Object.values(session.toolCounts)) {
-        toolCallCount += count;
+      for (const session of sessions) {
+        messageCount += session.userMessageCount + session.assistantMessageCount;
+        for (const count of Object.values(session.toolCounts)) {
+          toolCallCount += count;
+        }
+        inputTokens += session.usage.inputTokens;
+        outputTokens += session.usage.outputTokens;
+        cacheReadTokens += session.usage.cacheReadInputTokens;
+        cacheCreationTokens += session.usage.cacheCreationInputTokens;
       }
-      inputTokens += session.usage.inputTokens;
-      outputTokens += session.usage.outputTokens;
-      cacheReadTokens += session.usage.cacheReadInputTokens;
-      cacheCreationTokens += session.usage.cacheCreationInputTokens;
-    }
 
-    return {
-      sessionCount: sessions.length,
-      messageCount,
-      toolCallCount,
-      totalInputTokens: inputTokens,
-      totalOutputTokens: outputTokens,
-      totalCacheReadTokens: cacheReadTokens,
-      totalCacheCreationTokens: cacheCreationTokens,
-      estimatedCostUsd: costBreakdown.totalUsd,
-      timeseries,
-    } satisfies AnalyticsOverview;
-  });
+      return {
+        sessionCount: sessions.length,
+        messageCount,
+        toolCallCount,
+        totalInputTokens: inputTokens,
+        totalOutputTokens: outputTokens,
+        totalCacheReadTokens: cacheReadTokens,
+        totalCacheCreationTokens: cacheCreationTokens,
+        estimatedCostUsd: costBreakdown.totalUsd,
+        timeseries,
+      } satisfies AnalyticsOverview;
+    });
+  },
+  ["sessions-overview"],
+  { revalidate: 30, tags: ["sessions"] }
+);
+
+export async function getOverview(range?: DateRange): Promise<Result<AnalyticsOverview>> {
+  return await _getOverview(range);
 }
 
+const _listProjects = unstable_cache(
+  async (): Promise<Result<readonly ProjectSummary[]>> => {
+    return await withSource((src) => src.listProjectSummaries());
+  },
+  ["sessions-projects"],
+  { revalidate: 30, tags: ["sessions"] }
+);
+
 export async function listProjects(): Promise<Result<readonly ProjectSummary[]>> {
-  return withSource((src) => src.listProjectSummaries());
+  return await _listProjects();
 }
 
 export async function loadProject(slug: string): Promise<Result<ProjectDetail | undefined>> {
-  return withSource(async (src) => {
+  return await withSource(async (src) => {
     const [projects, sessions] = await Promise.all([
       src.listProjectSummaries(),
       src.listSessionSummaries({ projectId: slug }),
@@ -138,17 +156,25 @@ export async function loadProject(slug: string): Promise<Result<ProjectDetail | 
 }
 
 export async function loadReplay(sessionId: string): Promise<Result<ReplayData | undefined>> {
-  return withSource((src) => src.loadSessionReplay(sessionId));
+  return await withSource((src) => src.loadSessionReplay(sessionId));
 }
 
+const _getCostBreakdown = unstable_cache(
+  async (range?: DateRange): Promise<Result<CostBreakdown>> => {
+    return await withSource((src) => src.loadCostBreakdown(range));
+  },
+  ["sessions-costs"],
+  { revalidate: 30, tags: ["sessions"] }
+);
+
 export async function getCostBreakdown(range?: DateRange): Promise<Result<CostBreakdown>> {
-  return withSource((src) => src.loadCostBreakdown(range));
+  return await _getCostBreakdown(range);
 }
 
 export async function getToolAnalytics(): Promise<Result<ToolAnalytics>> {
-  return withSource((src) => src.loadToolAnalytics());
+  return await withSource((src) => src.loadToolAnalytics());
 }
 
 export async function getActivity(range?: DateRange): Promise<Result<Timeseries>> {
-  return withSource((src) => src.loadActivityTimeseries(range));
+  return await withSource((src) => src.loadActivityTimeseries(range));
 }

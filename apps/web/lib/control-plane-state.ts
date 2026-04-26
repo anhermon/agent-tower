@@ -1,8 +1,14 @@
+import { unstable_cache } from "next/cache";
+
 import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
 
-import { type AgentInventoryItem, listAgentsOrEmpty } from "@/lib/agents-source";
-import { listSessionsOrEmpty } from "@/lib/sessions-source";
-import { listSkillsOrEmpty } from "@/lib/skills-source";
+import {
+  type AgentInventoryItem,
+  type ListAgentsResult,
+  listAgentsOrEmpty,
+} from "@/lib/agents-source";
+import { type ListSessionsResult, listSessionsOrEmpty } from "@/lib/sessions-source";
+import { type ListSkillsResult, listSkillsOrEmpty } from "@/lib/skills-source";
 
 import type { ActivityEvent, HealthState, Metric } from "@/types/control-plane";
 
@@ -21,62 +27,68 @@ export interface OverviewState {
   readonly agentsAdapterError: string | null;
 }
 
-export async function getOverviewState(now: Date = new Date()): Promise<OverviewState> {
-  const [sessions, agents, skills] = await Promise.all([
-    listSessionsOrEmpty(),
-    listAgentsOrEmpty(now),
-    listSkillsOrEmpty(),
-  ]);
+const _getOverviewState = unstable_cache(
+  async (): Promise<OverviewState> => {
+    const now = new Date();
+    const [sessions, agents, skills]: [ListSessionsResult, ListAgentsResult, ListSkillsResult] =
+      await Promise.all([listSessionsOrEmpty(), listAgentsOrEmpty(now), listSkillsOrEmpty()]);
 
-  const metrics: Metric[] = [
-    {
-      label: "Active sessions",
-      value: sessions.ok ? formatActiveSessions(agents) : UNIMPLEMENTED,
-      detail: sessions.ok
-        ? describeActiveSessions(agents, sessions.sessions.length)
-        : describeSessionsAdapter(sessions),
-      trend: "flat",
-    },
-    {
-      label: "Agent instances",
-      value: agents.ok ? String(agents.agents.length) : UNIMPLEMENTED,
-      detail: agents.ok ? describeAgents(agents.agents) : describeAgentsAdapter(agents),
-      trend: "flat",
-    },
-    {
-      label: "Skills",
-      value: skills.ok ? String(skills.skills.length) : UNIMPLEMENTED,
-      detail: skills.ok
-        ? describeSkills(skills.skills.length, skills.roots.length)
-        : describeSkillsAdapter(skills),
-      trend: "flat",
-    },
-    {
-      label: "Webhook deliveries",
-      value: UNIMPLEMENTED,
-      detail: "Webhooks module not yet implemented",
-      trend: "flat",
-    },
-    {
-      label: "Replay frames",
-      value: UNIMPLEMENTED,
-      detail: "Replay module not yet implemented",
-      trend: "flat",
-    },
-  ];
+    const metrics: Metric[] = [
+      {
+        label: "Active sessions",
+        value: sessions.ok ? formatActiveSessions(agents) : UNIMPLEMENTED,
+        detail: sessions.ok
+          ? describeActiveSessions(agents, sessions.sessions.length)
+          : describeSessionsAdapter(sessions),
+        trend: "flat",
+      },
+      {
+        label: "Agent instances",
+        value: agents.ok ? String(agents.agents.length) : UNIMPLEMENTED,
+        detail: agents.ok ? describeAgents(agents.agents) : describeAgentsAdapter(agents),
+        trend: "flat",
+      },
+      {
+        label: "Skills",
+        value: skills.ok ? String(skills.skills.length) : UNIMPLEMENTED,
+        detail: skills.ok
+          ? describeSkills(skills.skills.length, skills.roots.length)
+          : describeSkillsAdapter(skills),
+        trend: "flat",
+      },
+      {
+        label: "Webhook deliveries",
+        value: UNIMPLEMENTED,
+        detail: "Webhooks module not yet implemented",
+        trend: "flat",
+      },
+      {
+        label: "Replay frames",
+        value: UNIMPLEMENTED,
+        detail: "Replay module not yet implemented",
+        trend: "flat",
+      },
+    ];
 
-  return {
-    metrics,
-    activity: [],
-    agents: agents.ok ? agents.agents : [],
-    // "configured" means the adapter resolved a data root — an error while
-    // listing is still a configured adapter, just a failing one. Without this
-    // distinction the panel header shows "Adapter not configured" while the
-    // body correctly shows an ErrorState.
-    agentsAdapterConfigured: agents.ok || agents.reason !== "unconfigured",
-    agentsAdapterError:
-      !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
-  };
+    return {
+      metrics,
+      activity: [],
+      agents: agents.ok ? agents.agents : [],
+      // "configured" means the adapter resolved a data root — an error while
+      // listing is still a configured adapter, just a failing one. Without this
+      // distinction the panel header shows "Adapter not configured" while the
+      // body correctly shows an ErrorState.
+      agentsAdapterConfigured: agents.ok || agents.reason !== "unconfigured",
+      agentsAdapterError:
+        !agents.ok && agents.reason === "error" ? (agents.message ?? "Unknown error") : null,
+    };
+  },
+  ["control-plane-overview"],
+  { revalidate: 30, tags: ["overview"] }
+);
+
+export async function getOverviewState(): Promise<OverviewState> {
+  return await _getOverviewState();
 }
 
 export function statusToHealthState(status: AgentStatus): HealthState {

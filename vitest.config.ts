@@ -24,6 +24,11 @@ const sharedAlias = {
   // only guards in `apps/web/lib/*.ts` stay meaningful in production
   // builds without breaking unit tests.
   "server-only": fromRoot("./test/shims/server-only.ts"),
+  // `next/cache` (unstable_cache, revalidateTag, etc.) relies on React cache
+  // infrastructure that is unavailable in a plain Node/vitest context. This
+  // shim makes unstable_cache a transparent identity wrapper so wrapped
+  // functions behave identically to the originals in unit tests.
+  "next/cache": fromRoot("./test/shims/next-cache.ts"),
   // `@/*` — the Next.js path alias used throughout `apps/web`. Mirroring it
   // here lets vitest resolve the same imports that component files already
   // use, so pure helpers can be tested without extracting them back to lib/.
