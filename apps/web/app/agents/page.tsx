@@ -1,4 +1,5 @@
-import { AGENT_STATUSES, type AgentStatus, listDetectedHarnesses } from "@control-plane/core";
+import { AGENT_STATUSES, type AgentStatus } from "@control-plane/core";
+import { listDetectedHarnesses } from "@control-plane/core/harness-detector";
 
 import { AgentGrid } from "@/components/agents/agent-grid";
 import { HarnessList } from "@/components/agents/harness-list";

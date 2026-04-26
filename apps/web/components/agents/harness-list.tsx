@@ -1,4 +1,4 @@
-import type { HarnessInfo } from "@control-plane/core";
+import type { HarnessInfo } from "@control-plane/core/harness-detector";
 
 interface HarnessListProps {
   readonly harnesses: readonly HarnessInfo[];
