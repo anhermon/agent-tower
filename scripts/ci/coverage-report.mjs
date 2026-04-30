@@ -31,11 +31,15 @@ const COVERAGE_DIR = resolve(REPO_ROOT, ".coverage-reports");
 // Global thresholds kept in sync with `vitest.coverage.config.ts`. Used only
 // to compute `status` when the summary is present; vitest itself is the
 // source of truth for failing a run.
+// Global floor from vitest.coverage.config.ts (2026-04-24 baseline):
+// page/component files in apps/web are 0% unit-covered (E2E tested), so the
+// global floor for lines/statements is intentionally low; pure-logic packages
+// have higher per-glob overrides defined in vitest.coverage.config.ts.
 const GLOBAL_THRESHOLDS = {
-  lines: 60,
+  lines: 35,
   functions: 60,
   branches: 55,
-  statements: 60,
+  statements: 35,
 };
 
 const METRICS = ["lines", "functions", "branches", "statements"];
