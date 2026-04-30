@@ -71,3 +71,9 @@ jobs:
 
       - name: Audit
         run: task audit
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Performance gate (Lighthouse CI + bundle size)
+        run: task ci:perf
