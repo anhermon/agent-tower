@@ -94,7 +94,7 @@ async function parseBody(req: Request): Promise<ParseBodyResult> {
 
   const patch: ParsedPatch = {};
   if (rawStatus !== undefined) patch.status = rawStatus as TicketStatus;
-  if (rawAgentId !== undefined) patch.assigneeAgentId = (rawAgentId).trim();
+  if (rawAgentId !== undefined) patch.assigneeAgentId = rawAgentId.trim();
   if (rawPriority !== undefined) patch.priority = rawPriority as TicketPriority;
   return { ok: true, patch };
 }
