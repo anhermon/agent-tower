@@ -7,6 +7,7 @@
     "@testing-library/jest-dom",
     "@testing-library/user-event",
     "license-checker-rseidelsohn",
+    "lefthook",
     "lint-staged",
     "redis-memory-server",
     "@control-plane/events"
