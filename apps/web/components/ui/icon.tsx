@@ -25,6 +25,7 @@ const paths: Record<IconProps["name"], string> = {
   plug: "M9 7V3m6 4V3M7 7h10v4a5 5 0 0 1-10 0V7Zm5 9v5",
   signal: "M5 12a7 7 0 0 1 14 0m-4 0a3 3 0 0 0-6 0m3 4h.01",
   replay: "M4 12a8 8 0 1 0 2.34-5.66L4 8m0 0V3m0 5h5",
+  chart: "M3 3v18h18M7 16l4-4 4 4 4-7",
   search: "M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21",
   bell: "M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Zm-4 12a2 2 0 0 1-4 0",
   chevron: "m9 18 6-6-6-6",

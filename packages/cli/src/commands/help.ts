@@ -19,6 +19,19 @@ export const COMMANDS: readonly CommandDescriptor[] = [
     summary: "List (dry-run) or archive (--apply) dead-weight skills",
   },
   { name: "agents list", summary: "List agents grouped from Claude Code projects" },
+  {
+    name: "compare models",
+    summary: "Model performance leaderboard: cache hit rate, cost/session, waste",
+  },
+  {
+    name: "compare harnesses",
+    summary: "Harness efficiency leaderboard: cache efficiency, waste rate",
+  },
+  { name: "compare features", summary: "Feature × harness compatibility matrix (usage rates)" },
+  {
+    name: "compare sessions <a> <b>",
+    summary: "A/B diff between two sessions (tokens, cost, cache, waste)",
+  },
   { name: "mcp", summary: "MCP server stub (separate package)" },
   { name: "help", summary: "Print this help block" },
 ];

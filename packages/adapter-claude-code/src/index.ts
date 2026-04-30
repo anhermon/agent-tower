@@ -1,4 +1,20 @@
 export * from "./adapter.js";
+export type {
+  ABSessionDiff,
+  FeatureMatrix,
+  FeatureMatrixCell,
+  FeatureMatrixRow,
+  HarnessMetrics,
+  ModelMetrics,
+  SessionSnapshot,
+} from "./analytics/compare.js";
+export {
+  buildFeatureMatrix,
+  compareByHarness,
+  compareByModel,
+  diffSessions,
+  harnessLabel,
+} from "./analytics/compare.js";
 export type { CostFoldOptions } from "./analytics/cost.js";
 export { foldCostBreakdown } from "./analytics/cost.js";
 export type { ProjectGrouping } from "./analytics/project-summary.js";

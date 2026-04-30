@@ -112,6 +112,18 @@ export const modules: ModuleDefinition[] = [
     owner: "",
     docs: "docs/modules/replay.md",
   },
+  {
+    key: "compare",
+    label: "Compare",
+    href: "/compare",
+    icon: "chart",
+    description:
+      "Cross-harness analytics: model performance leaderboard, harness efficiency, feature matrix, and A/B session diff.",
+    status: "degraded",
+    phase: "active",
+    owner: "",
+    docs: "docs/modules/compare.md",
+  },
 ];
 
 export function getModuleByHref(pathname: string): ModuleDefinition {

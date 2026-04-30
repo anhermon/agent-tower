@@ -10,7 +10,8 @@ export type ModuleKey =
   | "mcps"
   | "token-optimizer"
   | "channels"
-  | "replay";
+  | "replay"
+  | "compare";
 
 export type ModuleIcon =
   | "grid"
@@ -21,7 +22,8 @@ export type ModuleIcon =
   | "bolt"
   | "plug"
   | "signal"
-  | "replay";
+  | "replay"
+  | "chart";
 
 export type ModulePhase = "skeleton" | "active" | "deferred";
 
