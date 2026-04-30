@@ -13,10 +13,10 @@ import {
   type AgentWakeAdapter,
 } from "@control-plane/core";
 
-import { resolveTicketsFile } from "./kanban-source.js";
-import { resolveWakeAdapter } from "./kanban-wake.js";
+import { resolveTicketsFile } from "./kanban-source";
+import { resolveWakeAdapter } from "./kanban-wake";
 
-export { TICKETS_FILE_ENV } from "./kanban-source.js";
+export { TICKETS_FILE_ENV } from "./kanban-source";
 
 /**
  * Local file-backed kanban store.
