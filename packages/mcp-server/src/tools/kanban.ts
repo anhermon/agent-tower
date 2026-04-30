@@ -10,7 +10,13 @@
  * Requires: PAPERCLIP_API_KEY, PAPERCLIP_API_URL, PAPERCLIP_COMPANY_ID
  */
 
-import { type TicketPriority, type TicketRecord, type TicketStatus , TICKET_PRIORITIES, TICKET_STATUSES } from "@control-plane/core";
+import {
+  type TicketPriority,
+  type TicketRecord,
+  type TicketStatus,
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+} from "@control-plane/core";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
@@ -152,8 +158,7 @@ export const kanbanListTool: ToolDefinition = {
 
     try {
       const params = asRecord(input);
-      const projectId =
-        typeof params.projectId === "string" ? params.projectId : env.projectId;
+      const projectId = typeof params.projectId === "string" ? params.projectId : env.projectId;
       let path = `/api/companies/${env.companyId}/issues?limit=200`;
       if (projectId) path += `&projectId=${projectId}`;
 
@@ -216,8 +221,7 @@ export const kanbanCreateTool: ToolDefinition = {
           ? (rawPriority as TicketPriority)
           : TICKET_PRIORITIES.Normal;
 
-      const projectId =
-        typeof params.projectId === "string" ? params.projectId : env.projectId;
+      const projectId = typeof params.projectId === "string" ? params.projectId : env.projectId;
 
       const body: Record<string, unknown> = {
         title: title.trim(),

@@ -10,7 +10,13 @@
  * Requires: PAPERCLIP_API_KEY, PAPERCLIP_API_URL, PAPERCLIP_COMPANY_ID
  */
 
-import { type TicketPriority, type TicketRecord, type TicketStatus , TICKET_PRIORITIES, TICKET_STATUSES } from "@control-plane/core";
+import {
+  type TicketPriority,
+  type TicketRecord,
+  type TicketStatus,
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+} from "@control-plane/core";
 
 import { parseFlags, UsageError } from "../flags.js";
 import { bold, renderTable, resolveOutputMode, writeJson, writeLine } from "../output.js";

@@ -21,7 +21,7 @@ export default async function KanbanPage() {
   const configuredFile = getConfiguredTicketsFile();
 
   // Determine status badge
-  const status = paperclipConfigured || (configuredFile != null) ? "healthy" : "degraded";
+  const status = paperclipConfigured || configuredFile != null ? "healthy" : "degraded";
 
   // Resolve projectId for Paperclip mode (optional — narrows board to one project)
   const paperclipEnv = paperclipConfigured ? resolvePaperclipEnv() : null;
