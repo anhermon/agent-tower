@@ -43,6 +43,11 @@ export default defineConfig({
           reuseExistingServer: true,
           timeout: 120_000,
           env: {
+            // Force development mode so Next.js applies PostCSS/Tailwind
+            // transformations regardless of the parent shell's NODE_ENV.
+            // Without this, NODE_ENV=production in agent environments skips
+            // CSS parsing and returns HTTP 500 on all routes (ANGA-1017).
+            NODE_ENV: "development",
             CLAUDE_CONTROL_PLANE_DATA_ROOT: SESSIONS_FIXTURE_ROOT,
             CONTROL_PLANE_SKILLS_ROOTS: SKILLS_FIXTURE_ROOT,
           },
