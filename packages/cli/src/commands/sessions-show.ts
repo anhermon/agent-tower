@@ -18,6 +18,34 @@ import { resolveOrExplain } from "../data-root.js";
 import { parseFlags, UsageError } from "../flags.js";
 import { bold, dim, renderTable, resolveOutputMode, writeJson, writeLine } from "../output.js";
 
+interface TranscriptData {
+  timeline?: TurnTimeline;
+  skillAttribution?: SkillTurnAttribution;
+  toolCostView?: ToolCostView;
+  bootstrapBreakdown?: BootstrapBreakdown;
+}
+
+async function loadTranscriptData(
+  directory: string,
+  sessionId: string,
+  flags: { timeline?: boolean; bootstrap?: boolean }
+): Promise<TranscriptData> {
+  const files = await listSessionFiles({ directory });
+  const file = files.find((f) => f.sessionId === sessionId);
+  if (!file) return {};
+  const { entries } = await readTranscriptFile(file.filePath);
+  const data: TranscriptData = {};
+  if (flags.timeline) {
+    data.timeline = computeTurnTimeline(entries, { sessionId });
+    data.skillAttribution = computeSkillTurnAttribution(entries, { sessionId });
+    data.toolCostView = computeToolCostView(entries, { sessionId });
+  }
+  if (flags.bootstrap) {
+    data.bootstrapBreakdown = computeBootstrapBreakdown(entries, { sessionId });
+  }
+  return data;
+}
+
 export async function runSessionsShow(argv: readonly string[]): Promise<number> {
   const { values, positionals } = parseFlags<{
     json?: boolean;
@@ -54,42 +82,50 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
     return 1;
   }
 
-  let timeline: TurnTimeline | undefined;
-  let skillAttribution: SkillTurnAttribution | undefined;
-  let toolCostView: ToolCostView | undefined;
-  let bootstrapBreakdown: BootstrapBreakdown | undefined;
-
-  if (values.timeline || values.bootstrap) {
-    const files = await listSessionFiles({ directory: resolved.directory });
-    const file = files.find((f) => f.sessionId === sessionId);
-    if (file) {
-      const { entries } = await readTranscriptFile(file.filePath);
-      if (values.timeline) {
-        timeline = computeTurnTimeline(entries, { sessionId });
-        skillAttribution = computeSkillTurnAttribution(entries, { sessionId });
-        toolCostView = computeToolCostView(entries, { sessionId });
-      }
-      if (values.bootstrap) {
-        bootstrapBreakdown = computeBootstrapBreakdown(entries, { sessionId });
-      }
-    }
-  }
+  const needsTranscript = values.timeline === true || values.bootstrap === true;
+  const data: TranscriptData = needsTranscript
+    ? await loadTranscriptData(resolved.directory, sessionId, values)
+    : {};
 
   if (mode.json) {
-    const base = projectSummary(summary, values.full === true) as Record<string, unknown>;
-    writeJson({
-      ok: true,
-      session: {
-        ...base,
-        ...(timeline ? { timeline } : {}),
-        ...(skillAttribution ? { skillAttribution } : {}),
-        ...(toolCostView ? { toolCostView } : {}),
-        ...(bootstrapBreakdown ? { bootstrapBreakdown } : {}),
-      },
-    });
+    writeJson({ ok: true, session: buildJsonSession(summary, values.full === true, data) });
     return 0;
   }
 
+  renderSessionMeta(summary);
+  renderWasteSection(summary);
+
+  if (data.bootstrapBreakdown) renderBootstrapSection(data.bootstrapBreakdown);
+  if (data.toolCostView?.tools.length) renderToolCostSection(data.toolCostView);
+  if (data.timeline?.entries.length) renderTimelineSection(data.timeline);
+  if (data.skillAttribution?.entries.length) renderSkillsSection(data.skillAttribution);
+
+  return 0;
+}
+
+function projectSummary(summary: SessionUsageSummary, includeTurns: boolean): unknown {
+  if (includeTurns) return summary;
+  const { turns: _turns, ...rest } = summary;
+  return rest;
+}
+
+function buildJsonSession(
+  summary: SessionUsageSummary,
+  includeFull: boolean,
+  data: TranscriptData
+): Record<string, unknown> {
+  const base = projectSummary(summary, includeFull) as Record<string, unknown>;
+  const { timeline, skillAttribution, toolCostView, bootstrapBreakdown } = data;
+  return {
+    ...base,
+    ...(timeline ? { timeline } : {}),
+    ...(skillAttribution ? { skillAttribution } : {}),
+    ...(toolCostView ? { toolCostView } : {}),
+    ...(bootstrapBreakdown ? { bootstrapBreakdown } : {}),
+  };
+}
+
+function renderSessionMeta(summary: SessionUsageSummary): void {
   writeLine(bold(`Session ${summary.sessionId}`));
   writeLine("");
   writeLine(`Model:            ${summary.model ?? "-"}`);
@@ -104,116 +140,24 @@ export async function runSessionsShow(argv: readonly string[]): Promise<number> 
   writeLine(`Cache hit rate:   ${(summary.cacheEfficiency.hitRate * 100).toFixed(1)}%`);
   writeLine(`Estimated cost:   $${summary.estimatedCostUsd.toFixed(4)}`);
   writeLine(`Cwd:              ${summary.cwd ?? "-"}`);
-
-  // Waste signals were added in Phase 1 of the waste-analytics rollout and are
-  // populated on every summary emitted by the current analytics fold. When the
-  // adapter decides to omit them (older fixture, partial fold), skip quietly.
-  if (summary.waste) {
-    const verdict = scoreSessionWaste(summary);
-    const topFlags = verdict.flags.slice(0, 3);
-    writeLine("");
-    writeLine(`Waste score:      ${verdict.overall.toFixed(3)} (overall, 0..1)`);
-    if (topFlags.length === 0) {
-      writeLine("No waste flags above threshold.");
-    } else {
-      writeLine(bold("Top waste flags:"));
-      for (const flag of topFlags) {
-        writeLine(`  - ${flag}`);
-      }
-    }
-  }
-
-  // ── Bootstrap context breakdown ──────────────────────────────────────────
-  if (bootstrapBreakdown) {
-    writeLine("");
-    writeLine(bold("Bootstrap context breakdown"));
-    writeLine(
-      `System prompt: ${bootstrapBreakdown.systemPromptBytes.toLocaleString()} bytes  (~${bootstrapBreakdown.estimatedSystemPromptTokens.toLocaleString()} tokens)`
-    );
-    if (bootstrapBreakdown.components.length === 0) {
-      writeLine(dim("  (no components detected)"));
-    } else {
-      writeLine("");
-      const rows = bootstrapBreakdown.components.map((c) => [
-        kindLabel(c.kind),
-        c.name.length > 60 ? `\u2026${c.name.slice(-59)}` : c.name,
-        c.sizeBytes.toLocaleString(),
-        `~${c.estimatedTokens.toLocaleString()}`,
-      ]);
-      writeLine(renderTable(["Kind", "Name", "Bytes", "Est. tokens"], rows));
-    }
-  }
-
-  // ── Tool token attribution ───────────────────────────────────────────────
-  if (toolCostView && toolCostView.tools.length > 0) {
-    writeLine("");
-    writeLine(bold("Tool token attribution"));
-    writeLine(
-      `Total calls: ${toolCostView.totalToolCalls}  attributed output tokens: ${toolCostView.totalAttributedOutputTokens.toLocaleString()}`
-    );
-    writeLine("");
-    const rows = toolCostView.tools
-      .slice(0, 15)
-      .map((t) => [
-        t.toolName,
-        String(t.callCount),
-        t.outputTokensFromTurns.toLocaleString(),
-        t.inputTokensFromTurns.toLocaleString(),
-        t.cacheReadTokensFromTurns.toLocaleString(),
-      ]);
-    writeLine(
-      renderTable(["Tool", "Calls", "Output tokens", "Input tokens", "Cache-read tokens"], rows)
-    );
-  }
-
-  // ── Per-turn token ledger ────────────────────────────────────────────────
-  if (timeline && timeline.entries.length > 0) {
-    writeLine("");
-    writeLine(bold("Per-turn token ledger"));
-    const rows = timeline.entries.map((e) => [
-      String(e.turnIndex),
-      e.role,
-      e.timestamp ? e.timestamp.slice(11, 19) : "-",
-      e.inputTokens > 0 ? e.inputTokens.toLocaleString() : "-",
-      e.outputTokens > 0 ? e.outputTokens.toLocaleString() : "-",
-      e.cacheReadTokens > 0 ? e.cacheReadTokens.toLocaleString() : "-",
-      e.cacheCreationTokens > 0 ? e.cacheCreationTokens.toLocaleString() : "-",
-      e.toolsUsed.length > 0 ? e.toolsUsed.slice(0, 3).join(",") : "-",
-      e.wastedTurn ? "!" : "",
-    ]);
-    writeLine(
-      renderTable(["#", "Role", "Time", "Input", "Output", "Cread", "Ccreate", "Tools", "W"], rows)
-    );
-  }
-
-  // ── Skills active in session ─────────────────────────────────────────────
-  if (skillAttribution && skillAttribution.entries.length > 0) {
-    const allSkills = new Set<string>();
-    for (const e of skillAttribution.entries) {
-      for (const s of e.skillsActiveCumulative) allSkills.add(s);
-    }
-    if (allSkills.size > 0) {
-      writeLine("");
-      writeLine(bold("Skills active in session"));
-      const skillList = Array.from(allSkills).sort();
-      for (const skill of skillList) {
-        const firstTurn = skillAttribution.entries.find((e) =>
-          e.skillsActivatedOnThisTurn.includes(skill)
-        );
-        writeLine(
-          `  ${skill}${firstTurn !== undefined ? dim(` (turn ${firstTurn.turnIndex})`) : ""}`
-        );
-      }
-    }
-  }
-
-  return 0;
 }
 
-function projectSummary(summary: SessionUsageSummary, includeTurns: boolean): unknown {
-  if (includeTurns) return summary;
-  const { turns: _turns, ...rest } = summary;
-  return rest;
+function renderWasteSection(summary: SessionUsageSummary): void {
+  if (!summary.waste) return;
+  // Waste signals populated on every summary from the current analytics fold;
+  // older fixtures or partial folds will short-circuit here.
+  const verdict = scoreSessionWaste(summary);
+  const topFlags = verdict.flags.slice(0, 3);
+  writeLine("");
+  writeLine(`Waste score:      ${verdict.overall.toFixed(3)} (overall, 0..1)`);
+  if (topFlags.length === 0) {
+    writeLine("No waste flags above threshold.");
+  } else {
+    writeLine(bold("Top waste flags:"));
+    for (const flag of topFlags) {
+      writeLine(`  - ${flag}`);
+    }
+  }
 }
 
 function kindLabel(kind: string): string {
@@ -230,5 +174,80 @@ function kindLabel(kind: string): string {
       return "Other .md";
     default:
       return kind;
+  }
+}
+
+function renderBootstrapSection(breakdown: BootstrapBreakdown): void {
+  writeLine("");
+  writeLine(bold("Bootstrap context breakdown"));
+  writeLine(
+    `System prompt: ${breakdown.systemPromptBytes.toLocaleString()} bytes  (~${breakdown.estimatedSystemPromptTokens.toLocaleString()} tokens)`
+  );
+  if (breakdown.components.length === 0) {
+    writeLine(dim("  (no components detected)"));
+    return;
+  }
+  writeLine("");
+  const rows = breakdown.components.map((c) => [
+    kindLabel(c.kind),
+    c.name.length > 60 ? `\u2026${c.name.slice(-59)}` : c.name,
+    c.sizeBytes.toLocaleString(),
+    `~${c.estimatedTokens.toLocaleString()}`,
+  ]);
+  writeLine(renderTable(["Kind", "Name", "Bytes", "Est. tokens"], rows));
+}
+
+function renderToolCostSection(view: ToolCostView): void {
+  writeLine("");
+  writeLine(bold("Tool token attribution"));
+  writeLine(
+    `Total calls: ${view.totalToolCalls}  attributed output tokens: ${view.totalAttributedOutputTokens.toLocaleString()}`
+  );
+  writeLine("");
+  const rows = view.tools
+    .slice(0, 15)
+    .map((t) => [
+      t.toolName,
+      String(t.callCount),
+      t.outputTokensFromTurns.toLocaleString(),
+      t.inputTokensFromTurns.toLocaleString(),
+      t.cacheReadTokensFromTurns.toLocaleString(),
+    ]);
+  writeLine(
+    renderTable(["Tool", "Calls", "Output tokens", "Input tokens", "Cache-read tokens"], rows)
+  );
+}
+
+function renderTimelineSection(timeline: TurnTimeline): void {
+  writeLine("");
+  writeLine(bold("Per-turn token ledger"));
+  const rows = timeline.entries.map((e) => [
+    String(e.turnIndex),
+    e.role,
+    e.timestamp ? e.timestamp.slice(11, 19) : "-",
+    e.inputTokens > 0 ? e.inputTokens.toLocaleString() : "-",
+    e.outputTokens > 0 ? e.outputTokens.toLocaleString() : "-",
+    e.cacheReadTokens > 0 ? e.cacheReadTokens.toLocaleString() : "-",
+    e.cacheCreationTokens > 0 ? e.cacheCreationTokens.toLocaleString() : "-",
+    e.toolsUsed.length > 0 ? e.toolsUsed.slice(0, 3).join(",") : "-",
+    e.wastedTurn ? "!" : "",
+  ]);
+  writeLine(
+    renderTable(["#", "Role", "Time", "Input", "Output", "Cread", "Ccreate", "Tools", "W"], rows)
+  );
+}
+
+function renderSkillsSection(attribution: SkillTurnAttribution): void {
+  const allSkills = new Set<string>();
+  for (const e of attribution.entries) {
+    for (const s of e.skillsActiveCumulative) allSkills.add(s);
+  }
+  if (allSkills.size === 0) return;
+  writeLine("");
+  writeLine(bold("Skills active in session"));
+  const skillList = Array.from(allSkills).sort();
+  for (const skill of skillList) {
+    const firstTurn = attribution.entries.find((e) => e.skillsActivatedOnThisTurn.includes(skill));
+    writeLine(`  ${skill}${firstTurn !== undefined ? dim(` (turn ${firstTurn.turnIndex})`) : ""}`);
   }
 }

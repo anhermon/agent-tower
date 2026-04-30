@@ -15,6 +15,7 @@
  */
 
 import { isToolUseBlock } from "../content-blocks.js";
+
 import { normalizeTurnUsage } from "./session-summary.js";
 
 import type { ClaudeAssistantEntry, ClaudeContentBlock, ClaudeTranscriptEntry } from "../types.js";
@@ -62,6 +63,49 @@ export interface ToolCostViewOptions {
   readonly sessionId?: string;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Scan content blocks and return a map of toolName → call count for this turn.
+ */
+function collectToolCalls(blocks: readonly ClaudeContentBlock[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const block of blocks) {
+    if (isToolUseBlock(block) && block.name) {
+      counts.set(block.name, (counts.get(block.name) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+/**
+ * Credit each tool from a single turn with the turn's token counts.
+ * Mutates `toolMap` in-place.
+ */
+function accumulateToolCosts(
+  toolCallsOnTurn: ReadonlyMap<string, number>,
+  tokens: { outputTokens: number; inputTokens: number; cacheReadTokens: number },
+  toolMap: Map<string, MutableToolCostEntry>
+): void {
+  for (const [toolName, callCount] of toolCallsOnTurn) {
+    const existing = toolMap.get(toolName);
+    if (existing) {
+      existing.callCount += callCount;
+      existing.outputTokensFromTurns += tokens.outputTokens;
+      existing.inputTokensFromTurns += tokens.inputTokens;
+      existing.cacheReadTokensFromTurns += tokens.cacheReadTokens;
+    } else {
+      toolMap.set(toolName, {
+        toolName,
+        callCount,
+        outputTokensFromTurns: tokens.outputTokens,
+        inputTokensFromTurns: tokens.inputTokens,
+        cacheReadTokensFromTurns: tokens.cacheReadTokens,
+      });
+    }
+  }
+}
+
 // ─── Fold ─────────────────────────────────────────────────────────────────────
 
 /**
@@ -89,42 +133,20 @@ export function computeToolCostView(
     const content = asst.message?.content;
     if (!Array.isArray(content)) continue;
 
-    const blocks: readonly ClaudeContentBlock[] = content;
-
-    // Collect tool names + call counts from this turn.
-    const toolCallsOnTurn = new Map<string, number>();
-    for (const block of blocks) {
-      if (isToolUseBlock(block) && block.name) {
-        toolCallsOnTurn.set(block.name, (toolCallsOnTurn.get(block.name) ?? 0) + 1);
-      }
-    }
-
+    const toolCallsOnTurn = collectToolCalls(content as ClaudeContentBlock[]);
     if (toolCallsOnTurn.size === 0) continue;
 
-    // Extract token usage for this turn.
+    // Extract token usage for this turn and credit each distinct tool.
     const usage = normalizeTurnUsage(asst.message?.usage);
-    const outputTokens = usage?.outputTokens ?? 0;
-    const inputTokens = usage?.inputTokens ?? 0;
-    const cacheReadTokens = usage?.cacheReadInputTokens ?? 0;
-
-    // Credit each distinct tool on this turn.
-    for (const [toolName, callCount] of toolCallsOnTurn) {
-      const existing = toolMap.get(toolName);
-      if (existing) {
-        existing.callCount += callCount;
-        existing.outputTokensFromTurns += outputTokens;
-        existing.inputTokensFromTurns += inputTokens;
-        existing.cacheReadTokensFromTurns += cacheReadTokens;
-      } else {
-        toolMap.set(toolName, {
-          toolName,
-          callCount,
-          outputTokensFromTurns: outputTokens,
-          inputTokensFromTurns: inputTokens,
-          cacheReadTokensFromTurns: cacheReadTokens,
-        });
-      }
-    }
+    accumulateToolCosts(
+      toolCallsOnTurn,
+      {
+        outputTokens: usage?.outputTokens ?? 0,
+        inputTokens: usage?.inputTokens ?? 0,
+        cacheReadTokens: usage?.cacheReadInputTokens ?? 0,
+      },
+      toolMap
+    );
   }
 
   const tools: ToolCostEntry[] = [...toolMap.values()]
@@ -145,10 +167,10 @@ export function computeToolCostView(
   };
 }
 
-type MutableToolCostEntry = {
+interface MutableToolCostEntry {
   toolName: string;
   callCount: number;
   outputTokensFromTurns: number;
   inputTokensFromTurns: number;
   cacheReadTokensFromTurns: number;
-};
+}
