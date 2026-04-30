@@ -1,6 +1,7 @@
 import { TICKET_STATUSES, type TicketRecord, type TicketStatus } from "@control-plane/core";
 
 import { KanbanBoard } from "@/components/kanban/kanban-board";
+import { InteractiveKanbanBoard } from "@/components/kanban/kanban-board-interactive";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 import {
@@ -10,15 +11,21 @@ import {
   TICKETS_FILE_ENV,
 } from "@/lib/kanban-source";
 import { getModuleByKey } from "@/lib/modules";
+import { isPaperclipConfigured, resolvePaperclipEnv } from "@/lib/paperclip-kanban";
 
 export const dynamic = "force-dynamic";
 
 export default async function KanbanPage() {
   const mod = getModuleByKey("kanban");
+  const paperclipConfigured = isPaperclipConfigured();
   const configuredFile = getConfiguredTicketsFile();
-  const result = await listTicketsOrEmpty();
 
-  const status = configuredFile && result.ok && result.tickets.length > 0 ? "healthy" : "degraded";
+  // Determine status badge
+  const status = paperclipConfigured || (configuredFile != null) ? "healthy" : "degraded";
+
+  // Resolve projectId for Paperclip mode (optional — narrows board to one project)
+  const paperclipEnv = paperclipConfigured ? resolvePaperclipEnv() : null;
+  const projectId = paperclipEnv?.ok ? (paperclipEnv.env.projectId ?? undefined) : undefined;
 
   return (
     <section>
@@ -27,13 +34,22 @@ export default async function KanbanPage() {
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
+            {paperclipConfigured ? (
+              <span className="rounded-full border border-info/40 bg-info/10 px-2 py-0.5 text-xs font-medium text-info">
+                interactive
+              </span>
+            ) : null}
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Ticket-centric view of work flowing through the control plane. Lanes are keyed on the
-            canonical <code className="font-mono text-xs">TicketStatus</code> enum. The board is
-            read-only in Phase 2 v1 — no CRUD, no drag-and-drop, no agent-created tickets.
+            {paperclipConfigured
+              ? "Agent control plane — create, assign, and move Paperclip issues directly from the board. Moving a card to a new lane updates the issue status and wakes the assigned agent."
+              : "Ticket-centric view of work flowing through the control plane. Lanes are keyed on the canonical TicketStatus enum."}
           </p>
-          {configuredFile ? (
+          {paperclipConfigured ? (
+            <p className="mt-2 font-mono text-xs text-muted/80">
+              source: Paperclip API{projectId ? ` · project ${projectId}` : " · all projects"}
+            </p>
+          ) : configuredFile ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={configuredFile}>
               tickets file: {configuredFile}
             </p>
@@ -41,17 +57,26 @@ export default async function KanbanPage() {
         </div>
       </div>
 
-      <KanbanBody result={result} />
+      {paperclipConfigured ? (
+        <InteractiveKanbanBoard projectId={projectId} />
+      ) : (
+        <StaticKanbanBody />
+      )}
     </section>
   );
 }
 
-function KanbanBody({ result }: { result: ListTicketsResult }) {
+async function StaticKanbanBody() {
+  const result = await listTicketsOrEmpty();
+  return <KanbanBodyContent result={result} />;
+}
+
+function KanbanBodyContent({ result }: { result: ListTicketsResult }) {
   if (!result.ok && result.reason === "unconfigured") {
     return (
       <EmptyState
         title="No ticket source configured"
-        description={`Set ${TICKETS_FILE_ENV} to point at a JSON or JSONL file containing canonical TicketRecord entries to populate the board.`}
+        description={`Set PAPERCLIP_API_KEY + PAPERCLIP_API_URL for interactive mode, or set ${TICKETS_FILE_ENV} to point at a JSON/JSONL file for read-only mode.`}
       />
     );
   }

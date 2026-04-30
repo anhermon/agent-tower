@@ -4,6 +4,12 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprot
 import { agentsListTool } from "./tools/agents-list.js";
 import { controlPlaneAuditTool } from "./tools/audit.js";
 import { healthTool } from "./tools/health.js";
+import {
+  kanbanAssignTool,
+  kanbanCreateTool,
+  kanbanListTool,
+  kanbanMoveTool,
+} from "./tools/kanban.js";
 import { sessionsShowTool } from "./tools/sessions-show.js";
 import { sessionsTopTool } from "./tools/sessions-top.js";
 import { sessionsWasteTool } from "./tools/sessions-waste.js";
@@ -23,6 +29,10 @@ export const REGISTERED_TOOLS: readonly ToolDefinition[] = [
   skillsEfficacyTool,
   agentsListTool,
   controlPlaneAuditTool,
+  kanbanListTool,
+  kanbanCreateTool,
+  kanbanAssignTool,
+  kanbanMoveTool,
 ];
 
 export interface CreateServerOptions {
