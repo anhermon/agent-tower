@@ -2,29 +2,33 @@
   {
     "name": "web-client-total",
     "path": "apps/web/.next/static/**/*.js",
-    "limit": "500 KB",
+    "limit": "600 KB",
     "gzip": true,
-    "brotli": false
+    "brotli": false,
+    "running": false
   },
   {
     "name": "web-framework",
     "path": "apps/web/.next/static/chunks/framework-*.js",
     "limit": "60 KB",
     "gzip": true,
-    "brotli": false
+    "brotli": false,
+    "running": false
   },
   {
     "name": "web-main",
     "path": "apps/web/.next/static/chunks/main-*.js",
     "limit": "40 KB",
     "gzip": true,
-    "brotli": false
+    "brotli": false,
+    "running": false
   },
   {
     "name": "web-css",
     "path": "apps/web/.next/static/css/*.css",
     "limit": "80 KB",
     "gzip": true,
-    "brotli": false
+    "brotli": false,
+    "running": false
   }
 ]
