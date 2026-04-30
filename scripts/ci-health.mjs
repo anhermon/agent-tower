@@ -56,7 +56,10 @@ function buildLatest(reports, failed, passed, skipped, overall) {
         ranAt: r.ranAt,
         durationMs: r.durationMs,
       }))
-      .sort((a, b) => (a.tier || "").localeCompare(b.tier || "") || (a.tool || "").localeCompare(b.tool || "")),
+      .sort(
+        (a, b) =>
+          (a.tier || "").localeCompare(b.tier || "") || (a.tool || "").localeCompare(b.tool || "")
+      ),
     failures: failed.map((r) => ({
       tool: r.tool,
       tier: r.tier,
