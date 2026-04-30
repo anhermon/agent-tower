@@ -15,7 +15,7 @@ import { isPaperclipConfigured, resolvePaperclipEnv } from "@/lib/paperclip-kanb
 
 export const dynamic = "force-dynamic";
 
-export default async function KanbanPage() {
+export default function KanbanPage() {
   const mod = getModuleByKey("kanban");
   const paperclipConfigured = isPaperclipConfigured();
   const configuredFile = getConfiguredTicketsFile();
