@@ -56,7 +56,7 @@ function buildLatest(reports, failed, passed, skipped, overall) {
         ranAt: r.ranAt,
         durationMs: r.durationMs,
       }))
-      .sort((a, b) => (a.tier || "").localeCompare(b.tier || "") || a.tool.localeCompare(b.tool)),
+      .sort((a, b) => (a.tier || "").localeCompare(b.tier || "") || (a.tool || "").localeCompare(b.tool || "")),
     failures: failed.map((r) => ({
       tool: r.tool,
       tier: r.tier,
@@ -95,7 +95,10 @@ async function main() {
   }
 
   const entries = await readdir(REPORTS_DIR);
-  const jsonFiles = entries.filter((name) => name.endsWith(".json") && name !== "latest.json");
+  // Exclude known artifact outputs (sbom.cdx.json, licenses.full.json) that are
+  // valid JSON but do not follow the report schema (no tool/tier/status fields).
+  const ARTIFACT_FILES = new Set(["latest.json", "sbom.cdx.json", "licenses.full.json"]);
+  const jsonFiles = entries.filter((name) => name.endsWith(".json") && !ARTIFACT_FILES.has(name));
 
   if (jsonFiles.length === 0) {
     console.error(`no tool reports found in ${REPORTS_DIR}`);
