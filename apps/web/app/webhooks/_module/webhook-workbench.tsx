@@ -691,6 +691,7 @@ function EventExplorer({
         </div>
         <div className="grid gap-2 sm:grid-cols-[160px_160px_minmax(220px,1fr)]">
           <select
+            aria-label="Filter by provider"
             className="h-10 rounded-xs border border-line/80 bg-panel px-3 text-sm text-ink outline-none focus:border-info"
             value={filters.providerId}
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
@@ -705,6 +706,7 @@ function EventExplorer({
             ))}
           </select>
           <select
+            aria-label="Filter by status"
             className="h-10 rounded-xs border border-line/80 bg-panel px-3 text-sm text-ink outline-none focus:border-info"
             value={filters.status}
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>

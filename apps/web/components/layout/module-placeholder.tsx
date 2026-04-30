@@ -71,8 +71,12 @@ export function ModulePlaceholder({
               aria-disabled="true"
             >
               <dt className="eyebrow">{capability.label}</dt>
-              <dd className="mt-2 text-2xl font-semibold text-muted-strong">—</dd>
-              <p className="mt-1 text-xs leading-5 text-muted">{capability.detail}</p>
+              <dd className="mt-2 text-2xl font-semibold text-muted-strong">
+                —
+                <span className="mt-1 block text-xs font-normal leading-5 text-muted">
+                  {capability.detail}
+                </span>
+              </dd>
             </div>
           ))}
         </dl>
