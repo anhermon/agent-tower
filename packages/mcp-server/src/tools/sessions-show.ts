@@ -1,11 +1,15 @@
 import {
   ClaudeCodeAnalyticsSource,
+  computeBootstrapBreakdown,
   computeSkillTurnAttribution,
+  computeToolCostView,
   computeTurnTimeline,
   listSessionFiles,
   readTranscriptFile,
   resolveDataRoot,
+  type BootstrapBreakdown,
   type SkillTurnAttribution,
+  type ToolCostView,
   type TurnTimeline,
 } from "@control-plane/adapter-claude-code";
 
@@ -15,6 +19,7 @@ interface ParsedSessionsShowInput {
   readonly sessionId: string;
   readonly includeTurns: boolean;
   readonly includeTimeline: boolean;
+  readonly includeBootstrap: boolean;
 }
 
 function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: string } {
@@ -25,17 +30,19 @@ function parseInput(raw: unknown): ParsedSessionsShowInput | { readonly error: s
   }
   const includeTurns = r.includeTurns;
   const includeTimeline = r.includeTimeline;
+  const includeBootstrap = r.includeBootstrap;
   return {
     sessionId,
     includeTurns: typeof includeTurns === "boolean" ? includeTurns : false,
     includeTimeline: typeof includeTimeline === "boolean" ? includeTimeline : false,
+    includeBootstrap: typeof includeBootstrap === "boolean" ? includeBootstrap : false,
   };
 }
 
 export const sessionsShowTool: ToolDefinition = {
   name: "sessions_show",
   description:
-    "Read-only. Loads a single session usage summary by session id. Turn-by-turn detail is omitted unless includeTurns=true.",
+    "Read-only. Loads a single session usage summary by session id. Turn-by-turn detail is omitted unless includeTurns=true. Pass includeTimeline=true for per-turn token ledger + tool cost view + skill attribution. Pass includeBootstrap=true for bootstrap context breakdown (CLAUDE.md / AGENTS.md / skills injected into the system prompt).",
   inputSchema: {
     type: "object",
     properties: {
@@ -50,7 +57,12 @@ export const sessionsShowTool: ToolDefinition = {
       includeTimeline: {
         type: "boolean",
         description:
-          "When true, include per-turn tool/token timeline and skill-to-turn attribution. Defaults to false.",
+          "When true, include per-turn tool/token timeline, tool cost view, and skill-to-turn attribution. Defaults to false.",
+      },
+      includeBootstrap: {
+        type: "boolean",
+        description:
+          "When true, parse the system prompt and return a breakdown of injected context components (CLAUDE.md, AGENTS.md, skills, etc.) with byte and estimated token counts. Defaults to false.",
       },
     },
     required: ["sessionId"],
@@ -85,13 +97,26 @@ export const sessionsShowTool: ToolDefinition = {
 
       let timeline: TurnTimeline | undefined;
       let skillAttribution: SkillTurnAttribution | undefined;
-      if (parsed.includeTimeline) {
+      let toolCostView: ToolCostView | undefined;
+      let bootstrapBreakdown: BootstrapBreakdown | undefined;
+
+      if (parsed.includeTimeline || parsed.includeBootstrap) {
         const files = await listSessionFiles({ directory: resolved.directory });
         const file = files.find((f) => f.sessionId === parsed.sessionId);
         if (file) {
           const { entries } = await readTranscriptFile(file.filePath);
-          timeline = computeTurnTimeline(entries, { sessionId: parsed.sessionId });
-          skillAttribution = computeSkillTurnAttribution(entries, { sessionId: parsed.sessionId });
+          if (parsed.includeTimeline) {
+            timeline = computeTurnTimeline(entries, { sessionId: parsed.sessionId });
+            skillAttribution = computeSkillTurnAttribution(entries, {
+              sessionId: parsed.sessionId,
+            });
+            toolCostView = computeToolCostView(entries, { sessionId: parsed.sessionId });
+          }
+          if (parsed.includeBootstrap) {
+            bootstrapBreakdown = computeBootstrapBreakdown(entries, {
+              sessionId: parsed.sessionId,
+            });
+          }
         }
       }
 
@@ -100,10 +125,13 @@ export const sessionsShowTool: ToolDefinition = {
         sessionId: parsed.sessionId,
         includeTurns: parsed.includeTurns,
         includeTimeline: parsed.includeTimeline,
+        includeBootstrap: parsed.includeBootstrap,
         session: {
           ...projected,
           ...(timeline ? { timeline } : {}),
           ...(skillAttribution ? { skillAttribution } : {}),
+          ...(toolCostView ? { toolCostView } : {}),
+          ...(bootstrapBreakdown ? { bootstrapBreakdown } : {}),
         },
       };
     } catch (error) {
