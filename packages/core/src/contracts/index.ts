@@ -7,3 +7,4 @@ export type * from "./replay-adapter.js";
 export * from "./runtime-control-adapter.js";
 export type * from "./session-analytics-adapter.js";
 export type * from "./session-ingest-adapter.js";
+export type * from "./ticket-adapter.js";

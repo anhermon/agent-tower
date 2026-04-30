@@ -3,6 +3,7 @@ import { runAgentsList } from "./commands/agents-list.js";
 import { runAudit } from "./commands/audit.js";
 import { runHealth } from "./commands/health.js";
 import { runHelp } from "./commands/help.js";
+import { runKanban } from "./commands/kanban.js";
 import { runMcpStub } from "./commands/mcp-stub.js";
 import { runSessionsShow } from "./commands/sessions-show.js";
 import { runSessionsTop } from "./commands/sessions-top.js";
@@ -78,6 +79,8 @@ async function dispatchCommand(
       return runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
     case "workflow-health":
       return runWorkflowHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
+    case "kanban":
+      return runKanban(subOrFirst, restWithGlobals);
     default:
       throw new UsageError(`Unknown command: ${command}`);
   }

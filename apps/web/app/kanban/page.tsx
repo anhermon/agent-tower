@@ -1,24 +1,24 @@
 import { TICKET_STATUSES, type TicketRecord, type TicketStatus } from "@control-plane/core";
 
 import { KanbanBoard } from "@/components/kanban/kanban-board";
+import { InteractiveKanbanBoard } from "@/components/kanban/kanban-board-interactive";
 import { Badge } from "@/components/ui/badge";
-import { EmptyState, ErrorState } from "@/components/ui/state";
+import { EmptyState } from "@/components/ui/state";
 import {
   getConfiguredTicketsFile,
   type ListTicketsResult,
   listTicketsOrEmpty,
   TICKETS_FILE_ENV,
 } from "@/lib/kanban-source";
+import { KANBAN_WAKE_WEBHOOK_URL_ENV } from "@/lib/kanban-wake";
 import { getModuleByKey } from "@/lib/modules";
 
 export const dynamic = "force-dynamic";
 
-export default async function KanbanPage() {
+export default function KanbanPage() {
   const mod = getModuleByKey("kanban");
   const configuredFile = getConfiguredTicketsFile();
-  const result = await listTicketsOrEmpty();
-
-  const status = configuredFile && result.ok && result.tickets.length > 0 ? "healthy" : "degraded";
+  const status = configuredFile != null ? "healthy" : "degraded";
 
   return (
     <section>
@@ -27,11 +27,16 @@ export default async function KanbanPage() {
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold tracking-normal text-ink">{mod.label}</h1>
             <Badge state={status} />
+            {configuredFile ? (
+              <span className="rounded-full border border-info/40 bg-info/10 px-2 py-0.5 text-xs font-medium text-info">
+                interactive
+              </span>
+            ) : null}
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Ticket-centric view of work flowing through the control plane. Lanes are keyed on the
-            canonical <code className="font-mono text-xs">TicketStatus</code> enum. The board is
-            read-only in Phase 2 v1 — no CRUD, no drag-and-drop, no agent-created tickets.
+            {configuredFile
+              ? "Agent control plane — create, assign, and move tickets directly from the board. Moving a card to a new lane updates the ticket status and can trigger a configurable agent-wake webhook."
+              : "Ticket-centric view of work flowing through the control plane. Lanes are keyed on the canonical TicketStatus enum."}
           </p>
           {configuredFile ? (
             <p className="mt-2 font-mono text-xs text-muted/80" title={configuredFile}>
@@ -41,24 +46,29 @@ export default async function KanbanPage() {
         </div>
       </div>
 
-      <KanbanBody result={result} />
+      {configuredFile ? <InteractiveKanbanBoard /> : <KanbanBodyUnconfigured />}
     </section>
   );
 }
 
-function KanbanBody({ result }: { result: ListTicketsResult }) {
+async function KanbanBodyUnconfigured() {
+  const result = await listTicketsOrEmpty();
+  return <ReadOnlyKanbanBody result={result} />;
+}
+
+function ReadOnlyKanbanBody({ result }: { result: ListTicketsResult }) {
   if (!result.ok && result.reason === "unconfigured") {
     return (
       <EmptyState
         title="No ticket source configured"
-        description={`Set ${TICKETS_FILE_ENV} to point at a JSON or JSONL file containing canonical TicketRecord entries to populate the board.`}
+        description={`Set ${TICKETS_FILE_ENV} to a JSON or JSONL file path to activate the interactive kanban. Set ${KANBAN_WAKE_WEBHOOK_URL_ENV} to enable agent-wake on lane moves.`}
       />
     );
   }
 
   if (!result.ok) {
     return (
-      <ErrorState
+      <EmptyState
         title="Could not load tickets"
         description={
           result.message ?? "An unknown error occurred reading the configured tickets file."
@@ -71,7 +81,7 @@ function KanbanBody({ result }: { result: ListTicketsResult }) {
     return (
       <EmptyState
         title="No tickets"
-        description="The configured tickets file contains no records. Add a TicketRecord entry to see it appear on the board."
+        description="The configured tickets file contains no records."
       />
     );
   }

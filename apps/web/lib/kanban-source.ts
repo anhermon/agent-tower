@@ -9,6 +9,12 @@ import {
   type TicketStatus,
 } from "@control-plane/core";
 
+export {
+  groupTicketsByStatus,
+  KANBAN_LANE_LABELS,
+  KANBAN_LANE_ORDER,
+} from "./kanban-utils";
+
 /**
  * Read-only local-filesystem adapter for the Kanban module.
  *
@@ -210,45 +216,4 @@ function optionalString(record: Record<string, unknown>, field: string): string 
 function errorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   return String(error);
-}
-
-/** Canonical lane order for the board. */
-export const KANBAN_LANE_ORDER: readonly TicketStatus[] = [
-  TICKET_STATUSES.Open,
-  TICKET_STATUSES.InProgress,
-  TICKET_STATUSES.Blocked,
-  TICKET_STATUSES.Resolved,
-  TICKET_STATUSES.Closed,
-];
-
-export const KANBAN_LANE_LABELS: Record<TicketStatus, string> = {
-  [TICKET_STATUSES.Open]: "Open",
-  [TICKET_STATUSES.InProgress]: "In progress",
-  [TICKET_STATUSES.Blocked]: "Blocked",
-  [TICKET_STATUSES.Resolved]: "Resolved",
-  [TICKET_STATUSES.Closed]: "Closed",
-};
-
-export function groupTicketsByStatus(
-  tickets: readonly TicketRecord[]
-): Record<TicketStatus, readonly TicketRecord[]> {
-  const buckets: Record<TicketStatus, TicketRecord[]> = {
-    [TICKET_STATUSES.Open]: [],
-    [TICKET_STATUSES.InProgress]: [],
-    [TICKET_STATUSES.Blocked]: [],
-    [TICKET_STATUSES.Resolved]: [],
-    [TICKET_STATUSES.Closed]: [],
-  };
-  for (const ticket of tickets) {
-    buckets[ticket.status].push(ticket);
-  }
-  // Within a lane, order by updatedAt desc, then createdAt desc, then id.
-  for (const status of KANBAN_LANE_ORDER) {
-    buckets[status].sort((a, b) => {
-      if (a.updatedAt !== b.updatedAt) return a.updatedAt < b.updatedAt ? 1 : -1;
-      if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? 1 : -1;
-      return a.id.localeCompare(b.id);
-    });
-  }
-  return buckets;
 }
