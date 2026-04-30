@@ -9,13 +9,11 @@ import { Button } from "@/components/ui/button";
 interface Agent {
   readonly id: string;
   readonly name: string;
-  readonly role: string;
 }
 
 interface CreateTicketModalProps {
   readonly onClose: () => void;
   readonly onCreated: () => void;
-  readonly projectId?: string;
 }
 
 const PRIORITY_LABELS: Record<TicketPriority, string> = {
@@ -25,7 +23,7 @@ const PRIORITY_LABELS: Record<TicketPriority, string> = {
   [TICKET_PRIORITIES.Urgent]: "Urgent",
 };
 
-export function CreateTicketModal({ onClose, onCreated, projectId }: CreateTicketModalProps) {
+export function CreateTicketModal({ onClose, onCreated }: CreateTicketModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<TicketPriority>(TICKET_PRIORITIES.Normal);
@@ -75,7 +73,6 @@ export function CreateTicketModal({ onClose, onCreated, projectId }: CreateTicke
       };
       if (description.trim()) body.description = description.trim();
       if (assigneeAgentId) body.assigneeAgentId = assigneeAgentId;
-      if (projectId) body.projectId = projectId;
 
       const res = await fetch("/api/kanban/tickets", {
         method: "POST",
@@ -194,7 +191,7 @@ export function CreateTicketModal({ onClose, onCreated, projectId }: CreateTicke
               <option value="">— unassigned —</option>
               {agents.map((agent) => (
                 <option key={agent.id} value={agent.id}>
-                  {agent.name} ({agent.role})
+                  {agent.name}
                 </option>
               ))}
             </select>

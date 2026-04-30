@@ -1,14 +1,21 @@
 /**
- * MCP tools for the interactive Paperclip kanban control plane.
+ * MCP tools for the local file-backed kanban control plane.
  *
  * Four tools:
- *   kanban_list   — list Paperclip issues as canonical TicketRecords
- *   kanban_create — create a new Paperclip issue
- *   kanban_assign — assign a Paperclip agent to an issue
- *   kanban_move   — move an issue to a new lane (status), waking the agent
+ *   kanban_list   — list tickets from the local file
+ *   kanban_create — create a new ticket in the local file
+ *   kanban_assign — assign an agent to a ticket
+ *   kanban_move   — move a ticket to a new lane (status)
  *
- * Requires: PAPERCLIP_API_KEY, PAPERCLIP_API_URL, PAPERCLIP_COMPANY_ID
+ * Fully local-first — no external API calls. Reads and writes the file
+ * pointed at by CLAUDE_CONTROL_PLANE_TICKETS_FILE (per ADR-0002, ADR-0003).
+ * Agent wake on move fires a POST to CLAUDE_CONTROL_PLANE_KANBAN_WAKE_WEBHOOK_URL
+ * if that env var is set.
  */
+
+import { randomUUID } from "node:crypto";
+import { existsSync, statSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 
 import {
   type TicketPriority,
@@ -21,121 +28,82 @@ import {
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
 
 // ---------------------------------------------------------------------------
-// Paperclip env + HTTP helpers (self-contained — no web dep)
+// Env
 // ---------------------------------------------------------------------------
 
-interface PaperclipEnv {
-  apiUrl: string;
-  apiKey: string;
-  companyId: string;
-  projectId: string | null;
-}
+const TICKETS_FILE_ENV = "CLAUDE_CONTROL_PLANE_TICKETS_FILE";
+const WAKE_WEBHOOK_ENV = "CLAUDE_CONTROL_PLANE_KANBAN_WAKE_WEBHOOK_URL";
 
-function getPaperclipEnv(): PaperclipEnv | null {
-  const apiUrl = process.env.PAPERCLIP_API_URL?.trim();
-  const apiKey = process.env.PAPERCLIP_API_KEY?.trim();
-  const companyId = process.env.PAPERCLIP_COMPANY_ID?.trim();
-  const projectId = process.env.PAPERCLIP_PROJECT_ID?.trim() ?? null;
-  if (!apiUrl || !apiKey || !companyId) return null;
-  return { apiUrl, apiKey, companyId, projectId };
-}
+const VALID_STATUSES = new Set<string>(Object.values(TICKET_STATUSES));
+const VALID_PRIORITIES = new Set<string>(Object.values(TICKET_PRIORITIES));
 
-async function pcFetch(env: PaperclipEnv, path: string, opts?: RequestInit): Promise<unknown> {
-  const url = `${env.apiUrl}${path}`;
-  const res = await fetch(url, {
-    ...opts,
-    headers: {
-      Authorization: `Bearer ${env.apiKey}`,
-      "Content-Type": "application/json",
-      ...(opts?.headers as Record<string, string> | undefined),
-    },
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "(no body)");
-    throw new Error(`Paperclip API ${res.status}: ${text}`);
-  }
-  return res.json();
-}
-
-// ---------------------------------------------------------------------------
-// Mappings
-// ---------------------------------------------------------------------------
-
-const TO_TICKET_STATUS: Record<string, TicketStatus> = {
-  todo: TICKET_STATUSES.Open,
-  in_progress: TICKET_STATUSES.InProgress,
-  in_review: TICKET_STATUSES.InProgress,
-  blocked: TICKET_STATUSES.Blocked,
-  done: TICKET_STATUSES.Resolved,
-  cancelled: TICKET_STATUSES.Closed,
-};
-
-const TO_PAPERCLIP_STATUS: Record<TicketStatus, string> = {
-  [TICKET_STATUSES.Open]: "todo",
-  [TICKET_STATUSES.InProgress]: "in_progress",
-  [TICKET_STATUSES.Blocked]: "blocked",
-  [TICKET_STATUSES.Resolved]: "done",
-  [TICKET_STATUSES.Closed]: "cancelled",
-};
-
-const TO_TICKET_PRIORITY: Record<string, TicketPriority> = {
-  low: TICKET_PRIORITIES.Low,
-  medium: TICKET_PRIORITIES.Normal,
-  high: TICKET_PRIORITIES.High,
-  critical: TICKET_PRIORITIES.Urgent,
-  urgent: TICKET_PRIORITIES.Urgent,
-};
-
-const TO_PAPERCLIP_PRIORITY: Record<TicketPriority, string> = {
-  [TICKET_PRIORITIES.Low]: "low",
-  [TICKET_PRIORITIES.Normal]: "medium",
-  [TICKET_PRIORITIES.High]: "high",
-  [TICKET_PRIORITIES.Urgent]: "urgent",
-};
-
-interface RawIssue {
-  id: string;
-  identifier: string;
-  title: string;
-  description?: string;
-  status: string;
-  priority: string;
-  assigneeAgentId?: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-function toTicket(issue: RawIssue): TicketRecord {
-  const base: TicketRecord = {
-    id: issue.identifier,
-    title: issue.title,
-    status: TO_TICKET_STATUS[issue.status] ?? TICKET_STATUSES.Open,
-    priority: TO_TICKET_PRIORITY[issue.priority] ?? TICKET_PRIORITIES.Normal,
-    createdAt: issue.createdAt,
-    updatedAt: issue.updatedAt,
-    metadata: { paperclipId: issue.id },
-  };
-  if (issue.description && issue.assigneeAgentId) {
-    return { ...base, description: issue.description, assigneeAgentId: issue.assigneeAgentId };
-  }
-  if (issue.description) return { ...base, description: issue.description };
-  if (issue.assigneeAgentId) return { ...base, assigneeAgentId: issue.assigneeAgentId };
-  return base;
-}
-
-async function resolveId(env: PaperclipEnv, issueId: string): Promise<string> {
-  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(issueId)) {
-    return issueId;
-  }
-  const data = (await pcFetch(env, `/api/issues/${encodeURIComponent(issueId)}`)) as RawIssue;
-  return data.id;
+function getTicketsFilePath(): string | null {
+  const raw = process.env[TICKETS_FILE_ENV]?.trim();
+  return raw ?? null;
 }
 
 const UNCONFIGURED_RESULT: ToolResult = {
   ok: false,
   reason: "unconfigured",
-  message: "PAPERCLIP_API_KEY / PAPERCLIP_API_URL / PAPERCLIP_COMPANY_ID are not set",
+  message: `${TICKETS_FILE_ENV} is not set. Point it at a JSON/JSONL file to enable kanban.`,
 };
+
+// ---------------------------------------------------------------------------
+// File I/O helpers
+// ---------------------------------------------------------------------------
+
+function fileExists(filePath: string): boolean {
+  try {
+    return existsSync(filePath) && statSync(filePath).isFile();
+  } catch {
+    return false;
+  }
+}
+
+async function loadTickets(filePath: string): Promise<TicketRecord[]> {
+  if (!fileExists(filePath)) return [];
+  const raw = await readFile(filePath, "utf8");
+  const trimmed = raw.trim();
+  if (!trimmed) return [];
+
+  const parsed: unknown = trimmed.startsWith("[")
+    ? JSON.parse(trimmed)
+    : trimmed
+        .split(/\r?\n/)
+        .filter((l) => l.trim().length > 0)
+        .map((l) => JSON.parse(l) as unknown);
+
+  return Array.isArray(parsed) ? (parsed as TicketRecord[]) : [];
+}
+
+async function persistTickets(filePath: string, tickets: readonly TicketRecord[]): Promise<void> {
+  await writeFile(filePath, JSON.stringify(tickets, null, 2) + "\n", "utf8");
+}
+
+async function fireWake(
+  ticketId: string,
+  assigneeAgentId: string,
+  previousStatus: TicketStatus,
+  newStatus: TicketStatus
+): Promise<void> {
+  const url = process.env[WAKE_WEBHOOK_ENV]?.trim();
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ticketId,
+        assigneeAgentId,
+        previousStatus,
+        newStatus,
+        triggeredAt: new Date().toISOString(),
+      }),
+    });
+  } catch {
+    // Wake failures must never fail the mutation
+  }
+}
 
 // ---------------------------------------------------------------------------
 // kanban_list
@@ -144,26 +112,30 @@ const UNCONFIGURED_RESULT: ToolResult = {
 export const kanbanListTool: ToolDefinition = {
   name: "kanban_list",
   description:
-    "List Paperclip issues as canonical TicketRecord objects. Optionally filter by project. Returns id (identifier), title, status, priority, assigneeAgentId, createdAt, updatedAt.",
+    "List tickets from the local kanban file as canonical TicketRecord objects. Returns id, title, status, priority, assigneeAgentId, createdAt, updatedAt.",
   inputSchema: {
     type: "object",
     properties: {
-      projectId: { type: "string", description: "Paperclip project UUID to filter by (optional)" },
+      status: {
+        type: "string",
+        enum: [...Object.values(TICKET_STATUSES), "all"],
+        description: "Filter by status (default: all)",
+      },
     },
     additionalProperties: false,
   },
   handler: async (input: unknown): Promise<ToolResult> => {
-    const env = getPaperclipEnv();
-    if (!env) return UNCONFIGURED_RESULT;
+    const filePath = getTicketsFilePath();
+    if (!filePath) return UNCONFIGURED_RESULT;
 
     try {
       const params = asRecord(input);
-      const projectId = typeof params.projectId === "string" ? params.projectId : env.projectId;
-      let path = `/api/companies/${env.companyId}/issues?limit=200`;
-      if (projectId) path += `&projectId=${projectId}`;
-
-      const data = (await pcFetch(env, path)) as readonly RawIssue[];
-      const tickets = (Array.isArray(data) ? data : []).map(toTicket);
+      let tickets = await loadTickets(filePath);
+      const statusFilter =
+        typeof params.status === "string" && params.status !== "all" ? params.status : null;
+      if (statusFilter && VALID_STATUSES.has(statusFilter)) {
+        tickets = tickets.filter((t) => t.status === statusFilter);
+      }
       return { ok: true, count: tickets.length, tickets };
     } catch (error) {
       return errorResult(error);
@@ -178,7 +150,7 @@ export const kanbanListTool: ToolDefinition = {
 export const kanbanCreateTool: ToolDefinition = {
   name: "kanban_create",
   description:
-    "Create a new Paperclip issue (ticket). Returns the created TicketRecord. Moving the ticket immediately to a status other than open is not supported on creation — use kanban_move after.",
+    "Create a new ticket in the local kanban file. Returns the created TicketRecord with a generated id. New tickets always start in the 'open' lane.",
   inputSchema: {
     type: "object",
     properties: {
@@ -194,19 +166,15 @@ export const kanbanCreateTool: ToolDefinition = {
       },
       assigneeAgentId: {
         type: "string",
-        description: "Paperclip agent UUID to assign. The agent is woken on assignment.",
-      },
-      projectId: {
-        type: "string",
-        description: "Paperclip project UUID. Falls back to PAPERCLIP_PROJECT_ID env var.",
+        description: "Agent id to assign. Use cp agents list or kanban_list to find agent ids.",
       },
     },
     required: ["title"],
     additionalProperties: false,
   },
   handler: async (input: unknown): Promise<ToolResult> => {
-    const env = getPaperclipEnv();
-    if (!env) return UNCONFIGURED_RESULT;
+    const filePath = getTicketsFilePath();
+    if (!filePath) return UNCONFIGURED_RESULT;
 
     try {
       const params = asRecord(input);
@@ -215,31 +183,34 @@ export const kanbanCreateTool: ToolDefinition = {
         return { ok: false, reason: "bad_input", message: "title is required" };
       }
 
-      const rawPriority = params.priority;
-      const priority: TicketPriority =
-        typeof rawPriority === "string" && rawPriority in TO_PAPERCLIP_PRIORITY
-          ? (rawPriority as TicketPriority)
-          : TICKET_PRIORITIES.Normal;
-
-      const projectId = typeof params.projectId === "string" ? params.projectId : env.projectId;
-
-      const body: Record<string, unknown> = {
-        title: title.trim(),
-        status: "todo",
-        priority: TO_PAPERCLIP_PRIORITY[priority],
-      };
-      if (typeof params.description === "string") body.description = params.description;
-      if (typeof params.assigneeAgentId === "string") {
-        body.assigneeAgentId = params.assigneeAgentId;
+      const rawPriority = typeof params.priority === "string" ? params.priority : "normal";
+      if (!VALID_PRIORITIES.has(rawPriority)) {
+        return {
+          ok: false,
+          reason: "bad_input",
+          message: `priority must be one of: ${[...VALID_PRIORITIES].join(", ")}`,
+        };
       }
-      if (projectId) body.projectId = projectId;
 
-      const data = (await pcFetch(env, `/api/companies/${env.companyId}/issues`, {
-        method: "POST",
-        body: JSON.stringify(body),
-      })) as RawIssue;
+      const all = await loadTickets(filePath);
+      const now = new Date().toISOString();
+      const ticket: TicketRecord = {
+        id: randomUUID(),
+        title: title.trim(),
+        status: TICKET_STATUSES.Open,
+        priority: rawPriority as TicketPriority,
+        createdAt: now,
+        updatedAt: now,
+        ...(typeof params.description === "string" && params.description
+          ? { description: params.description }
+          : {}),
+        ...(typeof params.assigneeAgentId === "string" && params.assigneeAgentId
+          ? { assigneeAgentId: params.assigneeAgentId }
+          : {}),
+      };
 
-      return { ok: true, ticket: toTicket(data) };
+      await persistTickets(filePath, [...all, ticket]);
+      return { ok: true, ticket };
     } catch (error) {
       return errorResult(error);
     }
@@ -253,38 +224,47 @@ export const kanbanCreateTool: ToolDefinition = {
 export const kanbanAssignTool: ToolDefinition = {
   name: "kanban_assign",
   description:
-    "Assign a Paperclip agent to an existing issue. Wakes the agent via Paperclip. issueId may be a Paperclip identifier (e.g. ANGA-1014) or a UUID.",
+    "Assign an agent to an existing ticket. ticketId must match the ticket's id field (or a prefix). Returns the updated TicketRecord.",
   inputSchema: {
     type: "object",
     properties: {
-      issueId: { type: "string", description: "Paperclip issue identifier (ANGA-NNN) or UUID" },
-      agentId: { type: "string", description: "Paperclip agent UUID to assign" },
+      ticketId: { type: "string", description: "Ticket id (full UUID or unique prefix)" },
+      agentId: { type: "string", description: "Agent id to assign" },
     },
-    required: ["issueId", "agentId"],
+    required: ["ticketId", "agentId"],
     additionalProperties: false,
   },
   handler: async (input: unknown): Promise<ToolResult> => {
-    const env = getPaperclipEnv();
-    if (!env) return UNCONFIGURED_RESULT;
+    const filePath = getTicketsFilePath();
+    if (!filePath) return UNCONFIGURED_RESULT;
 
     try {
       const params = asRecord(input);
-      const issueId = params.issueId;
+      const ticketId = params.ticketId;
       const agentId = params.agentId;
-      if (typeof issueId !== "string" || !issueId.trim()) {
-        return { ok: false, reason: "bad_input", message: "issueId is required" };
+      if (typeof ticketId !== "string" || !ticketId.trim()) {
+        return { ok: false, reason: "bad_input", message: "ticketId is required" };
       }
       if (typeof agentId !== "string" || !agentId.trim()) {
         return { ok: false, reason: "bad_input", message: "agentId is required" };
       }
 
-      const resolvedId = await resolveId(env, issueId.trim());
-      const data = (await pcFetch(env, `/api/issues/${resolvedId}`, {
-        method: "PATCH",
-        body: JSON.stringify({ assigneeAgentId: agentId.trim() }),
-      })) as RawIssue;
+      const all = await loadTickets(filePath);
+      const id = ticketId.trim();
+      const idx = all.findIndex((t) => t.id === id || t.id.startsWith(id));
+      if (idx === -1) {
+        return { ok: false, reason: "not_found", message: `Ticket not found: ${id}` };
+      }
 
-      return { ok: true, ticket: toTicket(data) };
+      const updated: TicketRecord = {
+        ...all[idx]!,
+        assigneeAgentId: agentId.trim(),
+        updatedAt: new Date().toISOString(),
+      };
+      const next = [...all];
+      next[idx] = updated;
+      await persistTickets(filePath, next);
+      return { ok: true, ticket: updated };
     } catch (error) {
       return errorResult(error);
     }
@@ -298,49 +278,63 @@ export const kanbanAssignTool: ToolDefinition = {
 export const kanbanMoveTool: ToolDefinition = {
   name: "kanban_move",
   description:
-    "Move a Paperclip issue to a new lane (status). Moving to 'resolved' sets the Paperclip status to 'done'; 'closed' sets it to 'cancelled'. The assigned agent is woken when the issue is moved to in_progress. issueId may be a Paperclip identifier or UUID.",
+    "Move a ticket to a new lane (status). If the ticket has an assignee and CLAUDE_CONTROL_PLANE_KANBAN_WAKE_WEBHOOK_URL is set, fires a POST to that URL with the wake context. Returns the updated TicketRecord.",
   inputSchema: {
     type: "object",
     properties: {
-      issueId: { type: "string", description: "Paperclip issue identifier (ANGA-NNN) or UUID" },
+      ticketId: { type: "string", description: "Ticket id (full UUID or unique prefix)" },
       status: {
         type: "string",
         enum: Object.values(TICKET_STATUSES),
         description: "Target TicketStatus lane",
       },
     },
-    required: ["issueId", "status"],
+    required: ["ticketId", "status"],
     additionalProperties: false,
   },
   handler: async (input: unknown): Promise<ToolResult> => {
-    const env = getPaperclipEnv();
-    if (!env) return UNCONFIGURED_RESULT;
+    const filePath = getTicketsFilePath();
+    if (!filePath) return UNCONFIGURED_RESULT;
 
     try {
       const params = asRecord(input);
-      const issueId = params.issueId;
+      const ticketId = params.ticketId;
       const status = params.status;
-      if (typeof issueId !== "string" || !issueId.trim()) {
-        return { ok: false, reason: "bad_input", message: "issueId is required" };
+      if (typeof ticketId !== "string" || !ticketId.trim()) {
+        return { ok: false, reason: "bad_input", message: "ticketId is required" };
       }
-      if (typeof status !== "string" || !(status in TO_PAPERCLIP_STATUS)) {
+      if (typeof status !== "string" || !VALID_STATUSES.has(status)) {
         return {
           ok: false,
           reason: "bad_input",
-          message: `status must be one of: ${Object.values(TICKET_STATUSES).join(", ")}`,
+          message: `status must be one of: ${[...VALID_STATUSES].join(", ")}`,
         };
       }
 
-      const ticketStatus = status as TicketStatus;
-      const paperclipStatus = TO_PAPERCLIP_STATUS[ticketStatus];
-      const resolvedId = await resolveId(env, issueId.trim());
+      const all = await loadTickets(filePath);
+      const id = ticketId.trim();
+      const idx = all.findIndex((t) => t.id === id || t.id.startsWith(id));
+      if (idx === -1) {
+        return { ok: false, reason: "not_found", message: `Ticket not found: ${id}` };
+      }
 
-      const data = (await pcFetch(env, `/api/issues/${resolvedId}`, {
-        method: "PATCH",
-        body: JSON.stringify({ status: paperclipStatus }),
-      })) as RawIssue;
+      const current = all[idx]!;
+      const previousStatus = current.status;
+      const newStatus = status as TicketStatus;
+      const updated: TicketRecord = {
+        ...current,
+        status: newStatus,
+        updatedAt: new Date().toISOString(),
+      };
+      const next = [...all];
+      next[idx] = updated;
+      await persistTickets(filePath, next);
 
-      return { ok: true, ticket: toTicket(data) };
+      if (newStatus !== previousStatus && updated.assigneeAgentId) {
+        await fireWake(updated.id, updated.assigneeAgentId, previousStatus, newStatus);
+      }
+
+      return { ok: true, ticket: updated };
     } catch (error) {
       return errorResult(error);
     }

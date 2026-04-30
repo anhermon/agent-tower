@@ -2,11 +2,7 @@ import "server-only";
 
 import { TICKET_PRIORITIES, type TicketPriority } from "@control-plane/core";
 
-import {
-  createPaperclipTicket,
-  listPaperclipTickets,
-  resolvePaperclipEnv,
-} from "@/lib/paperclip-kanban";
+import { createTicket, listTickets } from "@/lib/kanban-store";
 import { withAudit } from "@/lib/with-audit";
 
 export const dynamic = "force-dynamic";
@@ -14,38 +10,32 @@ export const runtime = "nodejs";
 
 /**
  * GET /api/kanban/tickets
- * List Paperclip issues mapped to canonical TicketRecord.
- * Query params: projectId (optional)
+ * List tickets from the local tickets file.
  */
-export const GET = withAudit("api.kanban.tickets.list", async (req: Request): Promise<Response> => {
-  const url = new URL(req.url);
-  const projectId = url.searchParams.get("projectId") ?? undefined;
-
-  const result = await listPaperclipTickets(projectId);
-  if (!result.ok) {
-    const status = result.reason === "unconfigured" ? 503 : 502;
-    return Response.json({ ok: false, reason: result.reason, message: result.message }, { status });
+export const GET = withAudit(
+  "api.kanban.tickets.list",
+  async (_req: Request): Promise<Response> => {
+    const result = await listTickets();
+    if (!result.ok) {
+      const status = result.reason === "unconfigured" ? 503 : 502;
+      return Response.json(
+        { ok: false, reason: result.reason, message: result.message },
+        { status }
+      );
+    }
+    return Response.json({ ok: true, tickets: result.tickets });
   }
-  return Response.json({ ok: true, tickets: result.tickets });
-});
+);
 
 /**
  * POST /api/kanban/tickets
- * Create a new Paperclip issue.
+ * Create a new ticket in the local tickets file.
  *
- * Body: { title, description?, priority?, assigneeAgentId?, projectId? }
+ * Body: { title, description?, priority?, assigneeAgentId? }
  */
 export const POST = withAudit(
   "api.kanban.tickets.create",
   async (req: Request): Promise<Response> => {
-    const envResult = resolvePaperclipEnv();
-    if (!envResult.ok) {
-      return Response.json(
-        { ok: false, reason: "unconfigured", message: envResult.reason },
-        { status: 503 }
-      );
-    }
-
     let body: unknown;
     try {
       body = await req.json();
@@ -74,22 +64,21 @@ export const POST = withAudit(
     const description = typeof body.description === "string" ? body.description : undefined;
     const assigneeAgentId =
       typeof body.assigneeAgentId === "string" ? body.assigneeAgentId : undefined;
-    const projectId = typeof body.projectId === "string" ? body.projectId : undefined;
     const rawPriority = body.priority;
     const priority = isValidPriority(rawPriority) ? rawPriority : TICKET_PRIORITIES.Normal;
 
-    const result = await createPaperclipTicket({
+    const result = await createTicket({
       title: title.trim(),
       description,
       priority,
       assigneeAgentId,
-      projectId,
     });
 
     if (!result.ok) {
+      const status = result.reason === "unconfigured" ? 503 : 502;
       return Response.json(
         { ok: false, reason: result.reason, message: result.message },
-        { status: 502 }
+        { status }
       );
     }
     return Response.json({ ok: true, ticket: result.ticket }, { status: 201 });

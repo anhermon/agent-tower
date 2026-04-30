@@ -1,12 +1,13 @@
 import "server-only";
 
-import { TICKET_STATUSES, type TicketStatus } from "@control-plane/core";
-
 import {
-  assignPaperclipTicket,
-  movePaperclipTicket,
-  resolvePaperclipEnv,
-} from "@/lib/paperclip-kanban";
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+  type TicketPriority,
+  type TicketStatus,
+} from "@control-plane/core";
+
+import { updateTicket } from "@/lib/kanban-store";
 import { withAudit } from "@/lib/with-audit";
 
 export const dynamic = "force-dynamic";
@@ -14,98 +15,37 @@ export const runtime = "nodejs";
 
 /**
  * PATCH /api/kanban/tickets/:id
- * Update a ticket — assign an agent or move to a new status (or both).
+ * Update a ticket — assign an agent, move to a new status, or change priority.
  *
  * Body (all fields optional, at least one required):
- *   { assigneeAgentId?: string, status?: TicketStatus }
+ *   { assigneeAgentId?: string, status?: TicketStatus, priority?: TicketPriority }
+ *
+ * Moving a ticket to a new status fires the configured AgentWakeAdapter if:
+ *   - the ticket has an assignee
+ *   - CLAUDE_CONTROL_PLANE_KANBAN_WAKE_WEBHOOK_URL is set in the environment
  */
 async function ticketPatchHandler(req: Request, ctx?: unknown): Promise<Response> {
-  const envResult = resolvePaperclipEnv();
-  if (!envResult.ok) {
+  const id = await resolveId(ctx);
+  if (!id) {
     return Response.json(
-      { ok: false, reason: "unconfigured", message: envResult.reason },
-      { status: 503 }
-    );
-  }
-
-  // Next.js 15: params arrive as a Promise in the route context.
-  const rawCtx = ctx as { params?: Promise<{ id?: string }> | { id?: string } } | undefined;
-  const paramsResolved = rawCtx?.params instanceof Promise ? await rawCtx.params : rawCtx?.params;
-  const rawId = paramsResolved?.id ?? "";
-  const decodedId = safeDecode(rawId);
-
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return Response.json(
-      { ok: false, reason: "bad_request", message: "Invalid JSON body" },
+      { ok: false, reason: "bad_request", message: "Missing ticket id" },
       { status: 400 }
     );
   }
 
-  if (!isRecord(body)) {
+  const bodyResult = await parseBody(req);
+  if (!bodyResult.ok) return bodyResult.response;
+
+  const result = await updateTicket(id, bodyResult.patch);
+  if (!result.ok) {
+    const httpStatus =
+      result.reason === "not_found" ? 404 : result.reason === "unconfigured" ? 503 : 502;
     return Response.json(
-      { ok: false, reason: "bad_request", message: "Body must be an object" },
-      { status: 400 }
+      { ok: false, reason: result.reason, message: result.message },
+      { status: httpStatus }
     );
   }
-
-  const newStatus = body.status;
-  const newAgentId = body.assigneeAgentId;
-
-  if (newStatus === undefined && newAgentId === undefined) {
-    return Response.json(
-      { ok: false, reason: "bad_request", message: "Provide status or assigneeAgentId" },
-      { status: 400 }
-    );
-  }
-
-  // Move first (status change), then assign if requested
-  if (newStatus !== undefined) {
-    if (!isValidStatus(newStatus)) {
-      return Response.json(
-        {
-          ok: false,
-          reason: "bad_request",
-          message: `Invalid status "${typeof newStatus === "string" ? newStatus : "(invalid)"}". Valid: ${Object.values(TICKET_STATUSES).join(", ")}`,
-        },
-        { status: 400 }
-      );
-    }
-    const moveResult = await movePaperclipTicket(decodedId, newStatus as TicketStatus);
-    if (!moveResult.ok) {
-      return Response.json(
-        { ok: false, reason: moveResult.reason, message: moveResult.message },
-        { status: 502 }
-      );
-    }
-    if (newAgentId === undefined) {
-      return Response.json({ ok: true, ticket: moveResult.ticket });
-    }
-  }
-
-  if (newAgentId !== undefined) {
-    if (typeof newAgentId !== "string" || newAgentId.trim().length === 0) {
-      return Response.json(
-        { ok: false, reason: "bad_request", message: "assigneeAgentId must be a non-empty string" },
-        { status: 400 }
-      );
-    }
-    const assignResult = await assignPaperclipTicket(decodedId, newAgentId.trim());
-    if (!assignResult.ok) {
-      return Response.json(
-        { ok: false, reason: assignResult.reason, message: assignResult.message },
-        { status: 502 }
-      );
-    }
-    return Response.json({ ok: true, ticket: assignResult.ticket });
-  }
-
-  return Response.json(
-    { ok: false, reason: "bad_request", message: "Nothing to update" },
-    { status: 400 }
-  );
+  return Response.json({ ok: true, ticket: result.ticket });
 }
 
 export const PATCH = withAudit("api.kanban.tickets.update", ticketPatchHandler);
@@ -114,14 +54,78 @@ export const PATCH = withAudit("api.kanban.tickets.update", ticketPatchHandler);
 // Helpers
 // ---------------------------------------------------------------------------
 
+interface ParsedPatch {
+  status?: TicketStatus;
+  assigneeAgentId?: string;
+  priority?: TicketPriority;
+}
+
+type ParseBodyResult =
+  | { readonly ok: true; readonly patch: ParsedPatch }
+  | { readonly ok: false; readonly response: Response };
+
+async function parseBody(req: Request): Promise<ParseBodyResult> {
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return bad("Invalid JSON body");
+  }
+  if (!isRecord(body)) return bad("Body must be an object");
+
+  const rawStatus = body.status;
+  const rawAgentId = body.assigneeAgentId;
+  const rawPriority = body.priority;
+
+  if (rawStatus === undefined && rawAgentId === undefined && rawPriority === undefined) {
+    return bad("Provide status, assigneeAgentId, or priority");
+  }
+  if (rawStatus !== undefined && !isValidStatus(rawStatus)) {
+    return bad(
+      `Invalid status "${typeof rawStatus === "string" ? rawStatus : "(invalid)"}". Valid: ${Object.values(TICKET_STATUSES).join(", ")}`
+    );
+  }
+  if (rawAgentId !== undefined && (typeof rawAgentId !== "string" || !rawAgentId.trim())) {
+    return bad("assigneeAgentId must be a non-empty string");
+  }
+  if (rawPriority !== undefined && !isValidPriority(rawPriority)) {
+    return bad("Invalid priority");
+  }
+
+  const patch: ParsedPatch = {};
+  if (rawStatus !== undefined) patch.status = rawStatus as TicketStatus;
+  if (rawAgentId !== undefined) patch.assigneeAgentId = (rawAgentId).trim();
+  if (rawPriority !== undefined) patch.priority = rawPriority as TicketPriority;
+  return { ok: true, patch };
+}
+
+function bad(message: string): { ok: false; response: Response } {
+  return {
+    ok: false,
+    response: Response.json({ ok: false, reason: "bad_request", message }, { status: 400 }),
+  };
+}
+
+async function resolveId(ctx: unknown): Promise<string> {
+  const rawCtx = ctx as { params?: Promise<{ id?: string }> | { id?: string } } | undefined;
+  const paramsResolved = rawCtx?.params instanceof Promise ? await rawCtx.params : rawCtx?.params;
+  const rawId = paramsResolved?.id ?? "";
+  return safeDecode(rawId);
+}
+
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
 const VALID_STATUSES = new Set<string>(Object.values(TICKET_STATUSES));
+const VALID_PRIORITIES = new Set<string>(Object.values(TICKET_PRIORITIES));
 
 function isValidStatus(v: unknown): boolean {
   return typeof v === "string" && VALID_STATUSES.has(v);
+}
+
+function isValidPriority(v: unknown): boolean {
+  return typeof v === "string" && VALID_PRIORITIES.has(v);
 }
 
 function safeDecode(raw: string): string {

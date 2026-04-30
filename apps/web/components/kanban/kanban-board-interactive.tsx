@@ -10,9 +10,7 @@ import { KANBAN_LANE_LABELS, KANBAN_LANE_ORDER, groupTicketsByStatus } from "@/l
 import { CreateTicketModal } from "./create-ticket-modal";
 import { TicketCard } from "./ticket-card";
 
-interface InteractiveKanbanBoardProps {
-  readonly projectId?: string;
-}
+type InteractiveKanbanBoardProps = Record<string, never>;
 
 interface TicketApiResponse {
   readonly ok: boolean;
@@ -20,7 +18,7 @@ interface TicketApiResponse {
   readonly message?: string;
 }
 
-export function InteractiveKanbanBoard({ projectId }: InteractiveKanbanBoardProps) {
+export function InteractiveKanbanBoard(_props: InteractiveKanbanBoardProps) {
   const [tickets, setTickets] = useState<readonly TicketRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,10 +31,7 @@ export function InteractiveKanbanBoard({ projectId }: InteractiveKanbanBoardProp
 
   const fetchTickets = useCallback(async () => {
     try {
-      const url = projectId
-        ? `/api/kanban/tickets?projectId=${encodeURIComponent(projectId)}`
-        : "/api/kanban/tickets";
-      const res = await fetch(url);
+      const res = await fetch("/api/kanban/tickets");
       const data = (await res.json()) as TicketApiResponse;
       if (!data.ok) {
         setError(data.message ?? "Failed to load tickets");
@@ -49,7 +44,7 @@ export function InteractiveKanbanBoard({ projectId }: InteractiveKanbanBoardProp
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, []);
 
   useEffect(() => {
     void fetchTickets();
@@ -152,7 +147,6 @@ export function InteractiveKanbanBoard({ projectId }: InteractiveKanbanBoardProp
       {/* Create modal */}
       {showCreate ? (
         <CreateTicketModal
-          projectId={projectId}
           onClose={() => setShowCreate(false)}
           onCreated={() => {
             setShowCreate(false);
