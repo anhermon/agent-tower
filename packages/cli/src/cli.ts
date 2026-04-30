@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { runAgentsList } from "./commands/agents-list.js";
 import { runAudit } from "./commands/audit.js";
+import { runCompare } from "./commands/compare.js";
 import { runHealth } from "./commands/health.js";
 import { runHelp } from "./commands/help.js";
 import { runMcpStub } from "./commands/mcp-stub.js";
@@ -78,6 +79,8 @@ async function dispatchCommand(
       return runAudit([subOrFirst, ...restWithGlobals].filter(isDefined));
     case "workflow-health":
       return runWorkflowHealth([subOrFirst, ...restWithGlobals].filter(isDefined));
+    case "compare":
+      return runCompare(subOrFirst, restWithGlobals);
     default:
       throw new UsageError(`Unknown command: ${command}`);
   }

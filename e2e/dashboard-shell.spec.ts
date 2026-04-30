@@ -10,6 +10,7 @@ const MODULE_ROUTES = [
   { path: "/channels", emptyState: "No channels connected" },
   { path: "/replay", emptyState: "No session records" },
   { path: "/token-optimizer", emptyState: "No tools registered" },
+  { path: "/compare", emptyState: "No analytics source configured" },
 ];
 
 test("given_the_dashboard_is_running__when_opening_home__then_the_shell_is_visible", async ({
