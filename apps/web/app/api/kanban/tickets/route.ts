@@ -1,6 +1,6 @@
 import "server-only";
 
-import { TICKET_PRIORITIES, TICKET_STATUSES, type TicketPriority } from "@control-plane/core";
+import { TICKET_PRIORITIES, type TicketPriority } from "@control-plane/core";
 
 import {
   createPaperclipTicket,
@@ -105,11 +105,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 }
 
 const VALID_PRIORITIES = new Set<string>(Object.values(TICKET_PRIORITIES));
-const VALID_STATUSES = new Set<string>(Object.values(TICKET_STATUSES));
 
 function isValidPriority(v: unknown): v is TicketPriority {
   return typeof v === "string" && VALID_PRIORITIES.has(v);
 }
-
-// Re-export for route.test.ts
-export { VALID_STATUSES };

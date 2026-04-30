@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { type TicketRecord, type TicketStatus } from "@control-plane/core";
 
 import { Button } from "@/components/ui/button";
-import { KANBAN_LANE_LABELS, KANBAN_LANE_ORDER, groupTicketsByStatus } from "@/lib/kanban-source";
+import { KANBAN_LANE_LABELS, KANBAN_LANE_ORDER, groupTicketsByStatus } from "@/lib/kanban-utils";
 
 import { CreateTicketModal } from "./create-ticket-modal";
 import { TicketCard } from "./ticket-card";
