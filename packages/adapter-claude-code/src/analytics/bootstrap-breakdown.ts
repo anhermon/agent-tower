@@ -107,8 +107,9 @@ function splitIntoSections(text: string): RawSection[] {
   const headerPositions: HeaderPosition[] = [];
   CONTENTS_OF_HEADER_RE.lastIndex = 0;
 
-  let m: RegExpExecArray | null;
-  while ((m = CONTENTS_OF_HEADER_RE.exec(text)) !== null) {
+  for (;;) {
+    const m = CONTENTS_OF_HEADER_RE.exec(text);
+    if (m === null) break;
     // Group 1 is guaranteed to exist because the regex has a required capture.
     const filePath = (m[1] ?? "").trim();
     headerPositions.push({
