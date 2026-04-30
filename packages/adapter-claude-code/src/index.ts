@@ -1,4 +1,11 @@
 export * from "./adapter.js";
+export type {
+  BootstrapBreakdown,
+  BootstrapBreakdownOptions,
+  BootstrapComponent,
+  BootstrapComponentKind,
+} from "./analytics/bootstrap-breakdown.js";
+export { computeBootstrapBreakdown } from "./analytics/bootstrap-breakdown.js";
 export type { CostFoldOptions } from "./analytics/cost.js";
 export { foldCostBreakdown } from "./analytics/cost.js";
 export type { ProjectGrouping } from "./analytics/project-summary.js";
@@ -19,6 +26,12 @@ export type {
 export { computeSkillTurnAttribution } from "./analytics/skill-turn-attribution.js";
 export type { TimeseriesFoldOptions } from "./analytics/timeseries.js";
 export { computeStreaks, foldTimeseries } from "./analytics/timeseries.js";
+export type {
+  ToolCostEntry,
+  ToolCostView,
+  ToolCostViewOptions,
+} from "./analytics/tool-cost-view.js";
+export { computeToolCostView } from "./analytics/tool-cost-view.js";
 export { foldToolAnalytics } from "./analytics/tools.js";
 export type {
   TurnTimeline,

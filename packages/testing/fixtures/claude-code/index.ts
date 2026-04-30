@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 //   - mcp-tool:        `mcp__<server>__<tool>` call
 //   - task-agent:      `Task` sub-agent invocation + sidechain response
 //   - web-search:      WebSearch + WebFetch in the same assistant turn
+//   - bootstrap:       system entry with CLAUDE.md/AGENTS.md/other-md components injected
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -21,7 +22,8 @@ export type ClaudeCodeFixtureName =
   | "thinking"
   | "mcp-tool"
   | "task-agent"
-  | "web-search";
+  | "web-search"
+  | "bootstrap";
 
 export const CLAUDE_CODE_FIXTURE_NAMES = [
   "single-turn",
@@ -30,7 +32,8 @@ export const CLAUDE_CODE_FIXTURE_NAMES = [
   "thinking",
   "mcp-tool",
   "task-agent",
-  "web-search"
+  "web-search",
+  "bootstrap",
 ] as const satisfies readonly ClaudeCodeFixtureName[];
 
 export interface ClaudeCodeFixture {
