@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
+import { WebhookSessionsPanel } from "@/components/webhooks/webhook-sessions-panel";
 import { WebhookTable } from "@/components/webhooks/webhook-table";
 import { getModuleByKey } from "@/lib/modules";
+import { listWebhookSessions } from "@/lib/webhook-session-store";
 import {
   getConfiguredWebhooksFile,
   type ListWebhooksResult,
@@ -21,6 +23,7 @@ export default async function WebhooksPage() {
   const mod = getModuleByKey("webhooks");
   const configuredFile = getConfiguredWebhooksFile();
   const result = await listWebhooksOrEmpty();
+  const webhookSessions = listWebhookSessions();
 
   // Status derivation:
   //   - healthy: configured and the source parses without error.
@@ -63,6 +66,18 @@ export default async function WebhooksPage() {
 
       <WebhooksBody result={result} />
       <WebhookWorkbench />
+
+      <div className="space-y-3">
+        <h2 className="text-base font-semibold text-ink">Claude Code Action Sessions</h2>
+        <p className="text-sm text-muted">
+          Live feed of GitHub Actions runs triggered by{" "}
+          <code className="rounded bg-ink/[0.06] px-1 py-0.5 text-xs">claude.yml</code> workflows.
+          Populated when GitHub sends{" "}
+          <code className="rounded bg-ink/[0.06] px-1 py-0.5 text-xs">workflow_run</code> events to{" "}
+          <code className="rounded bg-ink/[0.06] px-1 py-0.5 text-xs">/api/webhooks/github</code>.
+        </p>
+        <WebhookSessionsPanel sessions={webhookSessions} />
+      </div>
     </section>
   );
 }
