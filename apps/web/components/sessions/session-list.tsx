@@ -15,6 +15,7 @@ import {
 import type { SessionDerivedFlags } from "@control-plane/core";
 
 import { SessionBadges } from "@/components/sessions/session-badges";
+import { HarnessBadge } from "@/components/sessions/harness-badge";
 import {
   matchesSessionFilters,
   type SessionFilterKey,
@@ -56,6 +57,8 @@ export interface SessionListRow extends SessionListing {
   readonly estimatedCostUsd?: number;
   readonly durationMs?: number;
   readonly messageCount?: number;
+  /** Harness that produced this session (e.g. "claude-code", "codex"). */
+  readonly harness?: string;
 }
 
 interface SessionListProps {
@@ -88,6 +91,7 @@ export function SessionList({
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
 
   const hasAnyFlags = useMemo(() => sessions.some((session) => session.flags), [sessions]);
+  const hasAnyHarness = useMemo(() => sessions.some((session) => session.harness), [sessions]);
 
   const filtered = useMemo(
     () => filterAndSort(sessions, deferredQuery, activeFilters, sortKey, sortDir),
@@ -272,6 +276,11 @@ export function SessionList({
                     className="min-w-48"
                   />
                 )}
+                {hasAnyHarness ? (
+                  <th className="px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted w-32">
+                    Harness
+                  </th>
+                ) : null}
                 {hasAnyFlags ? (
                   <th className="px-4 py-3 font-semibold text-xs uppercase tracking-wide text-muted w-48">
                     Flags
@@ -322,7 +331,7 @@ export function SessionList({
               {paginated.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={columnCount(hideProjectColumn, hasAnyFlags)}
+                    colSpan={columnCount(hideProjectColumn, hasAnyFlags, hasAnyHarness)}
                     className="px-4 py-10 text-center text-sm text-muted"
                   >
                     {query.trim().length > 0 ? (
@@ -372,6 +381,11 @@ export function SessionList({
                           {truncateMiddle(session.projectId, 40)}
                         </td>
                       )}
+                      {hasAnyHarness ? (
+                        <td className="px-4 py-3">
+                          {session.harness ? <HarnessBadge harness={session.harness} /> : null}
+                        </td>
+                      ) : null}
                       {hasAnyFlags ? (
                         <td className="px-4 py-3">
                           {session.flags ? <SessionBadges flags={session.flags} /> : null}
@@ -522,10 +536,15 @@ function SortableTh({
   );
 }
 
-function columnCount(hideProjectColumn: boolean, hasAnyFlags: boolean): number {
+function columnCount(
+  hideProjectColumn: boolean,
+  hasAnyFlags: boolean,
+  hasAnyHarness: boolean
+): number {
   // Title + Msgs + Duration + Cost + Size + Modified = 6
   let n = 6;
   if (!hideProjectColumn) n += 1;
+  if (hasAnyHarness) n += 1;
   if (hasAnyFlags) n += 1;
   return n;
 }

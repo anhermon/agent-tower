@@ -1,4 +1,5 @@
 export * from "./agents.js";
+export * from "./harness-kinds.js";
 export type * from "./analytics.js";
 export * from "./channels.js";
 export type * from "./common.js";

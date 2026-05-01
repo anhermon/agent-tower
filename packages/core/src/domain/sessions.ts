@@ -205,6 +205,14 @@ export interface SessionUsageSummary {
   readonly cwd?: string;
   readonly turns?: readonly SessionTurnUsage[];
   readonly waste?: SessionWasteSignals;
+  /**
+   * Programmatic harness identifier. Set by `AdapterRegistry` when merging
+   * sessions from multiple harnesses (e.g. "claude-code", "codex", "opencode").
+   * Optional so existing fixtures and direct adapter calls remain valid.
+   * Known values are enumerated in `HarnessKind` — the field is `string` to
+   * allow third-party adapters with custom identifiers.
+   */
+  readonly harness?: string;
 }
 
 // ─── Waste signals ────────────────────────────────────────────────────────────

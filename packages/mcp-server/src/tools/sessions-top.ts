@@ -1,4 +1,4 @@
-import { ClaudeCodeAnalyticsSource, resolveDataRoot } from "@control-plane/adapter-claude-code";
+import { buildAdapterRegistry } from "@control-plane/adapter-claude-code";
 import type { DateRange, SessionAnalyticsFilter, SessionUsageSummary } from "@control-plane/core";
 
 import { asRecord, errorResult, type ToolDefinition, type ToolResult } from "./types.js";
@@ -11,6 +11,7 @@ interface ParsedSessionsTopInput {
   readonly projectId: string | null;
   readonly since: string | null;
   readonly until: string | null;
+  readonly harness: string | null;
 }
 
 const DEFAULT_BY: SessionsTopBy = "tokens";
@@ -23,12 +24,14 @@ function parseInput(raw: unknown): ParsedSessionsTopInput {
   const projectId = r.projectId;
   const since = r.since;
   const until = r.until;
+  const harness = r.harness;
   return {
     by: by === "cost" || by === "turns" || by === "tokens" ? by : null,
     limit: typeof limit === "number" && Number.isFinite(limit) ? limit : null,
     projectId: typeof projectId === "string" && projectId.length > 0 ? projectId : null,
     since: typeof since === "string" && since.length > 0 ? since : null,
     until: typeof until === "string" && until.length > 0 ? until : null,
+    harness: typeof harness === "string" && harness.length > 0 ? harness : null,
   };
 }
 
@@ -49,7 +52,7 @@ function rank(summary: SessionUsageSummary, by: SessionsTopBy): number {
 export const sessionsTopTool: ToolDefinition = {
   name: "sessions_top",
   description:
-    "Read-only. Returns the top sessions by tokens, cost, or turn count. Filters by optional project id and an inclusive YYYY-MM-DD date range via since/until (either bound alone resolves to a single-day window).",
+    "Read-only. Returns the top sessions by tokens, cost, or turn count across all registered harnesses (Claude Code, Codex, etc.). Filters by optional harness kind, project id, and an inclusive YYYY-MM-DD date range via since/until.",
   inputSchema: {
     type: "object",
     properties: {
@@ -75,20 +78,24 @@ export const sessionsTopTool: ToolDefinition = {
         type: "string",
         description: "Inclusive upper bound for the session start date. Format YYYY-MM-DD.",
       },
+      harness: {
+        type: "string",
+        description:
+          'Filter by harness kind. Known values: "claude-code", "codex". Omit to include all harnesses.',
+      },
     },
     additionalProperties: false,
   },
   handler: async (raw): Promise<ToolResult> => {
     try {
       const input = parseInput(raw);
-      const resolved = resolveDataRoot();
-      if (!resolved) {
-        return { ok: false, reason: "unconfigured" };
-      }
       const by = input.by ?? DEFAULT_BY;
       const limit = Math.max(1, Math.floor(input.limit ?? DEFAULT_LIMIT));
 
-      const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
+      const registry = buildAdapterRegistry();
+      if (registry.isEmpty) {
+        return { ok: false, reason: "unconfigured" };
+      }
 
       let range: DateRange | null = null;
       if (input.since && input.until) {
@@ -104,7 +111,12 @@ export const sessionsTopTool: ToolDefinition = {
         ...(input.projectId ? { projectId: input.projectId } : {}),
       };
 
-      const summaries = await source.listSessionSummaries(filter);
+      let summaries = await registry.listAllSessionSummaries(filter);
+
+      if (input.harness) {
+        summaries = summaries.filter((s) => s.harness === input.harness);
+      }
+
       const sorted = [...summaries].sort((a, b) => rank(b, by) - rank(a, by));
       const sliced = sorted.slice(0, limit);
 
@@ -112,6 +124,7 @@ export const sessionsTopTool: ToolDefinition = {
         ok: true,
         by,
         limit,
+        ...(input.harness ? { harness: input.harness } : {}),
         ...(input.projectId ? { projectId: input.projectId } : {}),
         ...(input.since ? { since: input.since } : {}),
         ...(input.until ? { until: input.until } : {}),

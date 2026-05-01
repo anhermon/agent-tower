@@ -16,18 +16,12 @@ import { join } from "node:path";
 
 // ─── Public types ────────────────────────────────────────────────────────────
 
-export const HARNESS_KINDS = {
-  ClaudeCode: "claude-code",
-  Cline: "cline",
-  Cursor: "cursor",
-  Continue: "continue",
-  Copilot: "copilot",
-  Aider: "aider",
-  Windsurf: "windsurf",
-  Zed: "zed",
-} as const;
+// Re-export from harness-kinds so that callers importing via the sub-path
+// `@control-plane/core/harness-detector` still get the full set.
+export { HARNESS_KINDS, type HarnessKind } from "./domain/harness-kinds.js";
 
-export type HarnessKind = (typeof HARNESS_KINDS)[keyof typeof HARNESS_KINDS];
+import type { HarnessKind } from "./domain/harness-kinds.js";
+import { HARNESS_KINDS } from "./domain/harness-kinds.js";
 
 /** A detected AI coding assistant harness on the local system. */
 export interface HarnessInfo {
@@ -155,6 +149,35 @@ function buildCandidates(): readonly HarnessCandidate[] {
         p(h(".config", "zed")),
         p(h("Library", "Application Support", "Zed")), // macOS
         p(h("AppData", "Roaming", "Zed")), // Windows
+      ],
+    },
+    {
+      kind: HARNESS_KINDS.OpenCode,
+      displayName: "OpenCode",
+      indicators: [
+        p(h(".opencode")),
+        p(h(".config", "opencode")),
+        p(h("AppData", "Roaming", "opencode")), // Windows
+        p(h("Library", "Application Support", "opencode")), // macOS
+      ],
+    },
+    {
+      kind: HARNESS_KINDS.Codex,
+      displayName: "Codex CLI",
+      indicators: [
+        p(h(".codex")),
+        p(h(".config", "codex")),
+        p(h("AppData", "Roaming", "codex")), // Windows
+      ],
+    },
+    {
+      kind: HARNESS_KINDS.GeminiCli,
+      displayName: "Gemini CLI",
+      indicators: [
+        p(h(".gemini")),
+        p(h(".config", "gemini-cli")),
+        p(h("AppData", "Roaming", "gemini-cli")), // Windows
+        p(h("Library", "Application Support", "gemini-cli")), // macOS
       ],
     },
   ];
