@@ -2,9 +2,12 @@ import Link from "next/link";
 
 import { RefreshButton } from "@/components/ui/refresh-button";
 import { EmptyState, ErrorState } from "@/components/ui/state";
-import { loadGithubWebhookView ,type  GithubDeliveryRow,type  GithubRepoGroup } from "@/lib/github-webhook-view-source";
+import {
+  loadGithubWebhookView,
+  type GithubDeliveryRow,
+  type GithubRepoGroup,
+} from "@/lib/github-webhook-view-source";
 import { cn } from "@/lib/utils";
-
 
 export const dynamic = "force-dynamic";
 

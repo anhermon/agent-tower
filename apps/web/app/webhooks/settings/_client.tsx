@@ -7,7 +7,6 @@ import type { WebhookEventType, WebhookSubscription } from "@control-plane/core"
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
-
 // ---------------------------------------------------------------------------
 // Event-type catalog (canonical values from @control-plane/core)
 // ---------------------------------------------------------------------------
