@@ -1,5 +1,6 @@
 import "server-only";
 import {
+  buildAdapterRegistry,
   CLAUDE_DATA_ROOT_ENV,
   ClaudeCodeAnalyticsSource,
   ClaudeCodeSessionSource,
@@ -12,15 +13,16 @@ import {
   resolveDataRoot,
   type TranscriptPreview,
 } from "@control-plane/adapter-claude-code";
-import type {
-  CostBreakdown,
-  DateRange,
-  ProjectSummary,
-  ReplayData,
-  SessionDerivedFlags,
-  SessionUsageSummary,
-  Timeseries,
-  ToolAnalytics,
+import {
+  type AdapterRegistry,
+  type CostBreakdown,
+  type DateRange,
+  type ProjectSummary,
+  type ReplayData,
+  type SessionDerivedFlags,
+  type SessionUsageSummary,
+  type Timeseries,
+  type ToolAnalytics,
 } from "@control-plane/core";
 
 /**
@@ -68,6 +70,17 @@ export function getConfiguredAnalyticsSource(): ClaudeCodeAnalyticsSource | null
   return source;
 }
 
+// ─── Multi-harness registry (singleton per process) ──────────────────────────
+// Lazily built once on the first request, then reused. The registry itself has
+// no stale state — each adapter re-reads the filesystem on every call.
+
+let registryCache: AdapterRegistry | null = null;
+
+export function getAdapterRegistry(): AdapterRegistry {
+  registryCache ??= buildAdapterRegistry();
+  return registryCache;
+}
+
 export interface SessionListing extends ClaudeSessionFile {
   readonly title: string | null;
   readonly firstUserText: string | null;
@@ -77,6 +90,8 @@ export interface SessionListing extends ClaudeSessionFile {
   readonly estimatedCostUsd?: number;
   readonly durationMs?: number;
   readonly messageCount?: number;
+  /** Harness that produced this session (e.g. "claude-code", "codex"). */
+  readonly harness?: string;
 }
 
 export type ListSessionsResult =
@@ -165,13 +180,12 @@ async function enrichWithUsageSummaries(
     return listings;
   }
 
-  const source = getConfiguredAnalyticsSource();
-  if (!source) {
-    return listings;
-  }
+  // Use the multi-harness registry — it includes Claude Code + Codex + any
+  // future adapters. Falls back gracefully if the registry has no adapters.
+  const registry = getAdapterRegistry();
 
   try {
-    const summaries = await source.listSessionSummaries();
+    const summaries = await registry.listAllSessionSummaries();
     const bySessionId = new Map(summaries.map((summary) => [summary.sessionId, summary]));
     return listings.map((listing) => {
       const summary = bySessionId.get(listing.sessionId);
@@ -185,6 +199,7 @@ async function enrichWithUsageSummaries(
         estimatedCostUsd: summary.estimatedCostUsd,
         durationMs: summary.durationMs,
         messageCount: summary.userMessageCount + summary.assistantMessageCount,
+        harness: summary.harness,
       };
     });
   } catch {
@@ -262,11 +277,15 @@ export async function listProjectSummariesOrEmpty(): Promise<Result<readonly Pro
 export async function listSessionSummariesOrEmpty(filter?: {
   projectId?: string;
   range?: DateRange;
+  harness?: string;
 }): Promise<Result<readonly SessionUsageSummary[]>> {
-  const src = getConfiguredAnalyticsSource();
-  if (!src) return { ok: false, reason: "unconfigured" };
+  const registry = getAdapterRegistry();
   try {
-    return { ok: true, value: await src.listSessionSummaries(filter) };
+    let summaries = await registry.listAllSessionSummaries(filter);
+    if (filter?.harness) {
+      summaries = summaries.filter((s) => s.harness === filter.harness);
+    }
+    return { ok: true, value: summaries };
   } catch (error) {
     return errResult(error);
   }

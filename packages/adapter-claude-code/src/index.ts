@@ -1,4 +1,7 @@
 export * from "./adapter.js";
+export { ClaudeCodeHarnessAdapter } from "./harness-adapter.js";
+export { CodexHarnessAdapter, CODEX_HOME_ENV, resolveCodexDataRoot } from "./codex-adapter.js";
+export { buildAdapterRegistry } from "./registry-factory.js";
 export type { CostFoldOptions } from "./analytics/cost.js";
 export { foldCostBreakdown } from "./analytics/cost.js";
 export type { ProjectGrouping } from "./analytics/project-summary.js";

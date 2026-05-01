@@ -1,7 +1,6 @@
-import { ClaudeCodeAnalyticsSource } from "@control-plane/adapter-claude-code";
+import { buildAdapterRegistry } from "@control-plane/adapter-claude-code";
 import type { SessionUsageSummary } from "@control-plane/core";
 
-import { resolveOrExplain } from "../data-root.js";
 import { parseFlags, readDateFlag, readEnumFlag, readIntFlag } from "../flags.js";
 import { bold, renderTable, resolveOutputMode, writeJson, writeLine } from "../output.js";
 
@@ -17,6 +16,7 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
     project?: string;
     since?: string;
     until?: string;
+    harness?: string;
   }>(argv, {
     json: { type: "boolean" },
     pretty: { type: "boolean" },
@@ -25,6 +25,7 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
     project: { type: "string" },
     since: { type: "string" },
     until: { type: "string" },
+    harness: { type: "string" },
   });
 
   const mode = resolveOutputMode(values);
@@ -32,13 +33,25 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
   const limit = readIntFlag(values.limit, 10, "limit");
   const since = readDateFlag(values.since, "since");
   const until = readDateFlag(values.until, "until");
+  const harnessFilter = typeof values.harness === "string" ? values.harness : undefined;
 
-  const resolved = resolveOrExplain(mode);
-  if (!resolved) return 1;
+  // Build a registry with all auto-discovered harnesses. Unlike the old
+  // single-adapter path, this returns sessions from every harness that has
+  // a resolvable data root (Claude Code + Codex by default).
+  const registry = buildAdapterRegistry();
 
-  const source = new ClaudeCodeAnalyticsSource({ directory: resolved.directory });
-  // `listSessionSummaries` accepts a filter; we only build the range when both
-  // ends are supplied — partial ranges would silently drop every session.
+  if (registry.isEmpty) {
+    if (mode.json) {
+      writeJson({ ok: false, reason: "unconfigured" });
+    } else {
+      writeLine(
+        "No harness data roots configured. Set CLAUDE_CONTROL_PLANE_DATA_ROOT or " +
+          "ensure ~/.claude/projects exists."
+      );
+    }
+    return 1;
+  }
+
   const filter =
     since && until
       ? {
@@ -49,7 +62,14 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
         ? { projectId: values.project }
         : undefined;
 
-  const summaries = await source.listSessionSummaries(filter);
+  let summaries = await registry.listAllSessionSummaries(filter);
+
+  // Apply harness filter post-merge so registry.listAllSessionSummaries()
+  // can still benefit from parallel execution across adapters.
+  if (harnessFilter) {
+    summaries = summaries.filter((s) => s.harness === harnessFilter);
+  }
+
   const sorted = [...summaries].sort((a, b) => compareSummaries(a, b, sortBy));
   const effectiveLimit = Math.max(1, limit);
   const sliced = sorted.slice(0, effectiveLimit);
@@ -57,12 +77,16 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
   if (mode.json) {
     writeJson({
       ok: true,
+      ...(harnessFilter ? { harness: harnessFilter } : {}),
       sessions: sliced.map((s) => projectSession(s)),
     });
     return 0;
   }
 
-  writeLine(bold(`Top ${sliced.length} sessions by ${sortBy}`));
+  const headline = harnessFilter
+    ? `Top ${sliced.length} sessions by ${sortBy} (harness: ${harnessFilter})`
+    : `Top ${sliced.length} sessions by ${sortBy}`;
+  writeLine(bold(headline));
   writeLine("");
   if (sliced.length === 0) {
     writeLine("No sessions matched the filter.");
@@ -70,13 +94,16 @@ export async function runSessionsTop(argv: readonly string[]): Promise<number> {
   }
   const rows = sliced.map((s) => [
     s.sessionId,
+    s.harness ?? "-",
     s.model ?? "-",
     String(totalTokens(s)),
     s.estimatedCostUsd.toFixed(4),
     String(turnCount(s)),
     s.startTime ?? "-",
   ]);
-  writeLine(renderTable(["session", "model", "tokens", "cost_usd", "turns", "started_at"], rows));
+  writeLine(
+    renderTable(["session", "harness", "model", "tokens", "cost_usd", "turns", "started_at"], rows)
+  );
   return 0;
 }
 
@@ -101,6 +128,7 @@ function compareSummaries(a: SessionUsageSummary, b: SessionUsageSummary, by: So
 
 interface ProjectedSession {
   readonly sessionId: string;
+  readonly harness: string | null;
   readonly totalTokens: number;
   readonly inputTokens: number;
   readonly outputTokens: number;
@@ -116,6 +144,7 @@ interface ProjectedSession {
 function projectSession(summary: SessionUsageSummary): ProjectedSession {
   return {
     sessionId: summary.sessionId,
+    harness: summary.harness ?? null,
     totalTokens: totalTokens(summary),
     inputTokens: summary.usage.inputTokens,
     outputTokens: summary.usage.outputTokens,

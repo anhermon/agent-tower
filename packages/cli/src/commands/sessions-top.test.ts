@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { CLAUDE_DATA_ROOT_ENV } from "@control-plane/adapter-claude-code";
+import { CLAUDE_DATA_ROOT_ENV, CODEX_HOME_ENV } from "@control-plane/adapter-claude-code";
 
 import { captureOutput } from "../test-helpers.js";
 
@@ -56,15 +56,22 @@ function assistantLine(args: {
 
 describe("runSessionsTop", () => {
   const originalEnv = process.env[CLAUDE_DATA_ROOT_ENV];
+  const originalCodexHome = process.env[CODEX_HOME_ENV];
   const tempDirs: string[] = [];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     delete process.env[CLAUDE_DATA_ROOT_ENV];
+    // Point Codex at an empty sandbox so real ~/.codex sessions don't leak in.
+    const codexSandbox = await mkdtemp(path.join(os.tmpdir(), "cp-codex-sandbox-"));
+    tempDirs.push(codexSandbox);
+    process.env[CODEX_HOME_ENV] = codexSandbox;
   });
 
   afterEach(async () => {
     if (originalEnv === undefined) delete process.env[CLAUDE_DATA_ROOT_ENV];
     else process.env[CLAUDE_DATA_ROOT_ENV] = originalEnv;
+    if (originalCodexHome === undefined) delete process.env[CODEX_HOME_ENV];
+    else process.env[CODEX_HOME_ENV] = originalCodexHome;
     while (tempDirs.length > 0) {
       const dir = tempDirs.pop();
       if (dir) await rm(dir, { recursive: true, force: true });
