@@ -42,7 +42,7 @@ jobs:
             | tar -xz -C /usr/local/bin gitleaks
 
       - name: Install Playwright system dependencies
-        run: sudo pnpm exec playwright install-deps chromium
+        run: sudo env PATH="$PNPM_HOME:$PATH" pnpm exec playwright install-deps chromium
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
