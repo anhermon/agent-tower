@@ -14,8 +14,8 @@ import {
 
 import type { SessionDerivedFlags } from "@control-plane/core";
 
-import { SessionBadges } from "@/components/sessions/session-badges";
 import { HarnessBadge } from "@/components/sessions/harness-badge";
+import { SessionBadges } from "@/components/sessions/session-badges";
 import {
   matchesSessionFilters,
   type SessionFilterKey,

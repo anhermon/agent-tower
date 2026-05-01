@@ -1,9 +1,9 @@
 import type { AdapterContext, AdapterHealth, AdapterLifecycle } from "./common.js";
+import type { SessionAnalyticsFilter } from "./session-analytics-adapter.js";
 import type { CostBreakdown, DateRange, Timeseries, ToolAnalytics } from "../domain/analytics.js";
 import type { ProjectSummary } from "../domain/projects.js";
 import type { ReplayData } from "../domain/replay.js";
 import type { SessionUsageSummary } from "../domain/sessions.js";
-import type { SessionAnalyticsFilter } from "./session-analytics-adapter.js";
 
 /**
  * Stable metadata that identifies a harness (the runtime shell / CLI tool

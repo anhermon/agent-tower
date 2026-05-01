@@ -8,9 +8,9 @@
 
 import { AdapterRegistry } from "@control-plane/core";
 
-import { ClaudeCodeHarnessAdapter } from "./harness-adapter.js";
 import { CodexHarnessAdapter, resolveCodexDataRoot } from "./codex-adapter.js";
 import { resolveDataRoot } from "./data-root.js";
+import { ClaudeCodeHarnessAdapter } from "./harness-adapter.js";
 
 /**
  * Build a registry pre-populated with every harness adapter whose data root

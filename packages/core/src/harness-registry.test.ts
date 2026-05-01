@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 
-import type { HarnessAdapter, HarnessDescriptor } from "./contracts/harness-adapter.js";
 import { AdapterRegistry } from "./harness-registry.js";
-import type { SessionUsageSummary } from "./domain/sessions.js";
 import { EMPTY_CACHE_EFFICIENCY } from "./lib/pricing.js";
+
+import type { HarnessAdapter, HarnessDescriptor } from "./contracts/harness-adapter.js";
+import type { SessionUsageSummary } from "./domain/sessions.js";
 
 // ─── Minimal stub adapter ─────────────────────────────────────────────────────
 
