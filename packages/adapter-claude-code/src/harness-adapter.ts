@@ -73,10 +73,10 @@ export class ClaudeCodeHarnessAdapter implements HarnessAdapter {
     return this.source.loadToolAnalytics();
   }
 
-  async health(_context?: AdapterContext): Promise<AdapterHealth> {
-    return {
+  health(_context?: AdapterContext): Promise<AdapterHealth> {
+    return Promise.resolve({
       status: "healthy",
       checkedAt: new Date().toISOString(),
-    };
+    });
   }
 }

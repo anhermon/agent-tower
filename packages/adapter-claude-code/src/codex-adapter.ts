@@ -18,22 +18,23 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
 
-import type {
-  AdapterContext,
-  AdapterHealth,
-  CostBreakdown,
-  DateRange,
-  HarnessAdapter,
-  HarnessDescriptor,
-  ModelUsage,
-  ProjectSummary,
-  ReplayData,
-  SessionAnalyticsFilter,
-  SessionUsageSummary,
-  Timeseries,
-  ToolAnalytics,
+import {
+  type AdapterContext,
+  type AdapterHealth,
+  type CostBreakdown,
+  type DateRange,
+  type HarnessAdapter,
+  type HarnessDescriptor,
+  type ModelUsage,
+  type ProjectSummary,
+  type ReplayData,
+  type SessionAnalyticsFilter,
+  type SessionUsageSummary,
+  type Timeseries,
+  type ToolAnalytics,
+  EMPTY_CACHE_EFFICIENCY,
+  estimateCostFromUsage,
 } from "@control-plane/core";
-import { EMPTY_CACHE_EFFICIENCY, estimateCostFromUsage } from "@control-plane/core";
 
 import { foldCostBreakdown } from "./analytics/cost.js";
 import { foldProjectSummaries } from "./analytics/project-summary.js";
@@ -108,6 +109,58 @@ interface ParsedCodexSession {
   readonly assistantMessageCount: number;
 }
 
+// ─── Entry parser helpers ─────────────────────────────────────────────────────
+
+interface ParseState {
+  sessionId: string | null;
+  cwd: string | undefined;
+  startTime: string | undefined;
+  model: string | undefined;
+  version: string | undefined;
+  lastTimestamp: string | undefined;
+  userMsgs: number;
+  assistantMsgs: number;
+  totalTokenUsage: CodexTokenCountInfo;
+}
+
+function applySessionMeta(state: ParseState, payload: Record<string, unknown>): void {
+  const meta = payload as unknown as CodexSessionMeta;
+  state.sessionId = meta.id ?? null;
+  state.cwd = meta.cwd;
+  state.startTime = meta.timestamp;
+  state.version = meta.cli_version;
+}
+
+function applyTurnContext(state: ParseState, payload: Record<string, unknown>): void {
+  if (typeof payload.model === "string") state.model = payload.model;
+}
+
+function applyEventMsg(state: ParseState, payload: Record<string, unknown>): void {
+  if (payload.type !== "token_count") return;
+  const info = payload.info as Record<string, unknown> | undefined;
+  const total = info?.total_token_usage as Record<string, unknown> | undefined;
+  if (!total) return;
+  state.totalTokenUsage = {
+    input_tokens: (total.input_tokens as number | undefined) ?? 0,
+    cached_input_tokens: (total.cached_input_tokens as number | undefined) ?? 0,
+    output_tokens: (total.output_tokens as number | undefined) ?? 0,
+  };
+}
+
+function applyResponseItem(state: ParseState, payload: Record<string, unknown>): void {
+  if (payload.role === "user") state.userMsgs++;
+  if (payload.role === "assistant") state.assistantMsgs++;
+}
+
+function applyEntry(state: ParseState, entry: CodexEntry): void {
+  if (entry.timestamp) state.lastTimestamp = entry.timestamp;
+  const payload: Record<string, unknown> = entry.payload ?? {};
+  if (entry.type === "session_meta") applySessionMeta(state, payload);
+  else if (entry.type === "turn_context") applyTurnContext(state, payload);
+  else if (entry.type === "event_msg") applyEventMsg(state, payload);
+  else if (entry.type === "response_item") applyResponseItem(state, payload);
+}
+
 // ─── Reader ───────────────────────────────────────────────────────────────────
 
 async function listCodexFiles(dataRoot: string): Promise<readonly string[]> {
@@ -139,71 +192,34 @@ async function listCodexFiles(dataRoot: string): Promise<readonly string[]> {
 }
 
 async function parseCodexFile(filePath: string): Promise<ParsedCodexSession | null> {
-  let sessionId: string | null = null;
-  let cwd: string | undefined;
-  let startTime: string | undefined;
-  let model: string | undefined;
-  let version: string | undefined;
-  let lastTimestamp: string | undefined;
-  let userMsgs = 0;
-  let assistantMsgs = 0;
   // Track the final token_count payload (last one = cumulative total).
-  let totalTokenUsage: CodexTokenCountInfo = {
-    input_tokens: 0,
-    cached_input_tokens: 0,
-    output_tokens: 0,
+  const state: ParseState = {
+    sessionId: null,
+    cwd: undefined,
+    startTime: undefined,
+    model: undefined,
+    version: undefined,
+    lastTimestamp: undefined,
+    userMsgs: 0,
+    assistantMsgs: 0,
+    totalTokenUsage: { input_tokens: 0, cached_input_tokens: 0, output_tokens: 0 },
   };
 
   try {
-    const rl = createInterface({
-      input: createReadStream(filePath),
-      crlfDelay: Infinity,
-    });
-
+    const rl = createInterface({ input: createReadStream(filePath), crlfDelay: Infinity });
     for await (const raw of rl) {
       if (!raw.trim()) continue;
-      let entry: CodexEntry;
       try {
-        entry = JSON.parse(raw) as CodexEntry;
+        applyEntry(state, JSON.parse(raw) as CodexEntry);
       } catch {
         continue;
-      }
-
-      if (entry.timestamp) lastTimestamp = entry.timestamp;
-      const payload = entry.payload ?? {};
-
-      if (entry.type === "session_meta") {
-        const meta = payload as unknown as CodexSessionMeta;
-        sessionId = meta.id ?? null;
-        cwd = meta.cwd;
-        startTime = meta.timestamp;
-        version = meta.cli_version;
-      } else if (entry.type === "turn_context") {
-        if (typeof payload["model"] === "string") model = payload["model"];
-      } else if (entry.type === "event_msg") {
-        const p = payload as Record<string, unknown>;
-        if (p["type"] === "token_count") {
-          const info = p["info"] as Record<string, unknown> | undefined;
-          const total = info?.["total_token_usage"] as Record<string, unknown> | undefined;
-          if (total) {
-            totalTokenUsage = {
-              input_tokens: (total["input_tokens"] as number | undefined) ?? 0,
-              cached_input_tokens: (total["cached_input_tokens"] as number | undefined) ?? 0,
-              output_tokens: (total["output_tokens"] as number | undefined) ?? 0,
-            };
-          }
-        }
-      } else if (entry.type === "response_item") {
-        const p = payload as Record<string, unknown>;
-        if (p["role"] === "user") userMsgs++;
-        if (p["role"] === "assistant") assistantMsgs++;
       }
     }
   } catch {
     return null;
   }
 
-  if (!sessionId) return null;
+  if (!state.sessionId) return null;
 
   let fileStat: { size: number; mtime: Date } | null = null;
   try {
@@ -213,18 +229,18 @@ async function parseCodexFile(filePath: string): Promise<ParsedCodexSession | nu
   }
 
   return {
-    sessionId,
+    sessionId: state.sessionId,
     filePath,
     modifiedAt: fileStat.mtime.toISOString(),
     sizeBytes: fileStat.size,
-    ...(cwd !== undefined ? { cwd } : {}),
-    ...(startTime !== undefined ? { startTime } : {}),
-    ...(lastTimestamp !== undefined ? { endTime: lastTimestamp } : {}),
-    ...(model !== undefined ? { model } : {}),
-    ...(version !== undefined ? { version } : {}),
-    totalTokenUsage,
-    userMessageCount: userMsgs,
-    assistantMessageCount: assistantMsgs,
+    ...(state.cwd !== undefined ? { cwd: state.cwd } : {}),
+    ...(state.startTime !== undefined ? { startTime: state.startTime } : {}),
+    ...(state.lastTimestamp !== undefined ? { endTime: state.lastTimestamp } : {}),
+    ...(state.model !== undefined ? { model: state.model } : {}),
+    ...(state.version !== undefined ? { version: state.version } : {}),
+    totalTokenUsage: state.totalTokenUsage,
+    userMessageCount: state.userMsgs,
+    assistantMessageCount: state.assistantMsgs,
   };
 }
 
@@ -333,11 +349,11 @@ export class CodexHarnessAdapter implements HarnessAdapter {
 
   // Replay not supported — Codex JSONL lacks enough turn-level detail to
   // reconstruct a canonical ReplayData. Return undefined rather than throw.
-  async loadSessionReplay(
+  loadSessionReplay(
     _sessionId: string,
     _context?: AdapterContext
   ): Promise<ReplayData | undefined> {
-    return undefined;
+    return Promise.resolve(undefined);
   }
 
   async loadActivityTimeseries(range?: DateRange, _context?: AdapterContext): Promise<Timeseries> {

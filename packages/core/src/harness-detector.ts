@@ -14,14 +14,13 @@ import { access, readdir } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
+import { HARNESS_KINDS, type HarnessKind } from "./domain/harness-kinds.js";
+
 // ─── Public types ────────────────────────────────────────────────────────────
 
 // Re-export from harness-kinds so that callers importing via the sub-path
 // `@control-plane/core/harness-detector` still get the full set.
 export { HARNESS_KINDS, type HarnessKind } from "./domain/harness-kinds.js";
-
-import type { HarnessKind } from "./domain/harness-kinds.js";
-import { HARNESS_KINDS } from "./domain/harness-kinds.js";
 
 /** A detected AI coding assistant harness on the local system. */
 export interface HarnessInfo {
@@ -56,6 +55,11 @@ interface HarnessCandidate {
   readonly displayName: string;
   readonly indicators: readonly Indicator[];
 }
+
+// Path segment constants — extracted to avoid duplicate string literals.
+// String construction (homedir() calls) is still deferred inside buildCandidates().
+const MAC_APP_SUPPORT = "Application Support";
+const VSCODE_EXTENSIONS = "extensions";
 
 // Helper constructors — intentionally no module-level calls; all home-dir
 // path construction is deferred to buildCandidates() below so that importing
@@ -93,10 +97,10 @@ function buildCandidates(): readonly HarnessCandidate[] {
       displayName: "Cline",
       indicators: [
         // VS Code (standard and insiders) extension directory
-        pfx(h(".vscode", "extensions"), "saoudrizwan.claude-dev"),
-        pfx(h(".vscode-insiders", "extensions"), "saoudrizwan.claude-dev"),
+        pfx(h(".vscode", VSCODE_EXTENSIONS), "saoudrizwan.claude-dev"),
+        pfx(h(".vscode-insiders", VSCODE_EXTENSIONS), "saoudrizwan.claude-dev"),
         // Cursor bundles VS Code extensions in the same tree
-        pfx(h(".cursor", "extensions"), "saoudrizwan.claude-dev"),
+        pfx(h(".cursor", VSCODE_EXTENSIONS), "saoudrizwan.claude-dev"),
       ],
     },
     {
@@ -105,7 +109,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
       indicators: [
         p(h(".cursor")),
         p(h("AppData", "Roaming", "Cursor", "User")), // Windows
-        p(h("Library", "Application Support", "Cursor", "User")), // macOS
+        p(h("Library", MAC_APP_SUPPORT, "Cursor", "User")), // macOS
       ],
     },
     {
@@ -124,8 +128,8 @@ function buildCandidates(): readonly HarnessCandidate[] {
         p(h(".config", "github-copilot")),
         p(h("AppData", "Roaming", "GitHub Copilot")), // Windows
         // VS Code extension
-        pfx(h(".vscode", "extensions"), "github.copilot"),
-        pfx(h(".vscode-insiders", "extensions"), "github.copilot"),
+        pfx(h(".vscode", VSCODE_EXTENSIONS), "github.copilot"),
+        pfx(h(".vscode-insiders", VSCODE_EXTENSIONS), "github.copilot"),
       ],
     },
     {
@@ -139,7 +143,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
       indicators: [
         p(h(".codeium")),
         p(h("AppData", "Roaming", "Windsurf", "User")), // Windows
-        p(h("Library", "Application Support", "Windsurf", "User")), // macOS
+        p(h("Library", MAC_APP_SUPPORT, "Windsurf", "User")), // macOS
       ],
     },
     {
@@ -147,7 +151,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
       displayName: "Zed",
       indicators: [
         p(h(".config", "zed")),
-        p(h("Library", "Application Support", "Zed")), // macOS
+        p(h("Library", MAC_APP_SUPPORT, "Zed")), // macOS
         p(h("AppData", "Roaming", "Zed")), // Windows
       ],
     },
@@ -158,7 +162,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
         p(h(".opencode")),
         p(h(".config", "opencode")),
         p(h("AppData", "Roaming", "opencode")), // Windows
-        p(h("Library", "Application Support", "opencode")), // macOS
+        p(h("Library", MAC_APP_SUPPORT, "opencode")), // macOS
       ],
     },
     {
@@ -177,7 +181,7 @@ function buildCandidates(): readonly HarnessCandidate[] {
         p(h(".gemini")),
         p(h(".config", "gemini-cli")),
         p(h("AppData", "Roaming", "gemini-cli")), // Windows
-        p(h("Library", "Application Support", "gemini-cli")), // macOS
+        p(h("Library", MAC_APP_SUPPORT, "gemini-cli")), // macOS
       ],
     },
   ];

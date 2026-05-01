@@ -13,16 +13,16 @@ import {
   resolveDataRoot,
   type TranscriptPreview,
 } from "@control-plane/adapter-claude-code";
-import type { AdapterRegistry } from "@control-plane/core";
-import type {
-  CostBreakdown,
-  DateRange,
-  ProjectSummary,
-  ReplayData,
-  SessionDerivedFlags,
-  SessionUsageSummary,
-  Timeseries,
-  ToolAnalytics,
+import {
+  type AdapterRegistry,
+  type CostBreakdown,
+  type DateRange,
+  type ProjectSummary,
+  type ReplayData,
+  type SessionDerivedFlags,
+  type SessionUsageSummary,
+  type Timeseries,
+  type ToolAnalytics,
 } from "@control-plane/core";
 
 /**
@@ -77,9 +77,7 @@ export function getConfiguredAnalyticsSource(): ClaudeCodeAnalyticsSource | null
 let registryCache: AdapterRegistry | null = null;
 
 export function getAdapterRegistry(): AdapterRegistry {
-  if (!registryCache) {
-    registryCache = buildAdapterRegistry();
-  }
+  registryCache ??= buildAdapterRegistry();
   return registryCache;
 }
 
