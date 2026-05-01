@@ -19,34 +19,28 @@ function makeStubAdapter(kind: string, sessions: readonly SessionUsageSummary[])
     listSessionSummaries: vi.fn().mockResolvedValue(sessions),
     loadSessionUsage: vi.fn().mockResolvedValue(undefined),
     loadSessionReplay: vi.fn().mockResolvedValue(undefined),
-    loadActivityTimeseries: vi
-      .fn()
-      .mockResolvedValue({
-        range: { from: "", to: "" },
-        daily: [],
-        peakHours: [],
-        dayOfWeek: [],
-        streaks: { currentStreakDays: 0, longestStreakDays: 0, totalActiveDays: 0 },
-      }),
-    loadCostBreakdown: vi
-      .fn()
-      .mockResolvedValue({
-        range: { from: "", to: "" },
-        totalUsd: 0,
-        byModel: [],
-        daily: [],
-        byProject: [],
-        overallCacheEfficiency: EMPTY_CACHE_EFFICIENCY,
-      }),
-    loadToolAnalytics: vi
-      .fn()
-      .mockResolvedValue({
-        tools: [],
-        mcpServers: [],
-        featureAdoption: {},
-        versions: [],
-        branches: [],
-      }),
+    loadActivityTimeseries: vi.fn().mockResolvedValue({
+      range: { from: "", to: "" },
+      daily: [],
+      peakHours: [],
+      dayOfWeek: [],
+      streaks: { currentStreakDays: 0, longestStreakDays: 0, totalActiveDays: 0 },
+    }),
+    loadCostBreakdown: vi.fn().mockResolvedValue({
+      range: { from: "", to: "" },
+      totalUsd: 0,
+      byModel: [],
+      daily: [],
+      byProject: [],
+      overallCacheEfficiency: EMPTY_CACHE_EFFICIENCY,
+    }),
+    loadToolAnalytics: vi.fn().mockResolvedValue({
+      tools: [],
+      mcpServers: [],
+      featureAdoption: {},
+      versions: [],
+      branches: [],
+    }),
   };
 }
 
